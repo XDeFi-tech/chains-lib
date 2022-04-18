@@ -29,6 +29,7 @@ yarn-error.log*
 
 # Build
 **/dist
+**/docs
 
 # Local files
 apps/sample
