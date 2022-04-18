@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
+import { Asset } from 'core/asset';
 
 export class Coin {
   public readonly amount: BigNumber;
 
-  constructor(public readonly denom: string, amount: BigNumber.Value) {
+  constructor(public readonly asset: Asset, amount: BigNumber.Value) {
     this.amount = new BigNumber(amount);
   }
 
@@ -15,7 +16,7 @@ export class Coin {
    */
   public toString(): string {
     const amount = this.amount.toFixed();
-    return `${amount}${this.denom}`;
+    return `${amount}${this.asset}`;
   }
 
   /**
@@ -27,7 +28,7 @@ export class Coin {
    */
   public toData(): Coin.Data {
     return {
-      denom: this.denom,
+      asset: this.asset,
       amount: this.amount.toString(),
     };
   }
@@ -40,8 +41,8 @@ export class Coin {
   public plus(other: BigNumber.Value | Coin): Coin {
     let otherAmount;
     if (other instanceof Coin) {
-      if (other.denom !== this.denom) {
-        throw new Error(`Cannot add two Coins of different denoms: ${this.denom} and ${other.denom}`);
+      if (!this.asset.isEqual(other.asset)) {
+        throw new Error(`Cannot add two Coins of different denoms: ${this.asset} and ${other.asset}`);
       }
 
       otherAmount = other.amount;
@@ -49,7 +50,7 @@ export class Coin {
       otherAmount = other;
     }
 
-    return new Coin(this.denom, this.amount.plus(otherAmount));
+    return new Coin(this.asset, this.amount.plus(otherAmount));
   }
 
   /**
@@ -60,8 +61,8 @@ export class Coin {
   public minus(other: BigNumber.Value | Coin): Coin {
     let otherAmount;
     if (other instanceof Coin) {
-      if (other.denom !== this.denom) {
-        throw new Error(`Cannot subtract two Coins of different denoms: ${this.denom} and ${other.denom}`);
+      if (!this.asset.isEqual(other.asset)) {
+        throw new Error(`Cannot subtract two Coins of different denoms: ${this.asset} and ${other.asset}`);
       }
 
       otherAmount = other.amount;
@@ -69,7 +70,7 @@ export class Coin {
       otherAmount = other;
     }
 
-    return new Coin(this.denom, this.amount.minus(otherAmount));
+    return new Coin(this.asset, this.amount.minus(otherAmount));
   }
 
   /**
@@ -78,7 +79,7 @@ export class Coin {
    * @param other amount
    */
   public multipliedBy(other: BigNumber.Value): Coin {
-    return new Coin(this.denom, this.amount.multipliedBy(other));
+    return new Coin(this.asset, this.amount.multipliedBy(other));
   }
 
   /**
@@ -87,13 +88,13 @@ export class Coin {
    * @param other amount
    */
   public dividedBy(other: BigNumber.Value): Coin {
-    return new Coin(this.denom, this.amount.dividedBy(other));
+    return new Coin(this.asset, this.amount.dividedBy(other));
   }
 }
 
 export namespace Coin {
   export interface Data {
-    denom: string;
+    asset: Asset;
     amount: string;
   }
 }
