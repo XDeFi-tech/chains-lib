@@ -3,6 +3,7 @@ import { Msg } from 'core/msg';
 import { Coin } from 'core/coin';
 import { Transaction } from 'core/transaction';
 import * as Signer from 'core/signer';
+import { Manifest } from './interfaces/manifest.interface';
 
 /**
  * Represents abstract class for chain Provider, which provides
@@ -21,6 +22,7 @@ import * as Signer from 'core/signer';
  */
 @Injectable()
 export abstract class Provider {
+  abstract getManifest(): Manifest;
   abstract getBalance(): Promise<Coin>;
   abstract getTransactions(): Promise<Transaction[]>;
   abstract estimateFee(msgs: Msg[]): Promise<Coin[]>;

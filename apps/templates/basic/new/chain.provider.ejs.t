@@ -6,11 +6,15 @@ import "reflect-metadata";
 import { Chain, Coin, Msg, Transaction } from "@xdefi/chains-core";
 import { LedgerSigner } from "./ledger.signer";
 import { ChainMsg } from "./msg";
+import manifestJson from './manifest.json'
 
 @Chain.Decorator("<%= Name %>Provider", {
   deps: [LedgerSigner],
 })
 class <%= Name %>Provider extends Chain.Provider {
+  getManifest(): Chain.Manifest {
+    return manifestJson;
+  }
   createMsg(data: Msg.Data): Msg {
     return new ChainMsg(data);
   }
