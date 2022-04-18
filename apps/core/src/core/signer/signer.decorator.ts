@@ -10,7 +10,7 @@ export enum SignerType {
 export function Decorator(type: SignerType) {
   return function <T extends { new (...args: []): {} }>(target: T) {
     if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
-      throw new Error('Cannot apply @Signer() decorator multiple times.');
+      throw new Error('Cannot apply @Signer.Decorator() decorator multiple times.');
     }
 
     const types = Reflect.getMetadata(METADATA_KEY.DESIGN_PARAM_TYPES, target) || [];

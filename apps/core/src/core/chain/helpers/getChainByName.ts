@@ -1,7 +1,6 @@
 import { DiContainer } from '../../../common/di';
-import { Controller } from '../chain.provider';
-// import { ChainProvider } from '../interfaces';
+import * as Chain from '../chain.provider';
 
 export const getChainByName = (name: string) => {
-  return DiContainer.get<Controller>(name);
+  return DiContainer.get<Chain.Provider>(name);
 };

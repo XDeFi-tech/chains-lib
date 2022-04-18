@@ -1,7 +1,6 @@
 {
   "name": "@xdefi/chains-core",
   "version": "1.0.0",
-  "type": "module",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
