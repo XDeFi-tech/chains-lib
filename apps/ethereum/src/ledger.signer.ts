@@ -1,7 +1,7 @@
 import { Signer, Msg } from "@xdefi/chains-core";
 
 @Signer.Decorator(Signer.SignerType.LEDGER)
-export class LedgerSigner extends Signer.Controller {
+export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     throw new Error("Method not implemented.");
   }
