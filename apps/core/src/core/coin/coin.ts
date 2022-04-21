@@ -21,10 +21,6 @@ export class Coin {
 
   /**
    * Convert coin to object.
-   *
-   * Example:
-   *
-   * `Coin('ETH', 10) -> { denom: 'ETH', amount: 10 }`
    */
   public toData(): Coin.Data {
     return {
