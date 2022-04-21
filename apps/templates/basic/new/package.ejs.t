@@ -18,6 +18,7 @@ to: apps/<%= name.toLowerCase() %>/package.json
     "@xdefi/chains-core": "1.0.0"
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "watch": "tsc --watch"
   }
 }
