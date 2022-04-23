@@ -19,6 +19,7 @@ to: apps/<%= name.toLowerCase() %>/package.json
   },
   "scripts": {
     "build": "tsc --build",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "test": "jest"
   }
 }
