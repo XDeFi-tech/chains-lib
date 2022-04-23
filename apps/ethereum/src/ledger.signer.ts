@@ -1,14 +1,42 @@
-import { Signer, Msg } from "@xdefi/chains-core";
+import App from "@ledgerhq/hw-app-eth";
+import Transport from "@ledgerhq/hw-transport-webhid";
+import { Signer } from "@xdefi/chains-core";
+import { BigNumber, utils } from "ethers";
+import { ChainMsg } from "./msg";
+
+type Signature {
+  v: number;
+  r: string;
+  s: string;
+}
 
 @Signer.Decorator(Signer.SignerType.LEDGER)
-export class LedgerSigner extends Signer.Provider {
+export class LedgerSigner extends Signer.Provider<Signature> {
   verifyAddress(address: string): boolean {
-    throw new Error("Method not implemented.");
+    return utils.isAddress(address);
   }
-  getAddress(derivation: string): Promise<string> {
-    throw new Error("Method not implemented.");
+
+  async getAddress(derivation: string): Promise<string> {
+    const transport = await Transport.create();
+    const app = new App(transport);
+
+    const address = await app.getAddress(derivation);
+    transport.close();
+
+    return address.address;
   }
-  sign(msg: Msg): Promise<string> {
-    throw new Error("Method not implemented.");
+
+  async sign(derivation: string, msg: ChainMsg): Promise<Signature> {
+    const transport = await Transport.create();
+    const app = new App(transport);
+
+    const signature = await app.signTransaction(derivation, msg.toData());
+    transport.close();
+
+    return {
+      v: BigNumber.from("0x" + signature.v).toNumber(),
+      r: "0x" + signature.r,
+      s: "0x" + signature.s,
+    };
   }
 }

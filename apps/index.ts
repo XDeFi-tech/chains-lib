@@ -1,1 +1,1 @@
-import from './ethereum/chain.provider.ts'
+export * from "./ethereum/dist/index.js";
