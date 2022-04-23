@@ -27,7 +27,7 @@ export abstract class Msg {
    * @param `data` object represents msg
    */
   public static fromData(data: object): Msg {
-    return new (Msg as any)(data);
+    return new (this as any)(data);
   }
 
   /**
