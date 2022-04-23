@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Chain } from '../..';
+import { Chain } from 'core';
 
 export class Asset {
   protected data: Asset.Data;
