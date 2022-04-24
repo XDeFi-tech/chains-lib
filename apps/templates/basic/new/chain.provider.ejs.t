@@ -11,7 +11,7 @@ import manifestJson from './manifest.json'
 @Chain.Decorator("<%= Name %>Provider", {
   deps: [LedgerSigner],
 })
-class <%= Name %>Provider extends Chain.Provider {
+export class <%= Name %>Provider extends Chain.Provider {
   getManifest(): Chain.Manifest {
     return manifestJson;
   }
