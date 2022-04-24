@@ -1,22 +1,19 @@
 /**
  * Abstract message class which allows to create chain specific message
  */
-export abstract class Msg {
+export abstract class Msg<OutData = {}> {
   protected signature?: string;
-  protected data?: any;
 
-  constructor(data: any) {
-    this.data = data;
-  }
+  constructor(public readonly data: Msg.Data) {}
 
-  public abstract toData(): any;
+  public abstract toData(): OutData;
 
   /**
    * Assign signature to the message
    *
    * @param signature of the message
    */
-  sign(signature: string): Msg {
+  public sign(signature: string): Msg {
     this.signature = signature;
     return this;
   }
@@ -26,7 +23,7 @@ export abstract class Msg {
    *
    * @param `data` object represents msg
    */
-  public static fromData(data: object): Msg {
+  public static fromData(data: Msg.Data): Msg {
     return new (this as any)(data);
   }
 
@@ -37,7 +34,7 @@ export abstract class Msg {
    */
   public static fromJson(json: string): Msg {
     const data = JSON.parse(json);
-    return Msg.fromData(data);
+    return this.fromData(data);
   }
 }
 

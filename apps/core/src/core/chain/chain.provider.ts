@@ -1,8 +1,9 @@
 import { DiContainer, Injectable } from 'common';
-import { Msg } from 'core/msg';
 import { Coin } from 'core/coin';
-import { Transaction } from 'core/transaction';
+import { Msg } from 'core/msg';
 import * as Signer from 'core/signer';
+import { Transaction } from 'core/transaction';
+import { Network } from './interfaces';
 import { Manifest } from './interfaces/manifest.interface';
 
 /**
@@ -24,14 +25,14 @@ import { Manifest } from './interfaces/manifest.interface';
 export abstract class Provider {
   abstract getManifest(): Manifest;
   abstract getBalance(): Promise<Coin>;
-  abstract getTransactions(): Promise<Transaction[]>;
+  abstract getTransactions(address: string, network: Network, afterBlock?: number): Promise<Transaction[]>;
   abstract estimateFee(msgs: Msg[]): Promise<Coin[]>;
   abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
   abstract createMsg(data: Msg.Data): Msg;
 
-  public async signAndBroadcast(signer: Signer.Provider, msgs: Msg[]) {
+  public async signAndBroadcast(derivation: string, signer: Signer.Provider, msgs: Msg[]) {
     for await (let msg of msgs) {
-      const signature = await signer.sign(msg.toData());
+      const signature = await signer.sign(derivation, msg.toData());
       msg.sign(signature);
     }
 

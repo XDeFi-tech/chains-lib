@@ -1,5 +1,5 @@
-export abstract class Transaction {
-  constructor(public readonly data: object) {}
+export abstract class Transaction<InData = {}> {
+  constructor(public readonly data: InData) {}
 
   /**
    * Return transaction in appropriate format
@@ -9,10 +9,10 @@ export abstract class Transaction {
   /**
    * Create a new Transaction using provided data object
    *
-   * @param `data` object represents transaction
+   * @param `data` represents transaction
    */
-  public static fromData(data: object): Transaction {
-    return new (Transaction as any)(data);
+  public static fromData(data: any): Transaction {
+    return new (this as any)(data);
   }
 }
 

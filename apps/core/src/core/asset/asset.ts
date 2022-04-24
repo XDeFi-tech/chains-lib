@@ -54,7 +54,17 @@ export class Asset {
    * @param other asset to compare with
    */
   public isEqual(other: Asset) {
-    return this.chainId === other.chainId && (this.symbol === other.symbol || this.address === other.address);
+    if (this.chainId === other.chainId) {
+      if (this.symbol === other.symbol) {
+        return true;
+      }
+
+      if (this.address !== undefined && other.address !== undefined && this.address === other.address) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

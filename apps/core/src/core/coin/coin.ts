@@ -38,7 +38,7 @@ export class Coin {
     let otherAmount;
     if (other instanceof Coin) {
       if (!this.asset.isEqual(other.asset)) {
-        throw new Error(`Cannot add two Coins of different denoms: ${this.asset} and ${other.asset}`);
+        throw new Error(`Cannot add two Coins of different assets: ${this.asset} and ${other.asset}`);
       }
 
       otherAmount = other.amount;
@@ -58,7 +58,7 @@ export class Coin {
     let otherAmount;
     if (other instanceof Coin) {
       if (!this.asset.isEqual(other.asset)) {
-        throw new Error(`Cannot subtract two Coins of different denoms: ${this.asset} and ${other.asset}`);
+        throw new Error(`Cannot subtract two Coins of different assets: ${this.asset} and ${other.asset}`);
       }
 
       otherAmount = other.amount;

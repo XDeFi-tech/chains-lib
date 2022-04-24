@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { DiContainer } from '../../common/di/container';
 import { METADATA_KEY } from '../constants';
 
-export const SCOPE_NAME = 'CHAIN';
+export const CHAIN_SCOPE_NAME = 'CHAIN';
 
 /**
  * Interface defining options that can be passed to `@Chain()` decorator
@@ -23,7 +23,6 @@ export interface ChainOptions {
  */
 export function Decorator(name: string, options?: ChainOptions) {
   return function <T extends { new (...args: any[]): {} }>(target: T) {
-    Reflect.set(target, 'name', name);
     Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, target);
 
     if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
@@ -40,14 +39,18 @@ export function Decorator(name: string, options?: ChainOptions) {
       .onActivation((_context, obj) => {
         // Init dependencies
         options?.deps?.forEach((dep: any) => {
-          new dep();
+          if (typeof dep === 'function') {
+            new dep();
+          } else {
+            dep;
+          }
         });
 
         return obj;
       });
 
     // Bind all wallet provider to same scope name
-    DiContainer.bind(SCOPE_NAME).toService(name);
+    DiContainer.bind(CHAIN_SCOPE_NAME).toService(name);
 
     return target;
   };
