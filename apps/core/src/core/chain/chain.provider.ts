@@ -1,8 +1,11 @@
-import { DiContainer, Injectable } from 'common';
+import { Injectable } from 'common';
 import { Coin } from 'core/coin';
 import { Msg } from 'core/msg';
 import * as Signer from 'core/signer';
+import { SIGNER_SCOPE_NAME } from 'core/signer';
 import { Transaction } from 'core/transaction';
+import 'reflect-metadata';
+import { METADATA_KEY } from '../..';
 import { Network } from './interfaces';
 import { Manifest } from './interfaces/manifest.interface';
 
@@ -39,13 +42,23 @@ export abstract class Provider {
     return this.broadcast(msgs);
   }
 
-  // TODO: Return list of objects with type and signer
   public getSigners() {
-    return DiContainer.getAll<Signer.Provider>(Signer.SIGNER_SCOPE_NAME);
+    const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
+    const deps = options?.deps;
+
+    return deps.filter((dep: any) => {
+      const scope = Reflect.getMetadata(METADATA_KEY.SCOPE, dep);
+      return scope === SIGNER_SCOPE_NAME;
+    });
   }
 
   public getSigner(type: Signer.SignerType) {
-    return DiContainer.getAll<Signer.Provider>(type)[0];
+    const signers = this.getSigners();
+
+    return signers.find((signer: any) => {
+      const _type = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer);
+      return _type === type;
+    });
   }
 
   public hasSigner(type: Signer.SignerType) {

@@ -23,31 +23,27 @@ export interface ChainOptions {
  */
 export function Decorator(name: string, options?: ChainOptions) {
   return function <T extends { new (...args: any[]): {} }>(target: T) {
-    Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, target);
-
     if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
       throw new Error('Cannot apply @Chain() decorator multiple times.');
     }
+
+    Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, target);
 
     const types = Reflect.getMetadata(METADATA_KEY.DESIGN_PARAM_TYPES, target) || [];
     Reflect.defineMetadata(METADATA_KEY.PARAM_TYPES, types, target);
 
     // Auto-bind provided chain to di-container
-    DiContainer.bind(name)
-      .to(target)
-      .inSingletonScope()
-      .onActivation((_context, obj) => {
-        // Init dependencies
-        options?.deps?.forEach((dep: any) => {
-          if (typeof dep === 'function') {
-            new dep();
-          } else {
-            dep;
-          }
-        });
-
-        return obj;
+    DiContainer.bind(name).to(target).inSingletonScope();
+    DiContainer.onActivation(name, (_context, obj: any) => {
+      // Init dependencies
+      options?.deps?.forEach((dep: any) => {
+        if (typeof dep === 'function') {
+          new dep();
+        }
       });
+
+      return obj;
+    });
 
     // Bind all wallet provider to same scope name
     DiContainer.bind(CHAIN_SCOPE_NAME).toService(name);
