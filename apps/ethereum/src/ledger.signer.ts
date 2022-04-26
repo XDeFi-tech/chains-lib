@@ -4,11 +4,11 @@ import { Signer } from "@xdefi/chains-core";
 import { BigNumber, utils } from "ethers";
 import { ChainMsg } from "./msg";
 
-type Signature {
+type Signature = {
   v: number;
   r: string;
   s: string;
-}
+};
 
 @Signer.Decorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider<Signature> {

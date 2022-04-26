@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import 'reflect-metadata';
 import { Injectable } from '../di';
 
 @Injectable()
