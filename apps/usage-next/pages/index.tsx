@@ -1,28 +1,21 @@
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
-import { EvmProvider, supportedChains, XdefiProvider } from '@xdefi/chains-evm';
-import { useCallback, useState } from 'react';
+import { EvmProvider, evmManifests, XdefiProvider } from '@xdefi/chains-evm';
 import { Coin, ConfigProvider } from '@xdefi/chains-core';
 
 const Home: NextPage = () => {
-  const config = new ConfigProvider({
-    manifest: {
-      "name": "Ethereum",
-      "description": "",
-      "chainId": "1",
-      "chainSymbol": "ETH",
-      "rpcURL": "https://eth-rpc.gateway.pokt.network",
-      "blockExplorerURL": "https://etherscan.io",
-      "chain": "ethereum"
-    }
-  })
   const [currentProvider, setCurrentProvider] = useState(
-      new EvmProvider(config, new XdefiProvider(supportedChains.ethereum))
+      new EvmProvider(new XdefiProvider(evmManifests.ethereum))
   );
   const [balanceInput, setBalanceInput] = useState('0x90b0d2d51464efefb38aad00f954649cb5d16040');
   // const [balanceInput, setBalanceInput] = useState('MDQp6XevB6jH1FCwZNB2bKshYrPic1sQ7M');
   const [balance, setBalance] = useState<Coin[] | null>(null);
+
+
+  useEffect(() => {
+    console.log('LOG type', currentProvider.getSigners());
+  }, [])
 
   const getBalance = useCallback(async () => {
     const balance = await currentProvider.getBalance(balanceInput);
@@ -37,7 +30,7 @@ const Home: NextPage = () => {
   }, [balanceInput])
 
   const getManifest = useCallback(async () => {
-    const manifest = currentProvider.getManifest();
+    const manifest = currentProvider.manifest;
 
     console.log('LOG manifest', manifest)
   }, [balanceInput])

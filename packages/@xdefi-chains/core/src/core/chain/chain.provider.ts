@@ -16,8 +16,9 @@ type GasFeeSpeed = 'high' | 'medium' | 'low';
  * Example:
  *
  * ```ts
- * @ChainDecorator("EthereumProvider", {
- *   deps: [LedgerSigner]
+ * @ChainDecorator("EVMProvider", {
+ *   deps: [LedgerSigner],
+ *   type: 'EVM'
  * })
  * class EthereumProvider extens Chain.Provider {
  *    ...implement abstract methods
@@ -26,7 +27,6 @@ type GasFeeSpeed = 'high' | 'medium' | 'low';
  */
 @Injectable()
 export abstract class Provider {
-  abstract getManifest(): Manifest;
   abstract getBalance(address: string): Promise<Coin>;
   abstract getTransactions(address: string, network: Network, afterBlock?: number): Promise<Transaction[]>;
   abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
@@ -40,6 +40,11 @@ export abstract class Provider {
     }
 
     return this.broadcast(msgs);
+  }
+
+  public getType() {
+    const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
+    return options?.providerType;
   }
 
   public getSigners() {

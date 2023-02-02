@@ -5,8 +5,8 @@ import {
   ConfigProvider,
   Inject,
   Msg,
-  Transaction,
-} from "@xdefi/chains-core";
+  Transaction, METADATA_KEY,
+} from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
 import config from "./config";
@@ -15,7 +15,7 @@ import { ChainMsg } from "./msg";
 import { getTransaction, getBalance, getStatus, getFees } from './queries';
 import { some } from "lodash";
 
-export enum SupportedChains {
+export enum EVMChains {
   ethereum = 'ethereum',
   binancesmartchain = 'binancesmartchain',
   polygon = 'polygon',
@@ -24,12 +24,12 @@ export enum SupportedChains {
   arbitrum = 'arbitrum',
   aurora = 'aurora',
 }
-export interface ISupportedChains {
+export interface IEVMChains {
   [chain: string]: Chain.Manifest
 }
 
-export const supportedChains: ISupportedChains = {
-  ethereum: {
+export const evmManifests: IEVMChains = {
+  [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',
     rpcURL: 'https://eth-rpc.gateway.pokt.network',
@@ -38,7 +38,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '1',
     chain: 'ethereum',
   },
-  binancesmartchain: {
+  [EVMChains.binancesmartchain]: {
     name: 'BNB Smart Chain',
     description: '',
     rpcURL: 'https://bsc-dataseed1.defibit.io',
@@ -47,7 +47,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '56',
     chain: 'binancesmartchain',
   },
-  polygon: {
+  [EVMChains.polygon]: {
     name: 'Polygon',
     description: '',
     rpcURL: 'https://polygon-rpc.com',
@@ -56,7 +56,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '137',
     chain: 'polygon',
   },
-  avalanche: {
+  [EVMChains.avalanche]: {
     name: 'Avalanche',
     description: '',
     rpcURL: 'https://api.avax.network/ext/bc/C/rpc',
@@ -65,7 +65,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '43114',
     chain: 'avalanche',
   },
-  fantom: {
+  [EVMChains.fantom]: {
     name: 'Fantom',
     description: '',
     rpcURL: 'https://api.avax.network/ext/bc/C/rpc',
@@ -74,7 +74,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '250',
     chain: 'fantom',
   },
-  arbitrum: {
+  [EVMChains.arbitrum]: {
     name: 'Arbitrum',
     description: '',
     rpcURL: 'https://arb1.arbitrum.io/rpc',
@@ -83,7 +83,7 @@ export const supportedChains: ISupportedChains = {
     chainId: '42161',
     chain: 'arbitrum',
   },
-  aurora: {
+  [EVMChains.aurora]: {
     name: 'Aurora',
     description: '',
     rpcURL: 'https://mainnet.aurora.dev',
@@ -115,7 +115,7 @@ export abstract class BaseProvider { // Share base chain & call methods without 
 
 export class XdefiProvider extends BaseProvider {
   async getBalance(address: string): Promise<Coin[]> {
-    const { data } = await getBalance(this.manifest.chain as SupportedChains, address);
+    const { data } = await getBalance(this.manifest.chain as EVMChains, address);
 
     // cut off balances without asset
     const balances = data[this.manifest.chain].balances.filter((b: any) => b.asset.symbol && b.asset.id);
@@ -148,7 +148,7 @@ export class XdefiProvider extends BaseProvider {
       };
     }
 
-    const { data } = await getTransaction(this.manifest.chain as SupportedChains, address, blockRange);
+    const { data } = await getTransaction(this.manifest.chain as EVMChains, address, blockRange);
 
     return data[this.manifest.chain].transactions.map((transaction: any) => {
       return Transaction.fromData(transaction)
@@ -167,24 +167,21 @@ export class XdefiProvider extends BaseProvider {
 
 @ChainDecorator("EthereumProvider", {
   deps: [ConfigProvider.load(config), LedgerSigner],
+  providerType: 'EVM'
 })
 export class EvmProvider extends Chain.Provider {
+  public readonly manifest: Chain.Manifest;
   private provider: providers.StaticJsonRpcProvider;
 
   constructor(
-      @Inject("Config") private readonly config: ConfigProvider<{
-        manifest: Chain.Manifest,
-      }>,
-      private readonly chainProvider: XdefiProvider
+      private readonly chainProvider: XdefiProvider,
+      private readonly config?: any,
   ) {
     super();
+    this.manifest = this.chainProvider.getManifest();
     this.config = config;
     this.chainProvider = chainProvider;
     this.provider = new providers.StaticJsonRpcProvider(this.config?.get("manifest.rpcURL"));
-  }
-
-  getManifest(): Chain.Manifest {
-    return this.config.get('manifest');
   }
 
   createMsg(data: Msg.Data): Msg {
@@ -203,6 +200,10 @@ export class EvmProvider extends Chain.Provider {
   ): Promise<Transaction[]> {
     EvmProvider._checkAddress(address);
     return this.chainProvider.getTransactions(address, afterBlock);
+  }
+
+  getType() {
+    return 'kek'
   }
 
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any> {

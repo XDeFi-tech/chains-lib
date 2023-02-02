@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { gqlClient } from '@xdefi/chains-core';
-import { SupportedChains } from '../chain.provider';
+import { EVMChains } from '../chain.provider';
 
-export const GET_BALANCE = (chain: SupportedChains) => gql`
+export const GET_BALANCE = (chain: EVMChains) => gql`
 query GetBalance($address: String!) {
   ${chain} {
     balances(address: $address) {
@@ -29,7 +29,7 @@ query GetBalance($address: String!) {
 `;
 
 
-export const getBalance = (chain: SupportedChains, address: string) => {
+export const getBalance = (chain: EVMChains, address: string) => {
     return gqlClient.query({
         query: GET_BALANCE(chain),
         variables: {
