@@ -1,13 +1,30 @@
 import { Asset } from '../asset';
 import { Coin } from './coin';
+import BigNumber from 'bignumber.js';
+
+// Asset with structure from Asset Service
+const MOCK_ASSET = {
+  id: "5d5d7222-a934-4814-8dac-70ee9735ef01",
+  name: "Ethereum",
+  symbol: "ETH",
+  image: "https://assets.coingecko.com/coins/images/279/thumb_2x/ethereum.png?1595348880",
+  chain: "Ethereum",
+  contract: null,
+  price: {
+    amount: "1249.5",
+    scalingFactor: 0,
+  }
+}
+
 
 export const ASSET_DATA: Asset.Data = {
   chainId: '1',
-  name: 'Ethereum',
-  symbol: 'ETH',
-  decimals: 18,
-  icon: '',
-  native: true,
+  name: MOCK_ASSET.name,
+  symbol: MOCK_ASSET.symbol,
+  icon: MOCK_ASSET.image,
+  native: !Boolean(MOCK_ASSET.contract),
+  decimals: MOCK_ASSET.price.scalingFactor,
+  price: MOCK_ASSET.price.amount,
 };
 
 const ASSET = new Asset(ASSET_DATA);
@@ -19,8 +36,8 @@ describe('Coin', () => {
   });
 
   it('toString(): should convert Coin to String (e.g. 1ETH)', () => {
-    const coint = new Coin(ASSET, '1');
-    expect(coint.toString()).toEqual('1ETH');
+    const coin = new Coin(ASSET, '1');
+    expect(coin.toString()).toEqual('1ETH');
   });
 
   it('toData(): should return Coin as Coint.Data', () => {

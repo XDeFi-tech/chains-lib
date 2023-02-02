@@ -11,11 +11,18 @@ export abstract class Msg<OutData = {}> {
   /**
    * Assign signature to the message
    *
-   * @param signature of the message
+   * @param signer - obj
    */
-  public sign(signature: string): Msg {
-    this.signature = signature;
+  public sign(signer: any): Msg {
+    this.signature = signer;
     return this as Msg;
+  }
+
+  /**
+   * Check is current Msg has signature
+   */
+  public hasSignature(): boolean {
+    return Boolean(this.signature);
   }
 
   /**

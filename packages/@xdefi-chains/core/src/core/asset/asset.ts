@@ -1,11 +1,22 @@
-import BigNumber from 'bignumber.js';
 import { ChainID } from 'core/chain';
 
 export class Asset {
   protected data: Asset.Data;
 
   constructor(data: Asset.Data) {
-    this.data = data;
+    this.data = {
+      chainId: data.chainId,
+      name: data.name,
+      symbol: data.symbol,
+      icon: data.icon,
+      native: data.native,
+
+      // Optional fields should be undefined if they are empty
+      ...(data.id && { id: data.id }),
+      ...(data.address && { address: data.address }),
+      ...(data.price && { price: data.price }),
+      ...(data.decimals && { decimals: data.decimals }),
+    };
   }
 
   get id() {
@@ -102,10 +113,10 @@ export namespace Asset {
     chainId: ChainID;
     name: string;
     symbol: string;
-    decimals: number;
     icon: string;
     native: boolean;
+    decimals?: number;
     address?: string;
-    price?: BigNumber;
+    price?: string;
   }
 }

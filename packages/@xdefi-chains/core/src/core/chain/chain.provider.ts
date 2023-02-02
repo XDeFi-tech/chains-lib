@@ -7,6 +7,8 @@ import 'reflect-metadata';
 import { Manifest, Network } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 
+
+type GasFeeSpeed = 'high' | 'medium' | 'low';
 /**
  * Represents abstract class for chain Provider, which provides
  * primitives for interacting with particular chain.
@@ -27,7 +29,7 @@ export abstract class Provider {
   abstract getManifest(): Manifest;
   abstract getBalance(address: string): Promise<Coin>;
   abstract getTransactions(address: string, network: Network, afterBlock?: number): Promise<Transaction[]>;
-  abstract estimateFee(msgs: Msg[]): Promise<Coin[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
   abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
   abstract createMsg(data: Msg.Data): Msg;
 

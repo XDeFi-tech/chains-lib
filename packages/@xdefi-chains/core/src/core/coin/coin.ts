@@ -16,7 +16,7 @@ export class Coin {
    */
   public toString(): string {
     const amount = this.amount.toFixed();
-    return `${amount}${this.asset}`;
+    return `${amount}${this.asset.toString()}`;
   }
 
   /**

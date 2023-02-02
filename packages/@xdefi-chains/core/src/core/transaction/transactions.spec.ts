@@ -6,7 +6,11 @@ type InputData = {
 
 class MyTransaction extends Transaction<InputData> {
   public toData(): Transaction.Data {
-    return this.data;
+    return {
+      hash: '',
+      fromAddress: '',
+      status: ''
+    };
   }
 }
 

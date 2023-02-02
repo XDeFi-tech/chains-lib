@@ -1,7 +1,8 @@
 {
-  "name": "@xdefi/chains-ethereum",
+  "name": "@xdefi/chains-evm",
   "version": "1.0.0",
-  "main": "src/chain.provider.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^27.4.1",
@@ -12,7 +13,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@xdefi/chains-core": "*",
+    "@xdefi/chains-core": "file:../core",
     "@ledgerhq/hw-app-eth": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "bignumber.js": "^9.0.2",

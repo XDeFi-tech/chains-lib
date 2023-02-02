@@ -1,4 +1,9 @@
 {
     "name": "Ethereum",
-    "description": ""
+    "description": "",
+    "chainId": "1",
+    "chainSymbol": "ETH",
+    "rpcURL": "https://eth-rpc.gateway.pokt.network",
+    "blockExplorerURL": "https://etherscan.io",
+    "chain": "ethereum"
 }

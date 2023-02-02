@@ -127,3 +127,14 @@
     filter: invert(1);
   }
 }
+
+.block {
+  display: flex;
+  flex-flow: nowrap column;
+}
+
+.inputBlock {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}

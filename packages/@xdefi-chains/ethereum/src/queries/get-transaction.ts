@@ -1,22 +1,34 @@
 import { gql } from "@apollo/client";
 import { gqlClient } from "@xdefi/chains-core";
+import { SupportedChains } from '../chain.provider';
 
-export const GET_TRANSACTION = gql`
-query GetTransactions($address: String!, $date: DateSelector!, $blockNumber: Int!) {
-  ethereum {
-    name
-    transactions(address: $address, date: $date, blockNumber: $blockNumber) {
-      hash
-      timestamp
-      status
-      type
+export const GET_TRANSACTION = (chain: SupportedChains) => gql`
+query GetTransactions($blockRange: BlockRange, $address: String!) {
+  ${chain} {
+    transactions(blockRange: $blockRange, address: $address) {
       fee
-      inputData
+      hash
       fromAddress
+      status
+      timestamp
       toAddress
-      raw
-      logs
       transfers {
+        amount {
+          value
+          scalingFactor
+        }
+        asset {
+          id
+          name
+          symbol
+          image
+          chain
+          contract
+          price {
+            amount
+            scalingFactor
+          }
+        }
         fromAddress
         toAddress
       }
@@ -25,16 +37,17 @@ query GetTransactions($address: String!, $date: DateSelector!, $blockNumber: Int
 }
 `;
 
-export const getTransaction = (address: string, fromDate: string, toDate: string, blockNumber: number) => {
+export interface BlockRange {
+    from: number,
+    to: number
+}
+
+export const getTransaction = (chain: SupportedChains, address: string, blockRange: BlockRange | null) => {
     return gqlClient.query({
-        query: GET_TRANSACTION,
+        query: GET_TRANSACTION(chain),
         variables: {
             address,
-            date: {
-                fromDate,
-                toDate,
-            },
-            blockNumber
+            ...(blockRange && { blockRange })
         },
     })
 };

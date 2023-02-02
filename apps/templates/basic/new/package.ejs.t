@@ -3,7 +3,7 @@ to: apps/<%= name.toLowerCase() %>/package.json
 ---
 
 {
-  "name": "@xdefi/chains-ethereum",
+  "name": "@xdefi/chains-evm",
   "version": "1.0.0",
   "main": "src/main.ts",
   "types": "src/main.ts",
