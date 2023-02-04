@@ -1,20 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
-import { EvmProvider, evmManifests, XdefiProvider } from '@xdefi/chains-evm';
+import { EvmProvider, evmManifests, XdefiRepository } from '@xdefi/chains-evm';
 import { Coin, ConfigProvider } from '@xdefi/chains-core';
 
 const Home: NextPage = () => {
   const [currentProvider, setCurrentProvider] = useState(
-      new EvmProvider(new XdefiProvider(evmManifests.ethereum))
+      new EvmProvider(new XdefiRepository(evmManifests.ethereum))
   );
   const [balanceInput, setBalanceInput] = useState('0x90b0d2d51464efefb38aad00f954649cb5d16040');
   // const [balanceInput, setBalanceInput] = useState('MDQp6XevB6jH1FCwZNB2bKshYrPic1sQ7M');
   const [balance, setBalance] = useState<Coin[] | null>(null);
 
-
   useEffect(() => {
-    console.log('LOG type', currentProvider.getSigners());
+    console.log('LOG type', currentProvider.providerName);
   }, [])
 
   const getBalance = useCallback(async () => {

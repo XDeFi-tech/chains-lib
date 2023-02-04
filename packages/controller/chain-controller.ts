@@ -1,79 +1,69 @@
 import { Chain } from '@xdefi/chains-core';
-import { EvmProvider } from '../@xdefi-chains/ethereum/src';
 
-export interface IProvider {
-    [providerKey: string]: any
+export interface IProviders {
+    [providerKey: string]: Chain.Provider;
 }
 
-// todo add type to providers, serialise data with manifest and type?
-
 class ChainController {
-    private readonly providers: IProvider;
+    private readonly providers: IProviders;
 
-    constructor(initialParams: string) {
+    constructor(initialParams?: Chain.Provider[]) {
         this.providers = {};
         this._initProviders(initialParams);
     }
 
-    protected _initProviders(initialParams) {
-        const params = this.deserializeParams(initialParams);
-        Object.keys(params).forEach((key) => {
-
-            this.setProvider(params[key]); // todo figure out how to get specific provider class
-        });
+    protected _initProviders(providers: Chain.Provider[]) {
+        providers.forEach((provider) => this.setProvider(provider));
     }
 
-    public getProviderByChain(chain: string) {
+    public getProviderByChain(chain: string): Chain.Provider {
         if (!this.providers[chain]) {
             throw new Error('Invalid provider key');
         }
 
-        return this.providers[chain].provider;
+        return this.providers[chain];
     }
 
-    public getProviderByType(type: string) {
-        return Object.values(this.providers).reduce((acc, p) => {
-            if (p.type === type) {
-                acc.push(p.provider);
+    public getProviderByType(type: string): Chain.Provider[] {
+        return Object.values(this.providers).reduce((acc, provider) => {
+            if (provider.providerType === type) {
+                acc.push(provider);
             }
 
             return acc;
         }, []);
     }
 
-    public getProviderList() {
-        return Object.values(this.providers).map((p) => p.provider);
+    public getProviderList(): Chain.Provider[] {
+        return Object.values(this.providers);
     }
 
     public setProvider(provider: any) {
         if (!(provider instanceof Chain.Provider)) {
             throw new Error('The provider must be based on BaseProvider');
         }
-        const manifest = provider.getManifest();
-        this.providers[manifest.chain] = {
-            type: provider.getType(),
-            provider
-        };
+        this.providers[provider.manifest.chain] = provider;
     }
 
-    public deserializeParams(params: string) {
+    public serializeParams() {
+        const providers: IProviders = Object.values(this.providers).reduce((acc, provider) => {
+            const manifest = provider.manifest;
+            acc[manifest.chain] = {
+                providerClassName: provider.providerName,
+                repositoryClassName: provider.repositoryName,
+                manifest
+            };
+            return acc;
+        }, {});
+        return JSON.stringify(providers);
+    }
+
+    static deserializeParams(params: string) {
         if (!ChainController.isJsonString(params)) {
             throw new Error(`Invalid params ${params}`);
         }
 
         return JSON.parse(params);
-    }
-
-    public serializeParams() {
-        const params = Object.values(this.providers).reduce((acc, p) => {
-            const manifest = p.provider.getManifest();
-            const type = p.type;
-            acc[manifest.chain] = {
-                type,
-                manifest
-            };
-        }, {});
-        return JSON.stringify(params);
     }
 
     static isJsonString(str: string) {
@@ -87,10 +77,5 @@ class ChainController {
         return false;
     }
 }
-
-// Open for extension, closed for modification - ?
-// const chainController = new ChainController();
-// chainController.addChainProvider({ 'evm': EvmProvider });
-
 
 export default ChainController;

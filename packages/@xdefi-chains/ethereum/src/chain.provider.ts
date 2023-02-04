@@ -2,14 +2,11 @@ import {
   ChainDecorator,
   Chain,
   Coin,
-  ConfigProvider,
-  Inject,
   Msg,
-  Transaction, METADATA_KEY,
+  Transaction,
 } from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
-import config from "./config";
 import { LedgerSigner } from "./ledger.signer";
 import { ChainMsg } from "./msg";
 import { getTransaction, getBalance, getStatus, getFees } from './queries';
@@ -96,13 +93,13 @@ export const evmManifests: IEVMChains = {
 
 type GasFeeSpeed = 'high' | 'medium' | 'low';
 
-export abstract class BaseProvider { // Share base chain & call methods without any code
-  protected provider: providers.StaticJsonRpcProvider;
-  protected manifest: Chain.Manifest;
+export abstract class BaseRepository { // Share base chain & call methods without any code
+  public rpcProvider: providers.StaticJsonRpcProvider;
+  public manifest: Chain.Manifest;
 
   constructor(manifest: Chain.Manifest) { // pass config here, get it in the provider
     this.manifest = manifest;
-    this.provider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
+    this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
   }
   abstract getBalance(address: string): Promise<Coin[]>;
   abstract getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]>;
@@ -113,7 +110,7 @@ export abstract class BaseProvider { // Share base chain & call methods without 
   }
 }
 
-export class XdefiProvider extends BaseProvider {
+export class XdefiRepository extends BaseRepository {
   async getBalance(address: string): Promise<Coin[]> {
     const { data } = await getBalance(this.manifest.chain as EVMChains, address);
 
@@ -136,7 +133,6 @@ export class XdefiProvider extends BaseProvider {
       }, utils.formatUnits(amount.value, amount.scalingFactor))
     })
   }
-
   async getTransactions(address: string, afterBlock?: number | string): Promise<[]> {
     let blockRange = null;
 
@@ -154,7 +150,6 @@ export class XdefiProvider extends BaseProvider {
       return Transaction.fromData(transaction)
     })
   }
-
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any> {
     const { data } = await getFees(this.manifest.chain);
     const fee = data[this.manifest.chain].fee;
@@ -166,23 +161,30 @@ export class XdefiProvider extends BaseProvider {
 }
 
 @ChainDecorator("EthereumProvider", {
-  deps: [ConfigProvider.load(config), LedgerSigner],
+  deps: [LedgerSigner],
   providerType: 'EVM'
 })
 export class EvmProvider extends Chain.Provider {
-  public readonly manifest: Chain.Manifest;
-  private provider: providers.StaticJsonRpcProvider;
+  private rpcProvider: providers.StaticJsonRpcProvider;
 
   constructor(
-      private readonly chainProvider: XdefiProvider,
+      private readonly chainRepository: BaseRepository,
       private readonly config?: any,
   ) {
     super();
-    this.manifest = this.chainProvider.getManifest();
     this.config = config;
-    this.chainProvider = chainProvider;
-    this.provider = new providers.StaticJsonRpcProvider(this.config?.get("manifest.rpcURL"));
+    this.chainRepository = chainRepository;
+    this.rpcProvider = new providers.StaticJsonRpcProvider(this.manifest.rpcURL);
   }
+
+  get manifest(): Chain.Manifest {
+    return this.chainRepository.getManifest();
+  }
+
+  get repositoryName(): string {
+    return this.chainRepository.constructor.name;
+  }
+
 
   createMsg(data: Msg.Data): Msg {
     return new ChainMsg(data);
@@ -199,15 +201,11 @@ export class EvmProvider extends Chain.Provider {
     afterBlock?: number | string
   ): Promise<Transaction[]> {
     EvmProvider._checkAddress(address);
-    return this.chainProvider.getTransactions(address, afterBlock);
-  }
-
-  getType() {
-    return 'kek'
+    return this.chainRepository.getTransactions(address, afterBlock);
   }
 
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any> {
-    return this.chainProvider.estimateFee(msgs, speed);
+    return this.chainRepository.estimateFee(msgs, speed);
   }
 
   async broadcast(msgs: Msg[]): Promise<Transaction[]> {
@@ -218,7 +216,7 @@ export class EvmProvider extends Chain.Provider {
     const transactions = [];
 
     for (let msg of msgs) {
-      const tx = await this.provider.sendTransaction(msgs.toString());
+      const tx = await this.rpcProvider.sendTransaction(msgs.toString());
       transactions.push(Transaction.fromData(tx));
     }
 
@@ -227,6 +225,6 @@ export class EvmProvider extends Chain.Provider {
 
   async getBalance(address: string): Promise<Coin[]> {
     EvmProvider._checkAddress(address);
-    return this.chainProvider.getBalance(address);
+    return this.chainRepository.getBalance(address);
   }
 }

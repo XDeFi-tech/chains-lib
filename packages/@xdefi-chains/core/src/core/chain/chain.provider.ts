@@ -32,6 +32,8 @@ export abstract class Provider {
   abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
   abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
   abstract createMsg(data: Msg.Data): Msg;
+  abstract get manifest(): Manifest;
+  abstract get repositoryName(): string;
 
   public async signAndBroadcast(derivation: string, signer: SignerProvider, msgs: Msg[]) {
     for await (let msg of msgs) {
@@ -42,9 +44,13 @@ export abstract class Provider {
     return this.broadcast(msgs);
   }
 
-  public getType() {
+  get providerType(): string {
     const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
     return options?.providerType;
+  }
+
+  get providerName(): string {
+    return this.constructor.name;
   }
 
   public getSigners() {
