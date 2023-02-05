@@ -19,7 +19,9 @@ export abstract class Transaction<InData = {}> {
 export namespace Transaction {
   export interface Data {
     hash: string;
-    fromAddress: string;
-    status: string;
+    to: string;
+    from: string;
+    value: string;
+    data: string;
   }
 }

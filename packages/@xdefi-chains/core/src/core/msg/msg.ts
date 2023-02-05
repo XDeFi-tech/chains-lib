@@ -10,10 +10,8 @@ export abstract class Msg<OutData = {}> {
 
   /**
    * Assign signature to the message
-   *
-   * @param signer - obj
    */
-  public sign(signer: any): Msg {
+  public sign(signer: string): Msg {
     this.signature = signer;
     return this as Msg;
   }

@@ -8,8 +8,10 @@ class MyTransaction extends Transaction<InputData> {
   public toData(): Transaction.Data {
     return {
       hash: '',
-      fromAddress: '',
-      status: ''
+      to: '',
+      from: '',
+      value: '',
+      data: ''
     };
   }
 }

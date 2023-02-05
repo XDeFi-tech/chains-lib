@@ -8,7 +8,7 @@ const availableProviders = {
 }
 
 const availableRepositories = {
-    XdefiRepository
+    XdefiRepository,
 }
 
 export const useChains = () => {

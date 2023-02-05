@@ -23,11 +23,8 @@ export enum EVMChains {
   arbitrum = 'arbitrum',
   aurora = 'aurora',
 }
-export interface IEVMChains {
-  [chain: string]: Chain.Manifest
-}
 
-export const evmManifests: IEVMChains = {
+export const evmManifests: {[chain: string]: Chain.Manifest} = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',
@@ -128,19 +125,25 @@ export class XdefiRepository extends BaseRepository {
       };
     }
 
-    const { data } = await getTransaction(this.manifest.chain as EVMChains, address, blockRange);
+    const { data } = await getTransaction(this.manifest.chain, address, blockRange);
 
     return data[this.manifest.chain].transactions.map((transaction: any) => {
       return Transaction.fromData(transaction)
     })
   }
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any> {
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<number[]> {
     const { data } = await getFees(this.manifest.chain);
     const fee = data[this.manifest.chain].fee;
     const feeWithSpeed = fee[speed]?.priorityFeePerGas || fee[speed];
-    const gasLimit = 21000;
+    const transactionFee = 21000; // Paid for every transaction
 
-    return feeWithSpeed * gasLimit;
+    // gasLimit = 21000 + 68 * dataByteLength
+    // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
+
+    return msgs.map((msg) => {
+      const gasLimit = transactionFee + 68 * (new TextEncoder().encode(msg.toString())).length;
+      return gasLimit * feeWithSpeed;
+    });
   }
 }
 
@@ -161,29 +164,17 @@ export class EvmProvider extends Chain.Provider {
     this.rpcProvider = new providers.StaticJsonRpcProvider(this.manifest.rpcURL);
   }
 
-  get manifest(): Chain.Manifest {
-    return this.chainRepository.getManifest();
-  }
-
-  get repositoryName(): string {
-    return this.chainRepository.constructor.name;
-  }
-
   createMsg(data: Msg.Data): Msg {
     return new ChainMsg(data);
-  }
-
-  static _checkAddress(address: string): void {
-    if (!utils.isAddress(address)) {
-      throw new Error(`Incorrect address ${address}`);
-    }
   }
 
   async getTransactions(
     address: string,
     afterBlock?: number | string
   ): Promise<Transaction[]> {
-    EvmProvider._checkAddress(address);
+    if (EvmProvider.verifyAddress(address)) {
+      throw new Error(`Incorrect address ${address}`); // create new IncorrectAddressError with code and message
+    }
     return this.chainRepository.getTransactions(address, afterBlock);
   }
 
@@ -207,7 +198,21 @@ export class EvmProvider extends Chain.Provider {
   }
 
   async getBalance(address: string): Promise<Coin[]> {
-    EvmProvider._checkAddress(address);
+    if (EvmProvider.verifyAddress(address)) {
+      throw new Error(`Incorrect address ${address}`);
+    }
     return this.chainRepository.getBalance(address);
+  }
+
+  static verifyAddress(address: string): boolean {
+    return utils.isAddress(address);
+  }
+
+  get manifest(): Chain.Manifest {
+    return this.chainRepository.getManifest();
+  }
+
+  get repositoryName(): string {
+    return this.chainRepository.constructor.name;
   }
 }

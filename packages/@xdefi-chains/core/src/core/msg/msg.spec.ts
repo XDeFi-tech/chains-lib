@@ -49,4 +49,17 @@ describe('Msg', () => {
       data: MSG_DATA,
     });
   });
+
+  it('hasSignature(): should return FALSE for unsigned message', () => {
+    const msg = MyMsg.fromData(MSG_DATA);
+
+    expect(msg.hasSignature()).toBeFalsy();
+  });
+
+  it('hasSignature(): should return TRUE for signed message', () => {
+    const msg = MyMsg.fromData(MSG_DATA);
+    msg.sign('ABCD');
+
+    expect(msg.hasSignature()).toBeTruthy();
+  });
 });
