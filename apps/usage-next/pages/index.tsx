@@ -1,45 +1,43 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
-import { EvmProvider, evmManifests, XdefiRepository } from '@xdefi/chains-evm';
-import { Coin, ConfigProvider } from '@xdefi/chains-core';
+import { Coin } from '@xdefi/chains-core';
+import { useChains } from './hooks/useChains';
 
 const Home: NextPage = () => {
-  const [currentProvider, setCurrentProvider] = useState(
-      new EvmProvider(new XdefiRepository(evmManifests.ethereum))
-  );
+  const { chains } = useChains();
   const [balanceInput, setBalanceInput] = useState('0x90b0d2d51464efefb38aad00f954649cb5d16040');
   // const [balanceInput, setBalanceInput] = useState('MDQp6XevB6jH1FCwZNB2bKshYrPic1sQ7M');
   const [balance, setBalance] = useState<Coin[] | null>(null);
 
   useEffect(() => {
-    console.log('LOG type', currentProvider.providerName);
+    console.log('LOG type', chains.getProviderList());
   }, [])
 
   const getBalance = useCallback(async () => {
-    const balance = await currentProvider.getBalance(balanceInput);
+    const balance = await chains.getProviderByChain('ethereum').getBalance(balanceInput);
 
     setBalance(balance)
   }, [balanceInput])
 
-  const getTransactions = useCallback(async () => {
-    const transactions = await currentProvider.getTransactions(balanceInput);
-
-    console.log('LOG transactions', transactions);
-  }, [balanceInput])
+  // const getTransactions = useCallback(async () => {
+  //   const transactions = await chains.getProviderByChain('ethereum').getTransactions(balanceInput);
+  //
+  //   console.log('LOG transactions', transactions);
+  // }, [balanceInput])
 
   const getManifest = useCallback(async () => {
-    const manifest = currentProvider.manifest;
+    const manifest = chains.getProviderByChain('ethereum').manifest;
 
     console.log('LOG manifest', manifest)
   }, [balanceInput])
 
   const createMsg = useCallback(async (data: any) => {
-    const msg = currentProvider.createMsg(data);
+    const msg = chains.getProviderByChain('ethereum').createMsg(data);
 
     msg.sign('sign');
 
-    const txs = await currentProvider.broadcast([msg]);
+    const txs = await chains.getProviderByChain('ethereum').broadcast([msg]);
   }, [])
 
   const handleInput = useCallback((event: any) => {

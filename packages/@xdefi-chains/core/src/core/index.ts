@@ -5,3 +5,5 @@ export * from './msg';
 export * from './transaction';
 export * from './coin';
 export * from './constants';
+export * from './repository';
+export * from './interfaces';

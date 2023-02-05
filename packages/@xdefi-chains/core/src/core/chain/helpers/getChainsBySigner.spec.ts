@@ -7,8 +7,17 @@ import { Transaction } from 'core/transaction';
 import { getChainsBySigner } from 'core/chain/helpers';
 import { SignerDecorator, ChainDecorator } from 'core/decorators';
 
+
 const createChainProvider = () => {
   return class extends Chain.Provider {
+    get manifest(): Chain.Manifest {
+      return {} as Chain.Manifest;
+    }
+
+    get repositoryName(): string {
+      return '';
+    }
+
     getManifest(): Chain.Manifest {
       throw new Error('Method not implemented.');
     }

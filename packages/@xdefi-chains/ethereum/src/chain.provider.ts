@@ -4,6 +4,8 @@ import {
   Coin,
   Msg,
   Transaction,
+  BaseRepository,
+  GasFeeSpeed,
 } from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
@@ -91,24 +93,6 @@ export const evmManifests: IEVMChains = {
   },
 }
 
-type GasFeeSpeed = 'high' | 'medium' | 'low';
-
-export abstract class BaseRepository { // Share base chain & call methods without any code
-  public rpcProvider: providers.StaticJsonRpcProvider;
-  public manifest: Chain.Manifest;
-
-  constructor(manifest: Chain.Manifest) { // pass config here, get it in the provider
-    this.manifest = manifest;
-    this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
-  }
-  abstract getBalance(address: string): Promise<Coin[]>;
-  abstract getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]>;
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
-
-  getManifest(): Chain.Manifest {
-    return this.manifest;
-  }
-}
 
 export class XdefiRepository extends BaseRepository {
   async getBalance(address: string): Promise<Coin[]> {
@@ -184,7 +168,6 @@ export class EvmProvider extends Chain.Provider {
   get repositoryName(): string {
     return this.chainRepository.constructor.name;
   }
-
 
   createMsg(data: Msg.Data): Msg {
     return new ChainMsg(data);
