@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChainController } from '@xdefi/controller';
+import { ChainController } from '@xdefi/chains-controller';
 import { evmManifests, EvmProvider, XdefiRepository } from '@xdefi/chains-evm';
 
 
