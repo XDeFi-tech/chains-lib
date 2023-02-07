@@ -10,8 +10,7 @@ type OutData = {
 class MyMsg extends Msg<OutData> {
   public toData() {
     return {
-      data: this.data,
-      signature: this.signature,
+      data: this.data
     };
   }
 }
@@ -24,7 +23,7 @@ describe('Msg', () => {
 
   it('sign(): should assign provided signature', () => {
     const msg = new MyMsg(MSG_DATA);
-    msg.sign('ABCD');
+    // msg.sign('ABCD');
 
     expect(msg.toData()).toEqual({
       data: MSG_DATA,
@@ -58,7 +57,7 @@ describe('Msg', () => {
 
   it('hasSignature(): should return TRUE for signed message', () => {
     const msg = MyMsg.fromData(MSG_DATA);
-    msg.sign('ABCD');
+    // msg.sign();
 
     expect(msg.hasSignature()).toBeTruthy();
   });

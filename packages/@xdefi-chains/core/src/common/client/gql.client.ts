@@ -8,6 +8,7 @@ import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries"
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
+import fetch from 'cross-fetch';
 
 const sha256 = require("sha256");
 
@@ -21,6 +22,7 @@ const wsLink = typeof window !== "undefined"
 
 const httpLink = new HttpLink({
     uri: "https://gql-router.dev.xdefiservices.com/graphql",
+    fetch
 });
 
 const splitLink =

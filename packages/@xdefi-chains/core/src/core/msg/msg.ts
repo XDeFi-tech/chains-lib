@@ -1,18 +1,18 @@
 /**
  * Abstract message class which allows to create chain specific message
  */
-export abstract class Msg<OutData = {}> {
-  protected signature?: string;
 
+export abstract class Msg<OutData = {}> {
+  protected signature: string | undefined;
   constructor(public readonly data: Msg.Data) {}
 
   public abstract toData(): OutData;
 
   /**
    * Assign signature to the message
-   */
-  public sign(signer: string): Msg {
-    this.signature = signer;
+  */
+  public async sign(signature: string): Promise<Msg> {
+    this.signature = signature;
     return this as Msg;
   }
 

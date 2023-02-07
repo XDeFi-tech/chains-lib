@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import App from "@ledgerhq/hw-app-eth";
 import { LedgerSigner } from "./ledger.signer";
-import { ChainMsg } from "./msg";
+import { ChainMsg } from "../msg";
 
 declare global {
   interface Navigator {

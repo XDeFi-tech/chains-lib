@@ -1093,6 +1093,13 @@
   dependencies:
     invariant "2"
 
+"@ledgerhq/cryptoassets@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-8.0.0.tgz#dd4d620012f49f9a7b0a633479361750db69fe4e"
+  integrity sha512-6Hv0DcSSi3Nkda9+YZJCxvscR4EKv/a33geE8nXcGxQUDZltrYn0aG1ygzrEoqWoIYHL3KKbIJkSKCsmKe09+A==
+  dependencies:
+    invariant "2"
+
 "@ledgerhq/devices@^7.0.7":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-7.0.7.tgz#3499304a1c9d3aa7399de2ad390719bef5d1e89c"

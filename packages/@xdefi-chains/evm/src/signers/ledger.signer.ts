@@ -2,9 +2,9 @@ import App from "@ledgerhq/hw-app-eth";
 import Transport from "@ledgerhq/hw-transport-webhid";
 import { Signer, SignerDecorator } from "@xdefi/chains-core";
 import { BigNumber, utils } from "ethers";
-import { ChainMsg } from "./msg";
+import { ChainMsg } from "../msg";
 
-type Signature = {
+export type Signature = {
   v: number;
   r: string;
   s: string;
@@ -30,8 +30,9 @@ export class LedgerSigner extends Signer.Provider<Signature> {
     const transport = await Transport.create();
     const app = new App(transport);
 
-    const signature = await app.signTransaction(derivation, msg.toData() as string);
+    const signature = await app.signTransaction(derivation, msg.toString());
     transport.close();
+    // msg.sign(signature);
 
     return {
       v: BigNumber.from("0x" + signature.v).toNumber(),

@@ -22,6 +22,6 @@ export namespace Transaction {
     to: string;
     from: string;
     value: string;
-    data: string;
+    data?: string;
   }
 }

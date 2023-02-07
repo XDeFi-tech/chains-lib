@@ -18,7 +18,7 @@ const Home: NextPage = () => {
     const balance = await chains.getProviderByChain('ethereum').getBalance(balanceInput);
 
     setBalance(balance)
-  }, [balanceInput])
+  }, [balanceInput, chains])
 
   // const getTransactions = useCallback(async () => {
   //   const transactions = await chains.getProviderByChain('ethereum').getTransactions(balanceInput);
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
     const manifest = chains.getProviderByChain('ethereum').manifest;
 
     console.log('LOG manifest', manifest)
-  }, [balanceInput])
+  }, [chains])
 
   const createMsg = useCallback(async (data: any) => {
     const msg = chains.getProviderByChain('ethereum').createMsg(data);
@@ -38,7 +38,7 @@ const Home: NextPage = () => {
     msg.sign('sign');
 
     const txs = await chains.getProviderByChain('ethereum').broadcast([msg]);
-  }, [])
+  }, [chains])
 
   const handleInput = useCallback((event: any) => {
     setBalanceInput(event.target.value)

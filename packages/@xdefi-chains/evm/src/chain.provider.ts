@@ -9,7 +9,7 @@ import {
 } from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
-import { LedgerSigner } from "./ledger.signer";
+// import { LedgerSigner } from "./ledger.signer";
 import { ChainMsg } from "./msg";
 import { getTransaction, getBalance, getStatus, getFees } from './queries';
 import { some } from "lodash";
@@ -148,7 +148,7 @@ export class XdefiRepository extends BaseRepository {
 }
 
 @ChainDecorator("EthereumProvider", {
-  deps: [LedgerSigner],
+  deps: [],
   providerType: 'EVM'
 })
 export class EvmProvider extends Chain.Provider {
@@ -172,7 +172,7 @@ export class EvmProvider extends Chain.Provider {
     address: string,
     afterBlock?: number | string
   ): Promise<Transaction[]> {
-    if (EvmProvider.verifyAddress(address)) {
+    if (!EvmProvider.verifyAddress(address)) {
       throw new Error(`Incorrect address ${address}`); // create new IncorrectAddressError with code and message
     }
     return this.chainRepository.getTransactions(address, afterBlock);
@@ -198,7 +198,7 @@ export class EvmProvider extends Chain.Provider {
   }
 
   async getBalance(address: string): Promise<Coin[]> {
-    if (EvmProvider.verifyAddress(address)) {
+    if (!EvmProvider.verifyAddress(address)) {
       throw new Error(`Incorrect address ${address}`);
     }
     return this.chainRepository.getBalance(address);

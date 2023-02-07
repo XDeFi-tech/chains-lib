@@ -29,6 +29,16 @@ describe("chain.provider", () => {
         expect(EvmProvider.verifyAddress(ADDRESS_MOCK.address)).toBeTruthy();
     });
 
+    it('createMsg(): should create message with data', () => {
+        const msg = evmProvider.createMsg({
+
+        })
+
+        console.log('msg', msg);
+
+        expect(msg).toBeInstanceOf(ChainMsg);
+    })
+
     // it("getAddress(): should throw an error if derivation path is invalid", async () => {
     //     const signer = new EvmProvider();
     //     await expect(signer.getAddress("0/0/0/0/0")).rejects.toEqual("Error");
