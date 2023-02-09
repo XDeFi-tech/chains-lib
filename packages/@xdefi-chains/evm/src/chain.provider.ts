@@ -9,7 +9,6 @@ import {
 } from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
-// import { LedgerSigner } from "./ledger.signer";
 import { ChainMsg } from "./msg";
 import { getTransaction, getBalance, getStatus, getFees } from './queries';
 import { some } from "lodash";
@@ -183,7 +182,7 @@ export class EvmProvider extends Chain.Provider {
   }
 
   async broadcast(msgs: Msg[]): Promise<Transaction[]> {
-    if (some(msgs, (msg) => !msg.hasSignature())) {
+    if (some(msgs, (msg) => !msg.hasSignature)) {
       throw  new Error("Some message do not have signature, sign it first");
     }
 

@@ -2,25 +2,31 @@
  * Abstract message class which allows to create chain specific message
  */
 
-export abstract class Msg<OutData = {}> {
+export abstract class Msg<OutData = {}, Fee = {}> {
   protected signature: string | undefined;
   constructor(public readonly data: Msg.Data) {}
 
   public abstract toData(): OutData;
+  public abstract fee(): Fee;
 
   /**
-   * Assign signature to the message
+   * Generate rawTransaction from data
+   */
+  public abstract toHash(): string | undefined;
+
+  /**
+  * Assign signature to the message
   */
-  public async sign(signature: string): Promise<Msg> {
+  public async sign(signature: string): Promise<Msg<OutData>> {
     this.signature = signature;
-    return this as Msg;
+    return this as Msg<OutData>;
   }
 
   /**
    * Check is current Msg has signature
    */
-  public hasSignature(): boolean {
-    return Boolean(this.signature);
+  get hasSignature(): boolean {
+    return Boolean(this.signature)
   }
 
   /**
@@ -44,5 +50,5 @@ export abstract class Msg<OutData = {}> {
 }
 
 export namespace Msg {
-  export type Data = string | object;
+  export type Data = any;
 }
