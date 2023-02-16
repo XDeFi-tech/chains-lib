@@ -1,7 +1,6 @@
 import { Manifest } from 'core/chain';
-import { Coin, GasFeeSpeed, Msg, Transaction } from 'core';
+import { Coin, GasFeeSpeed, Msg, Transaction, GasFee } from 'core';
 import { providers } from 'ethers';
-
 
 export abstract class BaseRepository { // Share base chain & call methods without any code
     public rpcProvider: providers.StaticJsonRpcProvider;
@@ -14,6 +13,7 @@ export abstract class BaseRepository { // Share base chain & call methods withou
     abstract getBalance(address: string): Promise<Coin[]>;
     abstract getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]>;
     abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
+    abstract gasFeeOptions(): Promise<GasFee>;
 
     getManifest(): Manifest {
         return this.manifest;

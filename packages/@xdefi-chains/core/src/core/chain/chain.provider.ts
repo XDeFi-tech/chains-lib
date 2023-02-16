@@ -6,9 +6,8 @@ import { Transaction } from 'core/transaction';
 import 'reflect-metadata';
 import { Manifest, Network } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
+import { GasFee } from 'core/fee';
 
-
-type GasFeeSpeed = 'high' | 'medium' | 'low';
 /**
  * Represents abstract class for chain Provider, which provides
  * primitives for interacting with particular chain.
@@ -27,11 +26,12 @@ type GasFeeSpeed = 'high' | 'medium' | 'low';
  */
 @Injectable()
 export abstract class Provider {
-  abstract getBalance(address: string): Promise<Coin>;
+  abstract getBalance(address: string): Promise<Coin[]>;
   abstract getTransactions(address: string, network: Network, afterBlock?: number): Promise<Transaction[]>;
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any>;
+  abstract estimateFee(msgs: Msg[], speed: GasFee): Promise<any>;
   abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
   abstract createMsg(data: Msg.Data): Msg;
+  abstract gasFeeOptions(): Promise<GasFee>;
   abstract get manifest(): Manifest;
   abstract get repositoryName(): string;
 

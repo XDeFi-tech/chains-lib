@@ -12,6 +12,13 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     console.log('LOG type', chains.getProviderList());
+    getGasFeeOptions();
+  }, [])
+
+  const getGasFeeOptions = useCallback(async () => {
+    const provider = chains.getProviderByChain('ethereum');
+    const options = await provider.gasFeeOptions();
+    console.log('LOG GAS FEE', options);
   }, [])
 
   const getBalance = useCallback(async () => {

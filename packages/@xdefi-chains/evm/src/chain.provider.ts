@@ -89,7 +89,6 @@ export const evmManifests: {[chain: string]: Chain.Manifest} = {
   },
 }
 
-
 export class XdefiRepository extends BaseRepository {
   async getBalance(address: string): Promise<Coin[]> {
     const { data } = await getBalance(this.manifest.chain as EVMChains, address);
@@ -130,7 +129,7 @@ export class XdefiRepository extends BaseRepository {
       return Transaction.fromData(transaction)
     })
   }
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<number[]> {
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<number[]> {
     const { data } = await getFees(this.manifest.chain);
     const fee = data[this.manifest.chain].fee;
     const feeWithSpeed = fee[speed]?.priorityFeePerGas || fee[speed];
@@ -140,9 +139,16 @@ export class XdefiRepository extends BaseRepository {
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
 
     return msgs.map((msg) => {
-      const gasLimit = transactionFee + 68 * (new TextEncoder().encode(msg.toString())).length;
+      const msgData = msg.toData().data
+      let feeForData = msgData ? 68 * (new TextEncoder().encode(msgData.toString())).length : 0
+      const gasLimit = transactionFee + feeForData;
       return gasLimit * feeWithSpeed;
     });
+  }
+
+  async gasFeeOptions(): Promise<Chain.GasFee> {
+    const { data } = await getFees(this.manifest.chain);
+    return data[this.manifest.chain].fee;
   }
 }
 
@@ -201,6 +207,10 @@ export class EvmProvider extends Chain.Provider {
       throw new Error(`Incorrect address ${address}`);
     }
     return this.chainRepository.getBalance(address);
+  }
+
+  async gasFeeOptions(): Promise<Chain.GasFee> {
+    return this.chainRepository.gasFeeOptions();
   }
 
   static verifyAddress(address: string): boolean {
