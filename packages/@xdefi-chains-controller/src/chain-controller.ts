@@ -142,7 +142,7 @@ export class ChainController {
                 const manifest = provider.manifest;
                 acc[manifest.chain] = {
                     providerClassName: provider.providerName,
-                    repositoryClassName: provider.repository.name,
+                    repositoryClassName: provider.chainRepository.name,
                     manifest,
                 };
                 return acc;

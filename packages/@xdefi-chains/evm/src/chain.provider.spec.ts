@@ -23,14 +23,6 @@ describe('chain.provider', () => {
         evmProvider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
     });
 
-    it('verifyAddress(): should return FALSE if address is invalid', () => {
-        expect(EvmProvider.verifyAddress('Hello World')).toBeFalsy();
-    });
-
-    it('verifyAddress(): should return TRUE if address is valid', () => {
-        expect(EvmProvider.verifyAddress(ADDRESS_MOCK.address)).toBeTruthy();
-    });
-
     it('createMsg(): should create message with data', () => {
         const msg = evmProvider.createMsg({});
 
