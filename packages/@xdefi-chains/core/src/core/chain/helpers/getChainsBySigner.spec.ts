@@ -6,7 +6,8 @@ import * as Signer from 'core/signer';
 import { Transaction } from 'core/transaction';
 import { getChainsBySigner } from 'core/chain/helpers';
 import { SignerDecorator, ChainDecorator } from 'core/decorators';
-import { GasFee } from 'core/chain';
+import { GasFee } from 'core/fee';
+import { Asset } from 'core/asset';
 
 
 const createChainProvider = () => {
@@ -25,10 +26,10 @@ const createChainProvider = () => {
     getBalance(): Promise<Coin[]> {
       throw new Error('Method not implemented.');
     }
-    getTransactions(_address: string, _network: Chain.Network, _afterBlock?: number): Promise<Transaction[]> {
+    getTransactions(_address: string, _afterBlock?: number): Promise<Transaction[]> {
       throw new Error('Method not implemented.');
     }
-    estimateFee(_msgs: Msg[]): Promise<Coin[]> {
+    estimateFee(_msgs: Msg[]): Promise<Msg[]> {
       throw new Error('Method not implemented.');
     }
     broadcast(_msgs: Msg[]): Promise<Transaction[]> {
@@ -38,6 +39,12 @@ const createChainProvider = () => {
       throw new Error('Method not implemented.');
     }
     gasFeeOptions(): Promise<GasFee> {
+      throw new Error('Method not implemented.');
+    }
+    getNative(): Promise<Asset> {
+      throw new Error('Method not implemented.');
+    }
+    calculateNonce(address: string): Promise<number> {
       throw new Error('Method not implemented.');
     }
   };

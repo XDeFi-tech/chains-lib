@@ -1,30 +1,40 @@
 import { Msg as BasMsg } from "@xdefi/chains-core";
-import ethers from 'ethers';
-
-interface GasFee {
-  gasLimit: string;
-  gasPrice: string;
-}
+import { BigNumber } from 'bignumber.js';
+import { utils, BigNumber as EthersBigNumber } from 'ethers';
 
 interface MsgBody {
-  nonce: string; // calculated from chain
-  to: string; // to address
-  from: string; // from address
-  value: string; // value in wei starts with 0x
+  nonce: string;
+  to: string;
+  from: string;
+  value: string; // ethers
   data?: string; // 0x by default
-  gasLimit?: string;  // calculated based on 'data' field
-  gasPrice?: string;  // from chain
+  gasLimit?: number | EthersBigNumber;
+  gasPrice?: number | EthersBigNumber;
+  maxFeePerGas?: number | EthersBigNumber; // number will be converted to BigNumber, BigNumber will be ignored
+  maxPriorityFeePerGas?: number | EthersBigNumber;
+  type?: number;
+  chainId: number;
 }
 
-export class ChainMsg extends BasMsg<MsgBody, GasFee> {
-  public fee(): GasFee {
-    return {
-      gasLimit: this.data?.gasLimit,
-      gasPrice: this.data?.gasPrice,
-    }
+export interface FeeEstimation {
+  fee: null | BigNumber,
+  maxFee: null | BigNumber
+}
+
+const toBigNumberUnit = (n: number | EthersBigNumber, unit: string) => {
+  if (n instanceof EthersBigNumber) {
+    return n;
   }
 
-  public toData(): MsgBody {
+  if (typeof n !== 'number') {
+    throw new Error('Should be number or BigNumber')
+  }
+
+  return utils.parseUnits(String(n), unit)
+}
+
+export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
+  toData(): MsgBody {
     return {
       nonce: this.data?.nonce,
       to: this.data?.to,
@@ -33,19 +43,67 @@ export class ChainMsg extends BasMsg<MsgBody, GasFee> {
       data: this.data?.data,
       gasLimit: this.data?.gasLimit,
       gasPrice: this.data?.gasPrice,
+      maxFeePerGas: this.data?.maxFeePerGas,
+      maxPriorityFeePerGas: this.data?.maxPriorityFeePerGas,
+      type: this.data?.type,
+      chainId: this.data.chainId
     };
   }
 
-  public toHash() {
-    return ethers.utils.RLP.encode([
-      ethers.utils.hexlify(this.data.nonce),
-      ethers.utils.hexlify(this.data.gasPrice),
-      ethers.utils.hexlify(this.data.gasLimit),
-      ethers.utils.hexlify(this.data.to),
-      ethers.utils.hexlify(this.data.value),
-      ethers.utils.hexlify(this.data.data),
-      "0x",
-      "0x",
-    ]);
+  prepareTransaction(): MsgBody {
+    switch (this.data.type) {
+      case 2:
+        return {
+          type: 2,
+          nonce: this.data?.nonce,
+          to: this.data?.to,
+          from: this.data?.from,
+          value: utils.parseEther(this.data.value).toHexString(),
+          data: this.data?.data,
+          gasLimit: this.data?.gasLimit,
+          maxFeePerGas: toBigNumberUnit(this.data.maxFeePerGas, 'gwei'),
+          maxPriorityFeePerGas: toBigNumberUnit(this.data.maxFeePerGas, 'gwei'),
+          chainId: parseInt(this.data.chainId)
+        };
+      default:
+        return {
+          nonce: this.data?.nonce,
+          to: this.data?.to,
+          from: this.data?.from,
+          value: utils.parseEther(this.data.value).toHexString(),
+          data: this.data?.data,
+          gasLimit: this.data?.gasLimit,
+          gasPrice: toBigNumberUnit(this.data.gasPrice, 'gwei'),
+          chainId: parseInt(this.data.chainId)
+        };
+    }
+  }
+
+  get feeEstimation(): FeeEstimation {
+    const estimation: FeeEstimation = {
+      fee: null,
+      maxFee: null
+    }
+    if (this.data.type === 2) {
+      if (!this.data.maxFeePerGas || !this.data.gasLimit || !this.data.maxPriorityFeePerGas) {
+        return estimation
+      }
+      const maxFee = utils.parseUnits(String(this.data.maxFeePerGas), 'gwei');
+      const priorityFee = utils.parseUnits(String(this.data.maxPriorityFeePerGas), 'gwei');
+      const maxFeeWithPriority = maxFee.add(priorityFee);
+
+      estimation.fee = BigNumber(utils.formatUnits(maxFee.mul(this.data.gasLimit), 'ether').toString())
+      estimation.maxFee = BigNumber(utils.formatUnits(maxFeeWithPriority.mul(this.data.gasLimit), 'ether').toString())
+    } else {
+      if (!this.data.gasPrice || !this.data.gasLimit) {
+        return estimation
+      }
+      const gasPrice = utils.parseUnits(String(this.data.gasPrice), 'gwei');
+      const gasFee = gasPrice.mul(this.data.gasLimit);
+
+      estimation.fee = BigNumber(utils.formatUnits(gasFee, 'ether').toString());
+    }
+
+    return estimation
   }
 }

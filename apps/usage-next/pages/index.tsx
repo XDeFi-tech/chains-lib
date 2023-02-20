@@ -1,8 +1,31 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
-import { Coin } from '@xdefi/chains-core';
+import { Coin, Signer, GasFeeSpeed } from '@xdefi/chains-core';
 import { useChains } from './hooks/useChains';
+
+const MOCK_TX_TYPE_ONE = {
+  to: "0x76075A5997be82E39d9A3c8Eae660E74E1D9984B",
+  from: "0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff",
+  gasLimit: 21000,
+  gasPrice: 20,
+  data: '0x',
+  value: '0.001',
+  chainId: "1",
+  type: 1
+}
+
+const MOCK_TX_TYPE_TWO = {
+  to: "0x76075A5997be82E39d9A3c8Eae660E74E1D9984B",
+  from: "0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff",
+  gasLimit: 21000,
+  data: '0x',
+  value: '0.001',
+  chainId: "1",
+  type: 2,
+  maxPriorityFeePerGas: 0.24,
+  maxFeePerGas: 25.34,
+}
 
 const Home: NextPage = () => {
   const { chains } = useChains();
@@ -12,13 +35,34 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     console.log('LOG type', chains.getProviderList());
-    getGasFeeOptions();
+    execTransaction();
   }, [])
 
-  const getGasFeeOptions = useCallback(async () => {
+  const execTransaction = useCallback(async () => {
     const provider = chains.getProviderByChain('ethereum');
-    const options = await provider.gasFeeOptions();
-    console.log('LOG GAS FEE', options);
+
+    const [msg] = await provider.estimateFee([provider.createMsg({
+      ...MOCK_TX_TYPE_TWO
+    })], GasFeeSpeed.medium);
+
+    // console.log('LOG fee estimation', msg.feeEstimation.fee.toString());
+    // console.log('LOG maxFee estimation', msg.feeEstimation.maxFee.toString());
+
+    const msgData = msg.toData()
+
+    const nonce = await provider.calculateNonce(msgData.from);
+
+    const msgWithNonce = provider.createMsg({
+      ...msgData,
+      nonce: nonce
+    })
+
+    const signer = provider.getSigner(Signer.SignerType.KEYSTORE)
+    const signature = await signer.sign('0x6a3c408d267d27646fb251a3899f239004af956a9d7ba133d18364dbb1b4a588', msgWithNonce)
+    msgWithNonce.sign(signature)
+
+    // const tx = await provider.broadcast([msgWithNonce])
+    // console.log(tx);
   }, [])
 
   const getBalance = useCallback(async () => {

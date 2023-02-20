@@ -1,8 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { Asset } from 'core/asset';
-import { round } from 'lodash';
-
-export const FIAT_BALANCE_PRECISION = 2
 
 export class Coin {
   public readonly amount: BigNumber;
@@ -20,22 +17,6 @@ export class Coin {
   public toString(): string {
     const amount = this.amount.toFixed();
     return `${amount}${this.asset.symbol.toString()}`;
-  }
-
-  /**
-   * Calculate coin fiat price
-   * Note: if asset doesn't have `price` will return 0
-   */
-  public toFiat() {
-    const amount = this.amount.toFixed()
-    const { price } = this.asset;
-    if (!price) {
-      return 0;
-    }
-
-    return Number(amount) > 0
-        ? round(Number(amount) * Number(price), FIAT_BALANCE_PRECISION)
-        : 0
   }
 
   /**

@@ -16,6 +16,7 @@ export class Asset {
       ...(data.address && { address: data.address }),
       ...(data.price && { price: data.price }),
       ...(data.decimals && { decimals: data.decimals }),
+      ...(data.priceHistory && { priceHistory: data.priceHistory }),
     };
   }
 
@@ -57,6 +58,10 @@ export class Asset {
 
   get price() {
     return this.data.price;
+  }
+
+  get priceHistory() {
+    return this.data.priceHistory;
   }
 
   /**
@@ -118,5 +123,6 @@ export namespace Asset {
     decimals?: number;
     address?: string;
     price?: string;
+    priceHistory?: number[][];
   }
 }

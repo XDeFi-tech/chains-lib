@@ -3,9 +3,9 @@ import { gqlClient } from "@xdefi/chains-core";
 import { EVMChains } from '../chain.provider';
 
 export const GET_TRANSACTION = (chain: EVMChains) => gql`
-query GetTransactions($blockRange: BlockRange, $address: String!) {
+query GetTransactions($address: String!) {
   ${chain} {
-    transactions(blockRange: $blockRange, address: $address) {
+    transactions(address: $address) {
       fee
       hash
       fromAddress
@@ -43,6 +43,13 @@ export interface BlockRange {
 }
 
 export const getTransaction = (chain: EVMChains, address: string, blockRange: BlockRange | null) => {
+    console.log('query', {
+        query: GET_TRANSACTION(chain),
+        variables: {
+            address,
+            ...(blockRange && { blockRange })
+        },
+    });
     return gqlClient.query({
         query: GET_TRANSACTION(chain),
         variables: {

@@ -6,12 +6,16 @@ import {
   Transaction,
   BaseRepository,
   GasFeeSpeed,
+  GasFee,
+  Asset,
 } from '@xdefi/chains-core';
 import { providers, utils } from "ethers";
 import "reflect-metadata";
 import { ChainMsg } from "./msg";
 import { getTransaction, getBalance, getStatus, getFees } from './queries';
 import { some } from "lodash";
+import { getCryptoCurrency } from './queries/get-crypto-currency';
+import { KeystoreSigner } from './signers';
 
 export enum EVMChains {
   ethereum = 'ethereum',
@@ -112,13 +116,14 @@ export class XdefiRepository extends BaseRepository {
       }, utils.formatUnits(amount.value, amount.scalingFactor))
     })
   }
-  async getTransactions(address: string, afterBlock?: number | string): Promise<[]> {
+
+  async getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]> {
     let blockRange = null;
 
-    if (typeof afterBlock === 'number') {
+    if (typeof afterBlock === 'number' || typeof afterBlock === 'string') {
       const { data } = await getStatus(this.manifest.chain);
       blockRange = {
-        from: afterBlock,
+        from: parseInt(String(afterBlock)),
         to: data[this.manifest.chain].status.lastBlock
       };
     }
@@ -129,10 +134,11 @@ export class XdefiRepository extends BaseRepository {
       return Transaction.fromData(transaction)
     })
   }
-  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<number[]> {
+
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<Msg[]> {
     const { data } = await getFees(this.manifest.chain);
     const fee = data[this.manifest.chain].fee;
-    const feeWithSpeed = fee[speed]?.priorityFeePerGas || fee[speed];
+    const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number';
     const transactionFee = 21000; // Paid for every transaction
 
     // gasLimit = 21000 + 68 * dataByteLength
@@ -140,20 +146,57 @@ export class XdefiRepository extends BaseRepository {
 
     return msgs.map((msg) => {
       const msgData = msg.toData().data
-      let feeForData = msgData ? 68 * (new TextEncoder().encode(msgData.toString())).length : 0
+      let feeForData = msgData && msgData !== '0x' ? 68 * (new TextEncoder().encode(msgData.toString())).length : 0
       const gasLimit = transactionFee + feeForData;
-      return gasLimit * feeWithSpeed;
+      const feeData = isEIP1559 ? {
+        gasLimit,
+        gasPrice: fee[speed]?.baseFeePerGas,
+        maxFeePerGas: fee[speed]?.maxFeePerGas,
+        maxPriorityFeePerGas: fee[speed]?.priorityFeePerGas,
+      } : {
+        gasLimit,
+        gasPrice: fee[speed],
+        maxFeePerGas: null,
+        maxPriorityFeePerGas: null
+      }
+
+      return new ChainMsg({
+        ...msg.toData(),
+        ...feeData,
+      })
     });
   }
 
-  async gasFeeOptions(): Promise<Chain.GasFee> {
+  async gasFeeOptions(): Promise<GasFee> {
     const { data } = await getFees(this.manifest.chain);
     return data[this.manifest.chain].fee;
+  }
+
+  async getNative(): Promise<Asset> {
+    const response = await getCryptoCurrency(this.manifest.chainSymbol);
+    const asset =  response.data.assets.cryptoCurrencies.page.edges[0]?.node;
+
+    return new Asset({
+      id: asset.id,
+      chainId: this.manifest.chainId,
+      name: asset.name,
+      symbol: asset.symbol,
+      icon: asset.icon,
+      native: !Boolean(asset.contract),
+      address: asset.contract,
+      price: asset.price?.amount,
+      decimals: asset.price?.scalingFactor,
+      priceHistory: asset.priceHistory,
+    })
+  }
+
+  async calculateNonce(address: string): Promise<number> {
+    return this.rpcProvider.getTransactionCount(address);
   }
 }
 
 @ChainDecorator("EthereumProvider", {
-  deps: [],
+  deps: [KeystoreSigner],
   providerType: 'EVM'
 })
 export class EvmProvider extends Chain.Provider {
@@ -161,10 +204,8 @@ export class EvmProvider extends Chain.Provider {
 
   constructor(
       private readonly chainRepository: BaseRepository,
-      private readonly config?: any,
   ) {
     super();
-    this.config = config;
     this.chainRepository = chainRepository;
     this.rpcProvider = new providers.StaticJsonRpcProvider(this.manifest.rpcURL);
   }
@@ -173,17 +214,14 @@ export class EvmProvider extends Chain.Provider {
     return new ChainMsg(data);
   }
 
-  async getTransactions(
-    address: string,
-    afterBlock?: number | string
-  ): Promise<Transaction[]> {
+  async getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]> {
     if (!EvmProvider.verifyAddress(address)) {
       throw new Error(`Incorrect address ${address}`); // create new IncorrectAddressError with code and message
     }
     return this.chainRepository.getTransactions(address, afterBlock);
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<any> {
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
     return this.chainRepository.estimateFee(msgs, speed);
   }
 
@@ -195,7 +233,7 @@ export class EvmProvider extends Chain.Provider {
     const transactions = [];
 
     for (let msg of msgs) {
-      const tx = await this.rpcProvider.sendTransaction(msgs.toString());
+      const tx = await this.rpcProvider.sendTransaction(msg.signature as string);
       transactions.push(Transaction.fromData(tx));
     }
 
@@ -209,8 +247,12 @@ export class EvmProvider extends Chain.Provider {
     return this.chainRepository.getBalance(address);
   }
 
-  async gasFeeOptions(): Promise<Chain.GasFee> {
+  async gasFeeOptions(): Promise<GasFee> {
     return this.chainRepository.gasFeeOptions();
+  }
+
+  async getNative(): Promise<Asset> {
+    return this.chainRepository.getNative();
   }
 
   static verifyAddress(address: string): boolean {
@@ -223,5 +265,9 @@ export class EvmProvider extends Chain.Provider {
 
   get repositoryName(): string {
     return this.chainRepository.constructor.name;
+  }
+
+  async calculateNonce(address: string): Promise<number> {
+    return this.chainRepository.calculateNonce(address);
   }
 }

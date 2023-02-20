@@ -2,17 +2,13 @@
  * Abstract message class which allows to create chain specific message
  */
 
-export abstract class Msg<OutData = {}, Fee = {}> {
-  protected signature: string | undefined;
+export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
+  public signature: string | undefined;
   constructor(public readonly data: Msg.Data) {}
 
   public abstract toData(): OutData;
-  public abstract fee(): Fee;
-
-  /**
-   * Generate rawTransaction from data
-   */
-  public abstract toHash(): string | undefined;
+  public abstract prepareTransaction(): TxData;
+  public abstract get feeEstimation(): FeeData;
 
   /**
   * Assign signature to the message

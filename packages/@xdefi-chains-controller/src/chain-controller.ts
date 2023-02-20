@@ -4,6 +4,7 @@ export interface IProviders {
     [providerKey: string]: Chain.Provider;
 }
 
+// todo make async for all devices support
 export abstract class ChainStorage {
     abstract getFromStorage(): string | null;
     abstract setToStorage(data: string): void;
