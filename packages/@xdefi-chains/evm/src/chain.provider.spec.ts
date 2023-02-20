@@ -1,43 +1,43 @@
-import "reflect-metadata";
-import { ChainMsg } from "./msg";
-import { evmManifests, EvmProvider, XdefiRepository } from './chain.provider';
+import 'reflect-metadata';
+import { ChainMsg } from './msg';
+import { EvmProvider } from './chain.provider';
+import { XdefiRepository } from './repository';
+import { EVM_MANIFESTS } from './manifests';
 
 const ADDRESS_MOCK = {
-    address: "0xCbA98362e199c41E1864D0923AF9646d3A648451",
+    address: '0xCbA98362e199c41E1864D0923AF9646d3A648451',
     publicKey:
-        "04df00ad3869baad7ce54f4d560ba7f268d542df8f2679a5898d78a690c3db8f9833d2973671cb14b088e91bdf7c0ab00029a576473c0e12f84d252e630bb3809b",
+        '04df00ad3869baad7ce54f4d560ba7f268d542df8f2679a5898d78a690c3db8f9833d2973671cb14b088e91bdf7c0ab00029a576473c0e12f84d252e630bb3809b',
 };
 
 const SIGN_MOCK = {
-    v: "1",
-    r: "2",
-    s: "3",
+    v: '1',
+    r: '2',
+    s: '3',
 };
 
-describe("chain.provider", () => {
+describe('chain.provider', () => {
     let evmProvider: EvmProvider;
 
     beforeEach(() => {
-        evmProvider = new EvmProvider(new XdefiRepository(evmManifests.ethereum));
+        evmProvider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
     });
 
-    it("verifyAddress(): should return FALSE if address is invalid", () => {
-        expect(EvmProvider.verifyAddress("Hello World")).toBeFalsy();
+    it('verifyAddress(): should return FALSE if address is invalid', () => {
+        expect(EvmProvider.verifyAddress('Hello World')).toBeFalsy();
     });
 
-    it("verifyAddress(): should return TRUE if address is valid", () => {
+    it('verifyAddress(): should return TRUE if address is valid', () => {
         expect(EvmProvider.verifyAddress(ADDRESS_MOCK.address)).toBeTruthy();
     });
 
     it('createMsg(): should create message with data', () => {
-        const msg = evmProvider.createMsg({
-
-        })
+        const msg = evmProvider.createMsg({});
 
         console.log('msg', msg);
 
         expect(msg).toBeInstanceOf(ChainMsg);
-    })
+    });
 
     // it("getAddress(): should throw an error if derivation path is invalid", async () => {
     //     const signer = new EvmProvider();

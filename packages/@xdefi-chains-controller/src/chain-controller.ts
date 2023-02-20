@@ -4,10 +4,11 @@ export interface IProviders {
     [providerKey: string]: Chain.Provider;
 }
 
-// todo make async for all devices support
 export abstract class ChainStorage {
     abstract getFromStorage(): string | null;
+
     abstract setToStorage(data: string): void;
+
     abstract restoreStorage(): void;
 }
 
@@ -55,67 +56,12 @@ interface ChainParams {
 }
 
 export class ChainController {
-    private readonly chainStorage: ChainStorage;
+    private readonly chainStorage: ChainStorage | null;
     private readonly providers: IProviders;
 
     constructor(options?: ChainControllerOptions) {
         this.chainStorage = options?.storage || new LocalRepositoryStorage();
         this.providers = {};
-    }
-
-    public getProviderByChain(chain: string): Chain.Provider {
-        if (!this.providers[chain]) {
-            throw new Error('Invalid provider key');
-        }
-
-        return this.providers[chain];
-    }
-
-    public getProviderByType(type: string): Chain.Provider[] {
-        return Object.values(this.providers).reduce((acc: Chain.Provider[], provider) => {
-            if (provider.providerType === type) {
-                acc.push(provider);
-            }
-
-            return acc;
-        }, []);
-    }
-
-    public getProviderList(): Chain.Provider[] {
-        return Object.values(this.providers);
-    }
-
-    public setProvider(provider: Chain.Provider) {
-        this.setProviderList([provider]);
-    }
-
-    public setProviderList(providers: Chain.Provider[]) {
-        providers.forEach((provider) => this.providers[provider.manifest.chain] = provider);
-        this.chainStorage.setToStorage(this.serializeParams());
-    }
-
-    public clearProvidersStorage() {
-        Object.keys(this.providers).forEach((chain) => {
-            delete this.providers[chain];
-        })
-        this.chainStorage.restoreStorage();
-    }
-
-    public getProvidersStorage() {
-        return this.chainStorage.getFromStorage();
-    }
-
-    public serializeParams(): string {
-        const providers: ChainParams = Object.values(this.providers).reduce((acc: ChainParams, provider) => {
-            const manifest = provider.manifest;
-            acc[manifest.chain]  = {
-                providerClassName: provider.providerName,
-                repositoryClassName: provider.repositoryName,
-                manifest
-            };
-            return acc;
-        }, {});
-        return JSON.stringify(providers);
     }
 
     static deserializeParams(params: string): ChainParamItem[] {
@@ -130,11 +76,80 @@ export class ChainController {
         try {
             const json = JSON.parse(str);
             if (json && json instanceof Object) {
-                return true
+                return true;
             }
-        } catch (err) {}
+        } catch (err) {
+        }
 
         return false;
+    }
+
+    public getProviderByChain(chain: string): Chain.Provider {
+        if (!this.providers[chain]) {
+            throw new Error('Invalid provider key');
+        }
+
+        return this.providers[chain];
+    }
+
+    public getProviderByType(type: string): Chain.Provider[] {
+        return Object.values(this.providers).reduce(
+            (acc: Chain.Provider[], provider) => {
+                if (provider.providerType === type) {
+                    acc.push(provider);
+                }
+
+                return acc;
+            },
+            []
+        );
+    }
+
+    public getProviderList(): Chain.Provider[] {
+        return Object.values(this.providers);
+    }
+
+    public setProvider(provider: Chain.Provider) {
+        this.setProviderList([provider]);
+    }
+
+    public setProviderList(providers: Chain.Provider[]) {
+        providers.forEach(
+            (provider) => (this.providers[provider.manifest.chain] = provider)
+        );
+        this.chainStorage?.setToStorage(this.serializeParams());
+    }
+
+    public clearProvider(chain: string) {
+        delete this.providers[chain];
+        this.chainStorage?.setToStorage(this.serializeParams());
+    }
+
+    public clearProvidersStorage() {
+        Object.keys(this.providers).forEach((chain) => {
+            delete this.providers[chain];
+        });
+        this.chainStorage?.restoreStorage();
+    }
+
+    public getProvidersStorage() {
+        return this.chainStorage?.getFromStorage();
+    }
+
+    public serializeParams(): string {
+        const providers: ChainParams = Object.values(this.providers).reduce(
+            (acc: ChainParams, provider) => {
+                const manifest = provider.manifest;
+                acc[manifest.chain] = {
+                    providerClassName: provider.providerName,
+                    repositoryClassName: provider.repository.name,
+                    manifest,
+                };
+                return acc;
+            },
+            {}
+        );
+        return JSON.stringify(providers);
     }
 }
 

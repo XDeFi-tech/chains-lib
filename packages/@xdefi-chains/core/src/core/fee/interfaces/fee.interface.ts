@@ -12,6 +12,8 @@ export interface EIP1559Fee {
 
 export type DefaultFee = EIP1559Fee & number;
 
-export type GasFee = null | {
+export type GasFee =
+    | null
+    | {
     [speed in GasFeeSpeed]: EIP1559Fee | DefaultFee;
 };

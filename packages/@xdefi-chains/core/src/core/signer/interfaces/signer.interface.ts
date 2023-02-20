@@ -1,5 +1,5 @@
 export enum SignerType {
     LEDGER = 'LEDGER',
     TREZOR = 'TREZOR',
-    KEYSTORE = 'KEYSTORE',
+    PRIVATE_KEY = 'PRIVATE_KEY',
 }

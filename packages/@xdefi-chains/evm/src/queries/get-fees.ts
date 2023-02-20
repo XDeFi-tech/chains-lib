@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { gqlClient } from '@xdefi/chains-core';
-import { EVMChains } from '../chain.provider';
+import { EVMChains } from '../manifests';
 
 export const EIP1559_GAS_FEES = (chain: string) => gql`
 query EIP1559GasFees {
@@ -38,7 +38,6 @@ query DefaultGasFees {
 }
 `;
 
-
 export const getFees = (chain: string) => {
     let query;
     switch (chain) {
@@ -61,6 +60,6 @@ export const getFees = (chain: string) => {
     }
 
     return gqlClient.query({
-        query
+        query,
     });
 };

@@ -1,4 +1,1 @@
-export {
-    inject as Inject,
-    optional as Optional
-} from 'inversify';
+export { inject as Inject, optional as Optional } from 'inversify';

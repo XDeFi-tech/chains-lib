@@ -1,15 +1,14 @@
 import React from 'react';
 import { ChainController } from '@xdefi/chains-controller';
-import { evmManifests, EvmProvider, XdefiRepository } from '@xdefi/chains-evm';
-
+import { EVM_MANIFESTS, EvmProvider, XdefiRepository } from '@xdefi/chains-evm';
 
 const availableProviders = {
     EvmProvider,
-}
+};
 
 const availableRepositories = {
     XdefiRepository,
-}
+};
 
 export const useChains = () => {
     const chains = React.useMemo(() => {
@@ -25,7 +24,9 @@ export const useChains = () => {
             controller.setProviderList(initProviders);
         } else {
             // Init from scratch
-            const providers = Object.values(evmManifests).map((manifest) => new EvmProvider(new XdefiRepository(manifest)));
+            const providers = Object.values(EVM_MANIFESTS).map(
+                (manifest) => new EvmProvider(new XdefiRepository(manifest))
+            );
             controller.setProviderList(providers);
         }
 
@@ -33,7 +34,6 @@ export const useChains = () => {
     }, []);
 
     return {
-        chains: chains
-    }
-}
-
+        chains: chains,
+    };
+};

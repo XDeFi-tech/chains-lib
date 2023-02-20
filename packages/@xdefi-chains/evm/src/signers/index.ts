@@ -1,2 +1,2 @@
 export * from './ledger.signer';
-export * from './keystore.signer';
+export * from './private-key.signer';

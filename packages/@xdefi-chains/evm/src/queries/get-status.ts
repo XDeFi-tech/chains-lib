@@ -11,9 +11,8 @@ query GetStatus {
 }
 `;
 
-
 export const getStatus = (chain: string) => {
     return gqlClient.query({
-        query: GET_STATUS(chain)
-    })
+        query: GET_STATUS(chain),
+    });
 };
