@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChainController } from '@xdefi/chains-controller';
+import { ChainController } from '@xdefi/chains-core';
 import { EVM_MANIFESTS, EvmProvider, XdefiRepository } from '@xdefi/chains-evm';
 
 const availableProviders = {
@@ -23,11 +23,6 @@ export const useChains = () => {
             });
             controller.setProviderList(initProviders);
         } else {
-            // Init from scratch
-            const providers = Object.values(EVM_MANIFESTS).map(
-                (manifest) => new EvmProvider(new XdefiRepository(manifest))
-            );
-            controller.setProviderList(providers);
         }
 
         return controller;

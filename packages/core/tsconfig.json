@@ -5,14 +5,15 @@
       "esnext",
       "dom"
     ],
-    "baseUrl": "./",
-    "outDir": "./dist"
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "./src/**/*"
   ],
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts"
-  ]
 }

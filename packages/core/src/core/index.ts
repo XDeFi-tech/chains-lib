@@ -8,3 +8,4 @@ export * from './coin';
 export * from './constants';
 export * from './repository';
 export * from './asset';
+export * from './controller';

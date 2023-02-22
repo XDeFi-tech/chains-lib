@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi/chains-core';
+import { Chain } from '../';
 
 export interface IProviders {
     [providerKey: string]: Chain.Provider;

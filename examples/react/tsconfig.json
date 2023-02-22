@@ -6,6 +6,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "../../apps/usage-next/node_modules"
   ]
 }

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "apps/*",
+    "utility-packages/*",
     "packages/*",
-    "packages/@xdefi-chains/*"
+    "examples/*"
   ],
   "scripts": {
     "build": "turbo run build",
