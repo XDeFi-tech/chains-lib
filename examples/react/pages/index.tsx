@@ -46,10 +46,6 @@ const Home: NextPage = () => {
         }
     }, [])
 
-    useEffect(() => {
-        init()
-    }, [])
-
     return (
         <div className={styles.container}>
             <div>

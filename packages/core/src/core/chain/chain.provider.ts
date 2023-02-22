@@ -6,8 +6,7 @@ import { Transaction } from 'core/transaction';
 import 'reflect-metadata';
 import { Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
-import { GasFee } from 'core/fee';
-import { Asset } from 'core/asset';
+import { GasFee, GasFeeSpeed } from 'core/fee';
 import { BaseRepository } from 'core';
 
 /**
@@ -32,31 +31,95 @@ export abstract class Provider {
         this.chainRepository = chainRepository;
     }
 
+    /**
+     * Returns the provider type for this chain. The provider type indicates what type of provider
+     * should be used to interact with the chain.
+     */
     get providerType(): string {
         const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
         return options?.providerType;
     }
 
-    get providerName(): string {
+    /**
+     * Returns the name of the class for the current instance
+     *
+     * @returns The name of the class as a string
+     */
+    get name(): string {
         return this.constructor.name;
     }
 
+    /**
+     * Retrieves the balance of the specified address across all assets on the chain.
+     *
+     * @async
+     * @param {string} address - The address for which to retrieve the balance.
+     * @returns {Promise<Coin[]>} - A promise that resolves with an array of Coin objects representing the balances of the specified address.
+     */
     abstract getBalance(address: string): Promise<Coin[]>;
 
+    /**
+     * Retrieves a list of transactions for a given address and optional block range.
+     *
+     * @async
+     * @param {string} address - The address for which to retrieve transactions.
+     * @param {number|string} [afterBlock] - An optional parameter specifying the starting block number or block hash to retrieve transactions from. If not provided, all transactions for the address will be returned.
+     * @returns {Promise<Transaction[]>} - A promise that resolves with an array of Transaction objects that correspond to the retrieved transactions.
+     */
     abstract getTransactions(address: string, afterBlock?: number): Promise<Transaction[]>;
 
-    abstract estimateFee(msgs: Msg[], speed: GasFee): Promise<Msg[]>;
+    /**
+     * Estimates the transaction fees required for the specified messages to be successfully included in a block at the specified speed.
+     *
+     * @async
+     * @param {Msg[]} msgs - An array of Msg objects representing the messages for which to estimate the transaction fees.
+     * @param {GasFeeSpeed} speed - An enumerated value indicating the speed at which the transaction should be processed. Possible values are "high", "medium", and "low".
+     * @returns {Promise<Msg[]>} - A promise that resolves with an array of Msg objects representing the messages with the calculated transaction fees included.
+     */
+    abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
 
+    /**
+     * Sends a list of signed messages to the RPC provider and returns a list of corresponding transactions.
+     *
+     * @async
+     * @param {Msg[]} msgs - An array of signed messages to broadcast.
+     * @returns {Promise<Transaction[]>} - A promise that resolves with an array of Transaction objects that correspond to the broadcasted messages.
+     * @throws {Error} - Throws an error if any of the messages in the input array do not have a signature.
+     */
     abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
 
+    /**
+     * Creates a new instance of a message.
+     *
+     * @param data The data object that represents the message.
+     * @returns A new instance of a message.
+     */
     abstract createMsg(data: Msg.Data): Msg;
 
+    /**
+     * Retrieves the current gas fee options for the chain, including base and priority fees per gas for EIP-1559 chains.
+     * @async
+     * @returns {Promise<GasFee>} A promise that resolves to a `GasFee` object with high, medium, and low gas fee options.
+     */
     abstract gasFeeOptions(): Promise<GasFee>;
 
-    abstract getNative(): Promise<Asset>;
+    /**
+     * Retrieves the nonce of the specified address across blockchain.
+     *
+     * @async
+     * @param {string} address - The address for which to retrieve nonce.
+     */
+    abstract getNonce(address: string): Promise<number>;
 
-    abstract calculateNonce(address: string): Promise<number>;
-
+    /**
+     * Sign and broadcast the given messages using the specified signer.
+     *
+     * @param derivation The derivation path to use for signing the messages.
+     * @param signer The signer to use for signing the messages.
+     * @param msgs The messages to sign and broadcast.
+     *
+     * @returns A promise that resolves to the transaction hash of the broadcasted transaction.
+     */
     public async signAndBroadcast(derivation: string, signer: SignerProvider, msgs: Msg[]) {
         for await (let msg of msgs) {
             const signature = await signer.sign(derivation, msg.toData());
@@ -66,7 +129,12 @@ export abstract class Provider {
         return this.broadcast(msgs);
     }
 
-    public getSigners() {
+    /**
+     * Returns an array of SignerProvider required to sign messages in this chain.
+     *
+     * @returns {SignerProvider[]} array of `SignerProvider` instances
+     */
+    public getSigners(): SignerProvider[] {
         const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
         const deps = options?.deps;
 
@@ -76,23 +144,37 @@ export abstract class Provider {
         });
     }
 
+    /**
+     * Returns an array of SignerProvider required to sign messages in this chain.
+     *
+     * @returns {SignerProvider} `SignerProvider` instance
+     */
     public getSigner(type: SignerType) {
         const signers = this.getSigners();
 
-        const signer = signers.find((signer: any) => {
+        return signers.find((signer) => {
             const _type = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer);
             return _type === type;
         });
-
-        return new signer();
     }
 
-    public hasSigner(type: SignerType) {
+    /**
+     * Check if there is a signer instance of a given type in the dependencies list
+     *
+     * @param type - Type of the signer to check for
+     * @returns `true` if a signer instance of the given type exists, `false` otherwise
+     */
+    public hasSigner(type: SignerType): boolean {
         const signer = this.getSigner(type);
         return signer !== undefined;
     }
 
+    /**
+     * Returns the manifest object for the chain
+     *
+     * @returns The manifest object for the chain
+     */
     public get manifest(): Manifest {
-        return this.chainRepository.getManifest();
+        return this.chainRepository.manifest;
     }
 }

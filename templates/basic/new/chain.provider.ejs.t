@@ -12,9 +12,6 @@ import manifestJson from './manifest.json'
   deps: [LedgerSigner],
 })
 export class <%= Name %>Provider extends Chain.Provider {
-  getManifest(): Chain.Manifest {
-    return manifestJson;
-  }
   createMsg(data: Msg.Data): Msg {
     return new ChainMsg(data);
   }

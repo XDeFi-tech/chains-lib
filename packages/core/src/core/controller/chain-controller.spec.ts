@@ -29,15 +29,8 @@ describe('ChainController', () => {
 
     it('serializeParams should return serialized Params for all chains', () => {
         const mockParams = '';
-        const params = chainController.serializeParams();
+        const params = chainController.serialize();
 
         expect(params).toEqual(mockParams);
-    });
-
-    it('clearProviders should remove all providers', () => {
-        chainController.clearProvidersStorage();
-        const providers = chainController.getProviderList();
-
-        expect(providers).toHaveLength(0);
     });
 });

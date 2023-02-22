@@ -8,7 +8,7 @@ export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
     constructor(public readonly data: Msg.Data) {
     }
 
-    public abstract get feeEstimation(): FeeData;
+    public abstract getFee(): FeeData;
 
     /**
      * Check is current Msg has signature
@@ -38,7 +38,7 @@ export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
 
     public abstract toData(): OutData;
 
-    public abstract prepareTransaction(): TxData;
+    public abstract buildTx(): TxData;
 
     /**
      * Assign signature to the message

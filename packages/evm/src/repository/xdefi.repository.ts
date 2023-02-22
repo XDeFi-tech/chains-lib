@@ -6,15 +6,23 @@ import {
     GasFeeSpeed,
     Msg,
     Transaction,
-    Injectable
+    Injectable,
+    Chain,
 } from '@xdefi/chains-core';
-import { getBalance, getFees, getStatus, getTransaction, getCryptoCurrency } from '../queries';
+import { getBalance, getFees, getStatus, getTransaction } from '../queries';
 import { ChainMsg } from '../msg';
-import { EVMChains } from '../manifests';
+import { EVMChains, EVM_MANIFESTS } from '../manifests';
 import { utils } from 'ethers';
 
 @Injectable()
 export class XdefiRepository extends BaseRepository {
+    constructor(manifest: Chain.Manifest) {
+        super(manifest);
+        if (!EVM_MANIFESTS[manifest.chain]) {
+            throw new Error('Please use EVM_MANIFESTS for XdefiRepository to avoid gql incompatibility');
+        }
+    }
+
     async getBalance(address: string): Promise<Coin[]> {
         const { data } = await getBalance(
             this.manifest.chain as EVMChains,
@@ -30,7 +38,7 @@ export class XdefiRepository extends BaseRepository {
             const { asset, amount } = balance;
 
             return new Coin(
-                {
+                new Asset({
                     id: asset.id,
                     chainId: this.manifest.chainId,
                     name: asset.name,
@@ -40,7 +48,7 @@ export class XdefiRepository extends BaseRepository {
                     address: asset.contract,
                     price: asset.price?.amount,
                     decimals: asset.price?.scalingFactor,
-                },
+                }),
                 utils.formatUnits(amount.value, amount.scalingFactor)
             );
         });
@@ -61,7 +69,7 @@ export class XdefiRepository extends BaseRepository {
         }
 
         const { data } = await getTransaction(
-            this.manifest.chain,
+            this.manifest.chain as EVMChains,
             address,
             blockRange
         );
@@ -113,25 +121,7 @@ export class XdefiRepository extends BaseRepository {
         return data[this.manifest.chain].fee;
     }
 
-    async getNative(): Promise<Asset> {
-        const response = await getCryptoCurrency(this.manifest.chainSymbol);
-        const asset = response.data.assets.cryptoCurrencies.page.edges[0]?.node;
-
-        return new Asset({
-            id: asset.id,
-            chainId: this.manifest.chainId,
-            name: asset.name,
-            symbol: asset.symbol,
-            icon: asset.icon,
-            native: !Boolean(asset.contract),
-            address: asset.contract,
-            price: asset.price?.amount,
-            decimals: asset.price?.scalingFactor,
-            priceHistory: asset.priceHistory,
-        });
-    }
-
-    async calculateNonce(address: string): Promise<number> {
+    async getNonce(address: string): Promise<number> {
         return this.rpcProvider.getTransactionCount(address);
     }
 }

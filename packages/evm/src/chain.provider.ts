@@ -1,5 +1,4 @@
 import {
-    Asset,
     BaseRepository,
     Chain,
     ChainDecorator,
@@ -66,11 +65,7 @@ export class EvmProvider extends Chain.Provider {
         return this.chainRepository.gasFeeOptions();
     }
 
-    async getNative(): Promise<Asset> {
-        return this.chainRepository.getNative();
-    }
-
-    async calculateNonce(address: string): Promise<number> {
-        return this.chainRepository.calculateNonce(address);
+    async getNonce(address: string): Promise<number> {
+        return this.chainRepository.getNonce(address);
     }
 }

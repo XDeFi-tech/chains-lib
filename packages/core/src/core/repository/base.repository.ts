@@ -1,5 +1,5 @@
 import { Manifest } from 'core/chain';
-import { Asset, Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
+import { Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
 
 export abstract class BaseRepository {
@@ -21,13 +21,7 @@ export abstract class BaseRepository {
 
     abstract gasFeeOptions(): Promise<GasFee>;
 
-    abstract getNative(): Promise<Asset>;
-
-    getManifest(): Manifest {
-        return this.manifest;
-    }
-
-    async calculateNonce(address: string): Promise<number> {
+    async getNonce(address: string): Promise<number> {
         return 0;
     }
 

@@ -2,7 +2,12 @@ import { Msg as BasMsg } from '@xdefi/chains-core';
 import { BigNumber } from 'bignumber.js';
 import { BigNumber as EthersBigNumber, utils } from 'ethers';
 
-interface MsgBody {
+export enum MsgType {
+    Legacy = 1,
+    EIP1559 = 2,
+}
+
+export interface MsgBody {
     nonce: string;
     to: string;
     from: string;
@@ -12,7 +17,7 @@ interface MsgBody {
     gasPrice?: number | EthersBigNumber;
     maxFeePerGas?: number | EthersBigNumber; // number will be converted to BigNumber, BigNumber will be ignored
     maxPriorityFeePerGas?: number | EthersBigNumber;
-    type?: number;
+    type?: MsgType;
     chainId: number;
 }
 
@@ -34,7 +39,7 @@ const toBigNumberUnit = (n: number | EthersBigNumber, unit: string) => {
 };
 
 export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
-    get feeEstimation(): FeeEstimation {
+    getFee(): FeeEstimation {
         const estimation: FeeEstimation = {
             fee: null,
             maxFee: null,
@@ -91,11 +96,11 @@ export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
         };
     }
 
-    prepareTransaction(): MsgBody {
+    buildTx(): MsgBody {
         switch (this.data.type) {
-            case 2:
+            case MsgType.EIP1559:
                 return {
-                    type: 2,
+                    type: MsgType.EIP1559,
                     nonce: this.data?.nonce,
                     to: this.data?.to,
                     from: this.data?.from,
