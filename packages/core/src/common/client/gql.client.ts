@@ -11,7 +11,7 @@ const wsLink =
     typeof window !== 'undefined'
         ? new GraphQLWsLink(
             createClient({
-                url: 'https://gql-router.dev.xdefiservices.com/graphql',
+                url: 'wss://gateway-ws.xdefiservices.com',
             })
         )
         : null;

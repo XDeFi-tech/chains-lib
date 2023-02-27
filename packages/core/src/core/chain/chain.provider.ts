@@ -7,7 +7,7 @@ import 'reflect-metadata';
 import { Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { GasFee, GasFeeSpeed } from 'core/fee';
-import { BaseRepository } from 'core';
+import { BalanceFilter, BaseRepository, Response, TransactionsFilter } from 'core';
 
 /**
  * Represents abstract class for chain Provider, which provides
@@ -56,7 +56,7 @@ export abstract class Provider {
      * @param {string} address - The address for which to retrieve the balance.
      * @returns {Promise<Coin[]>} - A promise that resolves with an array of Coin objects representing the balances of the specified address.
      */
-    abstract getBalance(address: string): Promise<Coin[]>;
+    abstract getBalance(address: string): Promise<Response<Coin[], BalanceFilter>>;
 
     /**
      * Retrieves a list of transactions for a given address and optional block range.
@@ -66,7 +66,7 @@ export abstract class Provider {
      * @param {number|string} [afterBlock] - An optional parameter specifying the starting block number or block hash to retrieve transactions from. If not provided, all transactions for the address will be returned.
      * @returns {Promise<Transaction[]>} - A promise that resolves with an array of Transaction objects that correspond to the retrieved transactions.
      */
-    abstract getTransactions(address: string, afterBlock?: number): Promise<Transaction[]>;
+    abstract getTransactions(address: string, afterBlock?: number): Promise<Response<Transaction[], TransactionsFilter>>;
 
     /**
      * Estimates the transaction fees required for the specified messages to be successfully included in a block at the specified speed.

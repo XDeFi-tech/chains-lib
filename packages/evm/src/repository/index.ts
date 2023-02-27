@@ -1,1 +1,1 @@
-export * from './xdefi.repository';
+export * from './xdefi/xdefi.repository';

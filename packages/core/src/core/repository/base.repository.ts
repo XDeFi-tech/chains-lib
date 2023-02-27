@@ -2,6 +2,15 @@ import { Manifest } from 'core/chain';
 import { Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
 
+export interface BalanceFilter {
+    address: string;
+}
+
+export interface TransactionsFilter {
+    address: string;
+    afterBlock?: number | string;
+}
+
 export abstract class BaseRepository {
     // Share base chain & call methods without any code
     public rpcProvider: providers.StaticJsonRpcProvider;
@@ -13,9 +22,13 @@ export abstract class BaseRepository {
         this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
     }
 
-    abstract getBalance(address: string): Promise<Coin[]>;
+    abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
 
-    abstract getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]>;
+    // abstract subscribeBalance(filter: BalanceFilter): Subscription;
+
+    abstract getTransactions(filter: TransactionsFilter): Promise<Transaction[]>;
+
+    // abstract subscribeTransactions(filter: TransactionsFilter): Subscription;
 
     abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
 

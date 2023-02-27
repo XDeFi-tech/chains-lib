@@ -1,4 +1,5 @@
 import {
+    BalanceFilter,
     BaseRepository,
     Chain,
     ChainDecorator,
@@ -6,13 +7,16 @@ import {
     GasFee,
     GasFeeSpeed,
     Msg,
-    Transaction,
+    Response,
+    Transaction, TransactionsFilter,
 } from '@xdefi/chains-core';
 import { providers } from 'ethers';
 import 'reflect-metadata';
 import { ChainMsg } from './msg';
 import { some } from 'lodash';
 import { PrivateKeySigner } from './signers';
+import { Subscription } from 'rxjs';
+
 
 @ChainDecorator('EthereumProvider', {
     deps: [PrivateKeySigner],
@@ -49,16 +53,24 @@ export class EvmProvider extends Chain.Provider {
         return transactions;
     }
 
-    async getTransactions(address: string, afterBlock?: number | string): Promise<Transaction[]> {
-        return this.chainRepository.getTransactions(address, afterBlock);
+    async getTransactions(address: string, afterBlock?: number | string): Promise<Response<Transaction[], TransactionsFilter>> {
+        return new Response(
+            { address, afterBlock },
+            () => this.chainRepository.getTransactions({ address, afterBlock}),
+            () => new Subscription()
+        )
     }
 
     async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
         return this.chainRepository.estimateFee(msgs, speed);
     }
 
-    async getBalance(address: string): Promise<Coin[]> {
-        return this.chainRepository.getBalance(address);
+    async getBalance(address: string): Promise<Response<Coin[], BalanceFilter>> {
+        return new Response(
+            { address },
+            () => this.chainRepository.getBalance({ address }),
+            () => new Subscription()
+        );
     }
 
     async gasFeeOptions(): Promise<GasFee> {

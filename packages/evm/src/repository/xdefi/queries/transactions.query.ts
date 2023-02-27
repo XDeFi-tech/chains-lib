@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { gqlClient } from '@xdefi/chains-core';
-import { EVMChains } from '../manifests';
+import { EVMChains } from '../../../manifests';
 
 export const GET_TRANSACTION = (chain: EVMChains) => gql`
 query GetTransactions($address: String!) {

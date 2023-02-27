@@ -8,10 +8,12 @@ import {
     Transaction,
     Injectable,
     Chain,
+    TransactionsFilter,
+    BalanceFilter,
 } from '@xdefi/chains-core';
-import { getBalance, getFees, getStatus, getTransaction } from '../queries';
-import { ChainMsg } from '../msg';
-import { EVMChains, EVM_MANIFESTS } from '../manifests';
+import { getBalance, getFees, getStatus, getTransaction } from './queries';
+import { ChainMsg } from '../../msg';
+import { EVMChains, EVM_MANIFESTS } from '../../manifests';
 import { utils } from 'ethers';
 
 @Injectable()
@@ -23,7 +25,8 @@ export class XdefiRepository extends BaseRepository {
         }
     }
 
-    async getBalance(address: string): Promise<Coin[]> {
+    async getBalance(filter: BalanceFilter): Promise<Coin[]> {
+        const { address } = filter;
         const { data } = await getBalance(
             this.manifest.chain as EVMChains,
             address
@@ -54,10 +57,8 @@ export class XdefiRepository extends BaseRepository {
         });
     }
 
-    async getTransactions(
-        address: string,
-        afterBlock?: number | string
-    ): Promise<Transaction[]> {
+    async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
+        const { afterBlock, address } = filter;
         let blockRange = null;
 
         if (typeof afterBlock === 'number' || typeof afterBlock === 'string') {

@@ -7,6 +7,7 @@ import { Transaction } from 'core/transaction';
 import { getChainsBySigner } from 'core/chain/helpers';
 import { ChainDecorator, SignerDecorator } from 'core/decorators';
 import { GasFee } from 'core/fee';
+import { BalanceFilter, Response } from 'core';
 
 const createChainProvider = () => {
     return class extends Chain.Provider {
@@ -18,7 +19,7 @@ const createChainProvider = () => {
             return '';
         }
 
-        getBalance(): Promise<Coin[]> {
+        getBalance(): Promise<Response<Coin[], BalanceFilter>> {
             throw new Error('Method not implemented.');
         }
 

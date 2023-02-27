@@ -38,12 +38,17 @@ const Home: NextPage = () => {
     const init = useCallback(async () => {
         try {
             const provider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
-            const balances = await provider.getBalance(balanceInput);
+            const resp = await provider.getTransactions(balanceInput);
+            const balances = await resp.getData();
             console.log(balances);
         } catch (err) {
             console.log('init error');
             console.error(err);
         }
+    }, [])
+
+    useEffect(() => {
+        init()
     }, [])
 
     return (
