@@ -1,3 +1,5 @@
+
+
 export abstract class Transaction<InData = {}> {
     constructor(public readonly data: InData) {
     }
@@ -22,7 +24,7 @@ export namespace Transaction {
         hash: string;
         to: string;
         from: string;
-        value: string;
+        status: string;
         data?: string;
     }
 }

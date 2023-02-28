@@ -1,17 +1,14 @@
 import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
-import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 import fetch from 'cross-fetch';
 
-const sha256 = require('sha256');
-
 const wsLink =
     typeof window !== 'undefined'
         ? new GraphQLWsLink(
             createClient({
-                url: 'wss://gateway-ws.xdefiservices.com',
+                url: 'wss://gateway-ws.dev.xdefiservices.com/',
             })
         )
         : null;
@@ -33,6 +30,7 @@ const splitLink =
         )
         : httpLink;
 
+
 const cache = new InMemoryCache({
     dataIdFromObject: (obj: any) => {
         return obj.id;
@@ -49,6 +47,6 @@ const cache = new InMemoryCache({
 });
 
 export const gqlClient = new ApolloClient({
-    link: createPersistedQueryLink({ sha256 }).concat(splitLink),
+    link: splitLink,
     cache,
 });

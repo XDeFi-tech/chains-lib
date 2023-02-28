@@ -10,11 +10,15 @@ import {
     Chain,
     TransactionsFilter,
     BalanceFilter,
+    Balance,
 } from '@xdefi/chains-core';
 import { getBalance, getFees, getStatus, getTransaction } from './queries';
 import { ChainMsg } from '../../msg';
 import { EVMChains, EVM_MANIFESTS } from '../../manifests';
 import { utils } from 'ethers';
+import { subscribeBalances, subscribeTransactions } from './subscriptions';
+import { from, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators'
 
 @Injectable()
 export class XdefiRepository extends BaseRepository {
@@ -57,6 +61,18 @@ export class XdefiRepository extends BaseRepository {
         });
     }
 
+    async subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>> {
+        const { address } = filter;
+        return from(subscribeBalances(this.manifest.chain as EVMChains, address)).pipe(
+            map((result: any) => {
+                return result?.data?.ethereumBalances; // create coin
+            }),
+            catchError((error: any) => {
+                throw new Error('Error while getting balances payload from subscription');
+            })
+        )
+    }
+
     async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
         const { afterBlock, address } = filter;
         let blockRange = null;
@@ -78,6 +94,24 @@ export class XdefiRepository extends BaseRepository {
         return data[this.manifest.chain].transactions.map((transaction: any) => {
             return Transaction.fromData(transaction);
         });
+    }
+
+    async subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>> {
+        const { address } = filter;
+        return from(subscribeTransactions(this.manifest.chain as EVMChains, address)).pipe(
+            map((result: any): Transaction => {
+                const txData = result?.data.ethereumTransactions;
+                return Transaction.fromData({
+                    from: txData.fromAddress,
+                    to: txData.toAddress,
+                    hash: txData.hash,
+                    status: txData.status
+                });
+            }),
+            catchError((error: any)=> {
+                throw new Error('Error while getting transaction payload from subscription');
+            })
+        )
     }
 
     async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<Msg[]> {

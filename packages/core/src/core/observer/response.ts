@@ -1,12 +1,9 @@
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
-export class Response<Returning, Filter> {
+export class Response<Data, SubscribeData> {
     constructor(
-        protected readonly filter: Filter,
-        private readonly getterMethod: (filter: Filter) => Promise<Returning>,
-        private readonly subscriptionMethod: (filter: Filter) => Subscription,
+        public readonly getData: () => Promise<Data>,
+        public readonly getObserver: () => Promise<Observable<SubscribeData>>
     ) {}
-    getData = () => this.getterMethod(this.filter);
-    subscribe = () => this.subscriptionMethod(this.filter);
 }
 

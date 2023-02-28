@@ -1,6 +1,7 @@
 import { Manifest } from 'core/chain';
 import { Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
+import { Observable } from 'rxjs';
 
 export interface BalanceFilter {
     address: string;
@@ -9,6 +10,22 @@ export interface BalanceFilter {
 export interface TransactionsFilter {
     address: string;
     afterBlock?: number | string;
+}
+
+export interface Balance {
+    asset: {
+        chain: string;
+        contract: string;
+    };
+    amount: {
+        value: number;
+        scalingFactor: number;
+    };
+    address: string;
+}
+
+export interface BalancesData {
+    ethereumBalances: Balance[];
 }
 
 export abstract class BaseRepository {
@@ -24,11 +41,11 @@ export abstract class BaseRepository {
 
     abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
 
-    // abstract subscribeBalance(filter: BalanceFilter): Subscription;
+    abstract subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>>;
 
     abstract getTransactions(filter: TransactionsFilter): Promise<Transaction[]>;
 
-    // abstract subscribeTransactions(filter: TransactionsFilter): Subscription;
+    abstract subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>>;
 
     abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
 

@@ -35,12 +35,28 @@ const Home: NextPage = () => {
         setBalanceInput(event.target.value);
     }, []);
 
-    const init = useCallback(async () => {
+    const testBalancesSubs = useCallback(async () => {
+        try {
+            const provider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
+            const resp = await provider.getBalance(balanceInput);
+            const observer = await resp.getObserver();
+            observer.subscribe((data) => {
+                console.log('balance data', data);
+            })
+        } catch (err) {
+            console.log('init error');
+            console.error(err);
+        }
+    }, [])
+
+    const testTransactionsSubs = useCallback(async () => {
         try {
             const provider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
             const resp = await provider.getTransactions(balanceInput);
-            const balances = await resp.getData();
-            console.log(balances);
+            const observer = await resp.getObserver();
+            observer.subscribe((data) => {
+                console.log('transaction data', data);
+            })
         } catch (err) {
             console.log('init error');
             console.error(err);
@@ -48,7 +64,8 @@ const Home: NextPage = () => {
     }, [])
 
     useEffect(() => {
-        init()
+        // testBalancesSubs()
+        // testTransactionsSubs()
     }, [])
 
     return (
