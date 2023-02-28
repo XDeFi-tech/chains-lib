@@ -15,7 +15,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "turbo run clean",
     "typedoc": "turbo run typedoc",
-    "chain:generate": "HYGEN_TMPLS=apps/templates hygen"
+    "chain:generate": "HYGEN_TMPLS=apps/templates hygen",
+    "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
   "devDependencies": {
     "prettier": "^2.5.1",
@@ -27,6 +28,7 @@
   },
   "packageManager": "yarn@1.22.17",
   "dependencies": {
+    "@changesets/cli": "^2.26.0",
     "hygen": "^6.2.0"
   }
 }
