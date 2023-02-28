@@ -10,8 +10,7 @@ class MyTransaction extends Transaction<InputData> {
             hash: '',
             to: '',
             from: '',
-            value: '',
-            data: '',
+            status: ''
         };
     }
 }
