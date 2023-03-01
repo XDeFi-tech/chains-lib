@@ -1,5 +1,5 @@
 import {
-    BaseRepository,
+    DataSource,
     Chain,
     ChainDecorator,
     Coin,
@@ -24,10 +24,10 @@ import { PrivateKeySigner } from './signers';
 export class EvmProvider extends Chain.Provider {
     private rpcProvider: providers.StaticJsonRpcProvider;
 
-    constructor(chainRepository: BaseRepository) {
-        super(chainRepository);
+    constructor(dataSource: DataSource) {
+        super(dataSource);
         this.rpcProvider = new providers.StaticJsonRpcProvider(
-            this.chainRepository.manifest.rpcURL
+            this.dataSource.manifest.rpcURL
         );
     }
 
@@ -54,27 +54,27 @@ export class EvmProvider extends Chain.Provider {
 
     async getTransactions(address: string, afterBlock?: number | string): Promise<Response<Transaction[], Transaction>> {
         return new Response(
-            () => this.chainRepository.getTransactions({ address, afterBlock}),
-            () => this.chainRepository.subscribeTransactions({ address })
+            () => this.dataSource.getTransactions({ address, afterBlock}),
+            () => this.dataSource.subscribeTransactions({ address })
         )
     }
 
     async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
-        return this.chainRepository.estimateFee(msgs, speed);
+        return this.dataSource.estimateFee(msgs, speed);
     }
 
     async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
         return new Response(
-            () => this.chainRepository.getBalance({ address }),
-            () => this.chainRepository.subscribeBalance({ address })
+            () => this.dataSource.getBalance({ address }),
+            () => this.dataSource.subscribeBalance({ address })
         );
     }
 
     async gasFeeOptions(): Promise<GasFee> {
-        return this.chainRepository.gasFeeOptions();
+        return this.dataSource.gasFeeOptions();
     }
 
     async getNonce(address: string): Promise<number> {
-        return this.chainRepository.getNonce(address);
+        return this.dataSource.getNonce(address);
     }
 }

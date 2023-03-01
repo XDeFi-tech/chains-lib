@@ -15,10 +15,6 @@ const createChainProvider = () => {
             return {} as Chain.Manifest;
         }
 
-        get repositoryName(): string {
-            return '';
-        }
-
         getBalance(): Promise<Response<Coin[], Balance[]>> {
             throw new Error('Method not implemented.');
         }

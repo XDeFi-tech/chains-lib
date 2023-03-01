@@ -6,7 +6,7 @@ export interface IProviders {
 
 export interface ChainParamItem {
     providerClassName: string;
-    repositoryClassName: string;
+    dataSourceClassName: string;
     manifest: Chain.Manifest;
 }
 
@@ -95,7 +95,7 @@ export class ChainController {
                 const manifest = provider.manifest;
                 acc[manifest.chain] = {
                     providerClassName: provider.name,
-                    repositoryClassName: provider.chainRepository.name,
+                    dataSourceClassName: provider.dataSource.name,
                     manifest,
                 };
                 return acc;

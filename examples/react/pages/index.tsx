@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import styles from '../styles/Home.module.css';
-import { XdefiRepository, EvmProvider, EVM_MANIFESTS} from '@xdefi/chains-evm';
+import { IndexerDataSource, EvmProvider, EVM_MANIFESTS} from '@xdefi/chains-evm';
 
 const MOCK_TX_TYPE_ONE = {
     to: '0x76075A5997be82E39d9A3c8Eae660E74E1D9984B',
@@ -37,7 +37,7 @@ const Home: NextPage = () => {
 
     const testBalancesSubs = useCallback(async () => {
         try {
-            const provider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
+            const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
             const resp = await provider.getBalance(balanceInput);
             const observer = await resp.getObserver();
             observer.subscribe((data) => {
@@ -51,7 +51,7 @@ const Home: NextPage = () => {
 
     const testTransactionsSubs = useCallback(async () => {
         try {
-            const provider = new EvmProvider(new XdefiRepository(EVM_MANIFESTS.ethereum));
+            const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
             const resp = await provider.getTransactions(balanceInput);
             const observer = await resp.getObserver();
             observer.subscribe((data) => {

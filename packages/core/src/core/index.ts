@@ -6,7 +6,7 @@ export * from './fee';
 export * from './transaction';
 export * from './coin';
 export * from './constants';
-export * from './repository';
+export * from './datasource';
 export * from './asset';
 export * from './controller';
 export * from './observer';

@@ -28,7 +28,7 @@ export interface BalancesData {
     ethereumBalances: Balance[];
 }
 
-export abstract class BaseRepository {
+export abstract class DataSource {
     // Share base chain & call methods without any code
     public rpcProvider: providers.StaticJsonRpcProvider;
     public manifest: Manifest;
@@ -51,7 +51,7 @@ export abstract class BaseRepository {
 
     abstract gasFeeOptions(): Promise<GasFee>;
 
-    async getNonce(address: string): Promise<number> {
+    async getNonce(): Promise<number> {
         return 0;
     }
 

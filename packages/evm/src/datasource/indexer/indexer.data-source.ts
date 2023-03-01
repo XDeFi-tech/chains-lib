@@ -1,6 +1,6 @@
 import {
     Asset,
-    BaseRepository,
+    DataSource,
     Coin,
     GasFee,
     GasFeeSpeed,
@@ -21,11 +21,11 @@ import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 
 @Injectable()
-export class XdefiRepository extends BaseRepository {
+export class IndexerDataSource extends DataSource {
     constructor(manifest: Chain.Manifest) {
         super(manifest);
         if (!EVM_MANIFESTS[manifest.chain]) {
-            throw new Error('Please use EVM_MANIFESTS for XdefiRepository to avoid gql incompatibility');
+            throw new Error('Please use EVM_MANIFESTS for indexer data source to avoid gql incompatibility');
         }
     }
 
@@ -68,7 +68,7 @@ export class XdefiRepository extends BaseRepository {
                 return result?.data?.ethereumBalances; // create coin
             }),
             catchError((error: any) => {
-                throw new Error('Error while getting balances payload from subscription');
+                throw new Error(error);
             })
         )
     }
@@ -109,7 +109,7 @@ export class XdefiRepository extends BaseRepository {
                 });
             }),
             catchError((error: any)=> {
-                throw new Error('Error while getting transaction payload from subscription');
+                throw new Error(error);
             })
         )
     }

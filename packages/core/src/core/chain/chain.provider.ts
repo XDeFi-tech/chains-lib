@@ -7,7 +7,7 @@ import 'reflect-metadata';
 import { Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { GasFee, GasFeeSpeed } from 'core/fee';
-import { Balance, BaseRepository, Response } from 'core';
+import { Balance, DataSource, Response } from 'core';
 
 /**
  * Represents abstract class for chain Provider, which provides
@@ -27,8 +27,8 @@ import { Balance, BaseRepository, Response } from 'core';
  */
 @Injectable()
 export abstract class Provider {
-    constructor(public readonly chainRepository: BaseRepository) {
-        this.chainRepository = chainRepository;
+    constructor(public readonly dataSource: DataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
@@ -175,6 +175,6 @@ export abstract class Provider {
      * @returns The manifest object for the chain
      */
     public get manifest(): Manifest {
-        return this.chainRepository.manifest;
+        return this.dataSource.manifest;
     }
 }
