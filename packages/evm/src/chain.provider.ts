@@ -9,7 +9,6 @@ import {
     Response,
     Transaction,
     Balance,
-    Signer,
 } from '@xdefi/chains-core';
 import { providers } from 'ethers';
 import 'reflect-metadata';
@@ -29,27 +28,7 @@ export class EvmProvider extends Chain.Provider {
         options?: Chain.IOptions,
     ) {
         super(dataSource, options);
-        this.rpcProvider = new providers.StaticJsonRpcProvider(
-            this.dataSource.manifest.rpcURL
-        );
-
-        if (this.options?.signers) {
-            this.options?.signers.forEach((type) => {
-                let path;
-                switch (type) {
-                    case Signer.SignerType.LEDGER:
-                        path = 'ledger';
-                        break;
-                    case Signer.SignerType.PRIVATE_KEY:
-                        path = 'private-key';
-                        break;
-                }
-                if (!path) {
-                    return;
-                }
-                this.setSigner(require(`./signers/${path}.signer`).default)
-            })
-        }
+        this.rpcProvider = new providers.StaticJsonRpcProvider(this.dataSource.manifest.rpcURL);
     }
 
     createMsg(data: Msg.Data): Msg {

@@ -8,9 +8,10 @@ import { Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { GasFee, GasFeeSpeed } from 'core/fee';
 import { Balance, DataSource, Response } from 'core';
+import { forEach } from 'lodash';
 
 export interface IOptions {
-    signers?: SignerType[];
+    signers?: typeof SignerProvider[];
 }
 
 /**
@@ -37,6 +38,7 @@ export abstract class Provider {
     ) {
         this.dataSource = dataSource;
         this.setSigner = this.setSigner.bind(this);
+        forEach(options?.signers, (signer: typeof SignerProvider) => this.setSigner(signer));
     }
 
     /**
@@ -177,11 +179,17 @@ export abstract class Provider {
         return signer !== undefined;
     }
 
-    protected setSigner(signer: SignerProvider): void {
+    protected setSigner(signer: typeof SignerProvider): void {
         const signerType = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer)
+        if (!signerType) {
+            console.warn(`Your custom signer ${signer.name} should be used with @SignerDecorator(Signer.SignerType.CUSTOM)`);
+            return;
+        }
+
         if (this.hasSigner(signerType)) {
             return
         }
+
         const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor) || {};
         if (!options?.deps) {
             options.deps = [];

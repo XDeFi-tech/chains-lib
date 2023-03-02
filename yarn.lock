@@ -1982,6 +1982,23 @@
   dependencies:
     tslib "^2.3.0"
 
+"@xdefi/chains-core@file:packages/core":
+  version "1.0.0"
+  dependencies:
+    "@apollo/client" "^3.6.9"
+    "@next/bundle-analyzer" "^12.3.0"
+    bignumber.js "^9.0.2"
+    graphql "^16.6.0"
+    graphql-ws "^5.11.1"
+    inversify "^6.0.1"
+    lodash "^4.17.21"
+    next-compose-plugins "^2.2.1"
+    reflect-metadata "^0.1.13"
+    rxjs "^7.8.0"
+    sha256 "^0.2.0"
+    typescript "^4.6.3"
+    ws "^8.8.1"
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import styles from '../styles/Home.module.css';
-import { Signer } from '@xdefi/chains-core';
-import { IndexerDataSource, EvmProvider, EVM_MANIFESTS} from '@xdefi/chains-evm';
+import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { IndexerDataSource, EvmProvider, EVM_MANIFESTS } from '@xdefi/chains-evm';
 
 const MOCK_TX_TYPE_ONE = {
     to: '0x76075A5997be82E39d9A3c8Eae660E74E1D9984B',
@@ -68,17 +68,21 @@ const Home: NextPage = () => {
         // testBalancesSubs()
         // testTransactionsSubs()
 
+        @SignerDecorator(Signer.SignerType.TRUST_WALLET)
+        class TrustWalletSigner<S = string> extends Signer.Provider<S>{
+            getAddress(derivation: string): Promise<string> {
+                throw new Error('Method not implemented.');
+            }
+            sign(derivation: string, msg: any): Promise<S> {
+                throw new Error('Method not implemented.');
+            }
+            verifyAddress(address: string): boolean {
+                throw new Error('Method not implemented.');
+            }
+        }
 
-        // @SignerDecorator(Signer.SignerType.CUSTOM)
-        // class CustomClass extends Signer.Provider {
-        //
-        // }
-
-        const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum), {
-                signers: [Signer.SignerType.LEDGER],
-        })
-
-        console.log(`Has ${Signer.SignerType.LEDGER} signer type?`, provider.hasSigner(Signer.SignerType.LEDGER));
+        const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum), { signers: [TrustWalletSigner], })
+        console.log(`Has ${Signer.SignerType.CUSTOM} signer type?`, provider.hasSigner(Signer.SignerType.CUSTOM));
     }, [])
 
     return (
