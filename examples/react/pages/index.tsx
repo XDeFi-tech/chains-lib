@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import styles from '../styles/Home.module.css';
+import { Signer } from '@xdefi/chains-core';
 import { IndexerDataSource, EvmProvider, EVM_MANIFESTS} from '@xdefi/chains-evm';
 
 const MOCK_TX_TYPE_ONE = {
@@ -66,6 +67,18 @@ const Home: NextPage = () => {
     useEffect(() => {
         // testBalancesSubs()
         // testTransactionsSubs()
+
+
+        // @SignerDecorator(Signer.SignerType.CUSTOM)
+        // class CustomClass extends Signer.Provider {
+        //
+        // }
+
+        const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum), {
+                signers: [Signer.SignerType.LEDGER],
+        })
+
+        console.log(`Has ${Signer.SignerType.LEDGER} signer type?`, provider.hasSigner(Signer.SignerType.LEDGER));
     }, [])
 
     return (

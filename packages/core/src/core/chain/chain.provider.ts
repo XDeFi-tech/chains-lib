@@ -9,6 +9,10 @@ import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { GasFee, GasFeeSpeed } from 'core/fee';
 import { Balance, DataSource, Response } from 'core';
 
+export interface IOptions {
+    signers?: SignerType[];
+}
+
 /**
  * Represents abstract class for chain Provider, which provides
  * primitives for interacting with particular chain.
@@ -27,8 +31,12 @@ import { Balance, DataSource, Response } from 'core';
  */
 @Injectable()
 export abstract class Provider {
-    constructor(public readonly dataSource: DataSource) {
+    constructor(
+        public readonly dataSource: DataSource,
+        public readonly options?: IOptions,
+    ) {
         this.dataSource = dataSource;
+        this.setSigner = this.setSigner.bind(this);
     }
 
     /**
@@ -149,13 +157,13 @@ export abstract class Provider {
      *
      * @returns {SignerProvider} `SignerProvider` instance
      */
-    public getSigner(type: SignerType) {
+    public getSigner(type: any): SignerProvider {
         const signers = this.getSigners();
 
         return signers.find((signer) => {
             const _type = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer);
             return _type === type;
-        });
+        }) as SignerProvider;
     }
 
     /**
@@ -167,6 +175,19 @@ export abstract class Provider {
     public hasSigner(type: SignerType): boolean {
         const signer = this.getSigner(type);
         return signer !== undefined;
+    }
+
+    protected setSigner(signer: SignerProvider): void {
+        const signerType = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer)
+        if (this.hasSigner(signerType)) {
+            return
+        }
+        const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor) || {};
+        if (!options?.deps) {
+            options.deps = [];
+        }
+        options.deps.push(signer);
+        Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, this)
     }
 
     /**

@@ -11,7 +11,7 @@ export type Signature = {
 };
 
 @SignerDecorator(Signer.SignerType.LEDGER)
-export class LedgerSigner extends Signer.Provider<Signature> {
+export class LedgerSigner<S = Signature> extends Signer.Provider<S> {
     verifyAddress(address: string): boolean {
         return utils.isAddress(address);
     }
@@ -26,7 +26,7 @@ export class LedgerSigner extends Signer.Provider<Signature> {
         return address.address;
     }
 
-    async sign(derivation: string, msg: ChainMsg): Promise<Signature> {
+    async sign(derivation: string, msg: ChainMsg): Promise<S> {
         const transport = await Transport.create();
         const app = new App(transport);
 
@@ -38,6 +38,8 @@ export class LedgerSigner extends Signer.Provider<Signature> {
             v: BigNumber.from('0x' + signature.v).toNumber(),
             r: '0x' + signature.r,
             s: '0x' + signature.s,
-        };
+        } as S;
     }
 }
+
+export default LedgerSigner;

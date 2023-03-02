@@ -3,7 +3,7 @@ import { utils, Wallet } from 'ethers';
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner extends Signer.Provider<string> {
+export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     verifyAddress(address: string): boolean {
         return utils.isAddress(address);
     }
@@ -17,10 +17,13 @@ export class PrivateKeySigner extends Signer.Provider<string> {
         return wallet.address;
     }
 
-    async sign(privateKey: string, msg: ChainMsg): Promise<string> {
+    async sign(privateKey: string, msg: ChainMsg): Promise<S> {
         const wallet = new Wallet(privateKey);
         const signature = await wallet.signTransaction(msg.buildTx());
         msg.sign(signature);
-        return signature;
+        return signature as S;
     }
 }
+
+export default PrivateKeySigner;
+
