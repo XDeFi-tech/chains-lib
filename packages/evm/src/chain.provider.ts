@@ -16,7 +16,7 @@ import { ChainMsg } from './msg';
 import { some } from 'lodash';
 
 
-@ChainDecorator('EthereumProvider', {
+@ChainDecorator('EvmProvider', {
     deps: [],
     providerType: 'EVM',
 })
@@ -56,7 +56,7 @@ export class EvmProvider extends Chain.Provider {
         return new Response(
             () => this.dataSource.getTransactions({ address, afterBlock}),
             () => this.dataSource.subscribeTransactions({ address })
-        )
+        );
     }
 
     async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {

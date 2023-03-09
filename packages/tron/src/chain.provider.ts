@@ -1,7 +1,3 @@
----
-to: packages/<%= name.toLowerCase() %>/src/chain.provider.ts
----
-
 import {
     DataSource,
     Chain,
@@ -17,11 +13,11 @@ import {
 import 'reflect-metadata';
 import { ChainMsg } from './msg';
 
-@ChainDecorator('<%= Name %>Provider', {
+@ChainDecorator('TronProvider', {
   deps: [],
-  providerType: '<%= name %>',
+  providerType: 'Tron',
 })
-export class <%= Name %>Provider extends Chain.Provider {
+export class TronProvider extends Chain.Provider {
     private rpcProvider: any;
 
     constructor(

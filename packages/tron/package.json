@@ -1,12 +1,8 @@
----
-to: packages/<%= name.toLowerCase() %>/package.json
----
-
 {
-  "name": "@xdefi/chains-<%= name.toLowerCase() %>",
+  "name": "@xdefi/chains-tron",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/main.ts",
+  "types": "dist/main.ts",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.5.1",
@@ -20,6 +16,7 @@ to: packages/<%= name.toLowerCase() %>/package.json
     "bignumber.js": "^9.0.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
+    "tronweb": "^5.1.0",
     "ts-node": "^10.7.0"
   },
   "scripts": {

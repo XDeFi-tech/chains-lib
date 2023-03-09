@@ -15,7 +15,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "turbo run clean",
     "typedoc": "turbo run typedoc",
-    "chain:generate": "HYGEN_TMPLS=apps/templates hygen",
+    "chain:generate": "HYGEN_TMPLS=templates hygen basic new",
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
   "devDependencies": {

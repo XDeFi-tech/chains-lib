@@ -7,5 +7,8 @@
   ],
   "exclude": [
     "../../apps/usage-next/node_modules"
-  ]
+  ],
+  "compilerOptions": {
+    "jsx": "preserve"
+  }
 }

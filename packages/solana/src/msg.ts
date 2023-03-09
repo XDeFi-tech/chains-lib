@@ -1,7 +1,3 @@
----
-to: packages/<%= name.toLowerCase() %>/src/msg.ts
----
-
 import { Msg as BasMsg } from '@xdefi/chains-core';
 import BigNumber from 'bignumber.js';
 

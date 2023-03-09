@@ -47,13 +47,6 @@ export const getTransaction = (
     address: string,
     blockRange: BlockRange | null
 ) => {
-    console.log('query', {
-        query: GET_TRANSACTION(chain),
-        variables: {
-            address,
-            ...(blockRange && { blockRange }),
-        },
-    });
     return gqlClient.query({
         query: GET_TRANSACTION(chain),
         variables: {

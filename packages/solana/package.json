@@ -1,13 +1,10 @@
 {
-  "name": "@xdefi/chains-evm",
+  "name": "@xdefi/chains-solana",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "devDependencies": {
-    "@babel/preset-typescript": "^7.21.0",
-    "@types/jest": "^27.4.1",
-    "cross-fetch": "^3.1.5",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",
@@ -15,12 +12,9 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@ledgerhq/cryptoassets": "^8.0.0",
-    "@ledgerhq/hw-app-eth": "^6.27.1",
-    "@ledgerhq/hw-transport-webhid": "^6.27.1",
+    "@solana/web3.js": "^1.73.3",
     "@xdefi/chains-core": "*",
     "bignumber.js": "^9.0.2",
-    "ethers": "^5.6.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "ts-node": "^10.7.0"
@@ -29,12 +23,5 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "test": "jest"
-  },
-  "jest": {
-    "preset": "@babel/preset-typescript",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ]
   }
 }
