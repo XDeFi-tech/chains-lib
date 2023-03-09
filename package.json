@@ -8,6 +8,7 @@
     "examples/*"
   ],
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "watch": "turbo run watch --parallel",
@@ -19,6 +20,7 @@
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
   "devDependencies": {
+    "husky": "^8.0.3",
     "prettier": "^2.5.1",
     "turbo": "latest"
   },

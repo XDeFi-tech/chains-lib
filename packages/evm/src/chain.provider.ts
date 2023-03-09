@@ -1,80 +1,79 @@
 import {
-    DataSource,
-    Chain,
-    ChainDecorator,
-    Coin,
-    GasFee,
-    GasFeeSpeed,
-    Msg,
-    Response,
-    Transaction,
-    Balance,
-} from '@xdefi/chains-core';
-import { providers } from 'ethers';
-import 'reflect-metadata';
-import { ChainMsg } from './msg';
-import { some } from 'lodash';
-
+  DataSource,
+  Chain,
+  ChainDecorator,
+  Coin,
+  GasFee,
+  GasFeeSpeed,
+  Msg,
+  Response,
+  Transaction,
+  Balance,
+} from '@xdefi/chains-core'
+import { providers } from 'ethers'
+import 'reflect-metadata'
+import { ChainMsg } from './msg'
+import { some } from 'lodash'
 
 @ChainDecorator('EthereumProvider', {
-    deps: [],
-    providerType: 'EVM',
+  deps: [],
+  providerType: 'EVM',
 })
 export class EvmProvider extends Chain.Provider {
-    private rpcProvider: providers.StaticJsonRpcProvider;
+  private rpcProvider: providers.StaticJsonRpcProvider
 
-    constructor(
-        dataSource: DataSource,
-        options?: Chain.IOptions,
-    ) {
-        super(dataSource, options);
-        this.rpcProvider = new providers.StaticJsonRpcProvider(this.dataSource.manifest.rpcURL);
+  constructor(dataSource: DataSource, options?: Chain.IOptions) {
+    super(dataSource, options)
+    this.rpcProvider = new providers.StaticJsonRpcProvider(
+      this.dataSource.manifest.rpcURL
+    )
+  }
+
+  createMsg(data: Msg.Data): Msg {
+    return new ChainMsg(data)
+  }
+
+  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+    if (some(msgs, (msg) => !msg.hasSignature)) {
+      throw new Error('Some message do not have signature, sign it first')
     }
 
-    createMsg(data: Msg.Data): Msg {
-        return new ChainMsg(data);
+    const transactions = []
+
+    for (let msg of msgs) {
+      const tx = await this.rpcProvider.sendTransaction(msg.signature as string)
+      transactions.push(Transaction.fromData(tx))
     }
 
-    async broadcast(msgs: Msg[]): Promise<Transaction[]> {
-        if (some(msgs, (msg) => !msg.hasSignature)) {
-            throw new Error('Some message do not have signature, sign it first');
-        }
+    return transactions
+  }
 
-        const transactions = [];
+  async getTransactions(
+    address: string,
+    afterBlock?: number | string
+  ): Promise<Response<Transaction[], Transaction>> {
+    return new Response(
+      () => this.dataSource.getTransactions({ address, afterBlock }),
+      () => this.dataSource.subscribeTransactions({ address })
+    )
+  }
 
-        for (let msg of msgs) {
-            const tx = await this.rpcProvider.sendTransaction(
-                msg.signature as string
-            );
-            transactions.push(Transaction.fromData(tx));
-        }
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
+    return this.dataSource.estimateFee(msgs, speed)
+  }
 
-        return transactions;
-    }
+  async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
+    return new Response(
+      () => this.dataSource.getBalance({ address }),
+      () => this.dataSource.subscribeBalance({ address })
+    )
+  }
 
-    async getTransactions(address: string, afterBlock?: number | string): Promise<Response<Transaction[], Transaction>> {
-        return new Response(
-            () => this.dataSource.getTransactions({ address, afterBlock}),
-            () => this.dataSource.subscribeTransactions({ address })
-        )
-    }
+  async gasFeeOptions(): Promise<GasFee> {
+    return this.dataSource.gasFeeOptions()
+  }
 
-    async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
-        return this.dataSource.estimateFee(msgs, speed);
-    }
-
-    async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
-        return new Response(
-            () => this.dataSource.getBalance({ address }),
-            () => this.dataSource.subscribeBalance({ address })
-        );
-    }
-
-    async gasFeeOptions(): Promise<GasFee> {
-        return this.dataSource.gasFeeOptions();
-    }
-
-    async getNonce(address: string): Promise<number> {
-        return this.dataSource.getNonce(address);
-    }
+  async getNonce(address: string): Promise<number> {
+    return this.dataSource.getNonce(address)
+  }
 }

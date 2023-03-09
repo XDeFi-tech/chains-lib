@@ -1,2 +1,2 @@
-export * from './balances.subscription';
-export * from './transactions.subscription';
+export * from './balances.subscription'
+export * from './transactions.subscription'

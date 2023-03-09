@@ -27,6 +27,8 @@
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc --watch",
+    "lint": "eslint",
+    "clean": "rm -rf ./dist",
     "test": "jest"
   },
   "jest": {

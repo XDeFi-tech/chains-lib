@@ -14,32 +14,32 @@ import { ChainOptions } from 'core/chain/interfaces';
  *  - `deps` - Array of dependant classes
  */
 export function ChainDecorator(name: string, options?: ChainOptions) {
-    return function <T extends { new(...args: any[]): {} }>(target: T) {
-        if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
-            throw new Error('Cannot apply @Chain() decorator multiple times.');
+  return function <T extends { new (...args: any[]): {} }>(target: T) {
+    if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
+      throw new Error('Cannot apply @Chain() decorator multiple times.');
+    }
+
+    Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, target);
+
+    const types = Reflect.getMetadata(METADATA_KEY.DESIGN_PARAM_TYPES, target) || [];
+    Reflect.defineMetadata(METADATA_KEY.PARAM_TYPES, types, target);
+
+    // Auto-bind provided chain to di-container
+    DiContainer.bind(name).to(target).inSingletonScope();
+    DiContainer.onActivation(name, (_context, obj: any) => {
+      // Init dependencies
+      options?.deps?.forEach((dep: any) => {
+        if (typeof dep === 'function') {
+          new dep();
         }
+      });
 
-        Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, target);
+      return obj;
+    });
 
-        const types = Reflect.getMetadata(METADATA_KEY.DESIGN_PARAM_TYPES, target) || [];
-        Reflect.defineMetadata(METADATA_KEY.PARAM_TYPES, types, target);
+    // Bind all wallet provider to same scope name
+    DiContainer.bind(CHAIN_SCOPE_NAME).toService(name);
 
-        // Auto-bind provided chain to di-container
-        DiContainer.bind(name).to(target).inSingletonScope();
-        DiContainer.onActivation(name, (_context, obj: any) => {
-            // Init dependencies
-            options?.deps?.forEach((dep: any) => {
-                if (typeof dep === 'function') {
-                    new dep();
-                }
-            });
-
-            return obj;
-        });
-
-        // Bind all wallet provider to same scope name
-        DiContainer.bind(CHAIN_SCOPE_NAME).toService(name);
-
-        return target;
-    };
+    return target;
+  };
 }
