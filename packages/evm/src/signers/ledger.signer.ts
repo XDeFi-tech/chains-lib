@@ -2,6 +2,7 @@ import App from '@ledgerhq/hw-app-eth'
 import Transport from '@ledgerhq/hw-transport-webhid'
 import { Signer, SignerDecorator } from '@xdefi/chains-core'
 import { BigNumber, utils } from 'ethers'
+
 import { ChainMsg } from '../msg'
 
 export type Signature = {

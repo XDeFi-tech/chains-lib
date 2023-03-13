@@ -12,13 +12,15 @@ import {
   BalanceFilter,
   Balance,
 } from '@xdefi/chains-core'
-import { getBalance, getFees, getStatus, getTransaction } from './queries'
-import { ChainMsg } from '../../msg'
-import { EVMChains, EVM_MANIFESTS } from '../../manifests'
 import { utils } from 'ethers'
-import { subscribeBalances, subscribeTransactions } from './subscriptions'
 import { from, Observable } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
+
+import { ChainMsg } from '../../msg'
+import { EVMChains, EVM_MANIFESTS } from '../../manifests'
+
+import { subscribeBalances, subscribeTransactions } from './subscriptions'
+import { getBalance, getFees, getStatus, getTransaction } from './queries'
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -132,7 +134,7 @@ export class IndexerDataSource extends DataSource {
 
     return msgs.map((msg) => {
       const msgData = msg.toData().data
-      let feeForData =
+      const feeForData =
         msgData && msgData !== '0x'
           ? 68 * new TextEncoder().encode(msgData.toString()).length
           : 0

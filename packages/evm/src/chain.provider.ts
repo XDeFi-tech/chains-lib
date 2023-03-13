@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import {
   DataSource,
   Chain,
@@ -11,9 +12,9 @@ import {
   Balance,
 } from '@xdefi/chains-core'
 import { providers } from 'ethers'
-import 'reflect-metadata'
-import { ChainMsg } from './msg'
 import { some } from 'lodash'
+
+import { ChainMsg } from './msg'
 
 @ChainDecorator('EthereumProvider', {
   deps: [],
@@ -40,7 +41,7 @@ export class EvmProvider extends Chain.Provider {
 
     const transactions = []
 
-    for (let msg of msgs) {
+    for (const msg of msgs) {
       const tx = await this.rpcProvider.sendTransaction(msg.signature as string)
       transactions.push(Transaction.fromData(tx))
     }

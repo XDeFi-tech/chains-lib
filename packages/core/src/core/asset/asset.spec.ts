@@ -1,6 +1,6 @@
-import { Asset } from './asset';
+import { AssetData, Asset } from './asset';
 
-export const ASSET_DATA: Asset.Data = {
+export const ASSET_DATA: AssetData = {
   chainId: '1',
   name: 'Ethereum',
   symbol: 'ETH',

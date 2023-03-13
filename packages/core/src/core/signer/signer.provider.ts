@@ -1,5 +1,5 @@
 import { Injectable } from '../../common';
-import { Msg } from '../msg';
+import { MsgData } from '../msg';
 
 @Injectable()
 export abstract class Provider<S = any> {
@@ -22,7 +22,7 @@ export abstract class Provider<S = any> {
    * @param {Msg} msg The message to sign.
    * @returns {Promise<any>} A promise that resolves to the signature.
    */
-  abstract sign(derivation: string, msg: Msg.Data): Promise<S>;
+  abstract sign(derivation: string, msg: MsgData): Promise<S>;
 
   /**
    * Verifies if the given address is valid.

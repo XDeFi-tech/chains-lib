@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { Asset } from 'core/asset';
 
+export interface CoinData {
+  asset: Asset;
+  amount: string;
+}
+
 export class Coin {
   public readonly amount: BigNumber;
 
@@ -22,7 +27,7 @@ export class Coin {
   /**
    * Convert coin to object.
    */
-  public toData(): Coin.Data {
+  public toData(): CoinData {
     return {
       asset: this.asset,
       amount: this.amount.toFixed(),
@@ -85,12 +90,5 @@ export class Coin {
    */
   public dividedBy(other: BigNumber.Value): Coin {
     return new Coin(this.asset, this.amount.dividedBy(other));
-  }
-}
-
-export namespace Coin {
-  export interface Data {
-    asset: Asset;
-    amount: string;
   }
 }

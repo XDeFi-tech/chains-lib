@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { DiContainer } from 'common';
-import { CHAIN_SCOPE_NAME, METADATA_KEY } from '../constants';
 import { ChainDecorator } from 'core/decorators';
+
+import { CHAIN_SCOPE_NAME, METADATA_KEY } from '../constants';
 
 describe('chain.decorator', () => {
   beforeEach(() => {

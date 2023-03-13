@@ -1,5 +1,6 @@
 import { Signer, SignerDecorator } from '@xdefi/chains-core'
 import { utils, Wallet } from 'ethers'
+
 import { ChainMsg } from '../msg'
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)

@@ -14,7 +14,7 @@ import { ChainOptions } from 'core/chain/interfaces';
  *  - `deps` - Array of dependant classes
  */
 export function ChainDecorator(name: string, options?: ChainOptions) {
-  return function <T extends { new (...args: any[]): {} }>(target: T) {
+  return function <T extends { new (...args: any[]): object }>(target: T) {
     if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
       throw new Error('Cannot apply @Chain() decorator multiple times.');
     }

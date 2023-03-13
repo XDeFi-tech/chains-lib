@@ -1,7 +1,7 @@
 import { DiContainer } from 'common/di';
 import * as Chain from 'core/chain';
 import { Coin } from 'core/coin';
-import { Msg } from 'core/msg';
+import { Msg, MsgData } from 'core/msg';
 import * as Signer from 'core/signer';
 import { Transaction } from 'core/transaction';
 import { getChainsBySigner } from 'core/chain/helpers';
@@ -31,7 +31,7 @@ const createChainProvider = () => {
       throw new Error('Method not implemented.');
     }
 
-    createMsg(_data: Msg.Data): Msg {
+    createMsg(_data: MsgData): Msg {
       throw new Error('Method not implemented.');
     }
 
@@ -39,7 +39,7 @@ const createChainProvider = () => {
       throw new Error('Method not implemented.');
     }
 
-    getNonce(address: string): Promise<number> {
+    getNonce(_address: string): Promise<number> {
       throw new Error('Method not implemented.');
     }
   };

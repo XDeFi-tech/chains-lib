@@ -1,9 +1,22 @@
 import { ChainID } from 'core/chain';
 
-export class Asset {
-  protected data: Asset.Data;
+export interface AssetData {
+  id?: string;
+  chainId: ChainID;
+  name: string;
+  symbol: string;
+  icon: string;
+  native: boolean;
+  decimals?: number;
+  address?: string;
+  price?: string;
+  priceHistory?: number[][];
+}
 
-  constructor(data: Asset.Data) {
+export class Asset {
+  protected data: AssetData;
+
+  constructor(data: AssetData) {
     this.data = {
       chainId: data.chainId,
       name: data.name,
@@ -69,7 +82,7 @@ export class Asset {
    *
    * @param data object represents Asset
    */
-  public static fromData(data: Asset.Data): Asset {
+  public static fromData(data: AssetData): Asset {
     return new Asset(data);
   }
 
@@ -109,20 +122,5 @@ export class Asset {
    */
   public toString() {
     return this.symbol;
-  }
-}
-
-export namespace Asset {
-  export interface Data {
-    id?: string;
-    chainId: ChainID;
-    name: string;
-    symbol: string;
-    icon: string;
-    native: boolean;
-    decimals?: number;
-    address?: string;
-    price?: string;
-    priceHistory?: number[][];
   }
 }

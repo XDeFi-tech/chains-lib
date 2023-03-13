@@ -3,7 +3,7 @@ import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { SignerType } from 'core/signer/interfaces';
 
 export function SignerDecorator(type: SignerType) {
-  return function <T extends new (...args: any[]) => {}>(target: T) {
+  return function <T extends new (...args: any[]) => object>(target: T) {
     if (Reflect.hasOwnMetadata(METADATA_KEY.PARAM_TYPES, target)) {
       throw new Error('Cannot apply @Signer.Decorator() decorator multiple times.');
     }

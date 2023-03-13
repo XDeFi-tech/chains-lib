@@ -1,4 +1,12 @@
-export abstract class Transaction<InData = {}> {
+export interface TransactionData {
+  hash: string;
+  to: string;
+  from: string;
+  status: string;
+  data?: string;
+}
+
+export abstract class Transaction<InData extends object = object> {
   constructor(public readonly data: InData) {}
 
   /**
@@ -6,22 +14,12 @@ export abstract class Transaction<InData = {}> {
    *
    * @param `data` represents transaction
    */
-  public static fromData(data: any): Transaction {
+  public static fromData(data: any): Transaction<object> {
     return new (this as any)(data);
   }
 
   /**
    * Return transaction in appropriate format
    */
-  public abstract toData(): Transaction.Data;
-}
-
-export namespace Transaction {
-  export interface Data {
-    hash: string;
-    to: string;
-    from: string;
-    status: string;
-    data?: string;
-  }
+  public abstract toData(): TransactionData;
 }

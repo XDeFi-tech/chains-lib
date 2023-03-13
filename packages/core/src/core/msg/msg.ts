@@ -2,10 +2,16 @@
  * Abstract message class which allows to create chain specific message
  */
 
-export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
+export type MsgData = any;
+
+export abstract class Msg<
+  OutData extends object = object,
+  TxData extends object = object,
+  FeeData extends object = object
+> {
   public signature: string | undefined;
 
-  constructor(public readonly data: Msg.Data) {}
+  constructor(public readonly data: MsgData) {}
 
   public abstract getFee(): FeeData;
 
@@ -21,7 +27,7 @@ export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
    *
    * @param `data` object represents msg
    */
-  public static fromData(data: Msg.Data): Msg {
+  public static fromData(data: MsgData): Msg {
     return new (this as any)(data);
   }
 
@@ -46,8 +52,4 @@ export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
     this.signature = signature;
     return this as Msg<OutData>;
   }
-}
-
-export namespace Msg {
-  export type Data = any;
 }

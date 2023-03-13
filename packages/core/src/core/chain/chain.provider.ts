@@ -1,6 +1,6 @@
 import { Injectable } from 'common';
 import { Coin } from 'core/coin';
-import { Msg } from 'core/msg';
+import { Msg, MsgData } from 'core/msg';
 import { Provider as SignerProvider, SignerType } from 'core/signer';
 import { Transaction } from 'core/transaction';
 import 'reflect-metadata';
@@ -104,7 +104,7 @@ export abstract class Provider {
    * @param data The data object that represents the message.
    * @returns A new instance of a message.
    */
-  abstract createMsg(data: Msg.Data): Msg;
+  abstract createMsg(data: MsgData): Msg;
 
   /**
    * Retrieves the current gas fee options for the chain, including base and priority fees per gas for EIP-1559 chains.
@@ -131,7 +131,7 @@ export abstract class Provider {
    * @returns A promise that resolves to the transaction hash of the broadcasted transaction.
    */
   public async signAndBroadcast(derivation: string, signer: SignerProvider, msgs: Msg[]) {
-    for await (let msg of msgs) {
+    for await (const msg of msgs) {
       const signature = await signer.sign(derivation, msg.toData());
       msg.sign(signature);
     }

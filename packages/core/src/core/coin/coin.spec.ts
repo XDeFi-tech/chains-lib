@@ -1,4 +1,5 @@
-import { Asset } from '../asset';
+import { AssetData, Asset } from '../asset';
+
 import { Coin } from './coin';
 
 // Asset with structure from Asset Service
@@ -15,7 +16,7 @@ const MOCK_ASSET = {
   },
 };
 
-export const ASSET_DATA: Asset.Data = {
+export const ASSET_DATA: AssetData = {
   chainId: '1',
   name: MOCK_ASSET.name,
   symbol: MOCK_ASSET.symbol,

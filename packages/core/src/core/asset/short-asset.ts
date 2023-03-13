@@ -1,7 +1,13 @@
 import { ChainID } from 'core/chain';
 
+export interface ShortAssetData {
+  chainId: ChainID;
+  address?: string;
+  native: boolean;
+}
+
 export class ShortAsset {
-  constructor(protected data: ShortAsset.Data) {}
+  constructor(protected data: ShortAssetData) {}
 
   get chainId() {
     return this.data.chainId;
@@ -16,7 +22,7 @@ export class ShortAsset {
    *
    * @param data object represents Asset
    */
-  public static fromData(data: ShortAsset.Data): ShortAsset {
+  public static fromData(data: ShortAssetData): ShortAsset {
     return new ShortAsset(data);
   }
 
@@ -27,7 +33,7 @@ export class ShortAsset {
    */
   public static fromJson(json: string): ShortAsset {
     const data = JSON.parse(json);
-    return ShortAsset.fromData(data);
+    return this.fromData(data);
   }
 
   /**
@@ -52,13 +58,5 @@ export class ShortAsset {
    */
   public toString() {
     return `${this.chainId}:${this.address}`;
-  }
-}
-
-export namespace ShortAsset {
-  export interface Data {
-    chainId: ChainID;
-    address?: string;
-    native: boolean;
   }
 }

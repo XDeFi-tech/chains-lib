@@ -1,11 +1,11 @@
-import { Transaction } from './transaction';
+import { Transaction, TransactionData } from './transaction';
 
 type InputData = {
   hash: string;
 };
 
 class MyTransaction extends Transaction<InputData> {
-  public toData(): Transaction.Data {
+  public toData(): TransactionData {
     return {
       hash: '',
       to: '',
