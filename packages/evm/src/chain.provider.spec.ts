@@ -1,8 +1,8 @@
-import 'reflect-metadata';
-import { ChainMsg } from './msg';
-import { EvmProvider } from './chain.provider';
-import { IndexerDataSource } from './datasource';
-import { EVM_MANIFESTS } from './manifests';
+import 'reflect-metadata'
+import { ChainMsg } from './msg'
+import { EvmProvider } from './chain.provider'
+import { IndexerDataSource } from './datasource'
+import { EVM_MANIFESTS } from './manifests'
 
 // const ADDRESS_MOCK = {
 //     address: '0xCbA98362e199c41E1864D0923AF9646d3A648451',
@@ -17,47 +17,47 @@ import { EVM_MANIFESTS } from './manifests';
 // };
 
 describe('chain.provider', () => {
-    let evmProvider: EvmProvider;
+  let evmProvider: EvmProvider
 
-    beforeEach(() => {
-        evmProvider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    });
+  beforeEach(() => {
+    evmProvider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum))
+  })
 
-    it('createMsg(): should create message with data', () => {
-        const msg = evmProvider.createMsg({});
+  it('createMsg(): should create message with data', () => {
+    const msg = evmProvider.createMsg({})
 
-        console.log('msg', msg);
+    console.log('msg', msg)
 
-        expect(msg).toBeInstanceOf(ChainMsg);
-    });
+    expect(msg).toBeInstanceOf(ChainMsg)
+  })
 
-    // it("getAddress(): should throw an error if derivation path is invalid", async () => {
-    //     const signer = new EvmProvider();
-    //     await expect(signer.getAddress("0/0/0/0/0")).rejects.toEqual("Error");
-    // });
-    //
-    // it("getAddress(): should return address", async () => {
-    //     const signer = new EvmProvider();
-    //     await expect(signer.getAddress("44'/60'/0'/0/0")).resolves.toEqual(
-    //         ADDRESS_MOCK.address
-    //     );
-    // });
-    //
-    // it("sign(): show throw an error if msg is invalid", async () => {
-    //     const signer = new EvmProvider();
-    //     await expect(
-    //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
-    //     ).rejects.toEqual("Error");
-    // });
-    //
-    // it("sign(): show return signature", async () => {
-    //     const signer = new EvmProvider();
-    //     await expect(
-    //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
-    //     ).resolves.toEqual({
-    //         v: 1,
-    //         r: "0x2",
-    //         s: "0x3",
-    //     });
-    // });
-});
+  // it("getAddress(): should throw an error if derivation path is invalid", async () => {
+  //     const signer = new EvmProvider();
+  //     await expect(signer.getAddress("0/0/0/0/0")).rejects.toEqual("Error");
+  // });
+  //
+  // it("getAddress(): should return address", async () => {
+  //     const signer = new EvmProvider();
+  //     await expect(signer.getAddress("44'/60'/0'/0/0")).resolves.toEqual(
+  //         ADDRESS_MOCK.address
+  //     );
+  // });
+  //
+  // it("sign(): show throw an error if msg is invalid", async () => {
+  //     const signer = new EvmProvider();
+  //     await expect(
+  //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
+  //     ).rejects.toEqual("Error");
+  // });
+  //
+  // it("sign(): show return signature", async () => {
+  //     const signer = new EvmProvider();
+  //     await expect(
+  //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
+  //     ).resolves.toEqual({
+  //         v: 1,
+  //         r: "0x2",
+  //         s: "0x3",
+  //     });
+  // });
+})

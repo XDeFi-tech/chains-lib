@@ -2,53 +2,54 @@
  * Abstract message class which allows to create chain specific message
  */
 
-export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
-    public signature: string | undefined;
+export type MsgData = any;
 
-    constructor(public readonly data: Msg.Data) {
-    }
+export abstract class Msg<
+  OutData extends object = object,
+  TxData extends object = object,
+  FeeData extends object = object
+> {
+  public signature: string | undefined;
 
-    public abstract getFee(): FeeData;
+  constructor(public readonly data: MsgData) {}
 
-    /**
-     * Check is current Msg has signature
-     */
-    get hasSignature(): boolean {
-        return Boolean(this.signature);
-    }
+  public abstract getFee(): FeeData;
 
-    /**
-     * Create a new Msg using provided data object
-     *
-     * @param `data` object represents msg
-     */
-    public static fromData(data: Msg.Data): Msg {
-        return new (this as any)(data);
-    }
+  /**
+   * Check is current Msg has signature
+   */
+  get hasSignature(): boolean {
+    return Boolean(this.signature);
+  }
 
-    /**
-     * Convert JSON string to Msg object
-     *
-     * @param `json` string that represents msg object
-     */
-    public static fromJson(json: string): Msg {
-        const data = JSON.parse(json);
-        return this.fromData(data);
-    }
+  /**
+   * Create a new Msg using provided data object
+   *
+   * @param `data` object represents msg
+   */
+  public static fromData(data: MsgData): Msg {
+    return new (this as any)(data);
+  }
 
-    public abstract toData(): OutData;
+  /**
+   * Convert JSON string to Msg object
+   *
+   * @param `json` string that represents msg object
+   */
+  public static fromJson(json: string): Msg {
+    const data = JSON.parse(json);
+    return this.fromData(data);
+  }
 
-    public abstract buildTx(): TxData;
+  public abstract toData(): OutData;
 
-    /**
-     * Assign signature to the message
-     */
-    public async sign(signature: string): Promise<Msg<OutData>> {
-        this.signature = signature;
-        return this as Msg<OutData>;
-    }
-}
+  public abstract buildTx(): TxData;
 
-export namespace Msg {
-    export type Data = any;
+  /**
+   * Assign signature to the message
+   */
+  public async sign(signature: string): Promise<Msg<OutData>> {
+    this.signature = signature;
+    return this as Msg<OutData>;
+  }
 }

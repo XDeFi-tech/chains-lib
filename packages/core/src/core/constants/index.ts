@@ -1,4 +1,5 @@
 import { METADATA_KEY as INV_METADATA_KEY } from 'inversify';
+
 import * as OWN_METADATA_KEY from './metadata';
 
 export const CHAIN_SCOPE_NAME = 'CHAIN';

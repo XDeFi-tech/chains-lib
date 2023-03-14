@@ -1,3 +1,3 @@
 export interface Integration {
-    onMessage(msg: any): void;
+  onMessage(msg: any): void;
 }

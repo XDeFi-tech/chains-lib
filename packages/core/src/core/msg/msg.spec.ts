@@ -1,5 +1,5 @@
-// @ts-ignore
-import { Msg } from './msg';
+// import { Msg } from './msg';
+export {};
 //
 // const MSG_DATA: Msg.Data = 'My Message';
 //

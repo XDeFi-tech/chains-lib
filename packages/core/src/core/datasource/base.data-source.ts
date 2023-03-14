@@ -4,58 +4,58 @@ import { providers } from 'ethers';
 import { Observable } from 'rxjs';
 
 export interface BalanceFilter {
-    address: string;
+  address: string;
 }
 
 export interface TransactionsFilter {
-    address: string;
-    afterBlock?: number | string;
+  address: string;
+  afterBlock?: number | string;
 }
 
 export interface Balance {
-    asset: {
-        chain: string;
-        contract: string;
-    };
-    amount: {
-        value: number;
-        scalingFactor: number;
-    };
-    address: string;
+  asset: {
+    chain: string;
+    contract: string;
+  };
+  amount: {
+    value: number;
+    scalingFactor: number;
+  };
+  address: string;
 }
 
 export interface BalancesData {
-    ethereumBalances: Balance[];
+  ethereumBalances: Balance[];
 }
 
 export abstract class DataSource {
-    // Share base chain & call methods without any code
-    public rpcProvider: providers.StaticJsonRpcProvider;
-    public manifest: Manifest;
+  // Share base chain & call methods without any code
+  public rpcProvider: providers.StaticJsonRpcProvider;
+  public manifest: Manifest;
 
-    constructor(manifest: Manifest) {
-        // pass config here, get it in the provider
-        this.manifest = manifest;
-        this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
-    }
+  constructor(manifest: Manifest) {
+    // pass config here, get it in the provider
+    this.manifest = manifest;
+    this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
+  }
 
-    abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
+  abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
 
-    abstract subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>>;
+  abstract subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>>;
 
-    abstract getTransactions(filter: TransactionsFilter): Promise<Transaction[]>;
+  abstract getTransactions(filter: TransactionsFilter): Promise<Transaction[]>;
 
-    abstract subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>>;
+  abstract subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>>;
 
-    abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
 
-    abstract gasFeeOptions(): Promise<GasFee>;
+  abstract gasFeeOptions(): Promise<GasFee>;
 
-    async getNonce(address: string): Promise<number> {
-        return 0;
-    }
+  async getNonce(_address: string): Promise<number> {
+    return 0;
+  }
 
-    get name(): string {
-        return this.constructor.name;
-    }
+  get name(): string {
+    return this.constructor.name;
+  }
 }
