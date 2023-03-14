@@ -7,6 +7,7 @@ import {
   GasFee,
   GasFeeSpeed,
   Msg,
+  MsgData,
   Response,
   Transaction,
   Balance,
@@ -30,7 +31,7 @@ export class EvmProvider extends Chain.Provider {
     )
   }
 
-  createMsg(data: Msg.Data): Msg {
+  createMsg(data: MsgData): Msg {
     return new ChainMsg(data)
   }
 
