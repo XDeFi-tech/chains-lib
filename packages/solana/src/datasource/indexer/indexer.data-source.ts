@@ -11,6 +11,7 @@ import {
     TransactionsFilter,
     BalanceFilter,
     Balance,
+    FeeData,
 } from '@xdefi/chains-core';
 import { ChainMsg } from '../../msg';
 import { Observable } from 'rxjs';
@@ -64,7 +65,7 @@ export class IndexerDataSource extends DataSource {
         throw new Error('Method not implemented.');
     }
 
-    async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<Msg[]> {
+    async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
         throw new Error('Method not implemented.');
     }
 

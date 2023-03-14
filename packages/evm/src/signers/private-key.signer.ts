@@ -16,7 +16,10 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
 
     async sign(privateKey: string, msg: ChainMsg): Promise<S> {
         const wallet = new Wallet(privateKey);
-        const signature = await wallet.signTransaction(msg.buildTx());
+        const txData = await msg.buildTx();
+        const signature = await wallet.signTransaction({
+
+        });
         msg.sign(signature);
         return signature as S;
     }

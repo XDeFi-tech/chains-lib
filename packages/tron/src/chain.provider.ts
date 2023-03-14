@@ -9,6 +9,7 @@ import {
     Response,
     Transaction,
     Balance,
+    FeeData,
 } from '@xdefi/chains-core';
 import 'reflect-metadata';
 import { ChainMsg } from './msg';
@@ -18,8 +19,6 @@ import { ChainMsg } from './msg';
   providerType: 'Tron',
 })
 export class TronProvider extends Chain.Provider {
-    private rpcProvider: any;
-
     constructor(
         dataSource: DataSource,
         options?: Chain.IOptions,
@@ -39,7 +38,7 @@ export class TronProvider extends Chain.Provider {
         );
     }
 
-    async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
+    async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
         throw new Error('Method not implemented.');
     }
 

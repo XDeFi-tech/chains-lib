@@ -11,6 +11,7 @@ import {
     TransactionsFilter,
     BalanceFilter,
     Balance,
+    FeeData,
 } from '@xdefi/chains-core';
 import { getBalance, getFees, getStatus, getTransaction } from './queries';
 import { ChainMsg } from '../../msg';
@@ -114,7 +115,7 @@ export class IndexerDataSource extends DataSource {
         )
     }
 
-    async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<Msg[]> {
+    async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed = GasFeeSpeed.medium): Promise<FeeData[]> {
         const { data } = await getFees(this.manifest.chain);
         const fee = data[this.manifest.chain].fee;
         const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number';
@@ -130,24 +131,19 @@ export class IndexerDataSource extends DataSource {
                     ? 68 * new TextEncoder().encode(msgData.toString()).length
                     : 0;
             const gasLimit = transactionFee + feeForData;
-            const feeData = isEIP1559
+            return isEIP1559
                 ? {
                     gasLimit,
-                    gasPrice: fee[speed]?.baseFeePerGas,
+                    gasPrice: undefined,
                     maxFeePerGas: fee[speed]?.maxFeePerGas,
                     maxPriorityFeePerGas: fee[speed]?.priorityFeePerGas,
                 }
                 : {
                     gasLimit,
                     gasPrice: fee[speed],
-                    maxFeePerGas: null,
-                    maxPriorityFeePerGas: null,
+                    maxFeePerGas: undefined,
+                    maxPriorityFeePerGas: undefined,
                 };
-
-            return new ChainMsg({
-                ...msg.toData(),
-                ...feeData,
-            });
         });
     }
 

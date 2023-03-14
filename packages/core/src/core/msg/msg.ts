@@ -1,3 +1,5 @@
+import { Provider } from 'core/chain';
+
 /**
  * Abstract message class which allows to create chain specific message
  */
@@ -5,8 +7,10 @@
 export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
     public signature: string | undefined;
 
-    constructor(public readonly data: Msg.Data) {
-    }
+    constructor(
+        public readonly data: Msg.Data,
+        public readonly provider?: Provider,
+    ) { }
 
     public abstract getFee(): FeeData;
 
@@ -38,14 +42,14 @@ export abstract class Msg<OutData = {}, TxData = {}, FeeData = {}> {
 
     public abstract toData(): OutData;
 
-    public abstract buildTx(): TxData;
+    public abstract buildTx(): Promise<TxData>;
 
     /**
      * Assign signature to the message
      */
-    public async sign(signature: string): Promise<Msg<OutData>> {
+    public async sign(signature: string): Promise<Msg<OutData, TxData, FeeData>> {
         this.signature = signature;
-        return this as Msg<OutData>;
+        return this as Msg<OutData, TxData, FeeData>;
     }
 }
 
