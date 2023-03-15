@@ -1,1 +1,1 @@
-export * from './balances.query';
+export * from './balances.query'

@@ -1,1 +1,1 @@
-export * from './chain.provider';
+export * from './chain.provider'
