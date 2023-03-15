@@ -4,7 +4,6 @@ import {
   Coin,
   GasFee,
   GasFeeSpeed,
-  Msg,
   Transaction,
   Injectable,
   Chain,
@@ -124,37 +123,40 @@ export class IndexerDataSource extends DataSource {
     )
   }
 
-    async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed = GasFeeSpeed.medium): Promise<FeeData[]> {
-        const { data } = await getFees(this.manifest.chain);
-        const fee = data[this.manifest.chain].fee;
-        const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number';
-        const transactionFee = 21000; // Paid for every transaction
+  async estimateFee(
+    msgs: ChainMsg[],
+    speed: GasFeeSpeed = GasFeeSpeed.medium
+  ): Promise<FeeData[]> {
+    const { data } = await getFees(this.manifest.chain)
+    const fee = data[this.manifest.chain].fee
+    const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number'
+    const transactionFee = 21000 // Paid for every transaction
 
     // gasLimit = 21000 + 68 * dataByteLength
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
 
-        return msgs.map((msg) => {
-            const msgData = msg.toData().data;
-            let feeForData =
-                msgData && msgData !== '0x'
-                    ? 68 * new TextEncoder().encode(msgData.toString()).length
-                    : 0;
-            const gasLimit = transactionFee + feeForData;
-            return isEIP1559
-                ? {
-                    gasLimit,
-                    gasPrice: undefined,
-                    maxFeePerGas: fee[speed]?.maxFeePerGas,
-                    maxPriorityFeePerGas: fee[speed]?.priorityFeePerGas,
-                }
-                : {
-                    gasLimit,
-                    gasPrice: fee[speed],
-                    maxFeePerGas: undefined,
-                    maxPriorityFeePerGas: undefined,
-                };
-        });
-    }
+    return msgs.map((msg) => {
+      const msgData = msg.toData().data
+      const feeForData =
+        msgData && msgData !== '0x'
+          ? 68 * new TextEncoder().encode(msgData.toString()).length
+          : 0
+      const gasLimit = transactionFee + feeForData
+      return isEIP1559
+        ? {
+            gasLimit,
+            gasPrice: undefined,
+            maxFeePerGas: fee[speed]?.maxFeePerGas,
+            maxPriorityFeePerGas: fee[speed]?.priorityFeePerGas,
+          }
+        : {
+            gasLimit,
+            gasPrice: fee[speed],
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+          }
+    })
+  }
 
   async gasFeeOptions(): Promise<GasFee> {
     const { data } = await getFees(this.manifest.chain)

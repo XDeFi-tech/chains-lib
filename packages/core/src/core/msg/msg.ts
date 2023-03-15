@@ -13,10 +13,7 @@ export abstract class Msg<
 > {
   public signature: string | undefined;
 
-    constructor(
-      public readonly data: MsgData,
-      public readonly provider?: Provider,
-    ) { }
+  constructor(public readonly data: MsgData, public readonly provider?: Provider) {}
 
   public abstract getFee(): FeeData;
 

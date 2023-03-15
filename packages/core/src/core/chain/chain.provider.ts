@@ -34,10 +34,7 @@ export interface IOptions {
 @Injectable()
 export abstract class Provider {
   public readonly rpcProvider: any;
-  constructor(
-    public readonly dataSource: DataSource,
-    public readonly options?: IOptions,
-  ) {
+  constructor(public readonly dataSource: DataSource, public readonly options?: IOptions) {
     this.dataSource = dataSource;
     this.setSigner = this.setSigner.bind(this);
     forEach(options?.signers, (signer: typeof SignerProvider) => this.setSigner(signer));

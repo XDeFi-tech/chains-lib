@@ -6,6 +6,7 @@ import {
     GasFee,
     GasFeeSpeed,
     Msg,
+    MsgData,
     Response,
     Transaction,
     Balance,
@@ -27,7 +28,7 @@ export class SolanaProvider extends Chain.Provider {
         // this.rpcProvider = ;
     }
 
-    createMsg(data: Msg.Data): Msg {
+    createMsg(data: MsgData): Msg {
         return new ChainMsg(data);
     }
 
