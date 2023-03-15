@@ -12,4 +12,3 @@ export * from './asset';
 export * from './controller';
 export * from './observer';
 export * from './interfaces';
-

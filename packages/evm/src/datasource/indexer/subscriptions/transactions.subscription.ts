@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client';
-import { EVMChains } from '../../../manifests';
-import { gqlClient } from '@xdefi/chains-core';
+import { gql } from '@apollo/client'
+import { gqlClient } from '@xdefi/chains-core'
+
+import { EVMChains } from '../../../manifests'
 
 export const ETHEREUM_TRANSACTIONS_SUBSCRIPTION = gql`
   subscription Transactions {
@@ -15,19 +16,19 @@ export const ETHEREUM_TRANSACTIONS_SUBSCRIPTION = gql`
 `
 
 export const subscribeTransactions = (chain: EVMChains, address: string) => {
-    let query;
-    switch (chain) {
-        case EVMChains.ethereum:
-            query = ETHEREUM_TRANSACTIONS_SUBSCRIPTION;
-            break;
-        default:
-            throw new Error('Not implemented yet');
-    }
+  let query
+  switch (chain) {
+    case EVMChains.ethereum:
+      query = ETHEREUM_TRANSACTIONS_SUBSCRIPTION
+      break
+    default:
+      throw new Error('Not implemented yet')
+  }
 
-    return gqlClient.subscribe({
-        query,
-        variables: {
-            address
-        }
-    })
+  return gqlClient.subscribe({
+    query,
+    variables: {
+      address,
+    },
+  })
 }

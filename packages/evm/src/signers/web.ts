@@ -1,7 +1,8 @@
-import { Signer } from '@xdefi/chains-core';
-import { LedgerSigner } from './ledger.signer';
-import { PrivateKeySigner } from './private-key.signer';
+import { Signer } from '@xdefi/chains-core'
 
-const signers: typeof Signer.Provider[] = [LedgerSigner, PrivateKeySigner];
+import { LedgerSigner } from './ledger.signer'
+import { PrivateKeySigner } from './private-key.signer'
 
-export default signers;
+const signers: typeof Signer.Provider[] = [LedgerSigner, PrivateKeySigner]
+
+export default signers
