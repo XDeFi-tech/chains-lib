@@ -19,12 +19,14 @@ to: packages/<%= name.toLowerCase() %>/package.json
     "@xdefi/chains-core": "*",
     "bignumber.js": "^9.0.2",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "build": "tsc --build",
-    "watch": "tsc --watch",
+    "build": "webpack --config webpack.prod.js",
+    "watch": "webpack --config webpack.dev.js",
+    "clean": "rimraf dist .turbo node_modules",
     "test": "jest"
   }
 }

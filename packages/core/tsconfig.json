@@ -5,7 +5,7 @@
       "esnext",
       "dom"
     ],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "outDir": "./dist",
     "paths": {
       "*": [
