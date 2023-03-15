@@ -9,6 +9,7 @@ import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { GasFee, GasFeeSpeed } from 'core/fee';
 import { Balance, DataSource, Response } from 'core';
 import { forEach } from 'lodash';
+import { FeeData } from 'core/interfaces';
 
 export interface IOptions {
   signers?: typeof SignerProvider[];
@@ -32,6 +33,7 @@ export interface IOptions {
  */
 @Injectable()
 export abstract class Provider {
+  public readonly rpcProvider: any;
   constructor(public readonly dataSource: DataSource, public readonly options?: IOptions) {
     this.dataSource = dataSource;
     this.setSigner = this.setSigner.bind(this);
@@ -86,7 +88,7 @@ export abstract class Provider {
    * @param {GasFeeSpeed} speed - An enumerated value indicating the speed at which the transaction should be processed. Possible values are "high", "medium", and "low".
    * @returns {Promise<Msg[]>} - A promise that resolves with an array of Msg objects representing the messages with the calculated transaction fees included.
    */
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
 
   /**
    * Sends a list of signed messages to the RPC provider and returns a list of corresponding transactions.

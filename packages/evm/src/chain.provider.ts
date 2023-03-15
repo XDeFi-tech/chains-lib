@@ -11,18 +11,19 @@ import {
   Response,
   Transaction,
   Balance,
+  FeeData,
 } from '@xdefi/chains-core'
 import { providers } from 'ethers'
 import { some } from 'lodash'
 
 import { ChainMsg } from './msg'
 
-@ChainDecorator('EthereumProvider', {
+@ChainDecorator('EvmProvider', {
   deps: [],
   providerType: 'EVM',
 })
 export class EvmProvider extends Chain.Provider {
-  private rpcProvider: providers.StaticJsonRpcProvider
+  rpcProvider: providers.StaticJsonRpcProvider
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options)
@@ -32,7 +33,7 @@ export class EvmProvider extends Chain.Provider {
   }
 
   createMsg(data: MsgData): Msg {
-    return new ChainMsg(data)
+    return new ChainMsg(data, this)
   }
 
   async broadcast(msgs: Msg[]): Promise<Transaction[]> {
@@ -60,7 +61,7 @@ export class EvmProvider extends Chain.Provider {
     )
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     return this.dataSource.estimateFee(msgs, speed)
   }
 

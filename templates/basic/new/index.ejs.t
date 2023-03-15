@@ -1,5 +1,7 @@
 ---
-to: apps/<%= name.toLowerCase() %>/src/index.ts
+to: packages/<%= name.toLowerCase() %>/src/index.ts
 ---
 
-export * from "./chain.provider.ts";
+export * from './chain.provider';
+export * from './manifests';
+export * from './datasource';

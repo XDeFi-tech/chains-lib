@@ -2,6 +2,7 @@ import { Manifest } from 'core/chain';
 import { Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
 import { Observable } from 'rxjs';
+import { FeeData } from 'core/interfaces';
 
 export interface BalanceFilter {
   address: string;
@@ -47,7 +48,7 @@ export abstract class DataSource {
 
   abstract subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>>;
 
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
 
   abstract gasFeeOptions(): Promise<GasFee>;
 

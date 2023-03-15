@@ -10,9 +10,6 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
   }
 
   async getAddress(privateKey: string): Promise<string> {
-    if (!this.verifyAddress(privateKey)) {
-      throw new Error('Invalid address, should start with "0x"')
-    }
     const wallet = new Wallet(privateKey)
 
     return wallet.address
@@ -20,7 +17,8 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
 
   async sign(privateKey: string, msg: ChainMsg): Promise<S> {
     const wallet = new Wallet(privateKey)
-    const signature = await wallet.signTransaction(msg.buildTx())
+    // const txData = await msg.buildTx()
+    const signature = await wallet.signTransaction({})
     msg.sign(signature)
     return signature as S
   }
