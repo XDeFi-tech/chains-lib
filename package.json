@@ -8,10 +8,12 @@
     "examples/*"
   ],
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "watch": "turbo run watch --parallel",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "turbo run clean && rimraf node_modules",
     "typedoc": "turbo run typedoc",
@@ -25,6 +27,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.21.0",
     "babel-loader": "^9.1.2",
+    "husky": "^8.0.3",
     "prettier": "^2.5.1",
     "terser-webpack-plugin": "^5.3.7",
     "ts-loader": "^9.4.2",
