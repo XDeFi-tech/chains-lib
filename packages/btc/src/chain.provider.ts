@@ -11,6 +11,7 @@ import {
   Transaction,
   Balance,
 } from '@xdefi/chains-core'
+
 import 'reflect-metadata'
 import { BitcoinChainMessage } from './bitcoinMessage'
 
@@ -58,7 +59,7 @@ export class BtcProvider extends Chain.Provider {
     return this.dataSource.getNonce(address)
   }
 
-  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
     throw new Error('Method not implemented.')
   }
 }

@@ -21,11 +21,14 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
+    "eslint-config-custom": "*",
     "ts-node": "^10.7.0"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --config webpack.dev.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "clean": "rimraf dist .turbo node_modules",
     "test": "jest"
   }

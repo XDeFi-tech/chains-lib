@@ -5,7 +5,9 @@ export interface BitcoinMessageBody {
   feeEstimation: FeeEstimation
 }
 
-export interface BitcoinTxBody {}
+export interface BitcoinTxBody {
+  data: any
+}
 
 export interface FeeEstimation {
   fee: null | BigNumber

@@ -2,7 +2,6 @@ import {
   Asset,
   DataSource,
   Coin,
-  GasFee,
   GasFeeSpeed,
   Msg,
   Transaction,
@@ -13,10 +12,12 @@ import {
   Balance,
 } from '@xdefi/chains-core'
 import { utils } from 'ethers'
-import { BitcoinChainMessage, FeeEstimation } from '../../bitcoinMessage'
 import { Observable } from 'rxjs'
-import { getBalance, getStatus, getTransaction, getFees } from './queries'
 import BigNumber from 'bignumber.js'
+
+import { BitcoinChainMessage } from '../../bitcoinMessage'
+
+import { getBalance, getStatus, getTransaction, getFees } from './queries'
 
 export type BitcoinFees = null | { [key in GasFeeSpeed]: number }
 
@@ -57,7 +58,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async subscribeBalance(
-    filter: BalanceFilter
+    _filter: BalanceFilter
   ): Promise<Observable<Balance[]>> {
     throw new Error('Method not implemented.')
   }
@@ -87,7 +88,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async subscribeTransactions(
-    filter: TransactionsFilter
+    _filter: TransactionsFilter
   ): Promise<Observable<Transaction>> {
     throw new Error('Method not implemented.')
   }
@@ -115,7 +116,7 @@ export class IndexerDataSource extends DataSource {
       : null
   }
 
-  async getNonce(address: string): Promise<number> {
+  async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.')
   }
 }

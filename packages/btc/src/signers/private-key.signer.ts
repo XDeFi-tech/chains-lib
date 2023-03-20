@@ -1,6 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi/chains-core'
-import { BitcoinChainMessage } from '../bitcoinMessage'
 import * as Bitcoin from 'bitcoinjs-lib'
+
+import { BitcoinChainMessage } from '../bitcoinMessage'
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
@@ -20,7 +21,7 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     throw new Error('Method not implemented.')
   }
 
-  async sign(privateKey: string, msg: BitcoinChainMessage): Promise<S> {
+  async sign(_privateKey: string, _msg: BitcoinChainMessage): Promise<S> {
     throw new Error('Method not implemented.')
   }
 }
