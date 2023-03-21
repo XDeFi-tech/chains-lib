@@ -10,7 +10,7 @@ export enum EVMChains {
   aurora = 'aurora',
 }
 
-export const EVM_MANIFESTS: {[key in EVMChains]: Chain.Manifest} = {
+export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',
