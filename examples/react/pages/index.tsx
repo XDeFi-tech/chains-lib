@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState, useContext } from 'react'
+'use clients'
+import React, { useCallback, useState, useContext } from 'react'
 import type { NextPage } from 'next'
-import styles from '../styles/Home.module.css'
 import {
   Container,
   Typography,
@@ -11,16 +11,10 @@ import {
   TextField,
   Box,
 } from '@mui/material'
+import { Chain } from '@xdefi/chains-core'
 import { ChainsContext } from '../context/chains.context'
 import BalancesComponent from '../components/balances.component'
 import TransactionsComponent from '../components/transactions.component'
-import { TokenType } from '@xdefi/chains-evm/dist/msg'
-import { Chain, Signer, SignerDecorator } from '@xdefi/chains-core'
-import {
-  IndexerDataSource,
-  EvmProvider,
-  EVM_MANIFESTS,
-} from '@xdefi/chains-evm'
 
 const MOCK_TX_TYPE_ONE = {
   to: '0x76075A5997be82E39d9A3c8Eae660E74E1D9984B',

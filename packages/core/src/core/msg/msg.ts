@@ -45,7 +45,7 @@ export abstract class Msg<
 
   public abstract toData(): OutData;
 
-  public abstract buildTx(): Primise<TxData>;
+  public abstract buildTx(): Promise<TxData>;
 
   /**
    * Assign signature to the message

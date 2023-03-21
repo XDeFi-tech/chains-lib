@@ -6,8 +6,7 @@
         "^build"
       ],
       "outputs": [
-        "dist/**",
-        ",.next/**"
+        "dist/**"
       ]
     },
     "lint": {
@@ -21,9 +20,12 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "dependsOn": [
+        "^build"
+      ]
     },
     "watch": {
+      "cache": false,
       "outputs": []
     },
     "typedoc": {

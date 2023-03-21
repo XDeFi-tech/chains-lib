@@ -1,9 +1,5 @@
 import { Chain } from '@xdefi/chains-core'
 
-export interface EVMManifests {
-  [chain: string]: Chain.Manifest
-}
-
 export enum EVMChains {
   ethereum = 'ethereum',
   binancesmartchain = 'binancesmartchain',
@@ -14,7 +10,7 @@ export enum EVMChains {
   aurora = 'aurora',
 }
 
-export const EVM_MANIFESTS: EVMManifests = {
+export const EVM_MANIFESTS: {[key in EVMChains]: Chain.Manifest} = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',

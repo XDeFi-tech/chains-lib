@@ -26,7 +26,7 @@ import { getBalance, getFees, getStatus, getTransaction } from './queries'
 export class IndexerDataSource extends DataSource {
   constructor(manifest: Chain.Manifest) {
     super(manifest)
-    if (!EVM_MANIFESTS[manifest.chain]) {
+    if (!EVM_MANIFESTS[manifest.chain as EVMChains]) {
       throw new Error(
         'Please use EVM_MANIFESTS for indexer data source to avoid gql incompatibility'
       )

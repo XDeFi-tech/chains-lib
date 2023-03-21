@@ -5,21 +5,17 @@ import {
   EvmProvider,
   IndexerDataSource as EvmDataSource,
 } from '@xdefi/chains-evm'
-import {
-  SolanaManifest,
-  SolanaProvider,
-  IndexerDataSource as SolanaDataSource,
-} from '@xdefi/chains-solana'
+import WebSigners from '@xdefi/chains-evm/dist/signers/web';
 
 export const ChainsContextDefaultValue = new ChainController()
 
 // init all needed providers
 ChainsContextDefaultValue.addProvider(
-  new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum))
+  new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), { signers: WebSigners })
 )
-ChainsContextDefaultValue.addProvider(
-  new SolanaProvider(new SolanaDataSource(SolanaManifest))
-)
+// ChainsContextDefaultValue.addProvider(
+//   new SolanaProvider(new SolanaDataSource(SolanaManifest))
+// )
 ChainsContextDefaultValue.addProvider(
   new EvmProvider(new EvmDataSource(EVM_MANIFESTS.binancesmartchain))
 )
