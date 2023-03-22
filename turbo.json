@@ -10,12 +10,15 @@
       ]
     },
     "lint": {
+      "cache": false,
       "outputs": []
     },
     "lint:fix": {
+      "cache": false,
       "outputs": []
     },
     "clean": {
+      "cache": false,
       "outputs": []
     },
     "dev": {
