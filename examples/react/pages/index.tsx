@@ -22,9 +22,12 @@ const Home: NextPage = () => {
   const [currentProvider, setCurrentProvider] = useState<
     undefined | Chain.Provider
   >(chains.getProviderList()[0]);
-  const handleChainChange = useCallback((event) => {
-    setCurrentProvider(chains.getProviderByChain(event.target.value));
-  }, [chains]);
+  const handleChainChange = useCallback(
+    (event) => {
+      setCurrentProvider(chains.getProviderByChain(event.target.value));
+    },
+    [chains]
+  );
 
   const [address, setAddress] = useState<string>('');
   const handleAddressChange = useCallback(

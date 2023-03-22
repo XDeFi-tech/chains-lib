@@ -1,11 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  List,
-} from '@mui/material';
+import { Box, Typography, Button, Divider, List } from '@mui/material';
 import { Chain, Transaction } from '@xdefi/chains-core';
 
 export interface ITransactionsComponent {
