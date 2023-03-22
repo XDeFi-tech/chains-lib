@@ -1,6 +1,7 @@
-import { Signer } from '@xdefi/chains-core'
-import { PrivateKeySigner } from './private-key.signer'
+import { Signer } from '@xdefi/chains-core';
 
-const signers: typeof Signer.Provider[] = [PrivateKeySigner]
+import { PrivateKeySigner } from './private-key.signer';
 
-export default signers
+const signers: typeof Signer.Provider[] = [PrivateKeySigner];
+
+export default signers;

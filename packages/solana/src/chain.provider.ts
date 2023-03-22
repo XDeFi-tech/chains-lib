@@ -11,9 +11,10 @@ import {
   Transaction,
   Balance,
   FeeData,
-} from '@xdefi/chains-core'
-import 'reflect-metadata'
-import { ChainMsg } from './msg'
+} from '@xdefi/chains-core';
+
+import 'reflect-metadata';
+import { ChainMsg } from './msg';
 
 @ChainDecorator('SolanaProvider', {
   deps: [],
@@ -21,12 +22,12 @@ import { ChainMsg } from './msg'
 })
 export class SolanaProvider extends Chain.Provider {
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
-    super(dataSource, options)
+    super(dataSource, options);
     // this.rpcProvider = ;
   }
 
   createMsg(data: MsgData): Msg {
-    return new ChainMsg(data)
+    return new ChainMsg(data);
   }
 
   async getTransactions(
@@ -36,29 +37,29 @@ export class SolanaProvider extends Chain.Provider {
     return new Response(
       () => this.dataSource.getTransactions({ address, afterBlock }),
       () => this.dataSource.subscribeTransactions({ address })
-    )
+    );
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.')
+  async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
+    throw new Error('Method not implemented.');
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
     return new Response(
       () => this.dataSource.getBalance({ address }),
       () => this.dataSource.subscribeBalance({ address })
-    )
+    );
   }
 
   async gasFeeOptions(): Promise<GasFee> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async getNonce(address: string): Promise<number> {
-    throw new Error('Method not implemented.')
+  async getNonce(_address: string): Promise<number> {
+    throw new Error('Method not implemented.');
   }
 
-  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.')
+  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
+    throw new Error('Method not implemented.');
   }
 }

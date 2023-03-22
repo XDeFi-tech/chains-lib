@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi/chains-core'
+import { Chain } from '@xdefi/chains-core';
 
 export const SolanaManifest: Chain.Manifest = {
   name: 'Solana',
@@ -8,4 +8,4 @@ export const SolanaManifest: Chain.Manifest = {
   blockExplorerURL: 'https://explorer.solana.com/',
   chainId: 'mainnet-beta',
   chain: 'solana',
-}
+};

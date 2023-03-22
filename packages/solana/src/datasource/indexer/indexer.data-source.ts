@@ -4,7 +4,6 @@ import {
   Coin,
   GasFee,
   GasFeeSpeed,
-  Msg,
   Transaction,
   Injectable,
   Chain,
@@ -12,29 +11,29 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
-} from '@xdefi/chains-core'
-import { ChainMsg } from '../../msg'
-import { Observable } from 'rxjs'
-import { getBalance } from './queries'
+} from '@xdefi/chains-core';
+import { Observable } from 'rxjs';
+
+import { ChainMsg } from '../../msg';
+
+import { getBalance } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
   constructor(manifest: Chain.Manifest) {
-    super(manifest)
+    super(manifest);
   }
 
-  async getBalance(filter: BalanceFilter): Promise<Coin[]> {
-    const { address } = filter
-    const { data } = await getBalance(address)
+  async getBalance(_filter: BalanceFilter): Promise<Coin[]> {
+    const { address } = _filter;
+    const { data } = await getBalance(address);
     // cut off balances without asset
-    const balances = data[this.manifest.chain].balances.filter(
+    const balances = data[this.manifest.chain].balances._filter(
       (b: any) => b.asset.symbol && b.asset.id
-    )
-
-    console.log('LOG SOLANA BALANCES', balances)
+    );
 
     return balances.map((balance: any): Coin => {
-      const { asset, amount } = balance
+      const { asset, amount } = balance;
 
       return new Coin(
         new Asset({
@@ -49,35 +48,38 @@ export class IndexerDataSource extends DataSource {
           decimals: asset.price?.scalingFactor,
         }),
         amount.value
-      )
-    })
+      );
+    });
   }
 
   async subscribeBalance(
-    filter: BalanceFilter
+    _filter: BalanceFilter
   ): Promise<Observable<Balance[]>> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    throw new Error('Method not implemented.')
+  async getTransactions(_filter: TransactionsFilter): Promise<Transaction[]> {
+    throw new Error('Method not implemented.');
   }
 
   async subscribeTransactions(
-    filter: TransactionsFilter
+    _filter: TransactionsFilter
   ): Promise<Observable<Transaction>> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.')
+  async estimateFee(
+    _msgs: ChainMsg[],
+    _speed: GasFeeSpeed
+  ): Promise<FeeData[]> {
+    throw new Error('Method not implemented.');
   }
 
   async gasFeeOptions(): Promise<GasFee> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async getNonce(address: string): Promise<number> {
-    throw new Error('Method not implemented.')
+  async getNonce(_address: string): Promise<number> {
+    throw new Error('Method not implemented.');
   }
 }

@@ -1,7 +1,6 @@
-import { gql } from '@apollo/client'
-import { gqlClient } from '@xdefi/chains-core'
-
-import { EVMChains } from '../../../manifests'
+import { gql } from '@apollo/client';
+import { gqlClient } from '@xdefi/chains-core';
+import { EVMChains } from 'manifests';
 
 export const GET_TRANSACTION = (chain: EVMChains) => gql`
 query GetTransactions($address: String!) {
@@ -36,11 +35,11 @@ query GetTransactions($address: String!) {
     }
   }
 }
-`
+`;
 
 export interface BlockRange {
-  from: number
-  to: number
+  from: number;
+  to: number;
 }
 
 export const getTransaction = (
@@ -54,5 +53,5 @@ export const getTransaction = (
       address,
       ...(blockRange && { blockRange }),
     },
-  })
-}
+  });
+};

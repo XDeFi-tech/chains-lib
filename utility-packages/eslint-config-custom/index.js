@@ -4,7 +4,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  ignorePatterns: ['node_modules/**/*', 'dist/**/*', 'coverage/**/*'],
+  ignorePatterns: ['node_modules/**/*', 'dist/**/*', 'coverage/**/*', '.next/**/*', '.turbo/**/*'],
   plugins: ['@typescript-eslint', 'import'],
   extends: [
     'turbo',
@@ -15,9 +15,19 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
   ],
+
+
+
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        'singleQuote': true,
+        'tabWidth': 2,
+        'semi': true
+      }
+    ],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-var-requires': 'warn',

@@ -1,7 +1,6 @@
-import { gql } from '@apollo/client'
-import { gqlClient } from '@xdefi/chains-core'
-
-import { EVMChains } from '../../../manifests'
+import { gql } from '@apollo/client';
+import { gqlClient } from '@xdefi/chains-core';
+import { EVMChains } from 'manifests';
 
 export const EIP1559_GAS_FEES = (chain: string) => gql`
 query EIP1559GasFees {
@@ -25,7 +24,7 @@ query EIP1559GasFees {
     }
   }
 }
-`
+`;
 
 export const DEFAULT_GAS_FEES = (chain: string) => gql`
 query DefaultGasFees {
@@ -37,30 +36,30 @@ query DefaultGasFees {
     }
   }
 }
-`
+`;
 
 export const getFees = (chain: string) => {
-  let query
+  let query;
   switch (chain) {
     case EVMChains.ethereum:
     case EVMChains.polygon:
     case EVMChains.avalanche:
-      query = EIP1559_GAS_FEES(chain)
-      break
+      query = EIP1559_GAS_FEES(chain);
+      break;
     case EVMChains.binancesmartchain:
     case EVMChains.fantom:
-      query = DEFAULT_GAS_FEES(chain)
-      break
+      query = DEFAULT_GAS_FEES(chain);
+      break;
     case EVMChains.arbitrum:
     case EVMChains.aurora:
-      throw new Error('Not implemented yet')
+      throw new Error('Not implemented yet');
   }
 
   if (!query) {
-    throw new Error('Invalid chain')
+    throw new Error('Invalid chain');
   }
 
   return gqlClient.query({
     query,
-  })
-}
+  });
+};

@@ -1,10 +1,8 @@
 import {
-  Asset,
   DataSource,
   Coin,
   GasFee,
   GasFeeSpeed,
-  Msg,
   Transaction,
   Injectable,
   Chain,
@@ -12,45 +10,49 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
-} from '@xdefi/chains-core'
-import { ChainMsg } from '../../msg'
-import { Observable } from 'rxjs'
+} from '@xdefi/chains-core';
+import { Observable } from 'rxjs';
+
+import { ChainMsg } from '../../msg';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
   constructor(manifest: Chain.Manifest) {
-    super(manifest)
+    super(manifest);
   }
 
-  async getBalance(filter: BalanceFilter): Promise<Coin[]> {
-    throw new Error('Method not implemented.')
+  async getBalance(_filter: BalanceFilter): Promise<Coin[]> {
+    throw new Error('Method not implemented.');
   }
 
   async subscribeBalance(
-    filter: BalanceFilter
+    _filter: BalanceFilter
   ): Promise<Observable<Balance[]>> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    throw new Error('Method not implemented.')
+  async getTransactions(_filter: TransactionsFilter): Promise<Transaction[]> {
+    throw new Error('Method not implemented.');
   }
 
   async subscribeTransactions(
-    filter: TransactionsFilter
+    _filter: TransactionsFilter
   ): Promise<Observable<Transaction>> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.')
+  async estimateFee(
+    _msgs: ChainMsg[],
+    _speed: GasFeeSpeed
+  ): Promise<FeeData[]> {
+    throw new Error('Method not implemented.');
   }
 
   async gasFeeOptions(): Promise<GasFee> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
 
-  async getNonce(address: string): Promise<number> {
-    throw new Error('Method not implemented.')
+  async getNonce(_address: string): Promise<number> {
+    throw new Error('Method not implemented.');
   }
 }
