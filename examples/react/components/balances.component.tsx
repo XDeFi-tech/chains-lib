@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -8,77 +8,77 @@ import {
   ListItemAvatar,
   ListItem,
   ListItemText,
-} from '@mui/material'
-import { Coin, Chain } from '@xdefi/chains-core'
-import { isEmpty } from 'lodash'
+} from '@mui/material';
+import { Coin, Chain } from '@xdefi/chains-core';
+import { isEmpty } from 'lodash';
 
 export interface IBalancesComponent {
-  provider: Chain.Provider
-  address: string
+  provider: Chain.Provider;
+  address: string;
 }
 
 const BalancesComponent = (props: IBalancesComponent) => {
-  const [balances, setBalances] = useState<Coin[]>([])
-  const [balanceError, setBalanceError] = useState<null | string>(null)
-  const [balanceLoader, setBalanceLoader] = useState<boolean>(false)
-  const [subscription, setSubscription] = useState(null)
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+  const [balances, setBalances] = useState<Coin[]>([]);
+  const [balanceError, setBalanceError] = useState<null | string>(null);
+  const [balanceLoader, setBalanceLoader] = useState<boolean>(false);
+  const [subscription, setSubscription] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
-    handleUnsubscribe()
-  }, [props.address, props.provider])
+    handleUnsubscribe();
+  }, [props.address, props.provider]);
 
   useEffect(() => {
-    setBalanceError(null)
-  }, [props.address])
+    setBalanceError(null);
+  }, [props.address]);
 
   const handleUnsubscribe = useCallback(() => {
     if (subscription) {
-      subscription.unsubscribe()
-      setSubscription(null)
+      subscription.unsubscribe();
+      setSubscription(null);
     }
-    setBalanceError(null)
-  }, [subscription])
+    setBalanceError(null);
+  }, [subscription]);
 
   const handleBalanceClick = useCallback(async () => {
     try {
-      setBalanceLoader(true)
-      setBalanceError(null)
-      const balanceResponse = await props.provider.getBalance(props.address)
-      const balanceData = await balanceResponse.getData()
+      setBalanceLoader(true);
+      setBalanceError(null);
+      const balanceResponse = await props.provider.getBalance(props.address);
+      const balanceData = await balanceResponse.getData();
 
-      setLastUpdate(new Date())
-      setBalances(balanceData)
-      setBalanceLoader(false)
+      setLastUpdate(new Date());
+      setBalances(balanceData);
+      setBalanceLoader(false);
     } catch (err) {
-      setBalanceError(err.message)
-      setBalanceLoader(false)
+      setBalanceError(err.message);
+      setBalanceLoader(false);
     }
-  }, [props.address, props.provider])
+  }, [props.address, props.provider]);
 
   const handleStreamingClick = useCallback(async () => {
     try {
       if (subscription) {
-        handleUnsubscribe()
-        return
+        handleUnsubscribe();
+        return;
       }
       if (isEmpty(balances)) {
-        await handleBalanceClick()
+        await handleBalanceClick();
       }
-      const balanceResponse = await props.provider.getBalance(props.address)
-      const balanceObserver = await balanceResponse.getObserver()
+      const balanceResponse = await props.provider.getBalance(props.address);
+      const balanceObserver = await balanceResponse.getObserver();
 
       setSubscription(
         balanceObserver.subscribe((data) => {
           // todo create and update subs list
-          console.log('subscription data', data)
+          console.log('subscription data', data);
         })
-      )
+      );
     } catch (err) {
-      setBalanceError(err.message)
-      setSubscription(null)
+      setBalanceError(err.message);
+      setSubscription(null);
     }
-  }, [balances, subscription, props.address, props.provider])
+  }, [balances, subscription, props.address, props.provider]);
 
   return (
     <Box>
@@ -134,7 +134,7 @@ const BalancesComponent = (props: IBalancesComponent) => {
                 sx={{ textAlign: 'end' }}
               />
             </ListItem>
-          )
+          );
         })}
       </List>
 
@@ -146,7 +146,7 @@ const BalancesComponent = (props: IBalancesComponent) => {
         }}
       />
     </Box>
-  )
-}
+  );
+};
 
-export default BalancesComponent
+export default BalancesComponent;

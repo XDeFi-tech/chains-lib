@@ -4,4 +4,4 @@ module.exports = [
     name: 'name',
     message: 'Provide chain name (e.g. ethereum)',
   },
-]
+];
