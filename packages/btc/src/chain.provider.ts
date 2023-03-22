@@ -6,14 +6,20 @@ import {
   GasFee,
   GasFeeSpeed,
   Msg,
-  MsgData,
   Response,
   Transaction,
   Balance,
 } from '@xdefi/chains-core'
+import { Axios } from 'axios'
 
 import 'reflect-metadata'
-import { BitcoinChainMessage } from './bitcoinMessage'
+import { BitcoinChainMessage, BitcoinMessageBody } from './bitcoinMessage'
+import { HaskoinDataSource } from './datasource/haskoin/haskoin.data-source'
+
+interface BitcoinOptions extends Chain.IOptions {
+  haskoinUrl?: string
+  blockstreamBaseUrl?: string
+}
 
 @ChainDecorator('BtcProvider', {
   deps: [],
@@ -21,13 +27,19 @@ import { BitcoinChainMessage } from './bitcoinMessage'
 })
 export class BtcProvider extends Chain.Provider {
   rpcProvider = null
+  api: Axios
+  haskoin: HaskoinDataSource
 
-  constructor(dataSource: DataSource, options?: Chain.IOptions) {
+  constructor(dataSource: DataSource, options?: BitcoinOptions) {
     super(dataSource, options)
+    this.api = new Axios({
+      baseURL: options?.blockstreamBaseUrl ?? 'https://blockstream.info',
+    })
+    this.haskoin = new HaskoinDataSource(options?.haskoinUrl)
   }
 
-  createMsg(data: MsgData): Msg {
-    return new BitcoinChainMessage(data)
+  createMsg(data: BitcoinMessageBody): BitcoinChainMessage {
+    return new BitcoinChainMessage(this.haskoin, data)
   }
 
   async getTransactions(
@@ -40,8 +52,11 @@ export class BtcProvider extends Chain.Provider {
     )
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<Msg[]> {
-    return this.dataSource.estimateFee(msgs, speed)
+  async estimateFee(
+    messages: BitcoinChainMessage[],
+    speed: GasFeeSpeed
+  ): Promise<Msg[]> {
+    return this.dataSource.estimateFee(messages, speed)
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
@@ -59,7 +74,17 @@ export class BtcProvider extends Chain.Provider {
     return this.dataSource.getNonce(address)
   }
 
-  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.')
+  async broadcast(messages: BitcoinChainMessage[]): Promise<Transaction[]> {
+    const result: Transaction[] = []
+    for await (const message of messages) {
+      const { txHex } = await message.buildTx()
+
+      const { data: txid } = await this.api.post<string>('/api/tx', txHex)
+      const tx = await this.haskoin.getTransaction(txid)
+
+      result.push(Transaction.fromData(tx))
+    }
+
+    return result
   }
 }

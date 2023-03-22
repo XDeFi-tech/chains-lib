@@ -3,7 +3,6 @@ import {
   DataSource,
   Coin,
   GasFeeSpeed,
-  Msg,
   Transaction,
   Injectable,
   Chain,
@@ -15,11 +14,10 @@ import { utils } from 'ethers'
 import { Observable } from 'rxjs'
 import BigNumber from 'bignumber.js'
 
+import { BitcoinFees } from '../../types'
 import { BitcoinChainMessage } from '../../bitcoinMessage'
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries'
-
-export type BitcoinFees = null | { [key in GasFeeSpeed]: number }
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -96,7 +94,7 @@ export class IndexerDataSource extends DataSource {
   async estimateFee(
     messages: BitcoinChainMessage[],
     speed: GasFeeSpeed
-  ): Promise<Msg[]> {
+  ): Promise<BitcoinChainMessage[]> {
     const feeOptions = await this.gasFeeOptions()
     if (!feeOptions) return messages
     return messages.map((message) =>
