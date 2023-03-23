@@ -27,7 +27,9 @@
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "test": "jest",
+    "lint:fix": "eslint . --fix",
+    "test:watch": "jest --watch"
   },
   "type": "module",
   "tsup": {
@@ -45,5 +47,21 @@
       "./dist/signers/react-native.d.ts"
     ],
     "platform": "browser"
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ]
   }
 }
