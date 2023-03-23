@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { gqlClient } from '@xdefi/chains-core'
+import { gql } from '@apollo/client';
+import { gqlClient } from '@xdefi/chains-core';
 
 export const GET_STATUS = gql`
   query GetStatus {
@@ -9,18 +9,18 @@ export const GET_STATUS = gql`
       }
     }
   }
-`
+`;
 
 export type GetStatusResponse = {
   bitcoin: {
     status: {
-      lastBlock: number
-    }
-  }
-}
+      lastBlock: number;
+    };
+  };
+};
 
 export const getStatus = () => {
   return gqlClient.query<GetStatusResponse>({
     query: GET_STATUS,
-  })
-}
+  });
+};

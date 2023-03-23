@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { gqlClient } from '@xdefi/chains-core'
+import { gql } from '@apollo/client';
+import { gqlClient } from '@xdefi/chains-core';
 
 export const GET_TRANSACTION = gql`
   query GetTransactions($address: String!, $blockRange: OptBlockRange!) {
@@ -35,42 +35,42 @@ export const GET_TRANSACTION = gql`
       }
     }
   }
-`
+`;
 
 export interface BlockRange {
-  from: number
-  to: number
+  from: number;
+  to: number;
 }
 
 export type Amount = {
-  value: string
-  scalingFactor: number
-}
+  value: string;
+  scalingFactor: number;
+};
 
 export type Inputs = {
-  address: string
-  amount: Amount
-}
-export type Outputs = Inputs
+  address: string;
+  amount: Amount;
+};
+export type Outputs = Inputs;
 
 export type TransactionResponse = {
   bitcoin: {
     transactions: {
       edges: {
         node: {
-          blockIndex: number
-          blockNumber: number
-          fee: Amount
-          hash: string
-          inputs: Inputs[]
-          outputs: Outputs[]
-          status: string
-          timestamp: Date
-        }
-      }[]
-    }
-  }
-}
+          blockIndex: number;
+          blockNumber: number;
+          fee: Amount;
+          hash: string;
+          inputs: Inputs[];
+          outputs: Outputs[];
+          status: string;
+          timestamp: Date;
+        };
+      }[];
+    };
+  };
+};
 
 export const getTransaction = (
   address: string,
@@ -82,5 +82,5 @@ export const getTransaction = (
       address,
       ...(blockRange && { blockRange }),
     },
-  })
-}
+  });
+};

@@ -1,8 +1,8 @@
-import { Signer } from '@xdefi/chains-core'
+import { Signer } from '@xdefi/chains-core';
 
-import { PrivateKeySigner } from './private-key.signer'
+import { PrivateKeySigner } from './private-key.signer';
 // add and use trust wallet signer instead of PK
 
-const signers: typeof Signer.Provider[] = [PrivateKeySigner]
+const signers: typeof Signer.Provider[] = [PrivateKeySigner];
 
-export default signers
+export default signers;

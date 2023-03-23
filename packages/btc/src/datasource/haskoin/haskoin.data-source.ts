@@ -1,101 +1,101 @@
-import { Injectable } from '@xdefi/chains-core'
-import { Axios } from 'axios'
-import { UTXO } from '@xchainjs/xchain-bitcoin'
-import * as Bitcoin from 'bitcoinjs-lib'
+import { Injectable } from '@xdefi/chains-core';
+import { Axios } from 'axios';
+import { UTXO } from '@xchainjs/xchain-bitcoin';
+import * as Bitcoin from 'bitcoinjs-lib';
 
 export declare type HaskoinAddressBalance = {
-  received: number
-  utxo: number
-  address: string
-  txs: number
-  unconfirmed: number
-  confirmed: number
-}
+  received: number;
+  utxo: number;
+  address: string;
+  txs: number;
+  unconfirmed: number;
+  confirmed: number;
+};
 
 export declare type HaskoinTxUnspent = {
-  pkscript: string
-  value: number
-  address: string
+  pkscript: string;
+  value: number;
+  address: string;
   block: {
-    height: number
-    position: number
-  }
-  index: number
-  txid: string
-}
+    height: number;
+    position: number;
+  };
+  index: number;
+  txid: string;
+};
 
 export type HaskoinTransaction = {
   block: {
-    heigh: number
-    position: number
-  }
-  deleted: false
-  fee: number
+    heigh: number;
+    position: number;
+  };
+  deleted: false;
+  fee: number;
   inputs: {
-    address: string
-    coinbase: boolean
-    output: number
-    pkscript: number
-    sequence: number
-    sigscript: number
-    txid: string
-    value: number
-  }[]
+    address: string;
+    coinbase: boolean;
+    output: number;
+    pkscript: number;
+    sequence: number;
+    sigscript: number;
+    txid: string;
+    value: number;
+  }[];
   outputs: {
-    address: string
-    pkscript: string
-    spender: { input: number; txid: string }
-    spent: true
-    value: number
-  }[]
-  rbf: boolean
-  size: number
-  time: number
-  txid: string
-  version: number
-  weight: number
-}
+    address: string;
+    pkscript: string;
+    spender: { input: number; txid: string };
+    spent: true;
+    value: number;
+  }[];
+  rbf: boolean;
+  size: number;
+  time: number;
+  txid: string;
+  version: number;
+  weight: number;
+};
 
 @Injectable()
 export class HaskoinDataSource {
-  api: Axios
-  baseURL: string
+  api: Axios;
+  baseURL: string;
 
   constructor(baseURL = 'https://api.haskoin.com/') {
-    this.api = new Axios({ baseURL })
-    this.baseURL = baseURL
+    this.api = new Axios({ baseURL });
+    this.baseURL = baseURL;
   }
 
   async getAccount(address: string): Promise<HaskoinAddressBalance> {
-    const { data: result } = await this.api.get(`/address/${address}/balance`)
-    return result
+    const { data: result } = await this.api.get(`/address/${address}/balance`);
+    return result;
   }
 
   async getUnspentTransactions(address: string): Promise<HaskoinTxUnspent[]> {
-    const account = await this.getAccount(address)
+    const account = await this.getAccount(address);
 
     const result = await this.api.get(
       `/address/${address}/unspent?limit=${account?.utxo}`
-    )
+    );
 
-    return result.data
+    return result.data;
   }
 
   async getRawTransaction(txId: string): Promise<string> {
-    const { data } = await this.api.get(`/transaction/${txId}/raw`)
+    const { data } = await this.api.get(`/transaction/${txId}/raw`);
 
-    return data.result
+    return data.result;
   }
 
   async getTransaction(txId: string): Promise<HaskoinTransaction> {
-    const { data } = await this.api.get(`/transaction/${txId}`)
+    const { data } = await this.api.get(`/transaction/${txId}`);
 
-    return data
+    return data;
   }
 
   async scanUTXOs(address: string) {
-    const unspents = (await this.getUnspentTransactions(address)) || []
-    const utxos: UTXO[] = []
+    const unspents = (await this.getUnspentTransactions(address)) || [];
+    const utxos: UTXO[] = [];
 
     for (const utxo of unspents) {
       utxos.push({
@@ -108,9 +108,9 @@ export class HaskoinDataSource {
         },
         address: utxo.address,
         txHex: await this.getRawTransaction(utxo.txid),
-      } as UTXO)
+      } as UTXO);
     }
 
-    return utxos
+    return utxos;
   }
 }

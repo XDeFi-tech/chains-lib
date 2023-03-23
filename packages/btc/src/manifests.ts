@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi/chains-core'
+import { Chain } from '@xdefi/chains-core';
 
 export const btcManifest: Chain.Manifest = {
   name: 'Bitcoin',
@@ -8,4 +8,4 @@ export const btcManifest: Chain.Manifest = {
   blockExplorerURL: 'https://blockchair.com/bitcoin',
   chainId: 'bitcoin',
   chain: 'bitcoin',
-}
+};
