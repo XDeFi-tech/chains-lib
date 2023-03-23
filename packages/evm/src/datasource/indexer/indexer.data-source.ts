@@ -15,8 +15,9 @@ import {
 import { utils } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { ChainMsg } from 'msg';
-import { EVMChains, EVM_MANIFESTS } from 'manifests';
+
+import { EVMChains, EVM_MANIFESTS } from '../../manifests';
+import { ChainMsg } from '../../msg';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
 import { getBalance, getFees, getStatus, getTransaction } from './queries';

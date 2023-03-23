@@ -1,3 +1,4 @@
 .eslintrc.cjs
 **/*.spec.ts
 **/*.test.ts
+jest-setup-file.ts

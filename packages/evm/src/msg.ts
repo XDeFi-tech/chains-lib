@@ -6,14 +6,14 @@ import {
   utils,
 } from '@xdefi/chains-core';
 import { ethers } from 'ethers';
-import {
-  ERC1155_SAFE_TRANSFER_METHOD,
-  ERC721_SAFE_TRANSFER_METHOD,
-} from 'consts';
 
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
 import erc1155ABI from './consts/erc1155.json';
+import {
+  ERC1155_SAFE_TRANSFER_METHOD,
+  ERC721_SAFE_TRANSFER_METHOD,
+} from './consts';
 
 export enum TokenType {
   None = 'None', // common tx

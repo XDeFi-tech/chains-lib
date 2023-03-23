@@ -54,7 +54,16 @@
     "platform": "browser"
   },
   "jest": {
-    "preset": "@babel/preset-typescript",
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"

@@ -11,6 +11,8 @@
     "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
     "watch": "turbo run build && turbo run watch --parallel",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",

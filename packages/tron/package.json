@@ -27,8 +27,7 @@
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "jest"
+    "lint:fix": "eslint . --fix"
   },
   "type": "module",
   "tsup": {

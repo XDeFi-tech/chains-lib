@@ -9,6 +9,10 @@
         "dist/**"
       ]
     },
+    "test": {},
+    "test:watch": {
+      "cache": false
+    },
     "lint": {
       "cache": false,
       "outputs": []

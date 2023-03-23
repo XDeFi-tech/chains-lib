@@ -15,7 +15,8 @@ import {
 } from '@xdefi/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
-import { ChainMsg } from 'msg';
+
+import { ChainMsg } from './msg';
 
 @ChainDecorator('EvmProvider', {
   deps: [],

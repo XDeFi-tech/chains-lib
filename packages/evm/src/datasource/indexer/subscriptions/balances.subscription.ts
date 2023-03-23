@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { gqlClient, BalancesData } from '@xdefi/chains-core';
-import { EVMChains } from 'manifests';
+
+import { EVMChains } from '../../../manifests';
 
 export const ETHEREUM_BALANCE_SUBSCRIPTION = gql`
   subscription {

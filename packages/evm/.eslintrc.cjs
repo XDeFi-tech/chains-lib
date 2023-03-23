@@ -3,11 +3,11 @@ module.exports = {
   extends: ['custom'],
   settings: {
     'import/resolver': {
-      typescript: {},
+      typescript: { alwaysTryTypes: true, project: './tsconfig.json' },
     },
   },
   parserOptions: {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-}
+};
