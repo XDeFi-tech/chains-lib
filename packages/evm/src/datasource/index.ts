@@ -1,1 +1,1 @@
-export * from './indexer/indexer.data-source'
+export * from './indexer/indexer.data-source';

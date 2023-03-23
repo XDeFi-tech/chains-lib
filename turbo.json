@@ -6,24 +6,33 @@
         "^build"
       ],
       "outputs": [
-        "dist/**",
-        ",.next/**"
+        "dist/**"
       ]
     },
+    "test": {},
+    "test:watch": {
+      "cache": false
+    },
     "lint": {
+      "cache": false,
       "outputs": []
     },
     "lint:fix": {
+      "cache": false,
       "outputs": []
     },
     "clean": {
+      "cache": false,
       "outputs": []
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "dependsOn": [
+        "^build"
+      ]
     },
     "watch": {
+      "cache": false,
       "outputs": []
     },
     "typedoc": {

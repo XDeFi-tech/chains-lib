@@ -1,19 +1,21 @@
 {
   "name": "@xdefi/chains-core",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "devDependencies": {
     "@types/lodash": "^4.14.182",
     "cross-fetch": "^3.1.5",
     "eslint": "^8.13.0",
+    "eslint-config-custom": "*",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",
     "next-transpile-modules": "^9.0.0",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4",
+    "tsup": "^6.6.3",
     "typedoc": "^0.22.15"
   },
   "dependencies": {
@@ -23,7 +25,6 @@
     "graphql": "^16.6.0",
     "graphql-ws": "^5.11.1",
     "inversify": "^6.0.1",
-    "eslint-config-custom": "*",
     "lodash": "^4.17.21",
     "next-compose-plugins": "^2.2.1",
     "reflect-metadata": "^0.1.13",
@@ -34,16 +35,40 @@
     "ws": "^8.8.1"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "watch": "webpack --config webpack.dev.js",
+    "build": "tsup --minify --clean",
+    "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typedoc": "typedoc src/index.ts"
   },
+  "type": "module",
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "outDir": "dist",
+    "format": "esm",
+    "splitting": false,
+    "dts": true,
+    "types": [
+      "./dist/index.d.ts"
+    ],
+    "platform": "browser"
+  },
   "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
     "preset": "ts-jest",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"

@@ -1,8 +1,4 @@
-import { Chain } from '@xdefi/chains-core'
-
-export interface EVMManifests {
-  [chain: string]: Chain.Manifest
-}
+import { Chain } from '@xdefi/chains-core';
 
 export enum EVMChains {
   ethereum = 'ethereum',
@@ -14,7 +10,7 @@ export enum EVMChains {
   aurora = 'aurora',
 }
 
-export const EVM_MANIFESTS: EVMManifests = {
+export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',
@@ -78,4 +74,4 @@ export const EVM_MANIFESTS: EVMManifests = {
     chainId: '1313161554',
     chain: 'aurora',
   },
-}
+};

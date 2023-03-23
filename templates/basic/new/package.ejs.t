@@ -9,10 +9,12 @@ to: packages/<%= name.toLowerCase() %>/package.json
   "types": "dist/index.d.ts",
   "license": "MIT",
   "devDependencies": {
+    "eslint-config-custom": "*",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",
     "ts-jest": "^27.1.4",
+    "tsup": "^6.6.3",
     "typescript": "^4.6.3"
   },
   "dependencies": {
@@ -24,9 +26,28 @@ to: packages/<%= name.toLowerCase() %>/package.json
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "watch": "webpack --config webpack.dev.js",
+    "build": "tsup --minify --clean",
+    "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "jest"
+  },
+  "type": "module",
+  "tsup": {
+    "entry": [
+      "src/index.ts",
+      "src/signers/web.ts",
+      "src/signers/react-native.ts"
+    ],
+    "format": "esm",
+    "splitting": false,
+    "dts": true,
+    "types": [
+      "./dist/index.d.ts",
+      "./signers/web.d.ts",
+      "./signers/react-native.d.ts"
+    ],
+    "platform": "browser"
   }
 }

@@ -1,8 +1,8 @@
-import 'reflect-metadata'
-import { ChainMsg } from './msg'
-import { EvmProvider } from './chain.provider'
-import { IndexerDataSource } from './datasource'
-import { EVM_MANIFESTS } from './manifests'
+import 'reflect-metadata';
+import { ChainMsg } from './msg';
+import { EvmProvider } from './chain.provider';
+import { IndexerDataSource } from './datasource';
+import { EVM_MANIFESTS } from './manifests';
 
 // const ADDRESS_MOCK = {
 //     address: '0xCbA98362e199c41E1864D0923AF9646d3A648451',
@@ -17,19 +17,21 @@ import { EVM_MANIFESTS } from './manifests'
 // };
 
 describe('chain.provider', () => {
-  let evmProvider: EvmProvider
+  let evmProvider: EvmProvider;
 
   beforeEach(() => {
-    evmProvider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum))
-  })
+    evmProvider = new EvmProvider(
+      new IndexerDataSource(EVM_MANIFESTS.ethereum)
+    );
+  });
 
   it('createMsg(): should create message with data', () => {
-    const msg = evmProvider.createMsg({})
+    const msg = evmProvider.createMsg({});
 
-    console.log('msg', msg)
+    console.log('msg', msg);
 
-    expect(msg).toBeInstanceOf(ChainMsg)
-  })
+    expect(msg).toBeInstanceOf(ChainMsg);
+  });
 
   // it("getAddress(): should throw an error if derivation path is invalid", async () => {
   //     const signer = new EvmProvider();
@@ -60,4 +62,4 @@ describe('chain.provider', () => {
   //         s: "0x3",
   //     });
   // });
-})
+});

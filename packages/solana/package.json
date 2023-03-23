@@ -1,29 +1,67 @@
 {
   "name": "@xdefi/chains-solana",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",
     "ts-jest": "^27.1.4",
+    "tsup": "^6.6.3",
     "typescript": "^4.6.3"
   },
   "dependencies": {
     "@solana/web3.js": "^1.73.3",
     "@xdefi/chains-core": "*",
     "bignumber.js": "^9.0.2",
+    "eslint-config-custom": "*",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "watch": "webpack --config webpack.dev.js",
+    "build": "tsup --minify --clean",
+    "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
-    "test": "jest"
+    "lint": "eslint .",
+    "test": "jest",
+    "lint:fix": "eslint . --fix",
+    "test:watch": "jest --watch"
+  },
+  "type": "module",
+  "tsup": {
+    "entry": [
+      "src/index.ts",
+      "src/signers/web.ts",
+      "src/signers/react-native.ts"
+    ],
+    "format": "esm",
+    "splitting": false,
+    "dts": true,
+    "types": [
+      "./dist/index.d.ts",
+      "./dist/signers/web.d.ts",
+      "./dist/signers/react-native.d.ts"
+    ],
+    "platform": "browser"
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ]
   }
 }

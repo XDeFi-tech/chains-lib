@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const BALANCE_FRAGMENT = gql`
   fragment Balance on Balance {
@@ -20,4 +20,4 @@ export const BALANCE_FRAGMENT = gql`
       scalingFactor
     }
   }
-`
+`;

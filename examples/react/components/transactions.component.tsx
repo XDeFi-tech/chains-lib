@@ -1,47 +1,38 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  List,
-  ListItemAvatar,
-  ListItem,
-  ListItemText,
-} from '@mui/material'
-import { Chain, Transaction } from '@xdefi/chains-core'
+import React, { useState, useCallback, useEffect } from 'react';
+import { Box, Typography, Button, Divider, List } from '@mui/material';
+import { Chain, Transaction } from '@xdefi/chains-core';
 
 export interface ITransactionsComponent {
-  provider: Chain.Provider
-  address: string
+  provider: Chain.Provider;
+  address: string;
 }
 const TransactionsComponent = (props: ITransactionsComponent) => {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [_transactions, setTransactions] = useState<Transaction[]>([]);
   const [transactionsError, setTransactionsError] = useState<null | string>(
     null
-  )
-  const [transactionsLoader, setTransactionsLoader] = useState<boolean>(false)
+  );
+  const [transactionsLoader, setTransactionsLoader] = useState<boolean>(false);
 
   useEffect(() => {
-    setTransactionsError(null)
-  }, [props.address])
+    setTransactionsError(null);
+  }, [props.address]);
 
   const handleTransactionsClick = useCallback(async () => {
     try {
-      setTransactionsLoader(true)
-      setTransactionsError(null)
+      setTransactionsLoader(true);
+      setTransactionsError(null);
       const transactionsResponse = await props.provider.getTransactions(
         props.address
-      )
-      const transactionsData = await transactionsResponse.getData()
-      setTransactions(transactionsData)
-      setTransactionsLoader(false)
+      );
+      const transactionsData = await transactionsResponse.getData();
+      setTransactions(transactionsData);
+      setTransactionsLoader(false);
     } catch (err) {
-      console.error(err)
-      setTransactionsLoader(false)
-      setTransactionsError(err.message)
+      console.error(err);
+      setTransactionsLoader(false);
+      setTransactionsError(err.message);
     }
-  }, [props.address, props.provider])
+  }, [props.address, props.provider]);
 
   return (
     <Box>
@@ -92,7 +83,7 @@ const TransactionsComponent = (props: ITransactionsComponent) => {
         }}
       />
     </Box>
-  )
-}
+  );
+};
 
-export default TransactionsComponent
+export default TransactionsComponent;
