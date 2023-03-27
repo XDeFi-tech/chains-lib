@@ -1,4 +1,4 @@
-import { BaseAmount } from '@xchainjs/xchain-util';
+import { BaseAmount, baseAmount } from '@xchainjs/xchain-util';
 import { Msg as BaseMsg } from '@xdefi/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
@@ -7,8 +7,11 @@ import { UTXO } from '@xchainjs/xchain-bitcoin';
 
 import { HaskoinDataSource } from './datasource/haskoin/haskoin.data-source';
 
+export const amount = baseAmount;
+export type Amount = BaseAmount;
+
 export interface BitcoinMessageBody {
-  amount: BaseAmount;
+  amount: Amount;
   recipient: string;
   memo?: string;
   sender: string;
@@ -42,7 +45,7 @@ export class BitcoinChainMessage extends BaseMsg<
   }
 
   get hasSignature() {
-    return false;
+    return !!this.keys;
   }
 
   public toData() {

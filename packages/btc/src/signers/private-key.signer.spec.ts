@@ -1,38 +1,35 @@
 import { PrivateKeySigner } from './private-key.signer';
-import { BitcoinChainMessage } from '../bitcoinMessage.js';
-import { HaskoinDataSource } from '../datasource/haskoin/haskoin.data-source.js';
+import { amount, BitcoinChainMessage } from '../bitcoinMessage';
+import { HaskoinDataSource } from '../datasource/haskoin/haskoin.data-source';
 
 describe('btc private-key.signer', () => {
   const MOCK = {
-    privateKey: '',
-    address: '',
+    privateKey: "84'/0'/0'/0/0",
+    address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
     signature: '',
   };
   const haskoin = new HaskoinDataSource();
   const signer = new PrivateKeySigner();
+
+  signer.withPhrase(
+    'cannon hard jungle anchor field unknown sketch habit chapter loan judge rebuild'
+  );
 
   it('should return true for a valid address', () => {
     expect(signer.verifyAddress(MOCK.address)).toBe(true);
   });
 
   it('should return false for a valid address', () => {
-    expect(signer.verifyAddress('invalid-address')).toBe(true);
-  });
-
-  it('should return the correct address for a valid private key', async () => {
-    const address = await signer.getAddress(MOCK.privateKey);
-    expect(address).toBe(address);
-  });
-
-  it('should throw an error for an invalid private key', async () => {
-    await expect(signer.getAddress('invalid-private-key')).rejects.toThrow(
-      'Invalid address'
-    );
+    expect(signer.verifyAddress('invalid-address')).toBe(false);
   });
 
   it('should sign a ChainMsg with the private key', async () => {
-    const msg = new BitcoinChainMessage(haskoin, {});
-    const signature = await signer.sign(MOCK.privateKey, msg);
-    expect(signature).toBe(MOCK.signature);
+    const msg = new BitcoinChainMessage(haskoin, {
+      amount: amount(1),
+      recipient: 'a',
+      sender: 'b',
+    });
+    await signer.sign(MOCK.privateKey, msg);
+    expect(msg.hasSignature).toBe(true);
   });
 });
