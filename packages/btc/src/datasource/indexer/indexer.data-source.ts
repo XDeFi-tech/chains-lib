@@ -9,6 +9,8 @@ import {
   TransactionsFilter,
   BalanceFilter,
   Balance,
+  FeeData,
+  GasFee,
 } from '@xdefi/chains-core';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
@@ -94,18 +96,26 @@ export class IndexerDataSource extends DataSource {
   async estimateFee(
     messages: BitcoinChainMessage[],
     speed: GasFeeSpeed
-  ): Promise<BitcoinChainMessage[]> {
-    const feeOptions = await this.gasFeeOptions();
-    if (!feeOptions) return messages;
-    return messages.map((message) =>
+  ): Promise<FeeData[]> {
+    const feeOptions = await this.getFeeOptions();
+    if (!feeOptions) return [];
+    return messages.map((message) => {
       message.setFees({
         fee: new BigNumber(feeOptions[speed]),
         maxFee: new BigNumber(feeOptions[GasFeeSpeed.high]),
-      })
-    );
+      });
+
+      return {
+        gasLimit: feeOptions[speed],
+      };
+    });
   }
 
-  async gasFeeOptions(): Promise<BitcoinFees> {
+  async gasFeeOptions(): Promise<GasFee> {
+    return (await this.getFeeOptions()) as GasFee;
+  }
+
+  async getFeeOptions(): Promise<BitcoinFees> {
     const { data } = await getFees();
     const bitcoinFeeOptions = data.chains.find(
       ({ name }) => name === 'Bitcoin'

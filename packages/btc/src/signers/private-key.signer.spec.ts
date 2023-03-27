@@ -1,5 +1,6 @@
 import { PrivateKeySigner } from './private-key.signer';
-import { ChainMsg } from '../msg';
+import { BitcoinChainMessage } from '../bitcoinMessage.js';
+import { HaskoinDataSource } from '../datasource/haskoin/haskoin.data-source.js';
 
 describe('btc private-key.signer', () => {
   const MOCK = {
@@ -7,6 +8,7 @@ describe('btc private-key.signer', () => {
     address: '',
     signature: '',
   };
+  const haskoin = new HaskoinDataSource();
   const signer = new PrivateKeySigner();
 
   it('should return true for a valid address', () => {
@@ -29,7 +31,7 @@ describe('btc private-key.signer', () => {
   });
 
   it('should sign a ChainMsg with the private key', async () => {
-    const msg = new ChainMsg({});
+    const msg = new BitcoinChainMessage(haskoin, {});
     const signature = await signer.sign(MOCK.privateKey, msg);
     expect(signature).toBe(MOCK.signature);
   });

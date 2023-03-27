@@ -33,10 +33,10 @@ interface Balance {
       address: string;
       asset: {
         symbol: string | null;
-        contract: string | null;
+        contract: string;
         id: string | null;
         name: string | null;
-        image: string | null;
+        image: string;
         chain: string | null;
         price: {
           amount: string;

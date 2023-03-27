@@ -9,6 +9,7 @@ import {
   Response,
   Transaction,
   Balance,
+  FeeData,
 } from '@xdefi/chains-core';
 import { Axios } from 'axios';
 
@@ -55,7 +56,7 @@ export class BtcProvider extends Chain.Provider {
   async estimateFee(
     messages: BitcoinChainMessage[],
     speed: GasFeeSpeed
-  ): Promise<Msg[]> {
+  ): Promise<FeeData[]> {
     return this.dataSource.estimateFee(messages, speed);
   }
 

@@ -31,7 +31,7 @@ export class BitcoinChainMessage extends BaseMsg<
   feeEstimation: FeeEstimation = { fee: null, maxFee: null };
 
   constructor(
-    private haskoinDataSourcer: HaskoinDataSource,
+    private haskoinDataSource: HaskoinDataSource,
     data: BitcoinMessageBody,
     feeEstimation?: FeeEstimation
   ) {
@@ -49,7 +49,7 @@ export class BitcoinChainMessage extends BaseMsg<
     return this.data;
   }
   async buildTx() {
-    const utxos = await this.haskoinDataSourcer.scanUTXOs(this.data.sender);
+    const utxos = await this.haskoinDataSource.scanUTXOs(this.data.sender);
     if (!this.feeEstimation?.fee)
       throw new Error('Fee estimation is required for building transaction');
     const feeRateWhole = parseInt(this.feeEstimation?.fee.toFixed(0));
