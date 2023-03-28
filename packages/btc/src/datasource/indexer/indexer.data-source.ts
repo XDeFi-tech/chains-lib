@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
 import { BitcoinFees } from '../../types';
-import { BitcoinChainMessage } from '../../bitcoinMessage';
+import { BitcoinChainMessage } from '../../msg';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
 
@@ -44,7 +44,7 @@ export class IndexerDataSource extends DataSource {
               name: asset.name,
               symbol: asset.symbol,
               icon: asset.image,
-              native: !Boolean(asset.contract),
+              native: asset.contract === null || asset.contract === undefined,
               address: asset.contract,
               price: asset.price?.amount,
               decimals: amount.scalingFactor,
@@ -63,7 +63,8 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async getBlockRange(afterBlock: number | string) {
+  private async getBlockRange(afterBlock: TransactionsFilter['afterBlock']) {
+    if (afterBlock === undefined || afterBlock === null) return null;
     const { data } = await getStatus();
 
     return {
@@ -75,10 +76,7 @@ export class IndexerDataSource extends DataSource {
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address, afterBlock } = filter;
 
-    const blockRange =
-      typeof afterBlock === 'number' || typeof afterBlock === 'string'
-        ? await this.getBlockRange(afterBlock)
-        : null;
+    const blockRange = await this.getBlockRange(afterBlock);
 
     const { data } = await getTransaction(address, blockRange);
 

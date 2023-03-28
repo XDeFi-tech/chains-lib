@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import * as ecc from 'tiny-secp256k1/index.js';
 import { mnemonicToSeed } from 'bip39';
-import { getSeed } from '@xchainjs/xchain-crypto';
 
-import { BitcoinChainMessage } from '../bitcoinMessage';
+import { BitcoinChainMessage } from '../msg';
 
 const bip32Factory = BIP32Factory(ecc);
 
@@ -46,13 +44,13 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     if (!this.key) {
       throw new Error('Key is required');
     }
-    const keys = this.getBitcoinKeys(this.key, derivationPath);
+    const keys = await this.getBitcoinKeys(this.key, derivationPath);
     message.setKeys(keys);
     return keys.publicKey.toString() as S;
   }
 
-  private getBitcoinKeys(phrase: string, derivationPath: string) {
-    const master = this.getMaster(phrase, derivationPath);
+  private async getBitcoinKeys(phrase: string, derivationPath: string) {
+    const master = await this.getMaster(phrase, derivationPath);
 
     if (!master.privateKey) {
       throw new Error('Could not get private key from phrase');
@@ -61,8 +59,8 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     return Bitcoin.ECPair.fromPrivateKey(master.privateKey);
   }
 
-  private getMaster(phrase: string, derivationPath: string) {
-    const seed = getSeed(phrase);
+  private async getMaster(phrase: string, derivationPath: string) {
+    const seed = await mnemonicToSeed(phrase);
     const master = Bitcoin.bip32.fromSeed(seed).derivePath(derivationPath);
     return master;
   }

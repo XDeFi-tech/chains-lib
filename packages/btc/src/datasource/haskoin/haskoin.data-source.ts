@@ -1,7 +1,9 @@
 import { Injectable } from '@xdefi/chains-core';
 import { Axios } from 'axios';
-import { UTXO } from '@xchainjs/xchain-bitcoin';
 import * as Bitcoin from 'bitcoinjs-lib';
+
+import { DEFAULT_HASKOIN_URL } from '../../manifests';
+import { UTXODataSource, Transaction, UTXO } from '../utxo/utxo.data-source';
 
 export declare type HaskoinAddressBalance = {
   received: number;
@@ -24,44 +26,14 @@ export declare type HaskoinTxUnspent = {
   txid: string;
 };
 
-export type HaskoinTransaction = {
-  block: {
-    heigh: number;
-    position: number;
-  };
-  deleted: false;
-  fee: number;
-  inputs: {
-    address: string;
-    coinbase: boolean;
-    output: number;
-    pkscript: number;
-    sequence: number;
-    sigscript: number;
-    txid: string;
-    value: number;
-  }[];
-  outputs: {
-    address: string;
-    pkscript: string;
-    spender: { input: number; txid: string };
-    spent: true;
-    value: number;
-  }[];
-  rbf: boolean;
-  size: number;
-  time: number;
-  txid: string;
-  version: number;
-  weight: number;
-};
+export type HaskoinTransaction = Transaction;
 
 @Injectable()
-export class HaskoinDataSource {
-  api: Axios;
-  baseURL: string;
+export class HaskoinDataSource implements UTXODataSource {
+  private api: Axios;
+  private baseURL: string;
 
-  constructor(baseURL = 'https://api.haskoin.com/') {
+  constructor(baseURL = DEFAULT_HASKOIN_URL) {
     this.api = new Axios({ baseURL });
     this.baseURL = baseURL;
   }

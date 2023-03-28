@@ -9,3 +9,6 @@ export const btcManifest: Chain.Manifest = {
   chainId: 'bitcoin',
   chain: 'bitcoin',
 };
+
+export const DEFAULT_BLOCKSTREAM_URL = 'https://blockstream.info';
+export const DEFAULT_HASKOIN_URL = 'https://api.haskoin.com/';

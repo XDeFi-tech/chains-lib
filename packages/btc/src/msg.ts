@@ -1,17 +1,12 @@
-import { BaseAmount, baseAmount } from '@xchainjs/xchain-util';
 import { Msg as BaseMsg } from '@xdefi/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';
-import { UTXO } from '@xchainjs/xchain-bitcoin';
 
-import { HaskoinDataSource } from './datasource/haskoin/haskoin.data-source';
-
-export const amount = baseAmount;
-export type Amount = BaseAmount;
+import { UTXODataSource, UTXO } from './datasource/utxo/utxo.data-source';
 
 export interface BitcoinMessageBody {
-  amount: Amount;
+  amount: BigNumber;
   recipient: string;
   memo?: string;
   sender: string;
@@ -34,7 +29,7 @@ export class BitcoinChainMessage extends BaseMsg<
   feeEstimation: FeeEstimation = { fee: null, maxFee: null };
 
   constructor(
-    private haskoinDataSource: HaskoinDataSource,
+    private utxoDataSource: UTXODataSource,
     data: BitcoinMessageBody,
     feeEstimation?: FeeEstimation
   ) {
@@ -51,11 +46,13 @@ export class BitcoinChainMessage extends BaseMsg<
   public toData() {
     return this.data;
   }
+
   async buildTx() {
-    const utxos = await this.haskoinDataSource.scanUTXOs(this.data.sender);
-    if (!this.feeEstimation?.fee)
+    const utxos = await this.utxoDataSource.scanUTXOs(this.data.sender);
+    const { fee } = this.feeEstimation ?? {};
+    if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRateWhole = parseInt(this.feeEstimation?.fee.toFixed(0));
+    const feeRateWhole = parseInt(fee.toFixed(0));
     const compiledMemo = this.data.memo
       ? this.compileMemo(this.data.memo)
       : null;
@@ -64,7 +61,7 @@ export class BitcoinChainMessage extends BaseMsg<
 
     targetOutputs.push({
       address: this.data.recipient,
-      value: this.data.amount.amount().toNumber(),
+      value: this.data.amount.toNumber(),
     });
 
     if (compiledMemo) {
@@ -130,6 +127,7 @@ export class BitcoinChainMessage extends BaseMsg<
 
     return this;
   }
+
   getFee() {
     return this.feeEstimation;
   }

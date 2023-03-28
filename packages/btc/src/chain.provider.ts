@@ -5,7 +5,6 @@ import {
   Coin,
   GasFee,
   GasFeeSpeed,
-  Msg,
   Response,
   Transaction,
   Balance,
@@ -14,12 +13,14 @@ import {
 import { Axios } from 'axios';
 
 import 'reflect-metadata';
-import { BitcoinChainMessage, BitcoinMessageBody } from './bitcoinMessage';
-import { HaskoinDataSource } from './datasource/haskoin/haskoin.data-source';
+import { BitcoinChainMessage, BitcoinMessageBody } from './msg';
+import { UTXODataSource } from './datasource/utxo/utxo.data-source';
+import { DEFAULT_BLOCKSTREAM_URL } from './manifests';
 
 interface BitcoinOptions extends Chain.IOptions {
   haskoinUrl?: string;
   blockstreamBaseUrl?: string;
+  utxoDataSource: UTXODataSource;
 }
 
 @ChainDecorator('BtcProvider', {
@@ -27,20 +28,20 @@ interface BitcoinOptions extends Chain.IOptions {
   providerType: 'btc',
 })
 export class BtcProvider extends Chain.Provider {
-  rpcProvider = null;
-  api: Axios;
-  haskoin: HaskoinDataSource;
+  public rpcProvider = null;
+  private api: Axios;
+  private utxoDataSource: UTXODataSource;
 
-  constructor(dataSource: DataSource, options?: BitcoinOptions) {
+  constructor(dataSource: DataSource, options: BitcoinOptions) {
     super(dataSource, options);
     this.api = new Axios({
-      baseURL: options?.blockstreamBaseUrl ?? 'https://blockstream.info',
+      baseURL: options?.blockstreamBaseUrl ?? DEFAULT_BLOCKSTREAM_URL,
     });
-    this.haskoin = new HaskoinDataSource(options?.haskoinUrl);
+    this.utxoDataSource = options.utxoDataSource;
   }
 
   createMsg(data: BitcoinMessageBody): BitcoinChainMessage {
-    return new BitcoinChainMessage(this.haskoin, data);
+    return new BitcoinChainMessage(this.utxoDataSource, data);
   }
 
   async getTransactions(
@@ -81,7 +82,7 @@ export class BtcProvider extends Chain.Provider {
       const { txHex } = await message.buildTx();
 
       const { data: txid } = await this.api.post<string>('/api/tx', txHex);
-      const tx = await this.haskoin.getTransaction(txid);
+      const tx = await this.utxoDataSource.getTransaction(txid);
 
       result.push(Transaction.fromData(tx));
     }
