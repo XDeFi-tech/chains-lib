@@ -1,0 +1,24 @@
+overwrite: true
+schema: https://gql-router.dev.xdefiservices.com/graphql
+documents: ../../**/*.graphql
+generates:
+  src/gql/:
+    preset: client
+    presetConfig:
+      gqlTagName: gql
+      addOperationExport: true
+      namingConvention:
+        enumValues: 'keep'
+      documentMode: string
+      flattenGeneratedTypes: true
+    config:
+      flattenGeneratedTypes: true
+      namingConvention:
+        enumValues: 'keep'
+  src/gql/index.ts:
+    plugins:
+      - add:
+          content: |
+            export * from "./fragment-masking"; 
+            export * from "./gql";
+            export * from "./graphql";
