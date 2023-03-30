@@ -15,6 +15,7 @@ import {
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { OptBlockRange } from '@xdefi/graphql';
 
 import { BitcoinFees } from '../../types';
 import { BitcoinChainMessage } from '../../msg';
@@ -63,8 +64,10 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async getBlockRange(afterBlock: TransactionsFilter['afterBlock']) {
-    if (afterBlock === undefined || afterBlock === null) return null;
+  private async getBlockRange(
+    afterBlock: TransactionsFilter['afterBlock']
+  ): Promise<OptBlockRange> {
+    if (afterBlock === undefined || afterBlock === null) return {};
     const { data } = await getStatus();
 
     return {

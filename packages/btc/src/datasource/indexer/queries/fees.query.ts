@@ -1,29 +1,9 @@
-import { gql } from '@apollo/client';
+import { GetFeesDocument } from '@xdefi/graphql';
 import { gqlClient } from '@xdefi/chains-core';
 
-export const GET_FEES = gql`
-  query GetFees($filter: String) {
-    chains(filter: $filter) {
-      name
-      fee {
-        value
-      }
-    }
-  }
-`;
-
-export type GetFeesResponse = {
-  chains: {
-    name: string;
-    fee: {
-      value: string;
-    };
-  }[];
-};
-
 export const getFees = () => {
-  return gqlClient.query<GetFeesResponse>({
-    query: GET_FEES,
+  return gqlClient.query({
+    query: GetFeesDocument,
     variables: {
       filter: 'Bitcoin',
     },

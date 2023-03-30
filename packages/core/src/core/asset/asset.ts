@@ -5,7 +5,7 @@ export interface AssetData {
   chainId: ChainID;
   name: string;
   symbol: string;
-  icon: string | null | undefined;
+  icon?: string | null;
   native: boolean;
   decimals?: number;
   address?: string | null;
