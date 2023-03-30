@@ -13,6 +13,14 @@
     "test:watch": {
       "cache": false
     },
+    "compile": {
+      "cache": false,
+      "outputs": []
+    },
+    "compile:build": {
+      "cache": false,
+      "outputs": []
+    },
     "lint": {
       "cache": false,
       "outputs": []

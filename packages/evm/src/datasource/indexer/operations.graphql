@@ -1,0 +1,19 @@
+query EthereumBalance($address: String!) {
+  ethereum {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        price {
+          amount
+          scalingFactor
+        }
+      }
+    }
+  }
+}
