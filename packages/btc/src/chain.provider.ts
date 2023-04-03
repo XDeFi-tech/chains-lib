@@ -79,9 +79,16 @@ export class BtcProvider extends Chain.Provider {
   async broadcast(messages: BitcoinChainMessage[]): Promise<Transaction[]> {
     const result: Transaction[] = [];
     for await (const message of messages) {
-      const { txHex } = await message.buildTx();
+      const { signedTxHex } = await message.buildTx();
 
-      const { data: txid } = await this.api.post<string>('/api/tx', txHex);
+      if (!signedTxHex) {
+        throw new Error(`Message ${message} is not signed`);
+      }
+
+      const { data: txid } = await this.api.post<string>(
+        '/api/tx',
+        signedTxHex
+      );
       const tx = await this.utxoDataSource.getTransaction(txid);
 
       result.push(Transaction.fromData(tx));

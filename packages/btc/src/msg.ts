@@ -102,11 +102,23 @@ export class BitcoinChainMessage extends BaseMsg<
         }
       }
     });
-    psbt.signAllInputs(this.keys);
-    psbt.finalizeAllInputs();
-    const txHex = psbt.extractTransaction().toHex();
 
-    return { txHex };
+    const txHex = psbt.extractTransaction(true).toHex();
+    const signedTxHex = this.signPsbt(psbt);
+
+    return { txHex, psbtHex: psbt.toHex(), signedTxHex };
+  }
+
+  private signPsbt(psbt: Bitcoin.Psbt) {
+    if (!this.signature) {
+      return null;
+    }
+    psbt.signAllInputs(
+      Bitcoin.ECPair.fromPrivateKey(Buffer.from(this.signature))
+    );
+    psbt.finalizeAllInputs();
+
+    return psbt.extractTransaction(true).toHex();
   }
 
   compileMemo(memo: string) {

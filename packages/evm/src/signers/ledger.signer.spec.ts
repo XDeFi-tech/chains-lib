@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import App from '@ledgerhq/hw-app-eth';
+import App from '@ledgerhq/hw-app-btc';
 import { LedgerSigner } from './ledger.signer';
 import { ChainMsg } from '../msg';
 

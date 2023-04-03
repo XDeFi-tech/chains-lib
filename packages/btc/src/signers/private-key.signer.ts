@@ -44,19 +44,25 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     if (!this.key) {
       throw new Error('Key is required');
     }
-    const keys = await this.getBitcoinKeys(this.key, derivationPath);
-    message.setKeys(keys);
-    return keys.publicKey.toString() as S;
+    const privateKey = await this.getBitcoinPrivateKey(
+      this.key,
+      derivationPath
+    );
+
+    const ecPair = Bitcoin.ECPair.fromPrivateKey(privateKey);
+    message.sign(privateKey.toString());
+
+    return ecPair.publicKey.toString() as S;
   }
 
-  private async getBitcoinKeys(phrase: string, derivationPath: string) {
+  private async getBitcoinPrivateKey(phrase: string, derivationPath: string) {
     const master = await this.getMaster(phrase, derivationPath);
 
     if (!master.privateKey) {
       throw new Error('Could not get private key from phrase');
     }
 
-    return Bitcoin.ECPair.fromPrivateKey(master.privateKey);
+    return master.privateKey;
   }
 
   private async getMaster(phrase: string, derivationPath: string) {
