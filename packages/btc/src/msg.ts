@@ -73,8 +73,9 @@ export class BitcoinChainMessage extends BaseMsg<
       feeRateWhole
     );
 
-    if (!inputs || !outputs)
+    if (!inputs || !outputs) {
       throw new Error('Insufficient Balance for transaction');
+    }
 
     const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
 

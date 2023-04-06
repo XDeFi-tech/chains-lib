@@ -18,7 +18,6 @@ import { UTXODataSource } from './datasource/utxo/utxo.data-source';
 import { DEFAULT_BLOCKSTREAM_URL } from './manifests';
 
 interface BitcoinOptions extends Chain.IOptions {
-  haskoinUrl?: string;
   blockstreamBaseUrl?: string;
   utxoDataSource: UTXODataSource;
 }

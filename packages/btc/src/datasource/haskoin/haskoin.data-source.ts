@@ -78,9 +78,8 @@ export class HaskoinDataSource implements UTXODataSource {
           value: utxo.value,
           script: Bitcoin.script.compile(Buffer.from(utxo.pkscript, 'hex')),
         },
-        address: utxo.address,
         txHex: await this.getRawTransaction(utxo.txid),
-      } as UTXO);
+      });
     }
 
     return utxos;
