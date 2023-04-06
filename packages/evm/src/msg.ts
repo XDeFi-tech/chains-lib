@@ -58,6 +58,8 @@ export interface FeeEstimation {
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
+  signedTransaction: string | undefined;
+
   getFee(): FeeEstimation {
     const estimation: FeeEstimation = {
       fee: null,

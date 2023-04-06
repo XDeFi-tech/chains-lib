@@ -1,18 +1,12 @@
 import App from '@ledgerhq/hw-app-eth';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi/chains-core';
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 
 import { ChainMsg } from '../msg';
 
-export type Signature = {
-  v: number;
-  r: string;
-  s: string;
-};
-
 @SignerDecorator(Signer.SignerType.LEDGER)
-export class LedgerSigner<S = Signature> extends Signer.Provider<S> {
+export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     return utils.isAddress(address);
   }
@@ -27,19 +21,19 @@ export class LedgerSigner<S = Signature> extends Signer.Provider<S> {
     return address.address;
   }
 
-  async sign(derivation: string, msg: ChainMsg): Promise<S> {
+  async sign(derivation: string, msg: ChainMsg): Promise<void> {
     const transport = await Transport.create();
     const app = new App(transport);
-
-    const signature = await app.signTransaction(derivation, msg.toString());
+    const unsignedTx = await msg.buildTx();
+    const signature = await app.signTransaction(
+      derivation,
+      utils.hexlify(Buffer.from(JSON.stringify(unsignedTx)))
+    );
+    const signedTransaction = utils.hexlify(
+      Buffer.from(JSON.stringify({ ...unsignedTx, ...signature }))
+    );
+    msg.sign('0x' + signedTransaction);
     transport.close();
-    // msg.sign(signature);
-
-    return {
-      v: BigNumber.from('0x' + signature.v).toNumber(),
-      r: '0x' + signature.r,
-      s: '0x' + signature.s,
-    } as S;
   }
 }
 

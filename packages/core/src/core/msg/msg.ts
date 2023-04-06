@@ -11,7 +11,7 @@ export abstract class Msg<
   TxData extends object = object,
   FeeData extends object = object
 > {
-  public signature: string | undefined;
+  public abstract signedTransaction: unknown;
 
   constructor(public readonly data: MsgData, public readonly provider?: Provider) {}
 
@@ -21,7 +21,7 @@ export abstract class Msg<
    * Check is current Msg has signature
    */
   get hasSignature(): boolean {
-    return Boolean(this.signature);
+    return Boolean(this.signedTransaction);
   }
 
   /**
@@ -43,15 +43,20 @@ export abstract class Msg<
     return this.fromData(data);
   }
 
+  /**
+   * Convert msg to data object, can be used for creating new msg
+   */
   public abstract toData(): OutData;
 
+  /**
+   * Build transaction prepared for sign and broadcast
+   */
   public abstract buildTx(): Promise<TxData>;
 
   /**
-   * Assign signature to the message
+   * Assign signed transaction to this message
    */
-  public async sign(signature: string): Promise<Msg<OutData>> {
-    this.signature = signature;
-    return this as Msg<OutData, TxData, FeeData>;
+  public sign(signedTx: unknown): void {
+    this.signedTransaction = signedTx;
   }
 }
