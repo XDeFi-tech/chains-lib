@@ -2,7 +2,7 @@ import {
   Asset,
   DataSource,
   Coin,
-  GasFee,
+  FeeOptions,
   GasFeeSpeed,
   Transaction,
   Injectable,
@@ -161,7 +161,7 @@ export class IndexerDataSource extends DataSource {
     });
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
+  async gasFeeOptions(): Promise<FeeOptions | null> {
     const { data } = await getFees(this.manifest.chain);
     return data[this.manifest.chain].fee;
   }

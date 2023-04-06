@@ -6,7 +6,7 @@ import { Transaction } from 'core/transaction';
 import 'reflect-metadata';
 import { Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
-import { GasFee, GasFeeSpeed } from 'core/fee';
+import { FeeOptions, GasFeeSpeed } from 'core/fee';
 import { Balance, DataSource, Response } from 'core';
 import { forEach } from 'lodash';
 import { FeeData } from 'core/interfaces';
@@ -111,9 +111,9 @@ export abstract class Provider {
   /**
    * Retrieves the current gas fee options for the chain, including base and priority fees per gas for EIP-1559 chains.
    * @async
-   * @returns {Promise<GasFee>} A promise that resolves to a `GasFee` object with high, medium, and low gas fee options.
+   * @returns {Promise<FeeOptions>} A promise that resolves to a `FeeOptions` object with high, medium, and low gas fee options.
    */
-  abstract gasFeeOptions(): Promise<GasFee>;
+  abstract gasFeeOptions(): Promise<FeeOptions | null>;
 
   /**
    * Retrieves the nonce of the specified address across blockchain.

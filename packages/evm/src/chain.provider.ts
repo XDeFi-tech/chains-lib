@@ -4,7 +4,7 @@ import {
   Chain,
   ChainDecorator,
   Coin,
-  GasFee,
+  FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
@@ -74,7 +74,7 @@ export class EvmProvider extends Chain.Provider {
     );
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
+  async gasFeeOptions(): Promise<FeeOptions | null> {
     return this.dataSource.gasFeeOptions();
   }
 
