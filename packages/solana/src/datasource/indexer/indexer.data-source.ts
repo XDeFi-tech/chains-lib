@@ -2,7 +2,7 @@ import {
   Asset,
   DataSource,
   Coin,
-  GasFee,
+  FeeOptions,
   GasFeeSpeed,
   Transaction,
   Injectable,
@@ -75,7 +75,7 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
+  async gasFeeOptions(): Promise<FeeOptions | null> {
     throw new Error('Method not implemented.');
   }
 

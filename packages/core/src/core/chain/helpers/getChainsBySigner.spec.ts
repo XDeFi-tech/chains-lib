@@ -6,7 +6,7 @@ import * as Signer from 'core/signer';
 import { Transaction } from 'core/transaction';
 import { getChainsBySigner } from 'core/chain/helpers';
 import { ChainDecorator, SignerDecorator } from 'core/decorators';
-import { GasFee } from 'core/fee';
+import { FeeOptions } from 'core/fee';
 import { Balance, FeeData, Response } from 'core';
 
 const createChainProvider = () => {
@@ -35,7 +35,7 @@ const createChainProvider = () => {
       throw new Error('Method not implemented.');
     }
 
-    gasFeeOptions(): Promise<GasFee> {
+    gasFeeOptions(): Promise<FeeOptions> {
       throw new Error('Method not implemented.');
     }
 

@@ -1,5 +1,5 @@
 import { Manifest } from 'core/chain';
-import { Coin, GasFee, GasFeeSpeed, Msg, Transaction } from 'core';
+import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
 import { Observable } from 'rxjs';
 import { FeeData } from 'core/interfaces';
@@ -50,7 +50,7 @@ export abstract class DataSource {
 
   abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
 
-  abstract gasFeeOptions(): Promise<GasFee>;
+  abstract gasFeeOptions(): Promise<FeeOptions | null>;
 
   async getNonce(_address: string): Promise<number> {
     return 0;

@@ -3,7 +3,7 @@ import {
   Chain,
   ChainDecorator,
   Coin,
-  GasFee,
+  FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
@@ -51,7 +51,7 @@ export class SolanaProvider extends Chain.Provider {
     );
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
+  async gasFeeOptions(): Promise<FeeOptions | null> {
     throw new Error('Method not implemented.');
   }
 
