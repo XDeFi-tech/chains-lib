@@ -45,7 +45,7 @@ export class EvmProvider extends Chain.Provider {
 
     for (const msg of msgs) {
       const tx = await this.rpcProvider.sendTransaction(
-        msg.signature as string
+        msg.signedTransaction as string
       );
       transactions.push(Transaction.fromData(tx));
     }

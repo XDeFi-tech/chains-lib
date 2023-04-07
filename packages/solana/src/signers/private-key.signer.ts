@@ -4,7 +4,7 @@ import { Keypair, PublicKey } from '@solana/web3.js';
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
       new PublicKey(address);
@@ -22,7 +22,7 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     return keypair.publicKey.toBase58();
   }
 
-  async sign(_privateKey: string, _msg: ChainMsg): Promise<S> {
+  async sign(_privateKey: string, _msg: ChainMsg): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

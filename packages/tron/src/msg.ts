@@ -11,6 +11,7 @@ export interface FeeEstimation {
 }
 
 export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
+  signedTransaction: unknown;
   public toData() {
     return this.data;
   }

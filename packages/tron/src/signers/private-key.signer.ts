@@ -4,7 +4,7 @@ import TronWeb from 'tronweb';
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     const tronWeb = new TronWeb({
       fullHost: 'https://api.trongrid.io',
@@ -26,7 +26,7 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     return tronWeb.defaultAddress.base58;
   }
 
-  async sign(_privateKey: string, _msg: ChainMsg): Promise<S> {
+  async sign(_privateKey: string, _msg: ChainMsg): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }
