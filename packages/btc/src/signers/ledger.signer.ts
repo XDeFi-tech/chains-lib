@@ -12,7 +12,7 @@ export type Signature = {
 };
 
 @SignerDecorator(Signer.SignerType.LEDGER)
-export class LedgerSigner<S = Signature> extends Signer.Provider<S> {
+export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);
@@ -35,18 +35,20 @@ export class LedgerSigner<S = Signature> extends Signer.Provider<S> {
     return address.bitcoinAddress;
   }
 
-  async sign(derivation: string, msg: BitcoinChainMessage): Promise<S> {
+  async sign(derivation: string, msg: BitcoinChainMessage) {
     const transport = await Transport.create();
     const app = new App({ transport, currency: 'bitcoin' });
     const { txHex } = await msg.buildTx();
-    const signature = await app.signMessage(derivation, txHex);
-    transport.close();
+    const result = await app.signMessage(derivation, txHex);
+    await transport.close();
 
-    return {
-      v: signature.v,
-      r: '0x' + signature.r,
-      s: '0x' + signature.s,
-    } as S;
+    const v = result['v'] + 27 + 4;
+
+    const signature = Buffer.from(
+      v.toString(16) + result['r'] + result['s'],
+      'hex'
+    ).toString('base64');
+    msg.sign(signature);
   }
 }
 

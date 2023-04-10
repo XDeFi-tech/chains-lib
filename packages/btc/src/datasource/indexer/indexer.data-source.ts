@@ -10,14 +10,14 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
-  GasFee,
+  FeeOptions,
+  DefaultFeeOptions,
 } from '@xdefi/chains-core';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { OptBlockRange } from '@xdefi/graphql';
 
-import { BitcoinFees } from '../../types';
 import { BitcoinChainMessage } from '../../msg';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
@@ -112,11 +112,11 @@ export class IndexerDataSource extends DataSource {
     });
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
-    return (await this.getFeeOptions()) as GasFee;
+  async gasFeeOptions(): Promise<FeeOptions | null> {
+    return await this.getFeeOptions();
   }
 
-  async getFeeOptions(): Promise<BitcoinFees> {
+  async getFeeOptions(): Promise<DefaultFeeOptions> {
     const { data } = await getFees();
     const bitcoinFeeOptions = data.chains.find(
       ({ name }) => name === 'Bitcoin'

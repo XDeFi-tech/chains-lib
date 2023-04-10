@@ -3,7 +3,7 @@ import {
   Chain,
   ChainDecorator,
   Coin,
-  GasFee,
+  FeeOptions,
   GasFeeSpeed,
   Response,
   Transaction,
@@ -67,7 +67,7 @@ export class BtcProvider extends Chain.Provider {
     );
   }
 
-  async gasFeeOptions(): Promise<GasFee> {
+  async gasFeeOptions(): Promise<FeeOptions | null> {
     return this.dataSource.gasFeeOptions();
   }
 
@@ -78,15 +78,15 @@ export class BtcProvider extends Chain.Provider {
   async broadcast(messages: BitcoinChainMessage[]): Promise<Transaction[]> {
     const result: Transaction[] = [];
     for await (const message of messages) {
-      const { signedTxHex } = await message.buildTx();
+      const { signedTransaction } = message;
 
-      if (!signedTxHex) {
+      if (!message.hasSignature) {
         throw new Error(`Message ${message} is not signed`);
       }
 
       const { data: txid } = await this.api.post<string>(
         '/api/tx',
-        signedTxHex
+        signedTransaction
       );
       const tx = await this.utxoDataSource.getTransaction(txid);
 

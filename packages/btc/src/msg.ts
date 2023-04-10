@@ -24,6 +24,7 @@ export class BitcoinChainMessage extends BaseMsg<
   BitcoinTxBody,
   FeeEstimation
 > {
+  declare signedTransaction: string | null;
   declare data: BitcoinMessageBody;
   declare keys: Bitcoin.ECPairInterface;
   feeEstimation: FeeEstimation = { fee: null, maxFee: null };
@@ -90,7 +91,7 @@ export class BitcoinChainMessage extends BaseMsg<
     // psbt add outputs from accumulative outputs
     outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
       if (!output.address) {
-        //an empty address means this is the  change ddress
+        //an empty address means this is the change address
         output.address = this.data.sender;
       }
       if (!output.script) {
@@ -105,21 +106,8 @@ export class BitcoinChainMessage extends BaseMsg<
     });
 
     const txHex = psbt.extractTransaction(true).toHex();
-    const signedTxHex = this.signPsbt(psbt);
 
-    return { txHex, psbtHex: psbt.toHex(), signedTxHex };
-  }
-
-  private signPsbt(psbt: Bitcoin.Psbt) {
-    if (!this.signature) {
-      return null;
-    }
-    psbt.signAllInputs(
-      Bitcoin.ECPair.fromPrivateKey(Buffer.from(this.signature))
-    );
-    psbt.finalizeAllInputs();
-
-    return psbt.extractTransaction(true).toHex();
+    return { txHex, psbtHex: psbt.toHex(), psbt };
   }
 
   compileMemo(memo: string) {

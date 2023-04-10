@@ -10,7 +10,7 @@ import { BitcoinChainMessage } from '../msg';
 const bip32Factory = BIP32Factory(ecc);
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);
@@ -40,19 +40,19 @@ export class PrivateKeySigner<S = string> extends Signer.Provider<S> {
     return address;
   }
 
-  async sign(derivationPath: string, message: BitcoinChainMessage): Promise<S> {
+  async sign(derivationPath: string, message: BitcoinChainMessage) {
     if (!this.key) {
       throw new Error('Key is required');
     }
+    const { psbt } = await message.buildTx();
     const privateKey = await this.getBitcoinPrivateKey(
       this.key,
       derivationPath
     );
+    psbt.signAllInputs(Bitcoin.ECPair.fromPrivateKey(privateKey));
+    psbt.finalizeAllInputs();
 
-    const ecPair = Bitcoin.ECPair.fromPrivateKey(privateKey);
-    message.sign(privateKey.toString());
-
-    return ecPair.publicKey.toString() as S;
+    message.sign(psbt.extractTransaction(true).toHex());
   }
 
   private async getBitcoinPrivateKey(phrase: string, derivationPath: string) {
