@@ -12,7 +12,12 @@ import {
   Box,
 } from '@mui/material';
 import { Chain } from '@xdefi/chains-core';
-import { ChainsContext, initDefaultProviders, restoreProviders, saveProviders } from '../context/chains.context';
+import {
+  ChainsContext,
+  initDefaultProviders,
+  restoreProviders,
+  saveProviders,
+} from '../context/chains.context';
 import BalancesComponent from '../components/balances.component';
 import TransactionsComponent from '../components/transactions.component';
 
@@ -47,7 +52,7 @@ const Home: NextPage = () => {
       saveProviders();
     }
     setCurrentProvider(chains.getProviderList()[0]);
-  }, [chains])
+  }, [chains]);
 
   if (!currentProvider) {
     return null;
@@ -69,10 +74,7 @@ const Home: NextPage = () => {
           onChange={handleChainChange}
         >
           {chains.getProviderList().map((provider) => (
-            <MenuItem
-              value={provider.id}
-              key={provider.id}
-            >
+            <MenuItem value={provider.id} key={provider.id}>
               {provider.manifest.name}
             </MenuItem>
           ))}

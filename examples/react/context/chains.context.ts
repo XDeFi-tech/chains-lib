@@ -14,7 +14,7 @@ const availableProviderList = {
 };
 
 export const initDefaultProviders = () => {
-// init all needed providers
+  // init all needed providers
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
@@ -41,7 +41,7 @@ export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
   );
-}
+};
 
 export const CHAINS_DATA_KEY = 'chains-data';
 
@@ -55,26 +55,24 @@ export const restoreProviders = (): boolean => {
     // get provider form available list
     const ProviderClass = availableProviderList[chainParam.providerClassName];
     // get provider's data source (indexer or chain)
-    const DataSourceClass = ProviderClass.dataSources[chainParam.dataSourceClassName];
+    const DataSourceClass =
+      ProviderClass.dataSources[chainParam.dataSourceClassName];
 
     // TODO figure out how to store and restore signers
 
     ChainsContextDefaultValue.addProvider(
-      new ProviderClass(
-        new DataSourceClass(chainParam.manifest),
-        {
-          providerId: chainParam.providerId,
-        }
-      )
-    )
+      new ProviderClass(new DataSourceClass(chainParam.manifest), {
+        providerId: chainParam.providerId,
+      })
+    );
   });
   return true;
-}
+};
 
 export const saveProviders = () => {
   const serialisedData = ChainsContextDefaultValue.serialize();
   localStorage.setItem(CHAINS_DATA_KEY, serialisedData);
-}
+};
 
 export const ChainsContext = React.createContext<ChainController>(
   ChainsContextDefaultValue
