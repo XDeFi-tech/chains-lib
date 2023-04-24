@@ -1,5 +1,5 @@
 'use clients';
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import type { NextPage } from 'next';
 import {
   Container,
@@ -12,7 +12,7 @@ import {
   Box,
 } from '@mui/material';
 import { Chain } from '@xdefi/chains-core';
-import { ChainsContext } from '../context/chains.context';
+import { ChainsContext, initDefaultProviders, restoreProviders, saveProviders } from '../context/chains.context';
 import BalancesComponent from '../components/balances.component';
 import TransactionsComponent from '../components/transactions.component';
 
@@ -21,10 +21,10 @@ const Home: NextPage = () => {
 
   const [currentProvider, setCurrentProvider] = useState<
     undefined | Chain.Provider
-  >(chains.getProviderList()[0]);
+  >(chains.getProviderList()[0] || undefined);
   const handleChainChange = useCallback(
     (event) => {
-      setCurrentProvider(chains.getProviderByChain(event.target.value));
+      setCurrentProvider(chains.getProviderById(event.target.value));
     },
     [chains]
   );
@@ -34,6 +34,24 @@ const Home: NextPage = () => {
     (event) => setAddress(event.target.value),
     []
   );
+
+  useEffect(() => {
+    const list = chains.getProviderList();
+    if (list.length > 0) {
+      return;
+    }
+
+    const restored = restoreProviders();
+    if (!restored) {
+      initDefaultProviders();
+      saveProviders();
+    }
+    setCurrentProvider(chains.getProviderList()[0]);
+  }, [chains])
+
+  if (!currentProvider) {
+    return null;
+  }
 
   return (
     <Container>
@@ -46,14 +64,14 @@ const Home: NextPage = () => {
         <Select
           labelId="chains-list"
           id="chains-list"
-          value={currentProvider.manifest.chain}
+          value={currentProvider.id}
           label="Available chains"
           onChange={handleChainChange}
         >
           {chains.getProviderList().map((provider) => (
             <MenuItem
-              value={provider.manifest.chain}
-              key={provider.manifest.chain}
+              value={provider.id}
+              key={provider.id}
             >
               {provider.manifest.name}
             </MenuItem>
