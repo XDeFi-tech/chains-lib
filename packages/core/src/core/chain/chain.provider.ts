@@ -37,6 +37,8 @@ export interface IOptions {
 export abstract class Provider {
   public readonly rpcProvider: any;
   public readonly id: string;
+  abstract get dataSourceList(): { [key: string]: DataSource };
+
   constructor(public readonly dataSource: DataSource, public readonly options?: IOptions) {
     this.id = options?.providerId || uuidv4();
     this.dataSource = dataSource;
