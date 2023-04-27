@@ -45,7 +45,14 @@ export const restoreProviders = (): boolean => {
   const parsedData = ChainController.deserialize(serialisedData);
   const providerList = ChainController.providerList;
   Object.values(parsedData).forEach((chainParam) => {
-    const provider = providerList.getProvider(chainParam.providerClassName, chainParam.manifest, { providerId: chainParam.providerId, dataSourceClassName: chainParam.dataSourceClassName });
+    const provider = providerList.getProvider(
+      chainParam.providerClassName,
+      chainParam.manifest,
+      {
+        providerId: chainParam.providerId,
+        dataSourceClassName: chainParam.dataSourceClassName,
+      }
+    );
     ChainsContextDefaultValue.addProvider(provider);
   });
   return true;
