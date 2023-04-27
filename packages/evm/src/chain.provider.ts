@@ -83,9 +83,10 @@ export class EvmProvider extends Chain.Provider {
     return this.dataSource.getNonce(address);
   }
 
-  public get dataSourceList() {
+  static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
     return {
       IndexerDataSource: IndexerDataSource,
+      ChainsDataSource: IndexerDataSource,
     };
   }
 }

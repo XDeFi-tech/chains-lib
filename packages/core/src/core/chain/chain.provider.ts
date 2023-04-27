@@ -17,6 +17,10 @@ export interface IOptions {
   providerId?: string;
 }
 
+export interface DataSourceList<T> {
+  [key: string]: T;
+}
+
 /**
  * Represents abstract class for chain Provider, which provides
  * primitives for interacting with particular chain.
@@ -37,7 +41,6 @@ export interface IOptions {
 export abstract class Provider {
   public readonly rpcProvider: any;
   public readonly id: string;
-  abstract get dataSourceList(): { [key: string]: DataSource };
 
   constructor(public readonly dataSource: DataSource, public readonly options?: IOptions) {
     this.id = options?.providerId || uuidv4();
@@ -213,5 +216,9 @@ export abstract class Provider {
    */
   public get manifest(): Manifest {
     return this.dataSource.manifest;
+  }
+
+  static get dataSourceList(): DataSourceList<typeof DataSource> {
+    return {};
   }
 }

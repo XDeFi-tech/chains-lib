@@ -11,17 +11,19 @@
   "scripts": {
     "build": "tsup --minify --clean",
     "watch": "tsup --watch",
-    "compile": "graphql-codegen --config codegen.yml && yarn format",
-    "compile:build": "yarn compile && yarn build",
-    "compile:watch": "graphql-codegen -w",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "clean": "rimraf dist .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "typescript": "^5.0.2"
   },
   "dependencies": {
     "@xdefi/chains-core": "*",
+    "@xdefi/chains-evm": "*",
+    "@xdefi/chains-solana": "*",
     "@xdefi/graphql": "*",
     "rimraf": "^4.4.0"
   },

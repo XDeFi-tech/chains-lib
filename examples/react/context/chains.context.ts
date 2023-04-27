@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChainController } from '@xdefi/chains-core';
+import { ChainController } from '@xdefi/chains-controller';
 import {
   EVM_MANIFESTS,
   EvmProvider,
@@ -9,20 +9,12 @@ import WebSigners from '@xdefi/chains-evm/dist/signers/web';
 
 export const ChainsContextDefaultValue = new ChainController();
 
-const availableProviderList = {
-  EvmProvider: EvmProvider,
-};
-
 export const initDefaultProviders = () => {
-  // init all needed providers
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
     })
   );
-  // ChainsContextDefaultValue.addProvider(
-  //   new SolanaProvider(new SolanaDataSource(SolanaManifest))
-  // )
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.binancesmartchain))
   );
@@ -51,20 +43,10 @@ export const restoreProviders = (): boolean => {
     return false;
   }
   const parsedData = ChainController.deserialize(serialisedData);
+  const providerList = ChainController.providerList;
   Object.values(parsedData).forEach((chainParam) => {
-    // get provider form available list
-    const ProviderClass = availableProviderList[chainParam.providerClassName];
-    // get provider's data source (indexer or chain)
-    const DataSourceClass =
-      ProviderClass.dataSources[chainParam.dataSourceClassName];
-
-    // TODO figure out how to store and restore signers
-
-    ChainsContextDefaultValue.addProvider(
-      new ProviderClass(new DataSourceClass(chainParam.manifest), {
-        providerId: chainParam.providerId,
-      })
-    );
+    const provider = providerList.getProvider(chainParam.providerClassName, chainParam.manifest, { providerId: chainParam.providerId, dataSourceClassName: chainParam.dataSourceClassName });
+    ChainsContextDefaultValue.addProvider(provider);
   });
   return true;
 };

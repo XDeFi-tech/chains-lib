@@ -36,7 +36,7 @@ export function gql(source: string): unknown;
  */
 export function gql(
   source: 'query EthereumBalance($address: String!) {\n  ethereum {\n    balances(address: $address) {\n      address\n      asset {\n        symbol\n        contract\n        id\n        name\n        image\n        chain\n        price {\n          amount\n          scalingFactor\n        }\n      }\n    }\n  }\n}'
-): (typeof documents)['query EthereumBalance($address: String!) {\n  ethereum {\n    balances(address: $address) {\n      address\n      asset {\n        symbol\n        contract\n        id\n        name\n        image\n        chain\n        price {\n          amount\n          scalingFactor\n        }\n      }\n    }\n  }\n}'];
+): typeof documents['query EthereumBalance($address: String!) {\n  ethereum {\n    balances(address: $address) {\n      address\n      asset {\n        symbol\n        contract\n        id\n        name\n        image\n        chain\n        price {\n          amount\n          scalingFactor\n        }\n      }\n    }\n  }\n}'];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

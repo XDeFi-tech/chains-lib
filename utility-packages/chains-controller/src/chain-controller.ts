@@ -1,5 +1,7 @@
 import { Chain } from '@xdefi/chains-core';
 
+import { ProviderList } from './provider-generator';
+
 export interface IProviders {
   [providerKey: string]: Chain.Provider;
 }
@@ -47,7 +49,9 @@ export class ChainController {
    * Clear all providers from the list.
    */
   public clear(): void {
-    Object.keys(this.providers).forEach((providerId) => delete this.providers[providerId]);
+    Object.keys(this.providers).forEach(
+      (providerId) => delete this.providers[providerId]
+    );
   }
 
   public getProviderById(id: string): Chain.Provider {
@@ -65,13 +69,16 @@ export class ChainController {
    * @returns An array of `Chain.Provider` instances with the specified identifier.
    */
   public getProviderByChain(chain: string): Chain.Provider[] {
-    return Object.values(this.providers).reduce((acc: Chain.Provider[], provider) => {
-      if (provider.manifest.chain === chain) {
-        acc.push(provider);
-      }
+    return Object.values(this.providers).reduce(
+      (acc: Chain.Provider[], provider) => {
+        if (provider.manifest.chain === chain) {
+          acc.push(provider);
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      },
+      []
+    );
   }
 
   /**
@@ -81,13 +88,16 @@ export class ChainController {
    * @returns An array of `Chain.Provider` instances with the specified provider type.
    */
   public getProviderByType(type: string): Chain.Provider[] {
-    return Object.values(this.providers).reduce((acc: Chain.Provider[], provider) => {
-      if (provider.providerType === type) {
-        acc.push(provider);
-      }
+    return Object.values(this.providers).reduce(
+      (acc: Chain.Provider[], provider) => {
+        if (provider.providerType === type) {
+          acc.push(provider);
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      },
+      []
+    );
   }
 
   /**
@@ -104,16 +114,19 @@ export class ChainController {
    * @returns A JSON string representation of the collection of `Chain.Provider` instances.
    */
   public serialize(): string {
-    const providers: ChainParams = Object.values(this.providers).reduce((acc: ChainParams, provider) => {
-      const manifest = provider.manifest;
-      acc[provider.id] = {
-        providerClassName: provider.name,
-        dataSourceClassName: provider.dataSource.name,
-        providerId: provider.id,
-        manifest,
-      };
-      return acc;
-    }, {});
+    const providers: ChainParams = Object.values(this.providers).reduce(
+      (acc: ChainParams, provider) => {
+        const manifest = provider.manifest;
+        acc[provider.id] = {
+          providerClassName: provider.name,
+          dataSourceClassName: provider.dataSource.name,
+          providerId: provider.id,
+          manifest,
+        };
+        return acc;
+      },
+      {}
+    );
     return JSON.stringify(providers);
   }
 
@@ -147,6 +160,10 @@ export class ChainController {
     } catch (err) {}
 
     return false;
+  }
+
+  static get providerList() {
+    return new ProviderList();
   }
 }
 
