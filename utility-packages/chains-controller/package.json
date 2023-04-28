@@ -1,0 +1,43 @@
+{
+  "name": "@xdefi/chains-controller",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup --minify --clean",
+    "watch": "tsup --watch",
+    "clean": "rimraf dist .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*",
+    "prettier": "^2.5.1",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@xdefi/chains-core": "*",
+    "@xdefi/chains-evm": "*",
+    "@xdefi/chains-solana": "*",
+    "@xdefi/graphql": "*",
+    "rimraf": "^4.4.0"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "outDir": "dist",
+    "format": "esm",
+    "splitting": false,
+    "dts": true,
+    "types": [
+      "./dist/index.d.ts"
+    ],
+    "platform": "browser"
+  }
+}

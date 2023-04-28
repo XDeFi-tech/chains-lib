@@ -1,4 +1,6 @@
-import { Chain } from '../';
+import { Chain } from '@xdefi/chains-core';
+
+import { ProviderFactory } from './provider-factory';
 
 export interface IProviders {
   [providerKey: string]: Chain.Provider;
@@ -7,6 +9,7 @@ export interface IProviders {
 export interface ChainParamItem {
   providerClassName: string;
   dataSourceClassName: string;
+  providerId: string;
   manifest: Chain.Manifest;
 }
 
@@ -30,31 +33,52 @@ export class ChainController {
    * @param provider - The `Chain.Provider` instance to add.
    */
   public addProvider(provider: Chain.Provider): void {
-    this.providers[provider.manifest.chain] = provider;
+    this.providers[provider.id] = provider;
   }
 
   /**
-   * Deletes a `Chain.Provider` instance from the collection by its chain name.
+   * Deletes a `Chain.Provider` instance from the collection by its id.
    *
-   * @param chain - The name of the chain associated with the `Chain.Provider` instance.
+   * @param id - Unique identifier of the chain associated with the `Chain.Provider` instance.
    */
-  public deleteProvider(chain: string): void {
-    delete this.providers[chain];
+  public deleteProvider(id: string): void {
+    delete this.providers[id];
   }
 
   /**
-   * Returns a `Chain.Provider` instance from the collection by its chain name.
-   *
-   * @param chain - The name of the chain associated with the `Chain.Provider` instance.
-   * @returns The `Chain.Provider` instance with the specified chain name.
-   * @throws An error if no `Chain.Provider` instance is associated with the specified chain name.
+   * Clear all providers from the list.
    */
-  public getProviderByChain(chain: string): Chain.Provider {
-    if (!this.providers[chain]) {
-      throw new Error('Invalid provider key');
+  public clear(): void {
+    Object.keys(this.providers).forEach(
+      (providerId) => delete this.providers[providerId]
+    );
+  }
+
+  public getProviderById(id: string): Chain.Provider {
+    if (!this.providers[id]) {
+      throw new Error('Invalid identifier');
     }
 
-    return this.providers[chain];
+    return this.providers[id];
+  }
+
+  /**
+   * Returns an array of `Chain.Provider` instances from the collection with the specified identifier.
+   *
+   * @param chain - Unique identifier of the chain associated with the `Chain.Provider` instance.
+   * @returns An array of `Chain.Provider` instances with the specified identifier.
+   */
+  public getProviderByChain(chain: string): Chain.Provider[] {
+    return Object.values(this.providers).reduce(
+      (acc: Chain.Provider[], provider) => {
+        if (provider.manifest.chain === chain) {
+          acc.push(provider);
+        }
+
+        return acc;
+      },
+      []
+    );
   }
 
   /**
@@ -64,13 +88,16 @@ export class ChainController {
    * @returns An array of `Chain.Provider` instances with the specified provider type.
    */
   public getProviderByType(type: string): Chain.Provider[] {
-    return Object.values(this.providers).reduce((acc: Chain.Provider[], provider) => {
-      if (provider.providerType === type) {
-        acc.push(provider);
-      }
+    return Object.values(this.providers).reduce(
+      (acc: Chain.Provider[], provider) => {
+        if (provider.providerType === type) {
+          acc.push(provider);
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      },
+      []
+    );
   }
 
   /**
@@ -87,15 +114,19 @@ export class ChainController {
    * @returns A JSON string representation of the collection of `Chain.Provider` instances.
    */
   public serialize(): string {
-    const providers: ChainParams = Object.values(this.providers).reduce((acc: ChainParams, provider) => {
-      const manifest = provider.manifest;
-      acc[manifest.chain] = {
-        providerClassName: provider.name,
-        dataSourceClassName: provider.dataSource.name,
-        manifest,
-      };
-      return acc;
-    }, {});
+    const providers: ChainParams = Object.values(this.providers).reduce(
+      (acc: ChainParams, provider) => {
+        const manifest = provider.manifest;
+        acc[provider.id] = {
+          providerClassName: provider.name,
+          dataSourceClassName: provider.dataSource.name,
+          providerId: provider.id,
+          manifest,
+        };
+        return acc;
+      },
+      {}
+    );
     return JSON.stringify(providers);
   }
 
@@ -129,6 +160,10 @@ export class ChainController {
     } catch (err) {}
 
     return false;
+  }
+
+  static get providerList() {
+    return new ProviderFactory();
   }
 }
 

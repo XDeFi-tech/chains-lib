@@ -16,6 +16,7 @@ import {
 import { providers } from 'ethers';
 import { some } from 'lodash';
 
+import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
 
 @ChainDecorator('EvmProvider', {
@@ -80,5 +81,11 @@ export class EvmProvider extends Chain.Provider {
 
   async getNonce(address: string): Promise<number> {
     return this.dataSource.getNonce(address);
+  }
+
+  static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
+    return {
+      IndexerDataSource: IndexerDataSource,
+    };
   }
 }

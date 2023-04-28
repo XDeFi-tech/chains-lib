@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Injectable } from 'common';
 import { Coin } from 'core/coin';
 import { Msg, MsgData } from 'core/msg';
@@ -13,6 +14,11 @@ import { FeeData } from 'core/interfaces';
 
 export interface IOptions {
   signers?: typeof SignerProvider[];
+  providerId?: string;
+}
+
+export interface DataSourceList<T> {
+  [key: string]: T;
 }
 
 /**
@@ -34,7 +40,10 @@ export interface IOptions {
 @Injectable()
 export abstract class Provider {
   public readonly rpcProvider: any;
+  public readonly id: string;
+
   constructor(public readonly dataSource: DataSource, public readonly options?: IOptions) {
+    this.id = options?.providerId || uuidv4();
     this.dataSource = dataSource;
     this.setSigner = this.setSigner.bind(this);
     forEach(options?.signers, (signer: typeof SignerProvider) => this.setSigner(signer));
@@ -207,5 +216,9 @@ export abstract class Provider {
    */
   public get manifest(): Manifest {
     return this.dataSource.manifest;
+  }
+
+  static get dataSourceList(): DataSourceList<typeof DataSource> {
+    return {};
   }
 }
