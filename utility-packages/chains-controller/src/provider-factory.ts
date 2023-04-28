@@ -19,7 +19,7 @@ export enum ProviderNames {
 
 export type AvailableProviders = typeof EvmProvider | typeof SolanaProvider;
 
-export class ProviderList {
+export class ProviderFactory {
   private readonly providerList: {
     [className in ProviderNames]: AvailableProviders;
   };

@@ -86,7 +86,6 @@ export class EvmProvider extends Chain.Provider {
   static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
     return {
       IndexerDataSource: IndexerDataSource,
-      ChainsDataSource: IndexerDataSource,
     };
   }
 }

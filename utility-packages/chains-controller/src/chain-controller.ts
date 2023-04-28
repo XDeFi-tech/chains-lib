@@ -1,6 +1,6 @@
 import { Chain } from '@xdefi/chains-core';
 
-import { ProviderList } from './provider-generator';
+import { ProviderFactory } from './provider-factory';
 
 export interface IProviders {
   [providerKey: string]: Chain.Provider;
@@ -163,7 +163,7 @@ export class ChainController {
   }
 
   static get providerList() {
-    return new ProviderList();
+    return new ProviderFactory();
   }
 }
 
