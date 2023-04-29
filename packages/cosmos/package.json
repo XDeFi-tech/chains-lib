@@ -14,6 +14,8 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@cosmjs/launchpad": "^0.27.1",
+    "@cosmjs/stargate": "^0.30.1",
     "@xdefi/chains-core": "*",
     "@xdefi/graphql": "*",
     "bignumber.js": "^9.0.2",

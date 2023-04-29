@@ -1,0 +1,26 @@
+query GetAssetsWithFilter($page: ConnectionArgs!, $filter: TokenFilter) {
+  assets {
+    tokens(page: $page, filter: $filter) {
+      page {
+        edges {
+          node {
+            contracts {
+              address
+              symbol
+              chain
+              scalingFactor
+            }
+            id
+            price {
+              amount
+              scalingFactor
+            }
+            symbol
+            name
+            icon
+          }
+        }
+      }
+    }
+  }
+}
