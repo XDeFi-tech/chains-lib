@@ -76,11 +76,11 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
       }
 
       const maxFee = ethers.utils.parseUnits(
-        String(this.data.maxFeePerGas),
+        String(parseInt(this.data.maxFeePerGas as string)),
         'gwei'
       );
       const priorityFee = ethers.utils.parseUnits(
-        String(this.data.maxPriorityFeePerGas),
+        String(parseInt(this.data.maxPriorityFeePerGas as string)),
         'gwei'
       );
       const maxFeeWithPriority = maxFee.add(priorityFee);
