@@ -162,12 +162,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
     if (msgData.maxFeePerGas && msgData.maxPriorityFeePerGas) {
       baseTx.maxFeePerGas = utils.toHex(
         ethers.utils
-          .parseUnits(msgData.maxFeePerGas.toString(), 'gwei')
+          .parseUnits(
+            parseInt(msgData.maxFeePerGas as string).toString(),
+            'gwei'
+          )
           .toString()
       );
       baseTx.maxPriorityFeePerGas = utils.toHex(
         ethers.utils
-          .parseUnits(msgData.maxPriorityFeePerGas.toString(), 'gwei')
+          .parseUnits(
+            parseInt(msgData.maxPriorityFeePerGas as string).toString(),
+            'gwei'
+          )
           .toString()
       );
       baseTx.type = 2;
