@@ -29,7 +29,9 @@ const Home: NextPage = () => {
     [chains]
   );
 
-  const [address, setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string>(
+    'cosmos1ze2ye5u5k3qdlexvt2e0nn0508p04094j0vmx8'
+  );
   const handleAddressChange = useCallback(
     (event) => setAddress(event.target.value),
     []

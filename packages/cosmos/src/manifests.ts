@@ -19,7 +19,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
   [CosmosHubChains.cosmoshub]: {
     name: 'Cosmos Hub',
     description: '',
-    rpcURL: 'https://www.mintscan.io/cosmos/txs',
+    rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
     chainSymbol: 'ATOM',
     blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
     chainId: 'cosmoshub-4',
