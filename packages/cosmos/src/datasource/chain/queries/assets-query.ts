@@ -1,7 +1,7 @@
 import { gqlClient } from '@xdefi/chains-core';
-import { AddressChain, GetAssetsWithFilterDocument } from '@xdefi/graphql';
+import { GetAssetsWithFilterDocument } from '@xdefi/graphql';
 
-export const getAssets = (symbols: string[]) => {
+export const getAssets = (contractAddress: string[]) => {
   return gqlClient.query({
     query: GetAssetsWithFilterDocument,
     variables: {
@@ -9,8 +9,7 @@ export const getAssets = (symbols: string[]) => {
         first: 1000,
       },
       filter: {
-        chains: [AddressChain.Cosmos],
-        symbols: symbols,
+        address: contractAddress,
       },
     },
   });
