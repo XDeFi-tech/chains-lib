@@ -21,6 +21,7 @@
     "@cosmjs/stargate": "^0.30.1",
     "@xdefi/chains-core": "*",
     "@xdefi/graphql": "*",
+    "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
