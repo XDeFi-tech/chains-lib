@@ -1119,6 +1119,13 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@babel/runtime@^7.11.2":
+  version "7.21.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.5.tgz#8492dddda9644ae3bda3b45eabe87382caee7200"
+  integrity sha512-8jI69toZqqcsnqGGqwGS4Qb1VwLOEp4hz+CXPywcvjs60u3B4Pom/U/7rm4W8tMOYEB+E9wgD0mW1l3r8qlI9Q==
+  dependencies:
+    regenerator-runtime "^0.13.11"
+
 "@babel/template@^7.18.10", "@babel/template@^7.20.7", "@babel/template@^7.3.3":
   version "7.20.7"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.20.7.tgz"
@@ -1487,6 +1494,19 @@
     "@cosmjs/utils" "0.27.1"
     axios "^0.21.2"
     fast-deep-equal "^3.1.3"
+
+"@cosmjs/ledger-amino@^0.30.1":
+  version "0.30.1"
+  resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.30.1.tgz#e9b785668ead0015ca9643ad2b55478d6b76b266"
+  integrity sha512-2btQa9JpAShzMZ5Qr7jWsHFeNRkI3/slT/F7XYUpIf/VUU/uVY7mbMEpkOpGxSals9X/+HiGS1FWVZUn3QDOHg==
+  dependencies:
+    "@cosmjs/amino" "^0.30.1"
+    "@cosmjs/crypto" "^0.30.1"
+    "@cosmjs/encoding" "^0.30.1"
+    "@cosmjs/math" "^0.30.1"
+    "@cosmjs/utils" "^0.30.1"
+    ledger-cosmos-js "^2.1.8"
+    semver "^7.3.2"
 
 "@cosmjs/math@0.27.1":
   version "0.27.1"
@@ -3050,6 +3070,16 @@
   dependencies:
     invariant "2"
 
+"@ledgerhq/devices@^5.51.1":
+  version "5.51.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.51.1.tgz#d741a4a5d8f17c2f9d282fd27147e6fe1999edb7"
+  integrity sha512-4w+P0VkbjzEXC7kv8T1GJ/9AVaP9I6uasMZ/JcdwZBS3qwvKo5A5z9uGhP5c7TvItzcmPb44b5Mw2kT+WjUuAA==
+  dependencies:
+    "@ledgerhq/errors" "^5.50.0"
+    "@ledgerhq/logs" "^5.50.0"
+    rxjs "6"
+    semver "^7.3.5"
+
 "@ledgerhq/devices@^7.0.7":
   version "7.0.7"
   resolved "https://registry.npmjs.org/@ledgerhq/devices/-/devices-7.0.7.tgz"
@@ -3059,6 +3089,11 @@
     "@ledgerhq/logs" "^6.10.1"
     rxjs "6"
     semver "^7.3.5"
+
+"@ledgerhq/errors@^5.50.0":
+  version "5.50.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.50.0.tgz#e3a6834cb8c19346efca214c1af84ed28e69dad9"
+  integrity sha512-gu6aJ/BHuRlpU7kgVpy2vcYk6atjB4iauP2ymF7Gk0ez0Y/6VSMVSJvubeEQN+IV60+OBK0JgeIZG7OiHaw8ow==
 
 "@ledgerhq/errors@^6.12.3":
   version "6.12.3"
@@ -3099,6 +3134,15 @@
     "@ledgerhq/hw-transport" "^6.27.10"
     "@ledgerhq/logs" "^6.10.1"
 
+"@ledgerhq/hw-transport@^5.25.0":
+  version "5.51.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.51.1.tgz#8dd14a8e58cbee4df0c29eaeef983a79f5f22578"
+  integrity sha512-6wDYdbWrw9VwHIcoDnqWBaDFyviyjZWv6H9vz9Vyhe4Qd7TIFmbTl/eWs6hZvtZBza9K8y7zD8ChHwRI4s9tSw==
+  dependencies:
+    "@ledgerhq/devices" "^5.51.1"
+    "@ledgerhq/errors" "^5.50.0"
+    events "^3.3.0"
+
 "@ledgerhq/hw-transport@^6.27.10":
   version "6.27.10"
   resolved "https://registry.npmjs.org/@ledgerhq/hw-transport/-/hw-transport-6.27.10.tgz"
@@ -3107,6 +3151,11 @@
     "@ledgerhq/devices" "^7.0.7"
     "@ledgerhq/errors" "^6.12.3"
     events "^3.3.0"
+
+"@ledgerhq/logs@^5.50.0":
+  version "5.50.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
+  integrity sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA==
 
 "@ledgerhq/logs@^6.10.1":
   version "6.10.1"
@@ -8160,6 +8209,16 @@ language-tags@=1.0.5:
   integrity sha512-qJhlO9cGXi6hBGKoxEG/sKZDAHD5Hnu9Hs4WbOY3pCWXDhw0N8x1NenNzm2EnNLkLkk7J2SdxAkDSbb6ftT+UQ==
   dependencies:
     language-subtag-registry "~0.3.2"
+
+ledger-cosmos-js@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/ledger-cosmos-js/-/ledger-cosmos-js-2.1.8.tgz#b409ecd1e77f630e6fb212a9f602fe5c6e8f054b"
+  integrity sha512-Gl7SWMq+3R9OTkF1hLlg5+1geGOmcHX9OdS+INDsGNxSiKRWlsWCvQipGoDnRIQ6CPo2i/Ze58Dw0Mt/l3UYyA==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@ledgerhq/hw-transport" "^5.25.0"
+    bech32 "^1.1.4"
+    ripemd160 "^2.0.2"
 
 leven@^3.1.0:
   version "3.1.0"
