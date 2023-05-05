@@ -1,4 +1,3 @@
-import App from '@ledgerhq/hw-app-eth';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi/chains-core';
 import { SigningStargateClient, GasPrice } from '@cosmjs/stargate';
@@ -22,10 +21,13 @@ export class LedgerSigner extends Signer.Provider {
   async getAddress(derivation: string): Promise<string> {
     const transport = await Transport.create();
     try {
-      const app = new App(transport);
-      const address = await app.getAddress(derivation);
+      const signer = new CosmosLedgerSigner(transport, {
+        testModeAllowed: true,
+        hdPaths: [stringToPath(derivation)],
+      });
+      const [{ address }] = await signer.getAccounts();
 
-      return address.address;
+      return address;
     } catch (err) {
       throw err;
     } finally {
