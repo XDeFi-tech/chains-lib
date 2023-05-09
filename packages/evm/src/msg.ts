@@ -241,6 +241,50 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
           .toHexString();
     }
 
+    if (baseTx.data !== msgData.data) {
+      const tempMsg = new ChainMsg(
+        {
+          data: baseTx.data,
+          from: baseTx.from,
+          to: baseTx.to,
+        },
+        this.provider
+      );
+
+      const updatedFee = await this.provider?.estimateFee(
+        [tempMsg],
+        GasFeeSpeed.medium
+      );
+
+      if (updatedFee) {
+        const feeItem = updatedFee[0];
+        baseTx.gasLimit =
+          utils.toHex(feeItem.gasLimit) || utils.toHex(msgData.gasLimit);
+        if (feeItem.maxFeePerGas) {
+          baseTx.maxFeePerGas = utils.toHex(
+            ethers.utils
+              .parseUnits(
+                parseInt(feeItem.maxFeePerGas as string).toString(),
+                'gwei'
+              )
+              .toString()
+          );
+          baseTx.maxPriorityFeePerGas = utils.toHex(
+            ethers.utils
+              .parseUnits(
+                parseInt(feeItem.maxPriorityFeePerGas as string).toString(),
+                'gwei'
+              )
+              .toString()
+          );
+          baseTx.type = 2;
+        } else {
+          baseTx.gasPrice = utils.toHex(feeItem.gasPrice as NumberIsh);
+          baseTx.type = undefined;
+        }
+      }
+    }
+
     return baseTx as TxData;
   }
 }
