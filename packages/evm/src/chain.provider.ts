@@ -18,6 +18,7 @@ import { some } from 'lodash';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
+import { paramToString, decryptParams } from './utils';
 
 @ChainDecorator('EvmProvider', {
   deps: [],
@@ -86,6 +87,13 @@ export class EvmProvider extends Chain.Provider {
   static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
     return {
       IndexerDataSource: IndexerDataSource,
+    };
+  }
+
+  static get staticUtils() {
+    return {
+      paramToString,
+      decryptParams,
     };
   }
 }

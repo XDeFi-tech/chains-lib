@@ -139,9 +139,9 @@ export class IndexerDataSource extends DataSource {
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
 
     return msgs.map((msg) => {
-      const msgData = msg.toData().data;
+      const msgData = msg.toData();
       const feeForData =
-        msgData && msgData !== '0x'
+        msgData && msgData.data !== '0x'
           ? 68 * new TextEncoder().encode(msgData.toString()).length
           : 0;
       const gasLimit = transactionFee + feeForData;
