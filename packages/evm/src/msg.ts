@@ -7,6 +7,7 @@ import {
   utils,
 } from '@xdefi/chains-core';
 import { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
 
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
@@ -24,6 +25,11 @@ export enum TokenType {
   ERC1155 = 'ERC1155', // nft
 }
 
+export enum TransactionType {
+  Legacy = 0,
+  EIP1559 = 2,
+}
+
 export interface MsgBody {
   nonce: NumberIsh;
   to: string;
@@ -38,6 +44,7 @@ export interface MsgBody {
   tokenType?: TokenType;
   nftId?: string;
   contractAddress?: string;
+  txType?: TransactionType;
 }
 
 export interface TxData {
@@ -57,7 +64,7 @@ export interface TxData {
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
 
-  private async getDataFromContract() {
+  async getDataFromContract() {
     const msgData = this.toData();
     const contractData: { value?: string; data?: string; to?: string } = {};
     let contract, populatedTx;
@@ -126,18 +133,17 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       maxPriorityFeePerGas: this.data.maxPriorityFeePerGas,
     };
 
-    if (this.data.contractAddress) {
-      const { populatedTx } = await this.getDataFromContract();
-      const tempMsg = new ChainMsg(
-        {
-          ...populatedTx,
-        },
-        this.provider
-      );
+    if (
+      this.data.contractAddress ||
+      !feeOptions.maxFeePerGas ||
+      !feeOptions.gasLimit ||
+      !feeOptions.maxPriorityFeePerGas
+    ) {
       const contractFeeEstimation = await this.provider?.estimateFee(
-        [tempMsg],
+        [this],
         speed || GasFeeSpeed.medium
       );
+
       if (contractFeeEstimation) {
         feeOptions.gasLimit = contractFeeEstimation[0].gasLimit;
         feeOptions.gasPrice = contractFeeEstimation[0].gasPrice;
@@ -147,15 +153,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       }
     }
 
-    if (feeOptions.maxFeePerGas) {
-      if (
-        !feeOptions.maxFeePerGas ||
-        !feeOptions.gasLimit ||
-        !feeOptions.maxPriorityFeePerGas
-      ) {
-        return estimation;
-      }
-
+    if (
+      this.data.txType !== TransactionType.Legacy &&
+      feeOptions.maxFeePerGas
+    ) {
       const maxFee = parseGwei(feeOptions.maxFeePerGas);
       const priorityFee = parseGwei(feeOptions.maxPriorityFeePerGas);
       const maxFeeWithPriority = maxFee.plus(priorityFee);
@@ -172,7 +173,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         )
         .toString();
     } else {
-      if (!feeOptions.gasPrice || !feeOptions.gasLimit) {
+      if (!feeOptions.gasPrice) {
         return estimation;
       }
       const gasPrice = parseGwei(feeOptions.gasPrice);
@@ -201,6 +202,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       tokenType: this.data?.tokenType,
       contractAddress: this.data?.contractAddress,
       nftId: this.data?.nftId,
+      txType: this.data?.txType,
     };
   }
 
@@ -239,70 +241,25 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       chainId: utils.toHex(msgData.chainId),
     };
 
-    if (msgData.maxFeePerGas && msgData.maxPriorityFeePerGas) {
+    if (
+      msgData.txType !== TransactionType.Legacy &&
+      msgData.maxFeePerGas &&
+      msgData.maxPriorityFeePerGas
+    ) {
       baseTx.maxFeePerGas = utils.toHex(
-        ethers.utils
-          .parseUnits(
-            parseInt(msgData.maxFeePerGas as string).toString(),
-            'gwei'
-          )
-          .toString()
+        parseGwei(msgData.maxFeePerGas).toString()
       );
-      baseTx.maxPriorityFeePerGas = utils.toHex(
-        ethers.utils
-          .parseUnits(
-            parseInt(msgData.maxPriorityFeePerGas as string).toString(),
-            'gwei'
-          )
-          .toString()
-      );
+      baseTx.maxPriorityFeePerGas = BigNumber(
+        Number(msgData.maxPriorityFeePerGas)
+      ).toString();
       baseTx.type = 2;
     } else {
-      baseTx.gasPrice = utils.toHex(msgData.gasPrice as NumberIsh);
-    }
-
-    if (baseTx.data !== msgData.data) {
-      const tempMsg = new ChainMsg(
-        {
-          data: baseTx.data,
-          from: baseTx.from,
-          to: baseTx.to,
-        },
-        this.provider
-      );
-
-      const updatedFee = await this.provider?.estimateFee(
-        [tempMsg],
-        GasFeeSpeed.medium
-      );
-
-      if (updatedFee) {
-        const feeItem = updatedFee[0];
-        baseTx.gasLimit =
-          utils.toHex(feeItem.gasLimit) || utils.toHex(msgData.gasLimit);
-        if (feeItem.maxFeePerGas) {
-          baseTx.maxFeePerGas = utils.toHex(
-            ethers.utils
-              .parseUnits(
-                parseInt(feeItem.maxFeePerGas as string).toString(),
-                'gwei'
-              )
-              .toString()
-          );
-          baseTx.maxPriorityFeePerGas = utils.toHex(
-            ethers.utils
-              .parseUnits(
-                parseInt(feeItem.maxPriorityFeePerGas as string).toString(),
-                'gwei'
-              )
-              .toString()
-          );
-          baseTx.type = 2;
-        } else {
-          baseTx.gasPrice = utils.toHex(feeItem.gasPrice as NumberIsh);
-          baseTx.type = undefined;
-        }
+      if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
+        throw new Error(
+          'Legacy transactions required gasPrice and gasLimit fields'
+        );
       }
+      baseTx.gasPrice = utils.toHex(msgData.gasPrice as NumberIsh);
     }
 
     return baseTx as TxData;

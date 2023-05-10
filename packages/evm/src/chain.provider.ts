@@ -1,24 +1,24 @@
 import 'reflect-metadata';
 import {
-  DataSource,
+  Balance,
   Chain,
   ChainDecorator,
   Coin,
+  DataSource,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
   Response,
   Transaction,
-  Balance,
-  FeeData,
 } from '@xdefi/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
-import { paramToString, decryptParams } from './utils';
+import { decryptParams, paramToString } from './utils';
 
 @ChainDecorator('EvmProvider', {
   deps: [],

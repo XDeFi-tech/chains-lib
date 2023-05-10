@@ -1,4 +1,4 @@
-import { Msg as BaseMsg } from '@xdefi/chains-core';
+import { GasFeeSpeed, Msg as BaseMsg, FeeEstimation } from '@xdefi/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';
@@ -14,15 +14,9 @@ export interface BitcoinMessageBody {
 
 export type BitcoinTxBody = { txHex: string };
 
-export interface FeeEstimation {
-  fee: null | BigNumber;
-  maxFee: null | BigNumber;
-}
-
 export class BitcoinChainMessage extends BaseMsg<
   BitcoinMessageBody,
-  BitcoinTxBody,
-  FeeEstimation
+  BitcoinTxBody
 > {
   declare signedTransaction: string | null;
   declare data: BitcoinMessageBody;
@@ -53,7 +47,7 @@ export class BitcoinChainMessage extends BaseMsg<
     const { fee } = this.feeEstimation ?? {};
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRateWhole = parseInt(fee.toFixed(0));
+    const feeRateWhole = parseInt(fee);
     const compiledMemo = this.data.memo
       ? this.compileMemo(this.data.memo)
       : null;
@@ -129,7 +123,7 @@ export class BitcoinChainMessage extends BaseMsg<
     return this;
   }
 
-  getFee() {
+  async getFee(_speed?: GasFeeSpeed) {
     return this.feeEstimation;
   }
 }

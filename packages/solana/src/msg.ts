@@ -10,7 +10,7 @@ export interface FeeEstimation {
   maxFee: null | BigNumber;
 }
 
-export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
+export class ChainMsg extends BasMsg<MsgBody, MsgBody> {
   declare signedTransaction: string;
 
   public toData() {

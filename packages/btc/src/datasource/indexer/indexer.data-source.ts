@@ -15,7 +15,6 @@ import {
 } from '@xdefi/chains-core';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
-import BigNumber from 'bignumber.js';
 import { OptBlockRange } from '@xdefi/graphql';
 
 import { BitcoinChainMessage } from '../../msg';
@@ -102,8 +101,8 @@ export class IndexerDataSource extends DataSource {
     if (!feeOptions) return [];
     return messages.map((message) => {
       message.setFees({
-        fee: new BigNumber(feeOptions[speed]),
-        maxFee: new BigNumber(feeOptions[GasFeeSpeed.high]),
+        fee: feeOptions[speed].toString(),
+        maxFee: feeOptions[GasFeeSpeed.high].toString(),
       });
 
       return {
