@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { BitcoinChainMessage } from './msg';
 import { BtcProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';

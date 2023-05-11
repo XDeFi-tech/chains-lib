@@ -13,7 +13,6 @@ import {
   FeeData,
 } from '@xdefi/chains-core';
 
-import 'reflect-metadata';
 import { ChainMsg } from './msg';
 
 @ChainDecorator('SolanaProvider', {

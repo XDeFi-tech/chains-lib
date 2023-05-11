@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {
   Balance,
   Chain,
@@ -23,6 +22,11 @@ import { decryptParams, paramToString } from './utils';
 @ChainDecorator('EvmProvider', {
   deps: [],
   providerType: 'EVM',
+  features: [
+    Chain.ChainFeatures.TOKENS,
+    Chain.ChainFeatures.NFT,
+    Chain.ChainFeatures.EIP1559,
+  ],
 })
 export class EvmProvider extends Chain.Provider {
   rpcProvider: providers.StaticJsonRpcProvider;

@@ -1,5 +1,5 @@
-import { SignerType } from 'core/signer';
-import { getAllChains } from 'core/chain/helpers';
+import { SignerType } from '../../signer';
+import { getAllChains } from '../helpers';
 
 export const getChainsBySigner = (type: SignerType) => {
   try {

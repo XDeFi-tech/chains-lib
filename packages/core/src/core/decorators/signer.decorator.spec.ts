@@ -1,8 +1,7 @@
-import 'reflect-metadata';
-import { DiContainer } from 'common';
-import { SignerDecorator } from 'core/decorators';
-import { SignerType } from 'core/signer/interfaces';
-import { SIGNER_SCOPE_NAME } from 'core/constants';
+import { DiContainer } from '../../common';
+import { SignerDecorator } from '../decorators';
+import { SignerType } from '../signer/interfaces';
+import { SIGNER_SCOPE_NAME } from '../constants';
 
 describe('signer.decorator', () => {
   beforeEach(() => {

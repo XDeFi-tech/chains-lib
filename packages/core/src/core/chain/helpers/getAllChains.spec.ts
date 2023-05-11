@@ -1,6 +1,7 @@
-import { DiContainer } from 'common/di';
-import { ChainDecorator } from 'core/decorators';
-import { getAllChains } from 'core/chain/helpers';
+import { DiContainer } from '../../../common/di';
+import { ChainDecorator, SignerDecorator } from '../../decorators';
+import { getAllChains } from '../helpers';
+import * as Signer from '../../signer';
 
 describe('getAllChains', () => {
   beforeEach(() => {
@@ -12,9 +13,13 @@ describe('getAllChains', () => {
   });
 
   it('should return 2 chain providers', () => {
-    ChainDecorator('firstChainProvider')(class {});
-    ChainDecorator('secondChainProvider')(class {});
+    @ChainDecorator('firstChainProvider')
+    // @ts-ignore
+    class TestProvider{}
+    const firstSigner = SignerDecorator(Signer.SignerType.LEDGER)(class {});
+    ChainDecorator('secondChainProvider', { deps: [firstSigner]})(class {});
+    const chains = getAllChains();
 
-    expect(getAllChains()).toHaveLength(2);
+    expect(chains).toHaveLength(2);
   });
 });

@@ -1,13 +1,13 @@
-import { DiContainer } from 'common/di';
-import * as Chain from 'core/chain';
-import { Coin } from 'core/coin';
-import { Msg, MsgData } from 'core/msg';
-import * as Signer from 'core/signer';
-import { Transaction } from 'core/transaction';
-import { getChainsBySigner } from 'core/chain/helpers';
-import { ChainDecorator, SignerDecorator } from 'core/decorators';
-import { FeeOptions } from 'core/fee';
-import { Balance, FeeData, Response } from 'core';
+import { DiContainer } from '../../../common/di';
+import * as Chain from '../../chain';
+import { Coin } from '../../coin';
+import { Msg, MsgData } from '../../msg';
+import * as Signer from '../../signer';
+import { Transaction } from '../../transaction';
+import { getChainsBySigner } from '../../chain/helpers';
+import { ChainDecorator, SignerDecorator } from '../../decorators';
+import { FeeOptions } from '../../fee';
+import { Balance, FeeData, Response } from '../../../core';
 
 const createChainProvider = () => {
   return class extends Chain.Provider {
