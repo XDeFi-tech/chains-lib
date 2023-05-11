@@ -12,6 +12,13 @@ import {
   FeeData,
   FeeOptions,
 } from '@xdefi/chains-core';
+import {
+  LcdClient,
+  setupBankExtension,
+  setupAuthExtension,
+} from '@cosmjs/launchpad';
+import { StdTx } from '@cosmjs/amino';
+import { some } from 'lodash';
 
 import 'reflect-metadata';
 import { ChainMsg } from './msg';
@@ -21,11 +28,15 @@ import { ChainMsg } from './msg';
   providerType: 'Cosmos',
 })
 export class CosmosProvider extends Chain.Provider {
-  declare rpcProvider: any;
+  declare rpcProvider: LcdClient;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    // this.rpcProvider = ;
+    this.rpcProvider = LcdClient.withExtensions(
+      { apiUrl: this.manifest.rpcURL },
+      setupBankExtension,
+      setupAuthExtension
+    );
   }
 
   createMsg(data: MsgData): Msg {
@@ -53,15 +64,28 @@ export class CosmosProvider extends Chain.Provider {
     );
   }
 
-  async gasFeeOptions(): Promise<FeeOptions> {
-    throw new Error('Method not implemented.');
+  async gasFeeOptions(): Promise<FeeOptions | null> {
+    return this.dataSource.gasFeeOptions();
   }
 
   async getNonce(_address: string): Promise<number> {
+    // unused
     throw new Error('Method not implemented.');
   }
 
-  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.');
+  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+    if (some(msgs, (msg) => !msg.hasSignature)) {
+      throw new Error('Some message do not have signature, sign it first');
+    }
+    const transactions = [];
+
+    for (const msg of msgs) {
+      const tx = await this.rpcProvider.broadcastTx(
+        msg.signedTransaction as StdTx
+      );
+      transactions.push(Transaction.fromData(tx));
+    }
+
+    return transactions;
   }
 }

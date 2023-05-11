@@ -21,7 +21,7 @@ const Home: NextPage = () => {
 
   const [currentProvider, setCurrentProvider] = useState<
     undefined | Chain.Provider
-  >(chains.getProviderList()[0]);
+  >(chains.getProviderByType('Cosmos')[0]);
   const handleChainChange = useCallback(
     (event) => {
       setCurrentProvider(chains.getProviderByChain(event.target.value));

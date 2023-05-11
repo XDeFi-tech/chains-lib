@@ -29,6 +29,11 @@ import { getAssets } from './queries';
 export class ChainDataSource extends DataSource {
   constructor(manifest: Chain.Manifest) {
     super(manifest);
+    this.rpcProvider = LcdClient.withExtensions(
+      { apiUrl: this.manifest.rpcURL },
+      setupBankExtension,
+      setupAuthExtension
+    );
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
@@ -105,7 +110,13 @@ export class ChainDataSource extends DataSource {
     _msgs: ChainMsg[],
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+    const client = LcdClient.withExtensions(
+      { apiUrl: this.manifest.rpcURL },
+      setupBankExtension,
+      setupAuthExtension
+    );
+    const fee = await client.post('/cosmos/tx/v1beta1/simulate', {});
+    return [];
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {

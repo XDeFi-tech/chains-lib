@@ -1,6 +1,7 @@
 import { Msg as BasMsg } from '@xdefi/chains-core';
 import BigNumber from 'bignumber.js';
 import { MsgSend, coin, StdFee } from '@cosmjs/launchpad';
+import { StdTx } from '@cosmjs/amino';
 
 export interface MsgBody {
   from: string;
@@ -21,7 +22,7 @@ export interface FeeEstimation {
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
-  signedTransaction: string | undefined;
+  signedTransaction: StdTx | undefined;
 
   public toData() {
     return this.data;
