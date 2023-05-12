@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi/chains-btc",
+  "name": "@xdefi-tech/chains-btc",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,6 +32,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "test": "jest",
     "test:watch": "jest --watch",

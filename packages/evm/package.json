@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi/chains-evm",
+  "name": "@xdefi-tech/chains-evm",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
-    "publish:packages": "echo 123",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
