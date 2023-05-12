@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import TronWeb from 'tronweb';
 
 import { ChainMsg } from '../msg';

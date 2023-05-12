@@ -3,7 +3,7 @@ import {
   Scalars,
   OptBlockRange,
 } from '@xdefi/graphql';
-import { gqlClient } from '@xdefi/chains-core';
+import { gqlClient } from '@xdefi-tech/chains-core';
 
 export const getTransaction = (
   address: Scalars['String'],

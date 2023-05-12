@@ -12,7 +12,7 @@ import {
   FeeData,
   FeeOptions,
   DefaultFeeOptions,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';

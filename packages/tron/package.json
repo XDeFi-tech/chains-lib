@@ -13,7 +13,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@xdefi/chains-core": "*",
+    "@xdefi-tech/chains-core": "*",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
     "reflect-metadata": "^0.1.13",

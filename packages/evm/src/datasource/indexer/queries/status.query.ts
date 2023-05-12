@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { gqlClient } from '@xdefi/chains-core';
+import { gqlClient } from '@xdefi-tech/chains-core';
 
 export const GET_STATUS = (chain: string) => gql`
 query GetStatus {

@@ -1,4 +1,4 @@
-import { Msg as BaseMsg } from '@xdefi/chains-core';
+import { Msg as BaseMsg } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';

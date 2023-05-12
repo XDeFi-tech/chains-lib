@@ -1,6 +1,6 @@
-import { Chain } from '@xdefi/chains-core';
-import { EvmProvider } from '@xdefi/chains-evm';
-import { SolanaProvider } from '@xdefi/chains-solana';
+import { Chain } from '@xdefi-tech/chains-core';
+import { EvmProvider } from '@xdefi-tech/chains-evm';
+import { SolanaProvider } from '@xdefi-tech/chains-solana';
 
 export enum DataSourceNames {
   IndexerDataSource = 'IndexerDataSource',

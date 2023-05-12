@@ -22,10 +22,10 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@xdefi/chains-core": "*",
-    "@xdefi/chains-evm": "*",
-    "@xdefi/chains-solana": "*",
-    "@xdefi/graphql": "*",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-evm": "*",
+    "@xdefi-tech/chains-solana": "*",
+    "@xdefi-tech/graphql": "*",
     "rimraf": "^4.4.0"
   },
   "tsup": {

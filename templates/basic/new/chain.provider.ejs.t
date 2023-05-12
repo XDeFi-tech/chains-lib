@@ -14,7 +14,7 @@ import {
     Response,
     Transaction,
     Balance,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import 'reflect-metadata';
 import { ChainMsg } from './msg';
 

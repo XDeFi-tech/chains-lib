@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Typography, Button, Divider, List } from '@mui/material';
-import { Chain, Transaction } from '@xdefi/chains-core';
+import { Chain, Transaction } from '@xdefi-tech/chains-core';
 
 export interface ITransactionsComponent {
   provider: Chain.Provider;

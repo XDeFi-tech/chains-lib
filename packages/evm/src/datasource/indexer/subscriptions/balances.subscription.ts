@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { gqlClient, BalancesData } from '@xdefi/chains-core';
+import { gqlClient, BalancesData } from '@xdefi-tech/chains-core';
 
 import { EVMChains } from '../../../manifests';
 

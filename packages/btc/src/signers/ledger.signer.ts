@@ -1,6 +1,6 @@
 import App from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import { BitcoinChainMessage } from '../msg';

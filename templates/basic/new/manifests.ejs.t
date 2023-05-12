@@ -2,7 +2,7 @@
 to: packages/<%= name.toLowerCase() %>/src/manifests.ts
 ---
 
-import { Chain } from '@xdefi/chains-core';
+import { Chain } from '@xdefi-tech/chains-core';
 
 export const <%= name %>Manifest: Chain.Manifest = {
    name: '<%= name %>',

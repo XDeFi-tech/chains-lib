@@ -20,7 +20,7 @@
     "@ledgerhq/cryptoassets": "^9.1.0",
     "@ledgerhq/hw-app-eth": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@xdefi/chains-core": "*",
+    "@xdefi-tech/chains-core": "*",
     "@xdefi/graphql": "*",
     "bignumber.js": "^9.0.2",
     "ethers": "^5.6.4",
