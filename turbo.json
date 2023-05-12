@@ -45,6 +45,10 @@
     },
     "typedoc": {
       "outputs": []
+    },
+    "publish:packages": {
+      "cache": false,
+      "outputs": []
     }
   }
 }
