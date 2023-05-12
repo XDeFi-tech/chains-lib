@@ -18,6 +18,6 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@xdefi-tech'
       - run: yarn
-      - run: yarn workspace @xdefi-tech/chain-controllers run publish:packages
+      - run: yarn workspace @xdefi-tech/chain-controller run publish:packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PKG_TOKEN }}
