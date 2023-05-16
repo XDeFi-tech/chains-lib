@@ -20,6 +20,8 @@ import {
   setupAuthExtension,
   SearchBySentFromOrToQuery,
 } from '@cosmjs/launchpad';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+// import { setupTxExtension, QueryClient } from '@cosmjs/stargate';
 
 import { ChainMsg } from '../../msg';
 
@@ -110,12 +112,9 @@ export class ChainDataSource extends DataSource {
     _msgs: ChainMsg[],
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
-    const client = LcdClient.withExtensions(
-      { apiUrl: this.manifest.rpcURL },
-      setupBankExtension,
-      setupAuthExtension
-    );
-    const fee = await client.post('/cosmos/tx/v1beta1/simulate', {});
+    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
+    // const txExtension = setupTxExtension(QueryClient.withExtensions(client));
+    // console.log('txExtension', txExtension);
     return [];
   }
 

@@ -24,9 +24,11 @@
     "@xdefi/graphql": "*",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
+    "crypto-browserify": "^3.12.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
+    "stream-browserify": "^3.0.0",
     "ts-node": "^10.7.0"
   },
   "scripts": {
@@ -53,5 +55,8 @@
       "./signers/react-native.d.ts"
     ],
     "platform": "browser"
+  },
+  "browser": {
+    "crypto": "crypto-browserify"
   }
 }

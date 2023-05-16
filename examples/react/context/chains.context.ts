@@ -5,7 +5,6 @@ import {
   EvmProvider,
   IndexerDataSource as EvmDataSource,
 } from '@xdefi/chains-evm';
-import WebSigners from '@xdefi/chains-evm/dist/signers/web';
 import {
   CosmosProvider,
   ChainDataSource,
@@ -20,9 +19,7 @@ ChainsContextDefaultValue.addProvider(
 
 // init all needed providers
 ChainsContextDefaultValue.addProvider(
-  new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
-    signers: WebSigners,
-  })
+  new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum))
 );
 // ChainsContextDefaultValue.addProvider(
 //   new SolanaProvider(new SolanaDataSource(SolanaManifest))

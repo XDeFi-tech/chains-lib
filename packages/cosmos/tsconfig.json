@@ -6,7 +6,17 @@
       "dom"
     ],
     "baseUrl": "./",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-browserify",
+        "../../node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "node_modules/stream-browserify",
+        "../../node_modules/stream-browserify"
+      ]
+    }
   },
   "include": [
     "./src/**/*"
