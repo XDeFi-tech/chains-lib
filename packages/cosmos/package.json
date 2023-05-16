@@ -32,14 +32,14 @@
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "build": "tsup --minify --clean",
-    "watch": "tsup --watch",
+    "build": "webpack --config webpack.prod.cjs",
+    "watch": "webpack --config webpack.dev.cjs",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest"
   },
-  "type": "module",
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts",

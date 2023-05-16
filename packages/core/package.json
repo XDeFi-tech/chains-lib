@@ -35,8 +35,8 @@
     "ws": "^8.8.1"
   },
   "scripts": {
-    "build": "tsup --minify --clean",
-    "watch": "tsup --watch",
+    "build": "webpack --config webpack.prod.cjs",
+    "watch": "webpack --config webpack.dev.cjs",
     "clean": "rimraf dist .turbo node_modules",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -44,7 +44,7 @@
     "lint:fix": "eslint . --fix",
     "typedoc": "typedoc src/index.ts"
   },
-  "type": "module",
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts"

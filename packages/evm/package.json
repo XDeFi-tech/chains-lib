@@ -30,7 +30,6 @@
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "build": "tsup --minify --clean",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
