@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi/chains-core';
+import { Chain } from '@xdefi-tech/chains-core';
 
 import { ProviderFactory } from './provider-factory';
 

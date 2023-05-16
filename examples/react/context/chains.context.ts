@@ -1,11 +1,11 @@
 import React from 'react';
-import { ChainController } from '@xdefi/chains-controller';
+import { ChainController } from '@xdefi-tech/chains-controller';
 import {
   EVM_MANIFESTS,
   EvmProvider,
   IndexerDataSource as EvmDataSource,
-} from '@xdefi/chains-evm';
-import WebSigners from '@xdefi/chains-evm/dist/signers/web';
+} from '@xdefi-tech/chains-evm';
+import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
 
 export const ChainsContextDefaultValue = new ChainController();
 

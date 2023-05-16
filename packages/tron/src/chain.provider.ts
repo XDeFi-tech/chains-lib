@@ -11,7 +11,7 @@ import {
   Transaction,
   Balance,
   FeeData,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from './msg';
 

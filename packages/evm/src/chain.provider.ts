@@ -11,7 +11,7 @@ import {
   MsgData,
   Response,
   Transaction,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
 

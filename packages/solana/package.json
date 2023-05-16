@@ -1,8 +1,9 @@
 {
-  "name": "@xdefi/chains-solana",
+  "name": "@xdefi-tech/chains-solana",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.5.1",
@@ -14,7 +15,7 @@
   },
   "dependencies": {
     "@solana/web3.js": "^1.73.3",
-    "@xdefi/chains-core": "*",
+    "@xdefi-tech/chains-core": "*",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
     "reflect-metadata": "^0.1.13",
@@ -24,6 +25,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",

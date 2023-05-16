@@ -1,8 +1,9 @@
 {
-  "name": "@xdefi/chains-core",
+  "name": "@xdefi-tech/chains-core",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
   "devDependencies": {
     "@types/lodash": "^4.14.182",
@@ -38,6 +39,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "test": "jest",

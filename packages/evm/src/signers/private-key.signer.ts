@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
 
 import { ChainMsg } from '../msg';

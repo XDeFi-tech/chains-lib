@@ -2,14 +2,14 @@ import "@ethersproject/shims";
 import { useCallback } from "react";
 import { View, Button } from "react-native";
 
-import { Chain } from "@xdefi/chains-core";
+import { Chain } from "@xdefi-tech/chains-core";
 import {
   EVM_MANIFESTS,
   EvmProvider,
   IndexerDataSource as EvmDataSource,
-} from "@xdefi/chains-evm";
+} from "@xdefi-tech/chains-evm";
 import { ethers } from "ethers";
-import { ChainController } from "@xdefi/chains-controller";
+import { ChainController } from "@xdefi-tech/chains-controller";
 import { TrustWalletSigner } from "./trust-wallet.signer";
 
 // const provider = new ethers.providers.StaticJsonRpcProvider(

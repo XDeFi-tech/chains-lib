@@ -1,4 +1,8 @@
-import { GasFeeSpeed, Msg as BaseMsg, FeeEstimation } from '@xdefi/chains-core';
+import {
+  GasFeeSpeed,
+  Msg as BaseMsg,
+  FeeEstimation,
+} from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';

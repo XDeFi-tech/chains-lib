@@ -1,4 +1,4 @@
-import { Msg as BasMsg } from '@xdefi/chains-core';
+import { Msg as BasMsg } from '@xdefi-tech/chains-core';
 
 export interface MsgBody {
   to: string;

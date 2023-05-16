@@ -10,7 +10,7 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 
 import { ChainMsg } from '../../msg';

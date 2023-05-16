@@ -1,4 +1,4 @@
-import { Signer } from '@xdefi/chains-core';
+import { Signer } from '@xdefi-tech/chains-core';
 
 import { PrivateKeySigner } from './private-key.signer';
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@xdefi/chains-core';
+import { Injectable } from '@xdefi-tech/chains-core';
 import { Axios } from 'axios';
 import * as Bitcoin from 'bitcoinjs-lib';
 

@@ -1,8 +1,8 @@
 {
-  "name": "@xdefi/chains-controller",
+  "name": "@xdefi-tech/chains-controller",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
+  "repository": "https://github.com/XDeFi-tech/chains/",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
@@ -21,9 +22,9 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@xdefi/chains-core": "*",
-    "@xdefi/chains-evm": "*",
-    "@xdefi/chains-solana": "*",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-evm": "*",
+    "@xdefi-tech/chains-solana": "*",
     "@xdefi/graphql": "*",
     "rimraf": "^4.4.0"
   },

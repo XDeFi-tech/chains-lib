@@ -5,7 +5,7 @@ import {
   Msg as BasMsg,
   NumberIsh,
   utils,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 

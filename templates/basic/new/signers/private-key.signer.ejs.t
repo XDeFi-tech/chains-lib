@@ -2,7 +2,7 @@
 to: packages/<%= name.toLowerCase() %>/src/signers/private-key.signer.ts
 ---
 
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)

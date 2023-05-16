@@ -1,5 +1,5 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import * as ecc from 'tiny-secp256k1/index.js';
