@@ -1,27 +1,32 @@
-import 'reflect-metadata';
 import {
-  DataSource,
+  Balance,
   Chain,
   ChainDecorator,
   Coin,
+  DataSource,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
   Response,
   Transaction,
-  Balance,
-  FeeData,
 } from '@xdefi-tech/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
+import { decryptParams, paramToString } from './utils';
 
 @ChainDecorator('EvmProvider', {
   deps: [],
   providerType: 'EVM',
+  features: [
+    Chain.ChainFeatures.TOKENS,
+    Chain.ChainFeatures.NFT,
+    Chain.ChainFeatures.EIP1559,
+  ],
 })
 export class EvmProvider extends Chain.Provider {
   rpcProvider: providers.StaticJsonRpcProvider;
@@ -86,6 +91,13 @@ export class EvmProvider extends Chain.Provider {
   static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
     return {
       IndexerDataSource: IndexerDataSource,
+    };
+  }
+
+  static get staticUtils() {
+    return {
+      paramToString,
+      decryptParams,
     };
   }
 }

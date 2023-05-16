@@ -1,6 +1,5 @@
-import 'reflect-metadata';
-import { DiContainer } from 'common';
-import { ChainDecorator } from 'core/decorators';
+import { DiContainer } from '../../common';
+import { ChainDecorator } from '../decorators';
 
 import { CHAIN_SCOPE_NAME, METADATA_KEY } from '../constants';
 

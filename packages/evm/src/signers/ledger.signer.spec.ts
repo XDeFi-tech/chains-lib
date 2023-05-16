@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import App from '@ledgerhq/hw-app-btc';
 import { LedgerSigner } from './ledger.signer';
 import { ChainMsg } from '../msg';
@@ -43,6 +42,7 @@ describe('ledger.signer', () => {
   });
 
   it('getAddress(): should throw an error if derivation path is invalid', async () => {
+    // @ts-ignore
     jest.spyOn(App.prototype, 'getAddress').mockRejectedValue('Error');
 
     const signer = new LedgerSigner();
@@ -50,6 +50,7 @@ describe('ledger.signer', () => {
   });
 
   it('getAddress(): should return address', async () => {
+    // @ts-ignore
     jest.spyOn(App.prototype, 'getAddress').mockResolvedValue(ADDRESS_MOCK);
 
     const signer = new LedgerSigner();
@@ -59,6 +60,7 @@ describe('ledger.signer', () => {
   });
 
   it('sign(): show throw an error if msg is invalid', async () => {
+    // @ts-ignore
     jest.spyOn(App.prototype, 'signTransaction').mockRejectedValue('Error');
 
     const signer = new LedgerSigner();
@@ -68,6 +70,7 @@ describe('ledger.signer', () => {
   });
 
   it('sign(): show return signature', async () => {
+    // @ts-ignore
     jest.spyOn(App.prototype, 'signTransaction').mockResolvedValue(SIGN_MOCK);
 
     const signer = new LedgerSigner();

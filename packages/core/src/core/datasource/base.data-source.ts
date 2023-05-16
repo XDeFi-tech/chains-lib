@@ -1,8 +1,9 @@
-import { Manifest } from 'core/chain';
-import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction } from 'core';
 import { providers } from 'ethers';
 import { Observable } from 'rxjs';
-import { FeeData } from 'core/interfaces';
+
+import { Manifest } from '../chain';
+import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction } from '../../core';
+import { FeeData } from '../interfaces';
 
 export interface BalanceFilter {
   address: string;

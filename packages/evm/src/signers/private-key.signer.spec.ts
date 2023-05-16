@@ -3,11 +3,9 @@ import { ChainMsg } from '../msg';
 
 describe('evm private-key.signer', () => {
   const MOCK = {
-    privateKey:
-      '',
+    privateKey: '',
     address: '0x12890d2cce102216644c59daE5baed380d84830c',
-    signature:
-      '',
+    signature: '',
   };
 
   const signer = new PrivateKeySigner();

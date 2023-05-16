@@ -4,8 +4,7 @@ import { Coin } from 'core/coin';
 import { Msg, MsgData } from 'core/msg';
 import { Provider as SignerProvider, SignerType } from 'core/signer';
 import { Transaction } from 'core/transaction';
-import 'reflect-metadata';
-import { Manifest } from 'core/chain/interfaces';
+import { ChainFeatures, Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { FeeOptions, GasFeeSpeed } from 'core/fee';
 import { Balance, DataSource, Response } from 'core';
@@ -207,6 +206,13 @@ export abstract class Provider {
     }
     options.deps.push(signer);
     Reflect.defineMetadata(METADATA_KEY.CHAIN_OPTIONS, options, this);
+  }
+
+  public hasFeature(feature: ChainFeatures | ChainFeatures[]): boolean {
+    const features = typeof feature === 'string' ? [feature] : feature;
+    const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
+    const providerFeatures = options?.features;
+    return features.every((feature) => providerFeatures.includes(feature));
   }
 
   /**

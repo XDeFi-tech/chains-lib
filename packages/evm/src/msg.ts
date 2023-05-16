@@ -1,4 +1,5 @@
 import {
+  FeeEstimation,
   GasFeeSpeed,
   HexString,
   Msg as BasMsg,
@@ -6,6 +7,7 @@ import {
   utils,
 } from '@xdefi-tech/chains-core';
 import { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
 
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
@@ -14,12 +16,18 @@ import {
   ERC1155_SAFE_TRANSFER_METHOD,
   ERC721_SAFE_TRANSFER_METHOD,
 } from './consts';
+import { parseGwei } from './utils';
 
 export enum TokenType {
   None = 'None', // common tx
   ERC20 = 'ERC20', // token
   ERC721 = 'ERC721', // nft
   ERC1155 = 'ERC1155', // nft
+}
+
+export enum TransactionType {
+  Legacy = 0,
+  EIP1559 = 2,
 }
 
 export interface MsgBody {
@@ -36,6 +44,7 @@ export interface MsgBody {
   tokenType?: TokenType;
   nftId?: string;
   contractAddress?: string;
+  txType?: TransactionType;
 }
 
 export interface TxData {
@@ -52,55 +61,127 @@ export interface TxData {
   type?: number; // ethers type
 }
 
-export interface FeeEstimation {
-  fee: HexString | null;
-  maxFee: HexString | null;
-}
-
-export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
+export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
 
-  getFee(): FeeEstimation {
+  async getDataFromContract() {
+    const msgData = this.toData();
+    const contractData: { value?: string; data?: string; to?: string } = {};
+    let contract, populatedTx;
+    switch (this.data.tokenType) {
+      case TokenType.ERC20:
+        contract = new ethers.Contract(
+          msgData.contractAddress as string,
+          erc20ABI,
+          this.provider?.rpcProvider
+        );
+        populatedTx = await contract.populateTransaction.transfer(
+          msgData.to,
+          ethers.utils.parseEther(msgData.amount.toString())
+        );
+        contractData.value = '0x00';
+        contractData.data = populatedTx.data;
+        contractData.to = populatedTx.to;
+        break;
+      case TokenType.ERC721:
+        contract = new ethers.Contract(
+          msgData.contractAddress as string,
+          erc721ABI,
+          this.provider?.rpcProvider
+        );
+        populatedTx = await contract.populateTransaction[
+          ERC721_SAFE_TRANSFER_METHOD
+        ](msgData.from, msgData.to, msgData.nftId, {
+          gasLimit: utils.toHex(msgData.gasLimit || 21000),
+        });
+        contractData.value = populatedTx.value?.toHexString();
+        contractData.data = populatedTx.data;
+        contractData.to = populatedTx.to;
+        break;
+      case TokenType.ERC1155:
+        contract = new ethers.Contract(
+          msgData.contractAddress as string,
+          erc1155ABI,
+          this.provider?.rpcProvider
+        );
+        populatedTx = await contract.populateTransaction[
+          ERC1155_SAFE_TRANSFER_METHOD
+        ](msgData.from, msgData.to, msgData.nftId, 1, [], {});
+        contractData.value = populatedTx.value?.toHexString();
+        contractData.data = populatedTx.data;
+        contractData.to = populatedTx.to;
+        break;
+      default:
+        contractData.value = ethers.utils
+          .parseEther(msgData.amount.toString())
+          .toHexString();
+    }
+
+    return { populatedTx, contractData };
+  }
+
+  async getFee(speed?: GasFeeSpeed) {
     const estimation: FeeEstimation = {
       fee: null,
       maxFee: null,
     };
 
-    if (this.data.maxFeePerGas) {
-      if (
-        !this.data.maxFeePerGas ||
-        !this.data.gasLimit ||
-        !this.data.maxPriorityFeePerGas
-      ) {
-        return estimation;
-      }
+    const feeOptions = {
+      gasLimit: this.data.gasLimit,
+      gasPrice: this.data.gasPrice,
+      maxFeePerGas: this.data.maxFeePerGas,
+      maxPriorityFeePerGas: this.data.maxPriorityFeePerGas,
+    };
 
-      const maxFee = ethers.utils.parseUnits(
-        String(parseInt(this.data.maxFeePerGas as string)),
-        'gwei'
+    if (
+      this.data.contractAddress ||
+      !feeOptions.maxFeePerGas ||
+      !feeOptions.gasLimit ||
+      !feeOptions.maxPriorityFeePerGas
+    ) {
+      const contractFeeEstimation = await this.provider?.estimateFee(
+        [this],
+        speed || GasFeeSpeed.medium
       );
-      const priorityFee = ethers.utils.parseUnits(
-        String(parseInt(this.data.maxPriorityFeePerGas as string)),
-        'gwei'
-      );
-      const maxFeeWithPriority = maxFee.add(priorityFee);
+
+      if (contractFeeEstimation) {
+        feeOptions.gasLimit = contractFeeEstimation[0].gasLimit;
+        feeOptions.gasPrice = contractFeeEstimation[0].gasPrice;
+        feeOptions.maxFeePerGas = contractFeeEstimation[0].maxFeePerGas;
+        feeOptions.maxPriorityFeePerGas =
+          contractFeeEstimation[0].maxPriorityFeePerGas;
+      }
+    }
+
+    if (
+      this.data.txType !== TransactionType.Legacy &&
+      feeOptions.maxFeePerGas
+    ) {
+      const maxFee = parseGwei(feeOptions.maxFeePerGas);
+      const priorityFee = parseGwei(feeOptions.maxPriorityFeePerGas);
+      const maxFeeWithPriority = maxFee.plus(priorityFee);
       estimation.fee = ethers.utils
-        .formatUnits(maxFee.mul(this.data.gasLimit), 'ether')
+        .formatUnits(
+          maxFee.multipliedBy(feeOptions.gasLimit).toString(),
+          'ether'
+        )
         .toString();
       estimation.maxFee = ethers.utils
-        .formatUnits(maxFeeWithPriority.mul(this.data.gasLimit), 'ether')
+        .formatUnits(
+          maxFeeWithPriority.multipliedBy(feeOptions.gasLimit).toString(),
+          'ether'
+        )
         .toString();
     } else {
-      if (!this.data.gasPrice || !this.data.gasLimit) {
+      if (!feeOptions.gasPrice) {
         return estimation;
       }
-      const gasPrice = ethers.utils.parseUnits(
-        String(this.data.gasPrice),
-        'gwei'
-      );
-      const gasFee = gasPrice.mul(this.data.gasLimit);
+      const gasPrice = parseGwei(feeOptions.gasPrice);
+      const gasFee = gasPrice.plus(feeOptions.gasLimit);
 
-      estimation.fee = ethers.utils.formatUnits(gasFee, 'ether').toString();
+      estimation.fee = ethers.utils
+        .formatUnits(gasFee.toString(), 'ether')
+        .toString();
     }
 
     return estimation;
@@ -121,6 +202,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
       tokenType: this.data?.tokenType,
       contractAddress: this.data?.contractAddress,
       nftId: this.data?.nftId,
+      txType: this.data?.txType,
     };
   }
 
@@ -159,86 +241,25 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
       chainId: utils.toHex(msgData.chainId),
     };
 
-    if (msgData.maxFeePerGas && msgData.maxPriorityFeePerGas) {
+    if (
+      msgData.txType !== TransactionType.Legacy &&
+      msgData.maxFeePerGas &&
+      msgData.maxPriorityFeePerGas
+    ) {
       baseTx.maxFeePerGas = utils.toHex(
-        ethers.utils
-          .parseUnits(
-            parseInt(msgData.maxFeePerGas as string).toString(),
-            'gwei'
-          )
-          .toString()
+        parseGwei(msgData.maxFeePerGas).toString()
       );
-      baseTx.maxPriorityFeePerGas = utils.toHex(
-        ethers.utils
-          .parseUnits(
-            parseInt(msgData.maxPriorityFeePerGas as string).toString(),
-            'gwei'
-          )
-          .toString()
-      );
+      baseTx.maxPriorityFeePerGas = BigNumber(
+        Number(msgData.maxPriorityFeePerGas)
+      ).toString();
       baseTx.type = 2;
     } else {
+      if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
+        throw new Error(
+          'Legacy transactions required gasPrice and gasLimit fields'
+        );
+      }
       baseTx.gasPrice = utils.toHex(msgData.gasPrice as NumberIsh);
-    }
-
-    let contract, populatedTx;
-    switch (this.data.tokenType) {
-      case TokenType.ERC20:
-        contract = new ethers.Contract(
-          msgData.contractAddress as string,
-          erc20ABI,
-          this.provider?.rpcProvider
-        );
-        populatedTx = await contract.populateTransaction.transfer(
-          msgData.to,
-          ethers.utils.parseEther(msgData.amount.toString())
-        );
-        baseTx.value = '0x00';
-        baseTx.data = populatedTx.data;
-        baseTx.to = populatedTx.to;
-        break;
-      case TokenType.ERC721:
-        contract = new ethers.Contract(
-          msgData.contractAddress as string,
-          erc721ABI,
-          this.provider?.rpcProvider
-        );
-        populatedTx = await contract.populateTransaction[
-          ERC721_SAFE_TRANSFER_METHOD
-        ](msgData.from, msgData.to, msgData.nftId, {
-          gasLimit: baseTx.gasLimit,
-          gasPrice: baseTx.gasPrice,
-          nonce: baseTx.nonce,
-          maxFeePerGas: baseTx.maxFeePerGas,
-          maxPriorityFeePerGas: baseTx.maxPriorityFeePerGas,
-        });
-        baseTx.value = populatedTx.value?.toHexString();
-        baseTx.data = populatedTx.data;
-        baseTx.to = populatedTx.to;
-        break;
-      case TokenType.ERC1155:
-        contract = new ethers.Contract(
-          msgData.contractAddress as string,
-          erc1155ABI,
-          this.provider?.rpcProvider
-        );
-        populatedTx = await contract.populateTransaction[
-          ERC1155_SAFE_TRANSFER_METHOD
-        ](msgData.from, msgData.to, msgData.nftId, 1, [], {
-          gasLimit: baseTx.gasLimit,
-          gasPrice: baseTx.gasPrice,
-          nonce: baseTx.nonce,
-          maxFeePerGas: baseTx.maxFeePerGas,
-          maxPriorityFeePerGas: baseTx.maxPriorityFeePerGas,
-        });
-        baseTx.value = populatedTx.value?.toHexString();
-        baseTx.data = populatedTx.data;
-        baseTx.to = populatedTx.to;
-        break;
-      default:
-        baseTx.value = ethers.utils
-          .parseEther(msgData.amount.toString())
-          .toHexString();
     }
 
     return baseTx as TxData;

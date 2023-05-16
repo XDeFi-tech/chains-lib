@@ -12,7 +12,6 @@ import {
 } from '@xdefi-tech/chains-core';
 import { Axios } from 'axios';
 
-import 'reflect-metadata';
 import { BitcoinChainMessage, BitcoinMessageBody } from './msg';
 import { UTXODataSource } from './datasource/utxo/utxo.data-source';
 import { DEFAULT_BLOCKSTREAM_URL } from './manifests';

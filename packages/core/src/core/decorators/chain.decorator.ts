@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { DiContainer } from 'common/di/container';
 import { CHAIN_SCOPE_NAME, METADATA_KEY } from 'core/constants';
 import { ChainOptions } from 'core/chain/interfaces';
