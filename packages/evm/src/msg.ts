@@ -136,7 +136,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData, FeeEstimation> {
         msgData = { ...msgData, ...feeData };
       }
       if (!msgData.nonce) {
-        msgData.nonce = await this.provider.getNonce(msgData.to);
+        msgData.nonce = await this.provider.getNonce(msgData.from);
       }
       if (!msgData.chainId) {
         msgData.chainId = this.provider.manifest.chainId;
