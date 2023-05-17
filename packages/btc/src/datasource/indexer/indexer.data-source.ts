@@ -15,7 +15,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
-import { OptBlockRange } from '@xdefi/graphql';
+import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { BitcoinChainMessage } from '../../msg';
 

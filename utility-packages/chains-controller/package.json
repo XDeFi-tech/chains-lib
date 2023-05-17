@@ -25,7 +25,7 @@
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-evm": "*",
     "@xdefi-tech/chains-solana": "*",
-    "@xdefi/graphql": "*",
+    "@xdefi-tech/chains-graphql": "*",
     "rimraf": "^4.4.0"
   },
   "tsup": {

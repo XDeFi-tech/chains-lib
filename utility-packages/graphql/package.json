@@ -1,7 +1,6 @@
 {
-  "name": "@xdefi/graphql",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@xdefi-tech/chains-graphql",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -10,6 +9,7 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "compile": "graphql-codegen --config codegen.yml && yarn format",
     "compile:build": "yarn compile && yarn build",
