@@ -249,9 +249,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       baseTx.maxFeePerGas = utils.toHex(
         parseGwei(msgData.maxFeePerGas).toString()
       );
-      baseTx.maxPriorityFeePerGas = BigNumber(
-        Number(msgData.maxPriorityFeePerGas)
-      ).toString();
+      baseTx.maxPriorityFeePerGas = utils.toHex(
+        parseGwei(msgData.maxPriorityFeePerGas).toString()
+      );
       baseTx.type = 2;
     } else {
       if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
@@ -260,6 +260,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         );
       }
       baseTx.gasPrice = utils.toHex(msgData.gasPrice as NumberIsh);
+    }
+
+    const { contractData } = await this.getDataFromContract();
+    baseTx.value = contractData.value;
+    if (contractData.data) {
+      baseTx.data = contractData.data;
+      baseTx.to = contractData.to;
     }
 
     return baseTx as TxData;

@@ -17,8 +17,17 @@ export class PrivateKeySigner extends Signer.Provider {
 
   async sign(privateKey: string, msg: ChainMsg): Promise<void> {
     const wallet = new Wallet(privateKey);
-    // const txData = await msg.buildTx()
-    const signature = await wallet.signTransaction({});
+    const txData = await msg.buildTx();
+    const signature = await wallet.signTransaction({
+      ...txData,
+      to: txData.to,
+      from: txData.from,
+      nonce: txData.nonce,
+      gasLimit: txData.gasLimit,
+      gasPrice: txData.gasPrice,
+      value: txData.value,
+      chainId: parseInt(txData.chainId),
+    });
     msg.sign(signature);
   }
 }
