@@ -50,12 +50,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@xdefi-tech'
-          token: ${{ secrets.PKG_TOKEN }}
 
       - name: Creating .npmrc
-        run: echo //npm.pkg.github.com/:_authToken=${{ secrets.PKG_TOKEN }} >> "$HOME/.npmrc"
+        run: |
+          echo //npm.pkg.github.com/:_authToken=${{ secrets.PKG_TOKEN }} >> "$HOME/.npmrc"
+          echo @xdefi-tech:registry=https://npm.pkg.github.com/ >> "$HOME/.npmrc"
       
       - name: Cat .npmrc
         run: cat "$HOME/.npmrc"
