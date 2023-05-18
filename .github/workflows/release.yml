@@ -60,11 +60,15 @@ jobs:
             'xdefi-tech':
             npmAlwaysAuth: true
             npmRegistryServer: 'https://npm.pkg.github.com/'
+            npmAuthToken: $NPM_TOKEN
           EOF
+        env:
+          NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
 
       - name: Creating .npmrc
         run: |
           cat <<'EOF' > "$HOME/.npmrc"
+          @xdefi-tech:registry=https://npm.pkg.github.com/
           //npm.pkg.github.com/:_authToken=$NPM_TOKEN
           EOF
         env:
