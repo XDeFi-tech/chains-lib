@@ -19,11 +19,16 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@xdefi-tech'
 
+      - name: Setup user
+        run: |
+          git config user.email cicd@xdefi.io
+          git config user.name "cicd"
+
       - name: Creating .npmrc
         run: |
-            cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
-            EOF
+          cat << EOF > "$HOME/.npmrc"
+          //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+          EOF
         env:
           NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
 
@@ -34,6 +39,7 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: yarn publish-packages
+          setupGitUser: false
         env:
           NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.PAT }}
