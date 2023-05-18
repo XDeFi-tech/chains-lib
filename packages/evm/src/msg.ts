@@ -34,6 +34,7 @@ export interface MsgBody {
   to: string;
   from: string;
   amount: NumberIsh;
+  decimals: string | number;
   chainId: NumberIsh;
   data?: HexString;
   gasLimit?: NumberIsh;
@@ -76,7 +77,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         );
         populatedTx = await contract.populateTransaction.transfer(
           msgData.to,
-          ethers.utils.parseEther(msgData.amount.toString())
+          ethers.utils.parseUnits(
+            msgData.amount.toString(),
+            msgData.decimals.toString()
+          )
         );
         contractData.value = '0x00';
         contractData.data = populatedTx.data;
@@ -112,7 +116,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         break;
       default:
         contractData.value = ethers.utils
-          .parseEther(msgData.amount.toString())
+          .parseUnits(msgData.amount.toString(), msgData.decimals.toString())
           .toHexString();
     }
 
@@ -192,6 +196,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       to: this.data?.to,
       from: this.data?.from,
       amount: this.data?.amount,
+      decimals: this.data?.decimals,
       chainId: this.data?.chainId,
       data: this.data?.data,
       gasLimit: this.data?.gasLimit,
@@ -238,6 +243,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       gasLimit: utils.toHex(msgData.gasLimit),
       nonce: utils.toHex(msgData.nonce),
       chainId: utils.toHex(msgData.chainId),
+      ...(msgData.data && { data: msgData.data }),
     };
 
     if (
