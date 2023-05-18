@@ -55,7 +55,7 @@ jobs:
       
       - name: Creating .yarnrc
         run: |
-          cat << EOF > ".yarnrc"
+          cat << EOF > .yarnrc
           npmScopes:
             'xdefi-tech':
             npmAlwaysAuth: true
@@ -64,7 +64,7 @@ jobs:
 
       - name: Creating .npmrc
         run: |
-          cat << EOF > ".npmrc"
+          cat << EOF > .npmrc
           //npm.pkg.github.com/:_authToken=$NPM_TOKEN
           EOF
         env:
