@@ -69,10 +69,14 @@ jobs:
         run: |
           cat <<'EOF' > "$HOME/.npmrc"
           @xdefi-tech:registry=https://npm.pkg.github.com/
-          //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+          //npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN
           EOF
         env:
-          NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.PKG_TOKEN }}
+
+      - name: Cat .npmrc
+        run: cat $HOME/.npmrc
+    
 
       - name: Install Dependencies
         run: yarn
