@@ -25,8 +25,8 @@ jobs:
       - name: Version command
         id: version
         run: |
-          npm install --no-package-lock --no-save @changesets/cli
-          echo ::set-output name=changes::$(npx changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+          yarn
+          echo ::set-output name=changes::$(changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
       # Push the updated package.json, and CHANGESET.md files to github, this will trigger a new build
       # the || echo 'No changes' is to ignore errors from git when trying to commit and there are no changes
       - name: Push changes
