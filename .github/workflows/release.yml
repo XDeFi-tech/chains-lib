@@ -53,14 +53,18 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@xdefi-tech'
       
-      - name: Setup user
+      - name: Creating .yarnrc
         run: |
-          git config user.email cicd@xdefi.io
-          git config user.name "cicd"
+          cat << EOF > ".yarnrc"
+          npmScopes:
+            'xdefi-tech':
+            npmAlwaysAuth: true
+            npmRegistryServer: 'https://npm.pkg.github.com/'
+          EOF
 
       - name: Creating .npmrc
         run: |
-          cat << EOF > "$HOME/.npmrc"
+          cat << EOF > ".npmrc"
           //npm.pkg.github.com/:_authToken=$NPM_TOKEN
           EOF
         env:
@@ -68,12 +72,10 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-
-      - name: Create Release Pull Request
+      - name: Publish packages
         uses: changesets/action@v1
         with:
-          publish: npx changeset publish
-          setupGitUser: false
+          publish: yarn changeset publish
         env:
-          NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PKG_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          
