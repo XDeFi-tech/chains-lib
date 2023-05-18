@@ -50,6 +50,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      
+      - name: Setup user
+        run: |
+          git config user.email cicd@xdefi.io
+          git config user.name "cicd"
 
       - name: Creating .npmrc
         run: |
