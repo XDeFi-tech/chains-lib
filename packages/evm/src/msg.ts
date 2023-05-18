@@ -196,7 +196,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       to: this.data?.to,
       from: this.data?.from,
       amount: this.data?.amount,
-      decimals: this.data?.decimals || 18,
+      decimals: this.data?.decimals,
       chainId: this.data?.chainId,
       data: this.data?.data,
       gasLimit: this.data?.gasLimit,
