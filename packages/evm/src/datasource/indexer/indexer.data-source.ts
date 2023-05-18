@@ -150,7 +150,7 @@ export class IndexerDataSource extends DataSource {
         calculateData && calculateData !== '0x'
           ? 68 * new TextEncoder().encode(calculateData.toString()).length
           : 0;
-      const gasLimit = transactionFee + feeForData;
+      const gasLimit = Math.ceil((transactionFee + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       const msgFeeData = isEIP1559
         ? {
             gasLimit,
