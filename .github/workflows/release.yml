@@ -55,9 +55,7 @@ jobs:
           token: ${{ secrets.PKG_TOKEN }}
 
       - name: Creating .npmrc
-        run: |
-          echo @xdefi-tech:registry=https://npm.pkg.github.com/ >> "$HOME/.npmrc"
-          echo //npm.pkg.github.com/:_authToken=${{ secrets.PKG_TOKEN }} >> "$HOME/.npmrc"
+        run: echo //npm.pkg.github.com/:_authToken=${{ secrets.PKG_TOKEN }} >> "$HOME/.npmrc"
       
       - name: Cat .npmrc
         run: cat "$HOME/.npmrc"
