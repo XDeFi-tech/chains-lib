@@ -16,7 +16,8 @@ export const parseGwei = (n: NumberIsh): BigNumber => {
       num = parseInt(n.toString(), 10);
       break;
     case typeof n === 'number':
-      num = parseInt(n.toString());
+      num = parseInt(((n as number) * 100).toString());
+      num = num / 100;
       break;
     default:
       throw new Error('Invalid NumberIsh value');

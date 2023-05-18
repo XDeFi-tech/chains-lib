@@ -19,7 +19,9 @@ export const initDefaultProviders = () => {
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.binancesmartchain))
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmDataSource(EVM_MANIFESTS.polygon))
+    new EvmProvider(new EvmDataSource(EVM_MANIFESTS.polygon), {
+      signers: WebSigners,
+    })
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.avalanche))

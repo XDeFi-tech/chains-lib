@@ -7,7 +7,6 @@ import {
   utils,
 } from '@xdefi-tech/chains-core';
 import { ethers } from 'ethers';
-import BigNumber from 'bignumber.js';
 
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
