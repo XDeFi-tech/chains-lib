@@ -36,4 +36,4 @@ jobs:
           publish: yarn publish-packages
         env:
           NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
