@@ -6,7 +6,6 @@
   '@xdefi-tech/chains-tron': patch
   '@xdefi-tech/chains-btc': patch
   '@xdefi-tech/chains-evm': patch
-  '@xdefi-tech/chains-graphql': patch
   ---
 
   Test changeset with publishing
