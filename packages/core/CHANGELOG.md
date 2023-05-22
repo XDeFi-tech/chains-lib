@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.0.5
+
+### Patch Changes
+
+- a9c4dbe: add dist folder to files
+
 ## 1.0.4
 
 ### Patch Changes
