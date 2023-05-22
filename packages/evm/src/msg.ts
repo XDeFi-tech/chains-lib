@@ -79,7 +79,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           msgData.to,
           ethers.utils.parseUnits(
             msgData.amount.toString(),
-            msgData.decimals.toString()
+            msgData.decimals && msgData.decimals.toString()
           )
         );
         contractData.value = '0x00';
@@ -116,7 +116,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         break;
       default:
         contractData.value = ethers.utils
-          .parseUnits(msgData.amount.toString(), msgData.decimals.toString())
+          .parseUnits(
+            msgData.amount.toString(),
+            msgData.decimals && msgData.decimals.toString()
+          )
           .toHexString();
     }
 
