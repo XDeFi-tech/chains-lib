@@ -5,6 +5,11 @@
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "devDependencies": {
     "@babel/preset-typescript": "^7.21.0",
     "@types/jest": "^27.4.1",

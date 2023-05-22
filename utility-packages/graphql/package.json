@@ -8,6 +8,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",

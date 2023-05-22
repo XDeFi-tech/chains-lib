@@ -6,7 +6,9 @@
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
   ],
   "devDependencies": {
     "@types/lodash": "^4.14.182",

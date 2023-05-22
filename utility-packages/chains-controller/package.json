@@ -5,6 +5,11 @@
   "repository": "https://github.com/XDeFi-tech/chains/",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
