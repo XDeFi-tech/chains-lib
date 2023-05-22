@@ -63,6 +63,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+      - name: Build Package
+        run: yarn build
       - name: Publish packages
         uses: changesets/action@v1
         with:
