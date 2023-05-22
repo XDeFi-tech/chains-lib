@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.0.6
+
+### Patch Changes
+
+- c9af6fd: Fix decimals to string for evm chains controller
+
 ## 1.0.5
 
 ### Patch Changes
