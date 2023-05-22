@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.0.4
+
+### Patch Changes
+
+- eb20ae0: Add .npmignore for publish
+
 ## 1.0.3
 
 ### Patch Changes
