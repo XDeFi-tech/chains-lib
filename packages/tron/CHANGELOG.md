@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.0.4
+
+### Patch Changes
+
+- 2210abb: Include files for publishind, exclude src files
+- Updated dependencies [2210abb]
+  - @xdefi-tech/chains-core@1.0.6
+
 ## 1.0.3
 
 ### Patch Changes

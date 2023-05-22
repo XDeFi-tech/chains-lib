@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.0.4
+
+### Patch Changes
+
+- 2210abb: Include files for publishind, exclude src files
+
 ## 1.0.3
 
 ### Patch Changes

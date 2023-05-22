@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.0.6
+
+### Patch Changes
+
+- 2210abb: Include files for publishind, exclude src files
+
 ## 1.0.5
 
 ### Patch Changes
