@@ -5,7 +5,12 @@ const common = require('../../utility-packages/webpack/webpack.common.js');
 module.exports = merge(common, {
   mode: 'development',
   watch: true,
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
+  entry: {
+    index: './src/index.ts',
+    web: './src/signers/web.ts',
+    'react-native': './src/signers/react-native.ts',
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',

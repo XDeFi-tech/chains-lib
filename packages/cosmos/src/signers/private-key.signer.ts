@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { SigningCosmosClient, Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 import { bech32 } from 'bech32';

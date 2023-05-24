@@ -1,5 +1,5 @@
 import Transport from '@ledgerhq/hw-transport-webhid';
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { SigningStargateClient, GasPrice } from '@cosmjs/stargate';
 import { LedgerSigner as CosmosLedgerSigner } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';

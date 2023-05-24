@@ -11,7 +11,7 @@ import {
   Balance,
   FeeData,
   FeeOptions,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import {
   LcdClient,
   setupBankExtension,
@@ -40,7 +40,7 @@ export class CosmosProvider extends Chain.Provider {
   }
 
   createMsg(data: MsgData): Msg {
-    return new ChainMsg(data);
+    return new ChainMsg(data, this);
   }
 
   async getTransactions(

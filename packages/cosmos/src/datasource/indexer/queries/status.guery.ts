@@ -1,5 +1,5 @@
-import { gqlClient } from '@xdefi/chains-core';
-import { GetCosmosStatusDocument } from '@xdefi/graphql';
+import { gqlClient } from '@xdefi-tech/chains-core';
+import { GetCosmosStatusDocument } from '@xdefi-tech/chains-graphql';
 
 import { CosmosHubChains } from '../../../manifests';
 

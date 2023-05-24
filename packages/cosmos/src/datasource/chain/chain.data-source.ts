@@ -11,7 +11,7 @@ import {
   Balance,
   FeeOptions,
   FeeData,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
@@ -21,7 +21,7 @@ import {
   SearchBySentFromOrToQuery,
 } from '@cosmjs/launchpad';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-// import { setupTxExtension, QueryClient } from '@cosmjs/stargate';
+import { setupTxExtension, QueryClient } from '@cosmjs/stargate';
 
 import { ChainMsg } from '../../msg';
 
@@ -113,8 +113,8 @@ export class ChainDataSource extends DataSource {
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
     const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    // const txExtension = setupTxExtension(QueryClient.withExtensions(client));
-    // console.log('txExtension', txExtension);
+    const txExtension = setupTxExtension(QueryClient.withExtensions(client));
+    console.log('txExtension', txExtension);
     return [];
   }
 

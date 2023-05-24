@@ -1,10 +1,10 @@
-import { gqlClient } from '@xdefi/chains-core';
+import { gqlClient } from '@xdefi-tech/chains-core';
 import {
   BlockRange,
   GetCosmosTransactionsDocument,
   InputMaybe,
   Scalars,
-} from '@xdefi/graphql';
+} from '@xdefi-tech/chains-graphql';
 
 import { CosmosHubChains } from '../../../manifests';
 
