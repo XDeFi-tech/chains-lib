@@ -1,16 +1,10 @@
-import { Msg as BasMsg } from '@xdefi/chains-core';
-import BigNumber from 'bignumber.js';
+import { Msg as BasMsg } from '@xdefi-tech/chains-core';
 
 export interface MsgBody {
   to: string;
 }
 
-export interface FeeEstimation {
-  fee: null | BigNumber;
-  maxFee: null | BigNumber;
-}
-
-export class ChainMsg extends BasMsg<MsgBody, MsgBody, FeeEstimation> {
+export class ChainMsg extends BasMsg<MsgBody, MsgBody> {
   signedTransaction: unknown;
   public toData() {
     return this.data;

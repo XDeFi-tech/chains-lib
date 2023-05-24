@@ -1,7 +1,7 @@
 {
-  "name": "@xdefi/chains",
-  "version": "1.0.0",
+  "name": "@xdefi-tech/chains",
   "private": true,
+  "version": "1.0.0",
   "workspaces": [
     "utility-packages/*",
     "packages/*",
@@ -11,6 +11,7 @@
     "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "publish:packages": "turbo run build && turbo run publish:packages",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "compile": "turbo run compile",

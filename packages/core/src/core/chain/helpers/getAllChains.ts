@@ -1,6 +1,6 @@
-import { DiContainer } from 'common/di';
-import * as Chain from 'core/chain';
-import { CHAIN_SCOPE_NAME } from 'core/constants';
+import { DiContainer } from '../../../common/di';
+import * as Chain from '../../chain';
+import { CHAIN_SCOPE_NAME } from '../../constants';
 
 export const getAllChains = () => {
   try {

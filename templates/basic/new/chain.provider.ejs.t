@@ -14,8 +14,7 @@ import {
     Response,
     Transaction,
     Balance,
-} from '@xdefi/chains-core';
-import 'reflect-metadata';
+} from '@xdefi-tech/chains-core';
 import { ChainMsg } from './msg';
 
 @ChainDecorator('<%= Name %>Provider', {

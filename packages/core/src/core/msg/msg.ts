@@ -1,4 +1,5 @@
 import { Provider } from 'core/chain';
+import { GasFeeSpeed } from 'core';
 
 /**
  * Abstract message class which allows to create chain specific message
@@ -6,16 +7,17 @@ import { Provider } from 'core/chain';
 
 export type MsgData = any;
 
-export abstract class Msg<
-  OutData extends object = object,
-  TxData extends object = object,
-  FeeData extends object = object
-> {
+export interface FeeEstimation {
+  fee: string | null;
+  maxFee?: string | null;
+}
+
+export abstract class Msg<OutData extends object = object, TxData extends object = object> {
   public abstract signedTransaction: unknown;
 
   constructor(public readonly data: MsgData, public readonly provider?: Provider) {}
 
-  public abstract getFee(): FeeData;
+  public abstract getFee(speed?: GasFeeSpeed): Promise<FeeEstimation>;
 
   /**
    * Check is current Msg has signature

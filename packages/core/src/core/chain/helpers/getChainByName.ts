@@ -1,5 +1,5 @@
-import { DiContainer } from 'common';
-import { Provider } from 'core/chain';
+import { DiContainer } from '../../../common/di';
+import { Provider } from '../../chain';
 
 export const getChainByName = (name: string | symbol) => {
   try {

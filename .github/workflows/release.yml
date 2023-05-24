@@ -1,33 +1,77 @@
-name: Release
+name: Release & Publish Package
 
 on:
   push:
     branches:
-      - main
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+      - develop
 
 jobs:
-  release:
-    name: Release
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.version.outputs.changes }} # map step output to job output
     steps:
-      - name: Checkout Repo
+      - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
 
-      - name: Setup Node.js 16.x
+      - name: Enable node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 16
+
+      # This step will run changeset version, setting the step output to if there were changesets found
+      - name: Version command
+        id: version
+        run: |
+          yarn
+          yarn changeset version
+      # Push the updated package.json, and CHANGESET.md files to github, this will trigger a new build
+      # the || echo 'No changes' is to ignore errors from git when trying to commit and there are no changes
+      - name: Push changes
+        run: |
+          git config user.email cicd@xdefi.io
+          git config user.name "cicd"
+          git add -A
+          git commit -m "Version packages" || echo "No changes to commit"
+          git push
+  
+  publish-gpr:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Setup user
+        run: |
+          git config user.email cicd@xdefi.io
+          git config user.name "cicd"
+
+      - name: Creating .npmrc
+        run: |
+          echo //npm.pkg.github.com/:_authToken=${{ secrets.PKG_TOKEN }} >> "$HOME/.npmrc"
+          echo @xdefi-tech:registry=https://npm.pkg.github.com/ >> "$HOME/.npmrc"
+      
+      - name: Cat .npmrc
+        run: cat "$HOME/.npmrc"
 
       - name: Install Dependencies
         run: yarn
-
-      - name: Publish to npm
-        id: changesets
+      - name: Build Package
+        run: yarn build
+      - name: Publish packages
         uses: changesets/action@v1
         with:
-          publish: yarn publish-packages
+          publish: yarn changeset publish
+          setupgituser: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           NPM_TOKEN: ${{ secrets.PKG_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.PKG_TOKEN }}
+          

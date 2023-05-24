@@ -1,5 +1,5 @@
-import { getChainByName } from 'core/chain/helpers';
-import { ChainDecorator } from 'core/decorators';
+import { ChainDecorator } from '../../decorators';
+import { getChainByName } from '../helpers';
 
 describe('getChainByName', () => {
   it('should return undefined if chain does not exist', () => {

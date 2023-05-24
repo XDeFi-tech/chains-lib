@@ -11,7 +11,7 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
-} from '@xdefi/chains-core';
+} from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -138,14 +138,20 @@ export class IndexerDataSource extends DataSource {
     // gasLimit = 21000 + 68 * dataByteLength
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
 
-    return msgs.map((msg) => {
-      const msgData = msg.toData().data;
+    const feeData: FeeData[] = [];
+    for (const msg of msgs) {
+      const msgData = msg.toData();
+      let calculateData = msgData.data;
+      if (msgData.contractAddress) {
+        const { contractData } = await msg.getDataFromContract();
+        calculateData = contractData.data;
+      }
       const feeForData =
-        msgData && msgData !== '0x'
-          ? 68 * new TextEncoder().encode(msgData.toString()).length
+        calculateData && calculateData !== '0x'
+          ? 68 * new TextEncoder().encode(calculateData.toString()).length
           : 0;
-      const gasLimit = transactionFee + feeForData;
-      return isEIP1559
+      const gasLimit = Math.ceil((transactionFee + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
+      const msgFeeData = isEIP1559
         ? {
             gasLimit,
             gasPrice: undefined,
@@ -158,7 +164,10 @@ export class IndexerDataSource extends DataSource {
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
           };
-    });
+      feeData.push(msgFeeData);
+    }
+
+    return feeData;
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {

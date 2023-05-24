@@ -8,3 +8,7 @@ export const toHex = (n: NumberIsh): HexString => {
   const hex = num.toString(16);
   return `0x${hex}`;
 };
+
+export const fromHex = (hex: HexString): number => {
+  return parseInt(hex, 16);
+};

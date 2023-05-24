@@ -1,9 +1,15 @@
 {
-  "name": "@xdefi/chains-evm",
-  "version": "1.0.0",
+  "name": "@xdefi-tech/chains-evm",
+  "version": "1.0.6",
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "devDependencies": {
     "@babel/preset-typescript": "^7.21.0",
     "@types/jest": "^27.4.1",
@@ -20,8 +26,8 @@
     "@ledgerhq/cryptoassets": "^9.1.0",
     "@ledgerhq/hw-app-eth": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@xdefi/chains-core": "*",
-    "@xdefi/graphql": "*",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "^9.0.2",
     "ethers": "^5.6.4",
     "reflect-metadata": "^0.1.13",
@@ -30,6 +36,8 @@
     "ts-node": "^10.7.0"
   },
   "scripts": {
+    "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",

@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { Keypair, PublicKey } from '@solana/web3.js';
 
 import { ChainMsg } from '../msg';

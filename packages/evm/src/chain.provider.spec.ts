@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { ChainMsg } from './msg';
 import { EvmProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';

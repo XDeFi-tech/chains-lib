@@ -5,10 +5,10 @@ export interface AssetData {
   chainId: ChainID;
   name: string;
   symbol: string;
-  icon: string;
+  icon?: string | null;
   native: boolean;
   decimals?: number;
-  address?: string;
+  address?: string | null;
   price?: string;
   priceHistory?: number[][];
 }

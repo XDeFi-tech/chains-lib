@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi/chains-core';
+import { Chain } from '@xdefi-tech/chains-core';
 
 export const SolanaManifest: Chain.Manifest = {
   name: 'Solana',
