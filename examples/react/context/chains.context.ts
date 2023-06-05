@@ -10,7 +10,7 @@ import {
   CosmosProvider,
   ChainDataSource,
   COSMOS_MANIFESTS,
-} from '@xdefi/chains-cosmos';
+} from '@xdefi-tech/chains-cosmos';
 
 export const ChainsContextDefaultValue = new ChainController();
 
@@ -69,6 +69,7 @@ export const restoreProviders = (): boolean => {
 };
 
 export const saveProviders = () => {
+  return;
   const serialisedData = ChainsContextDefaultValue.serialize();
   localStorage.setItem(CHAINS_DATA_KEY, serialisedData);
 };

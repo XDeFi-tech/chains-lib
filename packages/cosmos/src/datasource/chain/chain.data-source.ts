@@ -18,10 +18,8 @@ import {
   LcdClient,
   setupBankExtension,
   setupAuthExtension,
-  SearchBySentFromOrToQuery,
 } from '@cosmjs/launchpad';
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import { setupTxExtension, QueryClient } from '@cosmjs/stargate';
+import cosmosclient from '@cosmos-client/core';
 
 import { ChainMsg } from '../../msg';
 
@@ -29,12 +27,18 @@ import { getAssets } from './queries';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
+  private readonly cosmosSDK: cosmosclient.CosmosSDK;
+
   constructor(manifest: Chain.Manifest) {
     super(manifest);
     this.rpcProvider = LcdClient.withExtensions(
       { apiUrl: this.manifest.rpcURL },
       setupBankExtension,
       setupAuthExtension
+    );
+    this.cosmosSDK = new cosmosclient.CosmosSDK(
+      this.manifest.rpcURL,
+      this.manifest.chainId
     );
   }
 
@@ -93,13 +97,28 @@ export class ChainDataSource extends DataSource {
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
-    const lcdClient = new LcdClient(this.manifest.rpcURL);
-    const searchTxQuery: SearchBySentFromOrToQuery = {
-      sentFromOrTo: address,
-    };
-    const results = await lcdClient.txsQuery(JSON.stringify(searchTxQuery));
-    // todo get assets for transactions
-    return results.txs.map((tx) => Transaction.fromData(tx));
+    const test = await cosmosclient.rest.tx.getTxsEvent(
+      this.cosmosSDK,
+      [`transfer.recipient='${address}'`],
+      undefined,
+      undefined,
+      BigInt(10)
+    );
+    console.log('test', test);
+    return [];
+    // const recipientQuery = new URLSearchParams({
+    //   'transfer.recipient': address,
+    // });
+    // const senderQuery = new URLSearchParams({
+    //   'transfer.sender': address,
+    // });
+    // const [recipientResults, senderResults] = await Promise.all([
+    //   this.rpcProvider.txsQuery(JSON.stringify(recipientQuery)),
+    //   this.rpcProvider.txsQuery(JSON.stringify(senderQuery)),
+    // ]);
+    // return [...recipientResults.txs, ...senderResults].map((tx: any) =>
+    //   Transaction.fromData(tx)
+    // );
   }
 
   async subscribeTransactions(
@@ -112,9 +131,6 @@ export class ChainDataSource extends DataSource {
     _msgs: ChainMsg[],
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
-    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    const txExtension = setupTxExtension(QueryClient.withExtensions(client));
-    console.log('txExtension', txExtension);
     return [];
   }
 

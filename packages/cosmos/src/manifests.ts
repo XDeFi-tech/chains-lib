@@ -28,7 +28,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
   [CosmosHubChains.osmosis]: {
     name: 'Osmosis',
     description: '',
-    rpcURL: 'https://www.mintscan.io/osmosis/txs',
+    rpcURL: 'https://rpc-proxy.xdefi.services/osmosis/lcd/mainnet',
     chainSymbol: 'OSMO',
     blockExplorerURL: 'https://www.mintscan.io/osmosis/account',
     chainId: 'osmosis-1',
