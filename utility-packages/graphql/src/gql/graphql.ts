@@ -73,6 +73,8 @@ export enum AddressChain {
   AVAX = 'AVAX',
   Akash = 'Akash',
   Arbitrum = 'Arbitrum',
+  Archway = 'Archway',
+  ArchwayTestnet = 'ArchwayTestnet',
   AssetMantle = 'AssetMantle',
   Aurora = 'Aurora',
   Avalanche = 'Avalanche',
@@ -86,6 +88,7 @@ export enum AddressChain {
   /** Legacy, use "Bitcoin" instead */
   BTC = 'BTC',
   Band = 'Band',
+  BerachainTestnet = 'BerachainTestnet',
   BinanceChain = 'BinanceChain',
   BinanceChainTestnet = 'BinanceChainTestnet',
   BinanceSmartChain = 'BinanceSmartChain',
@@ -147,6 +150,8 @@ export enum AddressChain {
   /** Legacy, use "Near" instead */
   NEAR = 'NEAR',
   Near = 'Near',
+  Neutron = 'Neutron',
+  Noble = 'Noble',
   OKExChain = 'OKExChain',
   /** Legacy, use "Osmosis" instead */
   OSMOSIS = 'OSMOSIS',
@@ -158,6 +163,7 @@ export enum AddressChain {
   Persistence = 'Persistence',
   Polygon = 'Polygon',
   Provenance = 'Provenance',
+  Quasar = 'Quasar',
   Regen = 'Regen',
   Rizon = 'Rizon',
   Ropsten = 'Ropsten',
@@ -226,7 +232,8 @@ export type AddressType = {
 
 export type Amount = {
   __typename?: 'Amount';
-  scalingFactor: Scalars['Int'];
+  /** @deprecated use `decimals` from CryptoAsset */
+  scalingFactor?: Maybe<Scalars['Int']>;
   value: Scalars['String'];
 };
 
@@ -256,6 +263,7 @@ export type Arbitrum = {
 
 export type ArbitrumBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type ArbitrumDailyBalancesArgs = {
@@ -269,12 +277,14 @@ export type ArbitrumLegacyNfTsArgs = {
 
 export type ArbitrumNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type ArbitrumTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Asset = {
@@ -301,6 +311,8 @@ export type AssetAmountType = {
   dailyHigh?: Maybe<Scalars['String']>;
   /** Currency dailyLow */
   dailyLow?: Maybe<Scalars['String']>;
+  /** 24 Hour Trading Volume */
+  dailyTradingVolume?: Maybe<Scalars['String']>;
   /** Currency dayPriceChange */
   dayPriceChange?: Maybe<Scalars['String']>;
   /** Currency fdv */
@@ -412,9 +424,10 @@ export type AssetCryptoCurrencyTypePageInfo = {
 
 export type AssetDefiProtocolType = {
   __typename?: 'AssetDefiProtocolType';
+  /** Address chain name */
+  chain: Scalars['String'];
   icon: Scalars['String'];
   name: Scalars['String'];
-  symbol: Scalars['String'];
 };
 
 /** Fee is a cryptocurrency transaction fee that is charged to users when performing crypto transactions */
@@ -464,6 +477,8 @@ export type AssetTokenContractType = {
   address: Scalars['String'];
   /** Address chain name */
   chain: Scalars['String'];
+  /** DefiProtocol */
+  defiProtocol?: Maybe<AssetDefiProtocolType>;
   /** Chain fee */
   fee: AssetFeeType;
   /** The scaling factor is needed to convert contract to token price */
@@ -476,6 +491,8 @@ export type AssetTokenType = AssetBaseType & {
   __typename?: 'AssetTokenType';
   /** Currency market cap */
   contracts?: Maybe<Array<AssetTokenContractType>>;
+  /** Market capitalization is total value of a publicly traded company's outstanding common shares owned by stockholders */
+  externalData?: Maybe<Scalars['JSON']>;
   /** Icon URL */
   icon?: Maybe<Scalars['String']>;
   /** Unique identifier in the database */
@@ -522,10 +539,14 @@ export type AssetType = {
   __typename?: 'AssetType';
   /** Scaling factor for market cap */
   compositeTokens?: Maybe<CompositeTokenResponse>;
+  /** Crypto assets */
+  cryptoAssets?: Maybe<Array<CryptoAsset>>;
   /** Scaling factor for market cap */
   cryptoCurrencies?: Maybe<CryptoCurrencyResponse>;
   /** Scaling factor for market cap */
   fiatCurrencies?: Maybe<FiatCurrencyResponse>;
+  /** Scaling factor for market cap */
+  lpTokens?: Maybe<TokenResponse>;
   /** Scaling factor for market cap */
   tokens?: Maybe<TokenResponse>;
 };
@@ -535,6 +556,10 @@ export type AssetTypeCompositeTokensArgs = {
   afterPrice?: InputMaybe<Scalars['DateTime']>;
   filter?: InputMaybe<CompositeTokenFilter>;
   page: ConnectionArgs;
+};
+
+export type AssetTypeCryptoAssetsArgs = {
+  input: Array<CryptoAssetArgs>;
 };
 
 export type AssetTypeCryptoCurrenciesArgs = {
@@ -548,6 +573,13 @@ export type AssetTypeFiatCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   afterPrice?: InputMaybe<Scalars['DateTime']>;
   filter?: InputMaybe<FiatCurrencyFilter>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeLpTokensArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<TokenFilter>;
   page: ConnectionArgs;
 };
 
@@ -579,6 +611,7 @@ export type Aurora = {
 
 export type AuroraBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type AuroraDailyBalancesArgs = {
@@ -592,12 +625,14 @@ export type AuroraLegacyNfTsArgs = {
 
 export type AuroraNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type AuroraTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Auth = {
@@ -622,6 +657,7 @@ export type Avalanche = {
 
 export type AvalancheBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type AvalancheDailyBalancesArgs = {
@@ -635,12 +671,14 @@ export type AvalancheLegacyNfTsArgs = {
 
 export type AvalancheNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type AvalancheTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type AvalancheGasFee = {
@@ -648,12 +686,6 @@ export type AvalancheGasFee = {
   high?: Maybe<Eip1559Fee>;
   low?: Maybe<Eip1559Fee>;
   medium?: Maybe<Eip1559Fee>;
-};
-
-export type AxelarChain = {
-  __typename?: 'AxelarChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
 };
 
 export type Balance = {
@@ -698,6 +730,7 @@ export type BinanceSmartChain = {
 
 export type BinanceSmartChainBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type BinanceSmartChainDailyBalancesArgs = {
@@ -711,12 +744,14 @@ export type BinanceSmartChainLegacyNfTsArgs = {
 
 export type BinanceSmartChainNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type BinanceSmartChainTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type BinanceStatus = {
@@ -764,7 +799,7 @@ export type BitcoinChain = {
   sendRawTransaction: Scalars['String'];
   status: Status;
   transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputConnection;
+  unspentTxs: UnspentTransactionOutputV3Connection;
 };
 
 export type BitcoinChainBalancesArgs = {
@@ -806,7 +841,7 @@ export type BitcoinChainTransactionsArgs = {
 
 export type BitcoinChainUnspentTxsArgs = {
   address: Scalars['String'];
-  pagination?: CursorPagination;
+  pagination: UtxocursorPagination;
 };
 
 export type BitcoincashChain = {
@@ -821,7 +856,7 @@ export type BitcoincashChain = {
   sendRawTransaction: Scalars['String'];
   status: Status;
   transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputConnection;
+  unspentTxs: UnspentTransactionOutputV3Connection;
 };
 
 export type BitcoincashChainBalancesArgs = {
@@ -859,15 +894,7 @@ export type BitcoincashChainTransactionsArgs = {
 
 export type BitcoincashChainUnspentTxsArgs = {
   address: Scalars['String'];
-  pagination?: CursorPagination;
-};
-
-/** A (half-open) range selector for block */
-export type BlockRange = {
-  /** The lower bound of the range (inclusive). */
-  from: Scalars['Int'];
-  /** The upper bound of the range (inclusive). */
-  to: Scalars['Int'];
+  pagination: UtxocursorPagination;
 };
 
 export type BridgeTokenInput = {
@@ -916,7 +943,9 @@ export type ChainType = {
 export type ClaimStatus = {
   __typename?: 'ClaimStatus';
   amountUsd: Scalars['Float'];
+  bonus: Scalars['Float'];
   claimId: Scalars['String'];
+  dateModification?: Maybe<Scalars['DateTime']>;
   status: Scalars['String'];
 };
 
@@ -955,6 +984,12 @@ export type ConnectionArgs = {
   last?: InputMaybe<Scalars['Float']>;
 };
 
+export type CosmosBalanceChain = {
+  __typename?: 'CosmosBalanceChain';
+  fee?: Maybe<DefaultGasFee>;
+  name: Scalars['String'];
+};
+
 export type CosmosBasedChain = {
   __typename?: 'CosmosBasedChain';
   balances: Array<Balance>;
@@ -971,13 +1006,14 @@ export type CosmosBasedChainBalancesArgs = {
 
 export type CosmosBasedChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pagination?: CursorPagination;
 };
 
 export type CosmosBasedChainV2 = {
   __typename?: 'CosmosBasedChainV2';
   balances: Array<Balance>;
+  fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   status: Status;
   transactions: CosmosLikeTransactionConnection;
@@ -998,6 +1034,7 @@ export type CosmosBasedChainV2TransactionsArgs = {
 export type CosmosBasedChainWithNft = {
   __typename?: 'CosmosBasedChainWithNft';
   balances: Array<Balance>;
+  fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   nfts: Array<Nft>;
   status: Status;
@@ -1066,12 +1103,6 @@ export type CreateRawTransactionOutput = {
   amount: Scalars['Float'];
 };
 
-export type CrescentChain = {
-  __typename?: 'CrescentChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
-};
-
 export type CronosEvm = {
   __typename?: 'CronosEVM';
   legacyNFTs: Array<NfTv2>;
@@ -1088,6 +1119,8 @@ export type CryptoAsset = {
   chain?: Maybe<Scalars['String']>;
   /** ID of token (contract address in most chain) */
   contract?: Maybe<Scalars['String']>;
+  /** Number of decimals for current asset */
+  decimals?: Maybe<Scalars['Float']>;
   /** Unique asset identifier */
   id?: Maybe<Scalars['ID']>;
   /** Asset image */
@@ -1097,6 +1130,11 @@ export type CryptoAsset = {
   price?: Maybe<AssetAmountType>;
   /** The symbol that identifies token */
   symbol?: Maybe<Scalars['String']>;
+};
+
+export type CryptoAssetArgs = {
+  chain: AddressChain;
+  contract?: InputMaybe<Scalars['String']>;
 };
 
 export type CryptoAssetInput = {
@@ -1118,6 +1156,7 @@ export type CryptoAssetInput = {
 export type CryptoAssetInputV2 = {
   chain?: InputMaybe<Scalars['String']>;
   contract?: InputMaybe<Scalars['String']>;
+  decimals?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   image?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
@@ -1174,14 +1213,6 @@ export type DailyBalances = {
   asset: CryptoAsset;
 };
 
-/** A (half-open) range selector for date */
-export type DateRange = {
-  /** The lower bound of the range (inclusive). */
-  from: Scalars['DateTime'];
-  /** The upper bound of the range (inclusive). */
-  to: Scalars['DateTime'];
-};
-
 /** Fee is a cryptocurrency transaction fees that is charged to users when performing crypto transactions */
 export type DefaultGasFee = {
   __typename?: 'DefaultGasFee';
@@ -1209,7 +1240,7 @@ export type DogeChain = {
   sendRawTransaction: Scalars['String'];
   status: Status;
   transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputConnection;
+  unspentTxs: UnspentTransactionOutputV3Connection;
 };
 
 export type DogeChainBalancesArgs = {
@@ -1247,7 +1278,7 @@ export type DogeChainTransactionsArgs = {
 
 export type DogeChainUnspentTxsArgs = {
   address: Scalars['String'];
-  pagination?: CursorPagination;
+  pagination: UtxocursorPagination;
 };
 
 export type Eip1559Fee = {
@@ -1267,6 +1298,7 @@ export type Eip1559GasFee = {
 
 export type EvmTransaction = {
   __typename?: 'EVMTransaction';
+  classified?: Maybe<ExplainedTransaction>;
   fee: Scalars['JSON'];
   fromAddress: Scalars['String'];
   hash: Scalars['String'];
@@ -1277,6 +1309,7 @@ export type EvmTransaction = {
   timestamp: Scalars['DateTime'];
   toAddress: Scalars['String'];
   transfers: Array<AssetTransfer>;
+  value: Scalars['String'];
 };
 
 export type EvmTransactionLog = {
@@ -1303,6 +1336,7 @@ export type Ethereum = {
 
 export type EthereumBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type EthereumDailyBalancesArgs = {
@@ -1316,12 +1350,14 @@ export type EthereumLegacyNfTsArgs = {
 
 export type EthereumNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type EthereumTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type ExplainedTransaction = {
@@ -1347,6 +1383,7 @@ export type Fantom = {
 
 export type FantomBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type FantomDailyBalancesArgs = {
@@ -1360,12 +1397,14 @@ export type FantomLegacyNfTsArgs = {
 
 export type FantomNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type FantomTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Fee = {
@@ -1463,20 +1502,8 @@ export type JunoChainNftsArgs = {
 
 export type JunoChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pagination?: CursorPagination;
-};
-
-export type KavaChain = {
-  __typename?: 'KavaChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
-};
-
-export type KujiraChain = {
-  __typename?: 'KujiraChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
 };
 
 export type LastBlock = {
@@ -1511,7 +1538,7 @@ export type LitecoinChain = {
   sendRawTransaction: Scalars['String'];
   status: Status;
   transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputConnection;
+  unspentTxs: UnspentTransactionOutputV3Connection;
 };
 
 export type LitecoinChainBalancesArgs = {
@@ -1549,19 +1576,13 @@ export type LitecoinChainTransactionsArgs = {
 
 export type LitecoinChainUnspentTxsArgs = {
   address: Scalars['String'];
-  pagination?: CursorPagination;
+  pagination: UtxocursorPagination;
 };
 
 export enum LoginChain {
   BITCOIN = 'BITCOIN',
   ETHEREUM = 'ETHEREUM',
 }
-
-export type MarsChain = {
-  __typename?: 'MarsChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
-};
 
 export type Media = {
   __typename?: 'Media';
@@ -1592,6 +1613,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addComment: ReputationComment;
   addUserAddress: User;
+  anonymousLogin: Auth;
   claimFees?: Maybe<ClaimStatus>;
   /** @deprecated Use upsertReferrer instead */
   createReferrer?: Maybe<Referrer>;
@@ -1741,6 +1763,7 @@ export type NfTv2 = {
 export type NearChain = {
   __typename?: 'NearChain';
   balances: Array<Balance>;
+  dailyBalances: Array<DailyBalances>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1751,6 +1774,11 @@ export type NearChain = {
 
 export type NearChainBalancesArgs = {
   address: Scalars['String'];
+};
+
+export type NearChainDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: InputMaybe<OptDateRange>;
 };
 
 export type NearChainNftsArgs = {
@@ -1864,6 +1892,7 @@ export type Polygon = {
 
 export type PolygonBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type PolygonDailyBalancesArgs = {
@@ -1877,12 +1906,14 @@ export type PolygonLegacyNfTsArgs = {
 
 export type PolygonNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type PolygonTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type PolygonGasFee = {
@@ -1961,11 +1992,12 @@ export type ProviderTypeV2 = {
 
 export type Query = {
   __typename?: 'Query';
+  akash: CosmosBasedChain;
   arbitrum: Arbitrum;
   assets: AssetType;
   aurora: Aurora;
   avalanche: Avalanche;
-  axelar: AxelarChain;
+  axelar: CosmosBasedChain;
   binance: Binance;
   binanceSmartChain: BinanceSmartChain;
   bitcoin: BitcoinChain;
@@ -1976,23 +2008,24 @@ export type Query = {
   /** Fetch composite tokens */
   compositeTokens: Array<CompositeTokenType>;
   cosmos: CosmosBasedChain;
-  crescent: CrescentChain;
+  crescent: CosmosBasedChain;
   cronosEVM: CronosEvm;
   /** Fetch list of all available tokens */
   cryptoCurrencies: Array<CryptoCurrencyType>;
   dogecoin: DogeChain;
   ethereum: Ethereum;
-  explainTransaction: ExplainedTransaction;
+  explainTransaction?: Maybe<ExplainedTransaction>;
   fantom: Fantom;
   /** Fetch list of fiat currencies */
   fiatCurrencies: Array<FiatCurrencyType>;
+  injective: CosmosBasedChain;
   investing: InvestingType;
   juno: JunoChain;
   junoV2: CosmosBasedChainWithNft;
-  kava: KavaChain;
-  kujira: KujiraChain;
+  kava: CosmosBasedChain;
+  kuijra: CosmosBasedChain;
   litecoin: LitecoinChain;
-  marsProtocol: MarsChain;
+  mars: CosmosBasedChain;
   near: NearChain;
   optimism: Optimism;
   osmosis: CosmosBasedChain;
@@ -2001,10 +2034,11 @@ export type Query = {
   reputation: Reputation;
   routing: RoutingType;
   routingV2?: Maybe<RoutingTypeV2>;
+  sei: CosmosBasedChain;
   solana: SolanaChain;
   stargaze: StargazeChain;
   stargazeV2: CosmosBasedChainWithNft;
-  stride: StrideChain;
+  stride: CosmosBasedChain;
   terra: TerraChain;
   terraClassic: TerraClassicChain;
   thorchain: ThorChain;
@@ -2012,6 +2046,10 @@ export type Query = {
   tokens: Array<TokenType>;
   trackWalletConnect?: Maybe<Wallet>;
   tron: Tron;
+  user: User;
+  version: Scalars['String'];
+  /** Fetch wallet information */
+  walletInfo: WalletInfo;
 };
 
 export type QueryChainsArgs = {
@@ -2056,10 +2094,8 @@ export type QueryTrackWalletConnectArgs = {
   walletProvider: Scalars['String'];
 };
 
-export type QueryRoot = {
-  __typename?: 'QueryRoot';
-  user: User;
-  version: Scalars['String'];
+export type QueryWalletInfoArgs = {
+  address: Scalars['String'];
 };
 
 export type ReferralBonus = {
@@ -2096,18 +2132,19 @@ export type ReferralType = {
 
 export type Referrer = {
   __typename?: 'Referrer';
-  /** On chain address of the referrer. Must be unique */
+  /** On chain wallet address of the referrer. Must be unique */
   address: Scalars['String'];
   /** Fee tier of the referrer. Must be between [0, 1] */
   feeTier: Scalars['String'];
   id: Scalars['String'];
   link: Scalars['String'];
+  /** Name of the Referrer. Must be unique */
   name: Scalars['String'];
 };
 
 export type ReferrerWithFees = {
   __typename?: 'ReferrerWithFees';
-  /** On chain address of the referrer. Must be unique */
+  /** On chain wallet address of the referrer. Must be unique */
   address: Scalars['String'];
   /** Fees that the referrer already claimed from XDEFI */
   collectedFees?: Maybe<Scalars['Decimal']>;
@@ -2117,6 +2154,7 @@ export type ReferrerWithFees = {
   generatedFees?: Maybe<Scalars['Decimal']>;
   id: Scalars['String'];
   link: Scalars['String'];
+  /** Name of the Referrer. Must be unique */
   name: Scalars['String'];
 };
 
@@ -2514,7 +2552,7 @@ export type SolanaChain = {
   fee?: Maybe<DefaultGasFee>;
   legacyNFTs: Array<NfTv2>;
   name: Scalars['String'];
-  nfts: Array<Nft>;
+  nfts: Array<NfTv2>;
   status: SolanaStatus;
   transactions: Array<SolanaTransaction>;
   version: Array<Version>;
@@ -2534,8 +2572,8 @@ export type SolanaChainNftsArgs = {
 
 export type SolanaChainTransactionsArgs = {
   address: Scalars['String'];
-  dateRange?: InputMaybe<DateRange>;
-  slotRange?: InputMaybe<BlockRange>;
+  dateRange: OptDateRange;
+  slotRange: OptBlockRange;
 };
 
 export type SolanaStatus = {
@@ -2574,19 +2612,13 @@ export type StargazeChainNftsArgs = {
 
 export type StargazeChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pagination?: CursorPagination;
 };
 
 export type Status = {
   __typename?: 'Status';
   lastBlock: Scalars['Int'];
-};
-
-export type StrideChain = {
-  __typename?: 'StrideChain';
-  fee?: Maybe<DefaultGasFee>;
-  name: Scalars['String'];
 };
 
 export type TerraChain = {
@@ -2611,15 +2643,10 @@ export type ThorChain = {
   balances: Array<Balance>;
   name: Scalars['String'];
   status: Status;
-  transactions: Array<ThorchainTransaction>;
   version: Array<Version>;
 };
 
 export type ThorChainBalancesArgs = {
-  address: Scalars['String'];
-};
-
-export type ThorChainTransactionsArgs = {
   address: Scalars['String'];
 };
 
@@ -2637,6 +2664,23 @@ export type ThorchainTransaction = {
   status: Scalars['String'];
   timestamp?: Maybe<Scalars['LocalDateTime']>;
   transfers: Array<AssetTransfer>;
+};
+
+export type ThorchainTransactionConnection = {
+  __typename?: 'ThorchainTransactionConnection';
+  /** A list of edges. */
+  edges: Array<ThorchainTransactionEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type ThorchainTransactionEdge = {
+  __typename?: 'ThorchainTransactionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: ThorchainTransaction;
 };
 
 export type TokenContractType = {
@@ -2718,6 +2762,7 @@ export type Tron = {
 
 export type TronBalancesArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type TronDailyBalancesArgs = {
@@ -2727,12 +2772,14 @@ export type TronDailyBalancesArgs = {
 
 export type TronNftsArgs = {
   address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type TronTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type UtxoScriptPubkey = {
@@ -2860,37 +2907,36 @@ export type UtxoVout = {
   value: Scalars['Float'];
 };
 
-export type UnspentTransactionOutput = {
-  __typename?: 'UnspentTransactionOutput';
+export type UnspentTransactionOutputV3 = {
+  __typename?: 'UnspentTransactionOutputV3';
   address: Scalars['String'];
   iTxHash?: Maybe<Scalars['String']>;
   iTxIndex?: Maybe<Scalars['Int']>;
   isCoinbase: Scalars['Boolean'];
   isSpent: Scalars['Boolean'];
   oIndex: Scalars['Int'];
-  oTxBlockIndex: Scalars['Int'];
-  oTxBlockNumber: Scalars['Int'];
   oTxHash: Scalars['String'];
+  oTxHex?: Maybe<Scalars['String']>;
   oTxTime: Scalars['DateTime'];
   scriptHex: Scalars['String'];
   value: Amount;
 };
 
-export type UnspentTransactionOutputConnection = {
-  __typename?: 'UnspentTransactionOutputConnection';
+export type UnspentTransactionOutputV3Connection = {
+  __typename?: 'UnspentTransactionOutputV3Connection';
   /** A list of edges. */
-  edges: Array<UnspentTransactionOutputEdge>;
+  edges: Array<UnspentTransactionOutputV3Edge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
 /** An edge in a connection. */
-export type UnspentTransactionOutputEdge = {
-  __typename?: 'UnspentTransactionOutputEdge';
+export type UnspentTransactionOutputV3Edge = {
+  __typename?: 'UnspentTransactionOutputV3Edge';
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
   /** The item at the end of the edge */
-  node: UnspentTransactionOutput;
+  node: UnspentTransactionOutputV3;
 };
 
 export type User = {
@@ -2904,6 +2950,14 @@ export type User = {
 export type UserSettingsInput = {
   private?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['Int']>;
+};
+
+/**
+ * pagination cursor for loading unspent transaction outputs of utxos
+ * restricted to 10 record per page.
+ */
+export type UtxocursorPagination = {
+  pageCursor?: InputMaybe<Scalars['String']>;
 };
 
 export type Version = {
@@ -2927,6 +2981,120 @@ export type VolumeHistory = {
 export type Wallet = {
   __typename?: 'Wallet';
   name: Scalars['String'];
+};
+
+export type WalletInfo = {
+  __typename?: 'WalletInfo';
+  /** EVM address of the wallet. */
+  address: Scalars['String'];
+  /** If set to true, wallet is part of the referral program */
+  isReferrer: Scalars['Boolean'];
+};
+
+export type BitcoinBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type BitcoinBalanceQuery = {
+  __typename?: 'Query';
+  bitcoin: {
+    __typename?: 'BitcoinChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          scalingFactor: number;
+        } | null;
+      };
+      amount: {
+        __typename?: 'Amount';
+        value: string;
+        scalingFactor?: number | null;
+      };
+    }>;
+  };
+};
+
+export type GetFeesQueryVariables = Exact<{
+  filter?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetFeesQuery = {
+  __typename?: 'Query';
+  chains: Array<{
+    __typename?: 'ChainType';
+    name: string;
+    fee: { __typename?: 'FeeType'; value?: string | null };
+  }>;
+};
+
+export type GetBitcoinStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetBitcoinStatusQuery = {
+  __typename?: 'Query';
+  bitcoin: {
+    __typename?: 'BitcoinChain';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetBitcoinTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  blockRange: OptBlockRange;
+}>;
+
+export type GetBitcoinTransactionsQuery = {
+  __typename?: 'Query';
+  bitcoin: {
+    __typename?: 'BitcoinChain';
+    transactions: {
+      __typename?: 'UTXOTransactionConnection';
+      edges: Array<{
+        __typename?: 'UTXOTransactionEdge';
+        node: {
+          __typename?: 'UTXOTransaction';
+          blockIndex?: number | null;
+          blockNumber?: number | null;
+          hash: string;
+          status?: string | null;
+          timestamp?: any | null;
+          fee: {
+            __typename?: 'Amount';
+            scalingFactor?: number | null;
+            value: string;
+          };
+          inputs: Array<{
+            __typename?: 'Input';
+            address: string;
+            amount: {
+              __typename?: 'Amount';
+              value: string;
+              scalingFactor?: number | null;
+            };
+          }>;
+          outputs: Array<{
+            __typename?: 'Output';
+            address: string;
+            amount: {
+              __typename?: 'Amount';
+              value: string;
+              scalingFactor?: number | null;
+            };
+          }>;
+        };
+      }>;
+    };
+  };
 };
 
 export type GetAssetsWithFilterQueryVariables = Exact<{
@@ -2980,7 +3148,11 @@ export type CosmosBalanceQuery = {
     balances: Array<{
       __typename?: 'Balance';
       address: string;
-      amount: { __typename?: 'Amount'; scalingFactor: number; value: string };
+      amount: {
+        __typename?: 'Amount';
+        scalingFactor?: number | null;
+        value: string;
+      };
       asset: {
         __typename?: 'CryptoAsset';
         chain?: string | null;
@@ -2989,6 +3161,7 @@ export type CosmosBalanceQuery = {
         name?: string | null;
         symbol?: string | null;
         image?: string | null;
+        decimals?: number | null;
         price?: {
           __typename?: 'AssetAmountType';
           scalingFactor: number;
@@ -3001,8 +3174,8 @@ export type CosmosBalanceQuery = {
 
 export type GetCosmosTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
+  dateRange: OptDateRange;
   pagination: CursorPagination;
-  blockRange: OptBlockRange;
 }>;
 
 export type GetCosmosTransactionsQuery = {
@@ -3015,34 +3188,53 @@ export type GetCosmosTransactionsQuery = {
         __typename?: 'PageInfo';
         endCursor?: string | null;
         hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string | null;
       };
       edges: Array<{
         __typename?: 'CosmosLikeTransactionEdge';
         node: {
           __typename?: 'CosmosLikeTransaction';
-          blockHeight: number;
-          blockIndex?: number | null;
           hash: string;
           status: string;
+          timestamp: any;
+          blockHeight: number;
+          blockIndex?: number | null;
+          fee?: {
+            __typename?: 'CosmosFee';
+            payer?: string | null;
+            amount: Array<{
+              __typename?: 'AssetWithAmount';
+              asset: {
+                __typename?: 'CryptoAsset';
+                chain?: string | null;
+                contract?: string | null;
+                id?: string | null;
+                name?: string | null;
+                symbol?: string | null;
+                image?: string | null;
+                decimals?: number | null;
+                price?: {
+                  __typename?: 'AssetAmountType';
+                  amount: string;
+                  scalingFactor: number;
+                } | null;
+              };
+              amount: { __typename?: 'Amount'; value: string };
+            }>;
+          } | null;
           transfers: Array<{
             __typename?: 'AssetTransfer';
             fromAddress?: string | null;
             toAddress?: string | null;
-            amount: {
-              __typename?: 'Amount';
-              scalingFactor: number;
-              value: string;
-            };
+            amount: { __typename?: 'Amount'; value: string };
             asset: {
               __typename?: 'CryptoAsset';
               chain?: string | null;
               contract?: string | null;
               id?: string | null;
               name?: string | null;
-              image?: string | null;
               symbol?: string | null;
+              image?: string | null;
+              decimals?: number | null;
               price?: {
                 __typename?: 'AssetAmountType';
                 amount: string;
@@ -3063,104 +3255,6 @@ export type GetCosmosStatusQuery = {
   cosmos: {
     __typename?: 'CosmosBasedChain';
     status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
-export type BitcoinBalanceQueryVariables = Exact<{
-  address: Scalars['String'];
-}>;
-
-export type BitcoinBalanceQuery = {
-  __typename?: 'Query';
-  bitcoin: {
-    __typename?: 'BitcoinChain';
-    balances: Array<{
-      __typename?: 'Balance';
-      address: string;
-      asset: {
-        __typename?: 'CryptoAsset';
-        symbol?: string | null;
-        contract?: string | null;
-        id?: string | null;
-        name?: string | null;
-        image?: string | null;
-        chain?: string | null;
-        price?: {
-          __typename?: 'AssetAmountType';
-          amount: string;
-          scalingFactor: number;
-        } | null;
-      };
-      amount: { __typename?: 'Amount'; value: string; scalingFactor: number };
-    }>;
-  };
-};
-
-export type GetFeesQueryVariables = Exact<{
-  filter?: InputMaybe<Scalars['String']>;
-}>;
-
-export type GetFeesQuery = {
-  __typename?: 'Query';
-  chains: Array<{
-    __typename?: 'ChainType';
-    name: string;
-    fee: { __typename?: 'FeeType'; value?: string | null };
-  }>;
-};
-
-export type GetBitcoinStatusQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetBitcoinStatusQuery = {
-  __typename?: 'Query';
-  bitcoin: {
-    __typename?: 'BitcoinChain';
-    status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
-export type GetBitcoinTransactionsQueryVariables = Exact<{
-  address: Scalars['String'];
-  blockRange: OptBlockRange;
-}>;
-
-export type GetBitcoinTransactionsQuery = {
-  __typename?: 'Query';
-  bitcoin: {
-    __typename?: 'BitcoinChain';
-    transactions: {
-      __typename?: 'UTXOTransactionConnection';
-      edges: Array<{
-        __typename?: 'UTXOTransactionEdge';
-        node: {
-          __typename?: 'UTXOTransaction';
-          blockIndex?: number | null;
-          blockNumber?: number | null;
-          hash: string;
-          status?: string | null;
-          timestamp?: any | null;
-          fee: { __typename?: 'Amount'; scalingFactor: number; value: string };
-          inputs: Array<{
-            __typename?: 'Input';
-            address: string;
-            amount: {
-              __typename?: 'Amount';
-              value: string;
-              scalingFactor: number;
-            };
-          }>;
-          outputs: Array<{
-            __typename?: 'Output';
-            address: string;
-            amount: {
-              __typename?: 'Amount';
-              value: string;
-              scalingFactor: number;
-            };
-          }>;
-        };
-      }>;
-    };
   };
 };
 
@@ -3190,6 +3284,32 @@ export type EthereumBalanceQuery = {
         } | null;
       };
     }>;
+  };
+};
+
+export type GetCryptoAssetsQueryVariables = Exact<{
+  input: Array<CryptoAssetArgs> | CryptoAssetArgs;
+}>;
+
+export type GetCryptoAssetsQuery = {
+  __typename?: 'Query';
+  assets: {
+    __typename?: 'AssetType';
+    cryptoAssets?: Array<{
+      __typename?: 'CryptoAsset';
+      chain?: string | null;
+      contract?: string | null;
+      id?: string | null;
+      name?: string | null;
+      symbol?: string | null;
+      image?: string | null;
+      decimals?: number | null;
+      price?: {
+        __typename?: 'AssetAmountType';
+        amount: string;
+        scalingFactor: number;
+      } | null;
+    }> | null;
   };
 };
 
@@ -3944,6 +4064,10 @@ export const CosmosBalanceDocument = {
                             },
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'price' },
                               selectionSet: {
                                 kind: 'SelectionSet',
@@ -4002,13 +4126,13 @@ export const GetCosmosTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pagination' },
+            name: { kind: 'Name', value: 'dateRange' },
           },
           type: {
             kind: 'NonNullType',
             type: {
               kind: 'NamedType',
-              name: { kind: 'Name', value: 'CursorPagination' },
+              name: { kind: 'Name', value: 'OptDateRange' },
             },
           },
         },
@@ -4016,13 +4140,13 @@ export const GetCosmosTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'blockRange' },
+            name: { kind: 'Name', value: 'pagination' },
           },
           type: {
             kind: 'NonNullType',
             type: {
               kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptBlockRange' },
+              name: { kind: 'Name', value: 'CursorPagination' },
             },
           },
         },
@@ -4050,18 +4174,18 @@ export const GetCosmosTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pagination' },
+                      name: { kind: 'Name', value: 'dateRange' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'pagination' },
+                        name: { kind: 'Name', value: 'dateRange' },
                       },
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'blockRange' },
+                      name: { kind: 'Name', value: 'pagination' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'blockRange' },
+                        name: { kind: 'Name', value: 'pagination' },
                       },
                     },
                   ],
@@ -4082,14 +4206,6 @@ export const GetCosmosTransactionsDocument = {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'hasNextPage' },
                             },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'hasPreviousPage' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'startCursor' },
-                            },
                           ],
                         },
                       },
@@ -4107,18 +4223,142 @@ export const GetCosmosTransactionsDocument = {
                                 selections: [
                                   {
                                     kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'blockHeight',
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'blockIndex' },
-                                  },
-                                  {
-                                    kind: 'Field',
                                     name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'fee' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'asset',
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'amount',
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'value',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'payer',
+                                          },
+                                        },
+                                      ],
+                                    },
                                   },
                                   {
                                     kind: 'Field',
@@ -4143,31 +4383,10 @@ export const GetCosmosTransactionsDocument = {
                                                 kind: 'Field',
                                                 name: {
                                                   kind: 'Name',
-                                                  value: 'scalingFactor',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
                                                   value: 'value',
                                                 },
                                               },
                                             ],
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'fromAddress',
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'toAddress',
                                           },
                                         },
                                         {
@@ -4211,6 +4430,13 @@ export const GetCosmosTransactionsDocument = {
                                                 kind: 'Field',
                                                 name: {
                                                   kind: 'Name',
+                                                  value: 'symbol',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
                                                   value: 'image',
                                                 },
                                               },
@@ -4218,7 +4444,7 @@ export const GetCosmosTransactionsDocument = {
                                                 kind: 'Field',
                                                 name: {
                                                   kind: 'Name',
-                                                  value: 'symbol',
+                                                  value: 'decimals',
                                                 },
                                               },
                                               {
@@ -4250,8 +4476,37 @@ export const GetCosmosTransactionsDocument = {
                                             ],
                                           },
                                         },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
                                       ],
                                     },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockHeight',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
                                   },
                                 ],
                               },
@@ -4431,4 +4686,105 @@ export const EthereumBalanceDocument = {
 } as unknown as DocumentNode<
   EthereumBalanceQuery,
   EthereumBalanceQueryVariables
+>;
+export const GetCryptoAssetsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCryptoAssets' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'CryptoAssetArgs' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'assets' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'cryptoAssets' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'input' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'input' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'contract' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'symbol' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'decimals' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'scalingFactor' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCryptoAssetsQuery,
+  GetCryptoAssetsQueryVariables
 >;

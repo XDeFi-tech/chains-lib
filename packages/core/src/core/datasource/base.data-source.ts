@@ -1,4 +1,3 @@
-import { providers } from 'ethers';
 import { Observable } from 'rxjs';
 
 import { Manifest } from '../chain';

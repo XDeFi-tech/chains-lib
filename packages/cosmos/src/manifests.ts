@@ -23,7 +23,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     chainSymbol: 'ATOM',
     blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
     chainId: 'cosmoshub-4',
-    chain: 'cosmos',
+    chain: 'Cosmos',
   },
   [CosmosHubChains.osmosis]: {
     name: 'Osmosis',

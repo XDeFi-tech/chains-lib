@@ -14,12 +14,11 @@ import {
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { InputMaybe, BlockRange } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
 import { CosmosHubChains } from '../../manifests';
 
-import { getBalance, getTransactions, getStatus } from './queries';
+import { getBalance, getTransactions } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -57,7 +56,7 @@ export class IndexerDataSource extends DataSource {
           price: asset.price?.amount,
           decimals: asset.price?.scalingFactor,
         }),
-        new BigNumber(amount.value).dividedBy(10 ** amount.scalingFactor)
+        new BigNumber(amount.value).dividedBy(10 ** (asset.decimals as number))
       );
     });
   }
@@ -69,26 +68,11 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { address, afterBlock } = filter;
-    let slotRange: InputMaybe<BlockRange> = null;
-
-    if (afterBlock) {
-      const {
-        data: { cosmos },
-      } = await getStatus(this.manifest.chain as CosmosHubChains);
-      slotRange = {
-        from: Number(afterBlock),
-        to: Number(cosmos.status.lastBlock),
-      };
-    }
+    const { address } = filter;
 
     const {
       data: { cosmos },
-    } = await getTransactions(
-      this.manifest.chain as CosmosHubChains,
-      address,
-      slotRange
-    );
+    } = await getTransactions(this.manifest.chain as CosmosHubChains, address);
 
     return cosmos.transactions.edges.map((transaction) => {
       return Transaction.fromData(transaction);

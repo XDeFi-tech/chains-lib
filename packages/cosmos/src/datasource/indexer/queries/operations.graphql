@@ -13,6 +13,7 @@ query CosmosBalance ($address: String!) {
         name
         symbol
         image
+        decimals
         price {
           scalingFactor
           amount
@@ -22,41 +23,61 @@ query CosmosBalance ($address: String!) {
   }
 }
 
-query GetCosmosTransactions($address: String!, $pagination: CursorPagination!, $blockRange: OptBlockRange!) {
+query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $pagination: CursorPagination!) {
   cosmos {
-    transactions(address: $address, pagination: $pagination, blockRange: $blockRange) {
+    transactions(address: $address, dateRange: $dateRange, pagination: $pagination) {
       pageInfo {
         endCursor
         hasNextPage
-        hasPreviousPage
-        startCursor
       }
       edges {
         node {
-          blockHeight
-          blockIndex
           hash
+          fee {
+            amount {
+              asset {
+                chain
+                contract
+                id
+                name
+                symbol
+                image
+                decimals
+                price {
+                  amount
+                  scalingFactor
+                }
+              }
+              amount {
+                value
+              }
+            }
+            payer
+          }
           status
           transfers {
             amount {
-              scalingFactor
               value
             }
-            fromAddress
-            toAddress
             asset {
               chain
               contract
               id
               name
-              image
               symbol
+              image
+              decimals
               price {
                 amount
                 scalingFactor
               }
             }
+            fromAddress
+            toAddress
           }
+          timestamp
+          blockHeight
+          blockIndex
         }
       }
     }

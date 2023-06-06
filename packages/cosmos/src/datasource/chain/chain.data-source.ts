@@ -19,11 +19,29 @@ import {
   setupBankExtension,
   setupAuthExtension,
 } from '@cosmjs/launchpad';
+import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
+import { CryptoAssetArgs } from '@xdefi-tech/chains-graphql/src/gql';
+import { uniqBy } from 'lodash';
 
 import { ChainMsg } from '../../msg';
 
-import { getAssets } from './queries';
+const nativeDenoms = [
+  'uatom',
+  'uosmo',
+  'uaxl',
+  'inj',
+  'ujuno',
+  'ucre',
+  'ukava',
+  'ustars',
+  'uakt',
+  'basecro',
+  'ukuji',
+  'usei',
+  'ustrd',
+  'umars',
+];
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -50,16 +68,20 @@ export class ChainDataSource extends DataSource {
       setupAuthExtension
     );
     const balances = await client.bank.balances(address);
-    const contractAddresses = balances.result.map(({ denom }) => denom);
-    const assets = await getAssets(contractAddresses);
+    const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
+      ({ denom }) => ({
+        chain: this.manifest.chain as AddressChain,
+        contract: nativeDenoms.includes(denom) ? null : denom,
+      })
+    );
+    const {
+      data: {
+        assets: { cryptoAssets: assets },
+      },
+    } = await getCryptoAssets(cryptoAssetsInput);
 
-    // todo try to get with CryptoAsset
-
-    return balances.result.reduce((result: Coin[], { amount, denom }) => {
-      const asset = assets.data.assets.tokens?.page?.edges?.find((a) =>
-        a.node?.contracts?.some((c) => c.address === denom)
-      );
-
+    return balances.result.reduce((result: Coin[], { amount }, index) => {
+      const asset = assets && assets[index];
       if (!asset) {
         return result;
       }
@@ -67,21 +89,22 @@ export class ChainDataSource extends DataSource {
       const coin = new Coin(
         new Asset({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          id: asset.node!.id!,
+          id: asset.id!,
           chainId: this.manifest.chainId,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: asset.node!.name!,
+          name: asset!.name!,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          symbol: asset.node!.symbol!,
+          symbol: asset.symbol!,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          icon: asset.node!.icon!,
-          native: !Boolean(asset.node!.contracts),
+          icon: asset.image,
+          native: !Boolean(asset.contract),
+          address: asset.contract,
+          price: asset.price?.amount,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          address: asset.node!.contracts![0].address!,
-          price: asset.node!.price?.amount,
-          decimals: asset.node!.price?.scalingFactor,
+          decimals: asset.decimals!,
         }),
-        new BigNumber(amount)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        new BigNumber(amount).dividedBy(10 ** asset.decimals!)
       );
 
       result.push(coin);
@@ -95,30 +118,33 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { address } = filter;
-    const test = await cosmosclient.rest.tx.getTxsEvent(
+  private async _getTransactionEvent(
+    event: 'transfer.sender' | 'transfer.recipient',
+    address: string
+  ) {
+    return await cosmosclient.rest.tx.getTxsEvent(
       this.cosmosSDK,
-      [`transfer.recipient='${address}'`],
+      [`${event}='${address}'`],
       undefined,
       undefined,
       BigInt(10)
     );
-    console.log('test', test);
-    return [];
-    // const recipientQuery = new URLSearchParams({
-    //   'transfer.recipient': address,
-    // });
-    // const senderQuery = new URLSearchParams({
-    //   'transfer.sender': address,
-    // });
-    // const [recipientResults, senderResults] = await Promise.all([
-    //   this.rpcProvider.txsQuery(JSON.stringify(recipientQuery)),
-    //   this.rpcProvider.txsQuery(JSON.stringify(senderQuery)),
-    // ]);
-    // return [...recipientResults.txs, ...senderResults].map((tx: any) =>
-    //   Transaction.fromData(tx)
-    // );
+  }
+
+  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
+    const { address } = filter;
+    const [sender, recipient] = await Promise.all([
+      this._getTransactionEvent('transfer.recipient', address),
+      this._getTransactionEvent('transfer.sender', address),
+    ]);
+    const formattedTransactions = uniqBy(
+      [
+        ...(sender?.data?.tx_responses || []),
+        ...(recipient?.data?.tx_responses || []),
+      ],
+      'txhash'
+    );
+    return formattedTransactions.map((tx: any) => Transaction.fromData(tx));
   }
 
   async subscribeTransactions(
