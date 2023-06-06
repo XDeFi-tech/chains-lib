@@ -12,7 +12,7 @@ import { forEach } from 'lodash';
 import { FeeData } from 'core/interfaces';
 
 export interface IOptions {
-  signers?: (typeof SignerProvider)[];
+  signers?: typeof SignerProvider[];
   providerId?: string;
 }
 
