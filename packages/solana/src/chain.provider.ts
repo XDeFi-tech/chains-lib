@@ -11,6 +11,7 @@ import {
   Transaction,
   Balance,
   FeeData,
+  TransactionData,
 } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from './msg';
@@ -59,6 +60,10 @@ export class SolanaProvider extends Chain.Provider {
   }
 
   async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async getTransaction(_txHash: string): Promise<TransactionData | null> {
     throw new Error('Method not implemented.');
   }
 }

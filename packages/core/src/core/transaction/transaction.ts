@@ -1,8 +1,14 @@
+export enum TransactionStatus {
+  pending = 'pending',
+  success = 'success',
+  failure = 'failure',
+}
+
 export interface TransactionData {
   hash: string;
   to: string;
   from: string;
-  status: string;
+  status: TransactionStatus;
   data?: string;
 }
 
