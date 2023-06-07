@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-btc
 
+## 1.1.0
+
+### Minor Changes
+
+- 3b06078: Add getTransaction method
+
+### Patch Changes
+
+- Updated dependencies [3b06078]
+  - @xdefi-tech/chains-graphql@1.1.0
+  - @xdefi-tech/chains-core@1.1.0
+
 ## 1.0.4
 
 ### Patch Changes
