@@ -9,6 +9,7 @@ import {
   Transaction,
   Balance,
   FeeData,
+  TransactionData,
 } from '@xdefi-tech/chains-core';
 import { Axios } from 'axios';
 
@@ -93,5 +94,9 @@ export class BtcProvider extends Chain.Provider {
     }
 
     return result;
+  }
+
+  async getTransaction(_txHash: string): Promise<TransactionData | null> {
+    throw new Error('Method not implemented.');
   }
 }

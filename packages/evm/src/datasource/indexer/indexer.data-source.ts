@@ -58,7 +58,7 @@ export class IndexerDataSource extends DataSource {
           native: !Boolean(asset.contract),
           address: asset.contract,
           price: asset.price?.amount,
-          decimals: asset.price?.scalingFactor,
+          decimals: asset.decimals,
         }),
         utils.formatUnits(amount.value, amount.scalingFactor)
       );
