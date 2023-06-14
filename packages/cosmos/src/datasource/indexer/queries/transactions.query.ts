@@ -1,8 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import {
-  BlockRange,
   GetCosmosTransactionsDocument,
-  InputMaybe,
   Scalars,
 } from '@xdefi-tech/chains-graphql';
 
@@ -10,8 +8,7 @@ import { CosmosHubChains } from '../../../manifests';
 
 export const getTransactions = (
   chain: CosmosHubChains,
-  address: Scalars['String'],
-  blockRange?: InputMaybe<BlockRange>
+  address: Scalars['String']
 ) => {
   let query = null;
   switch (chain) {
@@ -33,11 +30,10 @@ export const getTransactions = (
         first: 1000,
         after: null,
       },
-      blockRange: {
+      dateRange: {
         from: null,
         to: null,
       },
-      ...(blockRange && { blockRange }), // override default null
     },
   });
 };

@@ -34,8 +34,6 @@ module.exports = {
     ],
   },
   output: {
-    clean: true,
-    filename: "index.js",
-    globalObject: "this",
+    filename: "index.js"
   }
 };

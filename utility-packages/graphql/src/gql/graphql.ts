@@ -1036,7 +1036,7 @@ export type CosmosBasedChainWithNft = {
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
-  nfts: Array<Nft>;
+  nfts: Array<NfTv2>;
   status: Status;
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;
@@ -1486,7 +1486,7 @@ export type JunoChain = {
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
-  nfts: Array<Nft>;
+  nfts: Array<NfTv2>;
   status: Status;
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;
@@ -1583,12 +1583,6 @@ export enum LoginChain {
   BITCOIN = 'BITCOIN',
   ETHEREUM = 'ETHEREUM',
 }
-
-export type Media = {
-  __typename?: 'Media';
-  type?: Maybe<Scalars['String']>;
-  url: Scalars['String'];
-};
 
 export type MediaV2 = {
   __typename?: 'MediaV2';
@@ -1702,18 +1696,6 @@ export type MutationUpsertReferrerArgs = {
   referrerName?: InputMaybe<Scalars['String']>;
 };
 
-export type Nft = {
-  __typename?: 'NFT';
-  balance: Amount;
-  collection?: Maybe<NftCollection>;
-  description?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  lastSale?: Maybe<NftLastSale>;
-  media: Array<Media>;
-  name: Scalars['String'];
-  symbol: Scalars['String'];
-};
-
 /** attributes data from opensea spec <https://docs.opensea.io/docs/metadata-standards> */
 export type NftAttribute = {
   __typename?: 'NFTAttribute';
@@ -1721,14 +1703,6 @@ export type NftAttribute = {
   traitType: Scalars['String'];
   /** according to opensea spec this can be string or number or float number */
   value: Scalars['JSON'];
-};
-
-export type NftCollection = {
-  __typename?: 'NFTCollection';
-  address: Scalars['String'];
-  media?: Maybe<Media>;
-  name: Scalars['String'];
-  symbol: Scalars['String'];
 };
 
 export type NftCollectionV2 = {
@@ -2596,7 +2570,7 @@ export type StargazeChain = {
   __typename?: 'StargazeChain';
   balances: Array<Balance>;
   name: Scalars['String'];
-  nfts: Array<Nft>;
+  nfts: Array<NfTv2>;
   status: Status;
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;

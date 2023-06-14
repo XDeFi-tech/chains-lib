@@ -1,9 +1,16 @@
 {
   "name": "@xdefi-tech/chains-cosmos",
   "version": "1.0.0",
-  "main": "dist/index.mjs",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "eslint-config-custom": "*",
@@ -27,6 +34,7 @@
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",
+    "os-browserify": "^0.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
@@ -40,9 +48,5 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest"
-  },
-  "type": "commonjs",
-  "browser": {
-    "crypto": "crypto-browserify"
   }
 }

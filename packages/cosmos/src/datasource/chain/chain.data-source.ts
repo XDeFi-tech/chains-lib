@@ -19,10 +19,17 @@ import {
   setupBankExtension,
   setupAuthExtension,
 } from '@cosmjs/launchpad';
-import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
+import {
+  AddressChain,
+  getCryptoAssets,
+  CryptoAssetArgs,
+} from '@xdefi-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
-import { CryptoAssetArgs } from '@xdefi-tech/chains-graphql/src/gql';
-import { uniqBy } from 'lodash';
+import { uniqBy, transform, isArray, camelCase, isObject } from 'lodash';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { QueryClient, setupTxExtension } from '@cosmjs/stargate';
+import { Any } from 'cosmjs-types/google/protobuf/any';
+import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 
 import { ChainMsg } from '../../msg';
 
@@ -157,6 +164,51 @@ export class ChainDataSource extends DataSource {
     _msgs: ChainMsg[],
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
+    const client = await Tendermint34Client.connect(
+      'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet'
+    );
+    const txExtension = setupTxExtension(QueryClient.withExtensions(client));
+
+    const camelize = (obj: object) =>
+      transform(obj, (acc: any, value, key, target) => {
+        const camelKey = isArray(target) ? key : camelCase(key);
+
+        acc[camelKey] = isObject(value) ? camelize(value) : value;
+      });
+
+    const msgs = [
+      // msgAny,
+      {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: [
+          ...JSON.stringify({
+            amount: [{ amount: '1', denom: 'uatom' }],
+            fromAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
+            toAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
+          }),
+        ]
+          .map((c, i) => c.charCodeAt(i).toString(16))
+          .join(''),
+      },
+    ];
+
+    console.log('LOG msgs', msgs);
+
+    const encodedMsgs: Any[] = msgs.map((m) => Any.fromJSON(camelize(m)));
+    const pubKey = Buffer.from(
+      'a55c862d9bd97c0597c202f7bc7df32bcfb34d732a538a9e64722e0a1d58514b',
+      'hex'
+    );
+    console.log('LOG pubKey', pubKey.length, pubKey);
+    const simResponse = await txExtension.tx.simulate(
+      encodedMsgs,
+      undefined,
+      encodeSecp256k1Pubkey(pubKey.length > 33 ? pubKey.slice(2) : pubKey),
+      Number(0)
+    );
+
+    // eslint-disable-next-line no-console
+    console.log('simResponse', simResponse);
     return [];
   }
 
