@@ -14,11 +14,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import {
-  LcdClient,
-  setupBankExtension,
-  setupAuthExtension,
-} from '@cosmjs/launchpad';
+import { LcdClient, setupBankExtension } from '@cosmjs/launchpad';
 import {
   AddressChain,
   getCryptoAssets,
@@ -27,9 +23,16 @@ import {
 import cosmosclient from '@cosmos-client/core';
 import { uniqBy, transform, isArray, camelCase, isObject } from 'lodash';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import { QueryClient, setupTxExtension } from '@cosmjs/stargate';
+import {
+  QueryClient,
+  setupTxExtension,
+  setupAuthExtension,
+  StargateClient,
+} from '@cosmjs/stargate';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
+import { decodePubkey } from '@cosmjs/proto-signing';
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { ChainMsg } from '../../msg';
 
@@ -58,8 +61,7 @@ export class ChainDataSource extends DataSource {
     super(manifest);
     this.rpcProvider = LcdClient.withExtensions(
       { apiUrl: this.manifest.rpcURL },
-      setupBankExtension,
-      setupAuthExtension
+      setupBankExtension
     );
     this.cosmosSDK = new cosmosclient.CosmosSDK(
       this.manifest.rpcURL,
@@ -71,8 +73,7 @@ export class ChainDataSource extends DataSource {
     const { address } = filter;
     const client = LcdClient.withExtensions(
       { apiUrl: this.manifest.rpcURL },
-      setupBankExtension,
-      setupAuthExtension
+      setupBankExtension
     );
     const balances = await client.bank.balances(address);
     const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
@@ -167,7 +168,19 @@ export class ChainDataSource extends DataSource {
     const client = await Tendermint34Client.connect(
       'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet'
     );
+    const authExtension = setupAuthExtension(
+      QueryClient.withExtensions(client)
+    );
     const txExtension = setupTxExtension(QueryClient.withExtensions(client));
+
+    const acc = await authExtension.auth.account(
+      'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr'
+    );
+    console.log('acc', acc);
+
+    if (!acc) {
+      return [];
+    }
 
     const camelize = (obj: object) =>
       transform(obj, (acc: any, value, key, target) => {
@@ -181,29 +194,32 @@ export class ChainDataSource extends DataSource {
       {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: [
-          ...JSON.stringify({
+          {
             amount: [{ amount: '1', denom: 'uatom' }],
             fromAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
             toAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
-          }),
-        ]
-          .map((c, i) => c.charCodeAt(i).toString(16))
-          .join(''),
+          },
+        ],
       },
     ];
 
     console.log('LOG msgs', msgs);
+    const camelizedMsgs = msgs.map((m) => camelize(m));
 
-    const encodedMsgs: Any[] = msgs.map((m) => Any.fromJSON(camelize(m)));
-    const pubKey = Buffer.from(
-      'a55c862d9bd97c0597c202f7bc7df32bcfb34d732a538a9e64722e0a1d58514b',
-      'hex'
+    console.log('camelizedMsgs', camelizedMsgs);
+
+    const encodedMsgs: Any[] = camelizedMsgs.map((m) =>
+      Any.fromJSON({
+        typeUrl: m.typeUrl,
+        value: btoa(JSON.stringify(m.value)),
+      })
     );
-    console.log('LOG pubKey', pubKey.length, pubKey);
+    console.log('encodedMsgs', encodedMsgs);
+    console.log('pubkey', decodePubkey({ typeUrl: '/cosmos.crypto.secp256k1.PubKey', value: acc.value }));
     const simResponse = await txExtension.tx.simulate(
       encodedMsgs,
       undefined,
-      encodeSecp256k1Pubkey(pubKey.length > 33 ? pubKey.slice(2) : pubKey),
+      encodeSecp256k1Pubkey(acc.value),
       Number(0)
     );
 

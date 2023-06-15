@@ -64,11 +64,11 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
   [CosmosHubChains.kava]: {
     name: 'Kava',
     description: '',
-    rpcURL: 'https://www.mintscan.io/kava/txs',
+    rpcURL: 'https://rpc-proxy.xdefi.services/kava/lcd/mainnet',
     chainSymbol: 'KAVA',
     blockExplorerURL: 'https://www.mintscan.io/kava/account',
     chainId: 'kava_2222-10',
-    chain: 'kava',
+    chain: 'Kava',
   },
   [CosmosHubChains.stargaze]: {
     name: 'Stargaze',

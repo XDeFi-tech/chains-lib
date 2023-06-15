@@ -19,6 +19,9 @@ export const initDefaultProviders = () => {
     new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
   );
   ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
+  );
+  ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
     })
