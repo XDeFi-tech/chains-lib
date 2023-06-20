@@ -1,5 +1,4 @@
 import { Msg as BasMsg } from '@xdefi-tech/chains-core';
-import { MsgSend, coin, StdFee } from '@cosmjs/launchpad';
 import { StdTx } from '@cosmjs/amino';
 
 export interface MsgBody {
@@ -7,11 +6,11 @@ export interface MsgBody {
   to: string;
   amount: string;
   denom: string;
+  memo: string;
 }
 
 export interface TxData {
-  msgs: MsgSend[];
-  fee: StdFee;
+  msgs: any[];
   memo?: string;
 }
 
@@ -24,22 +23,20 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
 
   async buildTx() {
     const msgData = this.toData();
-    const msgToSend: MsgSend = {
-      type: 'cosmos-sdk/MsgSend',
-      value: {
-        from_address: msgData.from,
-        to_address: msgData.to,
-        amount: [coin(msgData.amount, msgData.denom)],
-      },
+    const msgToSend = {
+      from_address: msgData.from,
+      to_address: msgData.to,
+      amount: [
+        {
+          amount: msgData.amount,
+          denom: msgData.denom,
+        },
+      ],
     };
-    const fee = {
-      amount: [coin('5000', 'uatom')],
-      gas: '890000',
-    };
+
     return {
       msgs: [msgToSend],
-      fee: fee,
-      memo: undefined,
+      ...(msgData.memo && { memo: msgData.memo }),
     };
   }
 

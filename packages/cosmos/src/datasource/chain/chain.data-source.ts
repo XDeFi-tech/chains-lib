@@ -5,7 +5,6 @@ import {
   GasFeeSpeed,
   Transaction,
   Injectable,
-  Chain,
   TransactionsFilter,
   BalanceFilter,
   Balance,
@@ -21,20 +20,22 @@ import {
   CryptoAssetArgs,
 } from '@xdefi-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
-import { uniqBy, transform, isArray, camelCase, isObject } from 'lodash';
+import { uniqBy } from 'lodash';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import {
   QueryClient,
   setupTxExtension,
   setupAuthExtension,
-  StargateClient,
+  accountFromAny,
 } from '@cosmjs/stargate';
 import { Any } from 'cosmjs-types/google/protobuf/any';
-import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
-import { decodePubkey } from '@cosmjs/proto-signing';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { Pubkey } from '@cosmjs/amino';
 
 import { ChainMsg } from '../../msg';
+import * as manifests from '../../manifests';
+import { CosmosManifest } from '../../manifests';
+
+const DEFAULT_GAS_FEE = 20000;
 
 const nativeDenoms = [
   'uatom',
@@ -56,8 +57,9 @@ const nativeDenoms = [
 @Injectable()
 export class ChainDataSource extends DataSource {
   private readonly cosmosSDK: cosmosclient.CosmosSDK;
+  declare readonly manifest: CosmosManifest;
 
-  constructor(manifest: Chain.Manifest) {
+  constructor(manifest: manifests.CosmosManifest) {
     super(manifest);
     this.rpcProvider = LcdClient.withExtensions(
       { apiUrl: this.manifest.rpcURL },
@@ -161,71 +163,48 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async estimateFee(
-    _msgs: ChainMsg[],
-    _speed: GasFeeSpeed
-  ): Promise<FeeData[]> {
-    const client = await Tendermint34Client.connect(
-      'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet'
-    );
+  async estimateFee(msgs: ChainMsg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
+    const client = await Tendermint34Client.connect(this.manifest.lcdURL);
     const authExtension = setupAuthExtension(
       QueryClient.withExtensions(client)
     );
     const txExtension = setupTxExtension(QueryClient.withExtensions(client));
+    const senderAddress = msgs[0].toData().from;
+    const account = await authExtension.auth.account(senderAddress);
 
-    const acc = await authExtension.auth.account(
-      'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr'
-    );
-    console.log('acc', acc);
-
-    if (!acc) {
+    if (!account) {
       return [];
     }
 
-    const camelize = (obj: object) =>
-      transform(obj, (acc: any, value, key, target) => {
-        const camelKey = isArray(target) ? key : camelCase(key);
-
-        acc[camelKey] = isObject(value) ? camelize(value) : value;
-      });
-
-    const msgs = [
+    const senderAccount = accountFromAny(account);
+    const _msgs = [
       // msgAny,
       {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: [
-          {
-            amount: [{ amount: '1', denom: 'uatom' }],
-            fromAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
-            toAddress: 'cosmos1vxez2cl456xl96zt6e5sku6e9gcra0gu3j8usr',
-          },
-        ],
+        value: msgs.map((m) => m.buildTx()),
       },
     ];
-
-    console.log('LOG msgs', msgs);
-    const camelizedMsgs = msgs.map((m) => camelize(m));
-
-    console.log('camelizedMsgs', camelizedMsgs);
-
-    const encodedMsgs: Any[] = camelizedMsgs.map((m) =>
+    const encodedMsgs: Any[] = _msgs.map((m) =>
       Any.fromJSON({
         typeUrl: m.typeUrl,
         value: btoa(JSON.stringify(m.value)),
       })
     );
-    console.log('encodedMsgs', encodedMsgs);
-    console.log('pubkey', decodePubkey({ typeUrl: '/cosmos.crypto.secp256k1.PubKey', value: acc.value }));
     const simResponse = await txExtension.tx.simulate(
       encodedMsgs,
       undefined,
-      encodeSecp256k1Pubkey(acc.value),
+      senderAccount.pubkey as Pubkey,
       Number(0)
     );
 
     // eslint-disable-next-line no-console
     console.log('simResponse', simResponse);
-    return [];
+    return [
+      {
+        gasLimit: simResponse?.gasInfo?.gasWanted.toString() || DEFAULT_GAS_FEE,
+        gasPrice: undefined,
+      },
+    ];
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {

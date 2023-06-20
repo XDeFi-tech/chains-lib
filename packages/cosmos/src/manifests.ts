@@ -15,11 +15,18 @@ export enum CosmosHubChains {
   mars = 'mars',
 }
 
-export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
+export interface CosmosManifest extends Chain.Manifest {
+  lcdURL: string;
+}
+
+export const COSMOS_MANIFESTS: {
+  [key in CosmosHubChains]: CosmosManifest;
+} = {
   [CosmosHubChains.cosmoshub]: {
     name: 'Cosmos Hub',
     description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
+    rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
+    lcdURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
     chainSymbol: 'ATOM',
     blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
     chainId: 'cosmoshub-4',
@@ -29,6 +36,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Osmosis',
     description: '',
     rpcURL: 'https://rpc-proxy.xdefi.services/osmosis/lcd/mainnet',
+    lcdURL: 'https://rpc-proxy.xdefi.services/osmosis/lcd/mainnet',
     chainSymbol: 'OSMO',
     blockExplorerURL: 'https://www.mintscan.io/osmosis/account',
     chainId: 'osmosis-1',
@@ -38,6 +46,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Axelar',
     description: '',
     rpcURL: 'https://www.mintscan.io/axelar/txs',
+    lcdURL: 'https://www.mintscan.io/axelar/txs',
     chainSymbol: 'AXL',
     blockExplorerURL: 'https://www.mintscan.io/axelar/account',
     chainId: 'axelar-dojo-1',
@@ -47,6 +56,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'JUNO',
     description: '',
     rpcURL: 'https://www.mintscan.io/juno/txs',
+    lcdURL: 'https://www.mintscan.io/juno/txs',
     chainSymbol: 'JUNO',
     blockExplorerURL: 'https://www.mintscan.io/juno/account',
     chainId: 'juno-1',
@@ -56,6 +66,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Crescent',
     description: '',
     rpcURL: 'https://www.mintscan.io/crescent/txs',
+    lcdURL: 'https://www.mintscan.io/crescent/txs',
     chainSymbol: 'CRE',
     blockExplorerURL: 'https://www.mintscan.io/crescent/account',
     chainId: 'crescent-1',
@@ -65,6 +76,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Kava',
     description: '',
     rpcURL: 'https://rpc-proxy.xdefi.services/kava/lcd/mainnet',
+    lcdURL: 'https://rpc-proxy.xdefi.services/kava/lcd/mainnet',
     chainSymbol: 'KAVA',
     blockExplorerURL: 'https://www.mintscan.io/kava/account',
     chainId: 'kava_2222-10',
@@ -74,6 +86,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Stargaze',
     description: '',
     rpcURL: 'https://www.mintscan.io/stargaze/txs',
+    lcdURL: 'https://www.mintscan.io/stargaze/txs',
     chainSymbol: 'STARS',
     blockExplorerURL: 'https://www.mintscan.io/stargaze/account',
     chainId: 'stargaze-1',
@@ -83,6 +96,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Akash',
     description: '',
     rpcURL: 'https://www.mintscan.io/akash/txs',
+    lcdURL: 'https://www.mintscan.io/akash/txs',
     chainSymbol: 'AKT',
     blockExplorerURL: 'https://www.mintscan.io/akash/account',
     chainId: 'akashnet-2',
@@ -92,6 +106,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Crypto.Org',
     description: '',
     rpcURL: 'https://www.mintscan.io/cronos/txs',
+    lcdURL: 'https://www.mintscan.io/cronos/txs',
     chainSymbol: 'CRO',
     blockExplorerURL: 'https://www.mintscan.io/cronos/account',
     chainId: 'crypto-org-chain-mainnet-1',
@@ -101,6 +116,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Kujira',
     description: '',
     rpcURL: 'https://www.mintscan.io/kujira/txs',
+    lcdURL: 'https://www.mintscan.io/kujira/txs',
     chainSymbol: 'KUJI',
     blockExplorerURL: 'https://www.mintscan.io/kujira/account',
     chainId: 'kaiyo-1',
@@ -110,6 +126,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Stride',
     description: '',
     rpcURL: 'https://www.mintscan.io/stride/txs',
+    lcdURL: 'https://www.mintscan.io/stride/txs',
     chainSymbol: 'STRD',
     blockExplorerURL: 'https://www.mintscan.io/stride/account',
     chainId: 'stride-1',
@@ -119,6 +136,7 @@ export const COSMOS_MANIFESTS: { [key in CosmosHubChains]: Chain.Manifest } = {
     name: 'Mars',
     description: '',
     rpcURL: 'https://www.mintscan.io/mars-protocol/txs',
+    lcdURL: 'https://www.mintscan.io/mars-protocol/txs',
     chainSymbol: 'MARS',
     blockExplorerURL: 'https://www.mintscan.io/mars-protocol/account',
     chainId: 'mars-1',
