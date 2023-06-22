@@ -24,18 +24,23 @@ import { uniqBy } from 'lodash';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import {
   QueryClient,
-  setupTxExtension,
   setupAuthExtension,
   accountFromAny,
 } from '@cosmjs/stargate';
-import { Any } from 'cosmjs-types/google/protobuf/any';
-import { Pubkey } from '@cosmjs/amino';
+import axios, { AxiosInstance } from 'axios';
+import {
+  TxRaw,
+  AuthInfo,
+  Fee,
+  TxBody,
+  SignerInfo,
+} from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
 import { CosmosManifest } from '../../manifests';
-
-const DEFAULT_GAS_FEE = 20000;
 
 const nativeDenoms = [
   'uatom',
@@ -58,17 +63,21 @@ const nativeDenoms = [
 export class ChainDataSource extends DataSource {
   private readonly cosmosSDK: cosmosclient.CosmosSDK;
   declare readonly manifest: CosmosManifest;
+  private readonly testClient: AxiosInstance;
 
   constructor(manifest: manifests.CosmosManifest) {
     super(manifest);
     this.rpcProvider = LcdClient.withExtensions(
-      { apiUrl: this.manifest.rpcURL },
+      { apiUrl: this.manifest.lcdURL },
       setupBankExtension
     );
     this.cosmosSDK = new cosmosclient.CosmosSDK(
-      this.manifest.rpcURL,
+      this.manifest.lcdURL,
       this.manifest.chainId
     );
+    this.testClient = axios.create({
+      baseURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
+    });
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
@@ -164,45 +173,68 @@ export class ChainDataSource extends DataSource {
   }
 
   async estimateFee(msgs: ChainMsg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    const client = await Tendermint34Client.connect(this.manifest.lcdURL);
+    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
     const authExtension = setupAuthExtension(
       QueryClient.withExtensions(client)
     );
-    const txExtension = setupTxExtension(QueryClient.withExtensions(client));
-    const senderAddress = msgs[0].toData().from;
-    const account = await authExtension.auth.account(senderAddress);
+    let fromAddress = '';
+    const _msgs = msgs.map((m) => {
+      const messageData = m.toData();
+      fromAddress = messageData.from;
+      return {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: MsgSend.encode({
+          fromAddress: messageData.from,
+          toAddress: messageData.to,
+          amount: [
+            {
+              denom: 'uatom',
+              amount: String(messageData.amount ** (10 ^ 6)),
+            },
+          ],
+        }).finish(),
+      };
+    });
+    const acc = await authExtension.auth.account(fromAddress);
 
-    if (!account) {
+    if (!acc) {
       return [];
     }
 
-    const senderAccount = accountFromAny(account);
-    const _msgs = [
-      // msgAny,
-      {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: msgs.map((m) => m.buildTx()),
-      },
-    ];
-    const encodedMsgs: Any[] = _msgs.map((m) =>
-      Any.fromJSON({
-        typeUrl: m.typeUrl,
-        value: btoa(JSON.stringify(m.value)),
-      })
-    );
-    const simResponse = await txExtension.tx.simulate(
-      encodedMsgs,
-      undefined,
-      senderAccount.pubkey as Pubkey,
-      Number(0)
-    );
+    const account = accountFromAny(acc);
+    const tx = TxRaw.encode({
+      bodyBytes: TxBody.encode(
+        TxBody.fromPartial({
+          messages: _msgs,
+          memo: undefined,
+        })
+      ).finish(),
+      authInfoBytes: AuthInfo.encode({
+        signerInfos: [
+          SignerInfo.fromPartial({
+            modeInfo: {
+              single: {
+                mode: SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
+              },
+              multi: void 0,
+            },
+            sequence: account.sequence.toString(),
+          }),
+        ],
+        fee: Fee.fromPartial({
+          amount: [],
+        }),
+      }).finish(),
+      signatures: [new Uint8Array(64)],
+    }).finish();
+    const { data } = await this.testClient.post('/cosmos/tx/v1beta1/simulate', {
+      txBytes: Buffer.from(tx).toString('base64'),
+    });
 
-    // eslint-disable-next-line no-console
-    console.log('simResponse', simResponse);
     return [
       {
-        gasLimit: simResponse?.gasInfo?.gasWanted.toString() || DEFAULT_GAS_FEE,
-        gasPrice: undefined,
+        gasLimit: data.gas_info.gas_used,
+        gasPrice: 1.3,
       },
     ];
   }

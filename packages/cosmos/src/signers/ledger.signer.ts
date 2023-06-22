@@ -58,7 +58,7 @@ export class LedgerSigner extends Signer.Provider {
       );
       const signature = await client.sign(
         msgData.from,
-        txData.msgs.map((msg) => ({
+        txData.msgs.map((msg: any) => ({
           typeUrl: '/cosmos.tx.v1beta1.TxBody',
           value: msg,
         })),

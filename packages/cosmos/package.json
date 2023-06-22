@@ -31,6 +31,7 @@
     "@cosmos-client/core": "^0.47.1",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
+    "axios": "^1.4.0",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",
