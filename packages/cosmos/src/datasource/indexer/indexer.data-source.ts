@@ -5,7 +5,6 @@ import {
   GasFeeSpeed,
   Transaction,
   Injectable,
-  Chain,
   TransactionsFilter,
   BalanceFilter,
   Balance,
@@ -17,12 +16,15 @@ import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from '../../msg';
 import { CosmosHubChains } from '../../manifests';
+import * as manifests from '../../manifests';
 
 import { getBalance, getTransactions } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
-  constructor(manifest: Chain.Manifest) {
+  declare readonly manifest: manifests.CosmosManifest;
+
+  constructor(manifest: manifests.CosmosManifest) {
     super(manifest);
   }
 
@@ -93,7 +95,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    throw new Error('Method not implemented.');
+    return this.manifest.feeGasStep;
   }
 
   async getNonce(_address: string): Promise<number> {

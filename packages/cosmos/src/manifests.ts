@@ -1,4 +1,4 @@
-import { Chain } from '@xdefi-tech/chains-core';
+import { Chain, GasFeeSpeed } from '@xdefi-tech/chains-core';
 
 export enum CosmosHubChains {
   cosmoshub = 'cosmoshub',
@@ -17,6 +17,13 @@ export enum CosmosHubChains {
 
 export interface CosmosManifest extends Chain.Manifest {
   lcdURL: string;
+  denom: string;
+  decimals: number;
+  feeGasStep: {
+    [GasFeeSpeed.high]: number;
+    [GasFeeSpeed.medium]: number;
+    [GasFeeSpeed.low]: number;
+  };
 }
 
 export const COSMOS_MANIFESTS: {
@@ -30,7 +37,14 @@ export const COSMOS_MANIFESTS: {
     chainSymbol: 'ATOM',
     blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
     chainId: 'cosmoshub-4',
-    chain: 'Cosmos',
+    chain: 'cosmos',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.osmosis]: {
     name: 'Osmosis',
@@ -41,6 +55,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/osmosis/account',
     chainId: 'osmosis-1',
     chain: 'osmosis',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.axelar]: {
     name: 'Axelar',
@@ -51,6 +72,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/axelar/account',
     chainId: 'axelar-dojo-1',
     chain: 'alexar',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.juno]: {
     name: 'JUNO',
@@ -61,6 +89,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/juno/account',
     chainId: 'juno-1',
     chain: 'juno',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.crescent]: {
     name: 'Crescent',
@@ -71,6 +106,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/crescent/account',
     chainId: 'crescent-1',
     chain: 'crescent',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.kava]: {
     name: 'Kava',
@@ -81,6 +123,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/kava/account',
     chainId: 'kava_2222-10',
     chain: 'Kava',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.stargaze]: {
     name: 'Stargaze',
@@ -91,6 +140,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/stargaze/account',
     chainId: 'stargaze-1',
     chain: 'stargaze',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.akash]: {
     name: 'Akash',
@@ -101,6 +157,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/akash/account',
     chainId: 'akashnet-2',
     chain: 'akash',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.cronos]: {
     name: 'Crypto.Org',
@@ -111,6 +174,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/cronos/account',
     chainId: 'crypto-org-chain-mainnet-1',
     chain: 'cronos',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.kujira]: {
     name: 'Kujira',
@@ -121,6 +191,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/kujira/account',
     chainId: 'kaiyo-1',
     chain: 'kujira',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.stride]: {
     name: 'Stride',
@@ -131,6 +208,13 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/stride/account',
     chainId: 'stride-1',
     chain: 'stride',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
   [CosmosHubChains.mars]: {
     name: 'Mars',
@@ -141,5 +225,12 @@ export const COSMOS_MANIFESTS: {
     blockExplorerURL: 'https://www.mintscan.io/mars-protocol/account',
     chainId: 'mars-1',
     chain: 'mars',
+    denom: 'uatom',
+    decimals: 6,
+    feeGasStep: {
+      high: 0.03,
+      medium: 0.025,
+      low: 0.01,
+    },
   },
 };

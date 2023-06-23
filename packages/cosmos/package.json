@@ -3,14 +3,29 @@
   "version": "1.0.0",
   "main": "./dist/index.mjs",
   "module": "./dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "exports": {
+    "./web": {
+      "require": "./dist/signers/web.js",
+      "import": "./dist/signers/web.mjs",
+      "types": "./dist/signers/web.d.ts"
+    },
+    "./react-native": {
+      "require": "./dist/signers/react-native.js",
+      "import": "./dist/signers/react-native.mjs",
+      "types": "./dist/signers/react-native.d.ts"
+    },
     ".": {
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
     }
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "eslint-config-custom": "*",

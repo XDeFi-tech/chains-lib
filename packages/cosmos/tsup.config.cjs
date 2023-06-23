@@ -13,8 +13,8 @@ module.exports = {
     legacy: true,
     types: [
       './dist/index.d.ts',
-      './signers/web.d.ts',
-      './signers/react-native.d.ts'
+      './dist/signers/web.d.ts',
+      './dist/signers/react-native.d.ts'
     ],
     platform: 'browser',
     external: ['crypto', 'stream', '@cosmjs'],

@@ -40,30 +40,12 @@ import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
-import { CosmosManifest } from '../../manifests';
-
-const nativeDenoms = [
-  'uatom',
-  'uosmo',
-  'uaxl',
-  'inj',
-  'ujuno',
-  'ucre',
-  'ukava',
-  'ustars',
-  'uakt',
-  'basecro',
-  'ukuji',
-  'usei',
-  'ustrd',
-  'umars',
-];
 
 @Injectable()
 export class ChainDataSource extends DataSource {
   private readonly cosmosSDK: cosmosclient.CosmosSDK;
-  declare readonly manifest: CosmosManifest;
-  private readonly testClient: AxiosInstance;
+  declare readonly manifest: manifests.CosmosManifest;
+  private readonly lcdAxiosClient: AxiosInstance;
 
   constructor(manifest: manifests.CosmosManifest) {
     super(manifest);
@@ -75,22 +57,22 @@ export class ChainDataSource extends DataSource {
       this.manifest.lcdURL,
       this.manifest.chainId
     );
-    this.testClient = axios.create({
-      baseURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
+    this.lcdAxiosClient = axios.create({
+      baseURL: this.manifest.lcdURL,
     });
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
     const client = LcdClient.withExtensions(
-      { apiUrl: this.manifest.rpcURL },
+      { apiUrl: this.manifest.lcdURL },
       setupBankExtension
     );
     const balances = await client.bank.balances(address);
     const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
       ({ denom }) => ({
         chain: this.manifest.chain as AddressChain,
-        contract: nativeDenoms.includes(denom) ? null : denom,
+        contract: this.manifest.denom === denom ? null : denom,
       })
     );
     const {
@@ -172,7 +154,7 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async estimateFee(msgs: ChainMsg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     const client = await Tendermint34Client.connect(this.manifest.rpcURL);
     const authExtension = setupAuthExtension(
       QueryClient.withExtensions(client)
@@ -188,8 +170,10 @@ export class ChainDataSource extends DataSource {
           toAddress: messageData.to,
           amount: [
             {
-              denom: 'uatom',
-              amount: String(messageData.amount ** (10 ^ 6)),
+              denom: this.manifest.denom,
+              amount: String(
+                messageData.amount * Math.pow(10, this.manifest.decimals)
+              ),
             },
           ],
         }).finish(),
@@ -227,20 +211,23 @@ export class ChainDataSource extends DataSource {
       }).finish(),
       signatures: [new Uint8Array(64)],
     }).finish();
-    const { data } = await this.testClient.post('/cosmos/tx/v1beta1/simulate', {
-      txBytes: Buffer.from(tx).toString('base64'),
-    });
+    const { data } = await this.lcdAxiosClient.post(
+      '/cosmos/tx/v1beta1/simulate',
+      {
+        txBytes: Buffer.from(tx).toString('base64'),
+      }
+    );
 
     return [
       {
         gasLimit: data.gas_info.gas_used,
-        gasPrice: 1.3,
+        gasPrice: this.manifest.feeGasStep[speed],
       },
     ];
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    throw new Error('Method not implemented.');
+    return this.manifest.feeGasStep;
   }
 
   async getNonce(_address: string): Promise<number> {

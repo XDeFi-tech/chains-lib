@@ -1,4 +1,4 @@
-import { Msg as BasMsg } from '@xdefi-tech/chains-core';
+import { Msg as BasMsg, NumberIsh } from '@xdefi-tech/chains-core';
 import { StdTx } from '@cosmjs/amino';
 
 export interface MsgBody {
@@ -7,6 +7,8 @@ export interface MsgBody {
   amount: string;
   denom: string;
   memo: string;
+  gasLimit: NumberIsh;
+  gasPrice: NumberIsh;
 }
 
 export interface TxData {
