@@ -1,10 +1,17 @@
 {
   "name": "@xdefi-tech/chains-core",
   "version": "1.1.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "files": [
     "dist",
     "CHANGELOG.md",
@@ -53,19 +60,20 @@
     "lint:fix": "eslint . --fix",
     "typedoc": "typedoc src/index.ts"
   },
-  "type": "module",
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts"
     ],
     "outDir": "dist",
-    "format": "esm",
+    "format": ["esm", "cjs"],
     "splitting": false,
     "dts": true,
     "types": [
       "./dist/index.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "target": "ES6"
   },
   "jest": {
     "setupFiles": [

@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-evm",
   "version": "1.1.0",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -45,7 +45,7 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "type": "module",
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts",

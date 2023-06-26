@@ -34,10 +34,7 @@
       "outputs": []
     },
     "dev": {
-      "cache": false,
-      "dependsOn": [
-        "^build"
-      ]
+      "cache": false
     },
     "watch": {
       "cache": false,

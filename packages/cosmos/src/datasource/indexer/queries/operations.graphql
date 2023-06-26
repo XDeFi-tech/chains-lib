@@ -1,0 +1,94 @@
+query CosmosBalance ($address: String!) {
+  cosmos {
+    balances(address: $address) {
+      address
+      amount {
+        scalingFactor
+        value
+      }
+      asset {
+        chain
+        contract
+        id
+        name
+        symbol
+        image
+        decimals
+        price {
+          scalingFactor
+          amount
+        }
+      }
+    }
+  }
+}
+
+query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $pagination: CursorPagination!) {
+  cosmos {
+    transactions(address: $address, dateRange: $dateRange, pagination: $pagination) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          fee {
+            amount {
+              asset {
+                chain
+                contract
+                id
+                name
+                symbol
+                image
+                decimals
+                price {
+                  amount
+                  scalingFactor
+                }
+              }
+              amount {
+                value
+              }
+            }
+            payer
+          }
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              id
+              name
+              symbol
+              image
+              decimals
+              price {
+                amount
+                scalingFactor
+              }
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          blockHeight
+          blockIndex
+        }
+      }
+    }
+  }
+}
+
+query GetCosmosStatus {
+  cosmos {
+    status {
+      lastBlock
+    }
+  }
+}
+

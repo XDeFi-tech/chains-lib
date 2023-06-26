@@ -1,4 +1,3 @@
-import { providers } from 'ethers';
 import { Observable } from 'rxjs';
 
 import { Manifest } from '../chain';
@@ -32,13 +31,12 @@ export interface BalancesData {
 
 export abstract class DataSource {
   // Share base chain & call methods without any code
-  public rpcProvider: providers.StaticJsonRpcProvider;
+  public rpcProvider: any;
   public manifest: Manifest;
 
   constructor(manifest: Manifest) {
     // pass config here, get it in the provider
     this.manifest = manifest;
-    this.rpcProvider = new providers.StaticJsonRpcProvider(manifest.rpcURL);
   }
 
   abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
