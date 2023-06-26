@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-cosmos": "*",
     "@xdefi-tech/chains-evm": "*",
     "@xdefi-tech/chains-solana": "*",
     "@xdefi-tech/chains-graphql": "*",
