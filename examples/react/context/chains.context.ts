@@ -16,12 +16,6 @@ export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
-  );
-  ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
-  );
-  ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
     })
@@ -45,6 +39,12 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
   );
 };
 
@@ -72,7 +72,6 @@ export const restoreProviders = (): boolean => {
 };
 
 export const saveProviders = () => {
-  return;
   const serialisedData = ChainsContextDefaultValue.serialize();
   localStorage.setItem(CHAINS_DATA_KEY, serialisedData);
 };

@@ -257,12 +257,13 @@ export type Arbitrum = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type ArbitrumBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -282,6 +283,7 @@ export type ArbitrumNftsArgs = {
 
 export type ArbitrumTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -325,6 +327,8 @@ export type AssetAmountType = {
   scalingFactor: Scalars['Float'];
   /** Current sparkline */
   sparkline: Array<Scalars['Float']>;
+  /** Updated on */
+  updatedOn: Scalars['Float'];
   /** Currency weekPriceChange */
   weekPriceChange?: Maybe<Scalars['String']>;
   /** Currency yearPriceChange */
@@ -472,6 +476,12 @@ export type AssetFiatCurrencyTypePageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export enum AssetInternalType {
+  CRYPTOCURRENCY = 'CRYPTOCURRENCY',
+  LP_TOKEN = 'LP_TOKEN',
+  TOKEN = 'TOKEN',
+}
+
 export type AssetTokenContractType = {
   __typename?: 'AssetTokenContractType';
   address: Scalars['String'];
@@ -545,8 +555,14 @@ export type AssetType = {
   cryptoCurrencies?: Maybe<CryptoCurrencyResponse>;
   /** Scaling factor for market cap */
   fiatCurrencies?: Maybe<FiatCurrencyResponse>;
+  /** Trending gainers (by day price change) */
+  gainers?: Maybe<Array<TrendingTokensType>>;
+  /** Trending losers (by day price change) */
+  losers?: Maybe<Array<TrendingTokensType>>;
   /** Scaling factor for market cap */
   lpTokens?: Maybe<TokenResponse>;
+  /** Trending popular (by market cap) */
+  popular?: Maybe<Array<TrendingTokensType>>;
   /** Scaling factor for market cap */
   tokens?: Maybe<TokenResponse>;
 };
@@ -605,12 +621,13 @@ export type Aurora = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type AuroraBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -630,6 +647,7 @@ export type AuroraNftsArgs = {
 
 export type AuroraTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -651,12 +669,13 @@ export type Avalanche = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type AvalancheBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -676,6 +695,7 @@ export type AvalancheNftsArgs = {
 
 export type AvalancheTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1195,6 +1215,19 @@ export type CursorPagination = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type DAppReputation = {
+  __typename?: 'DAppReputation';
+  chains?: Maybe<Array<Scalars['String']>>;
+  logo?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type DAppReputationInput = {
+  url: Scalars['String'];
+};
+
 export type DailyAmount = {
   __typename?: 'DailyAmount';
   amount: Amount;
@@ -1211,6 +1244,13 @@ export type DailyBalances = {
    */
   amounts: Array<DailyAmount>;
   asset: CryptoAsset;
+};
+
+export type DecodedTransaction = {
+  __typename?: 'DecodedTransaction';
+  args: Array<TransactionCallArg>;
+  fname: Scalars['String'];
+  type: Scalars['String'];
 };
 
 /** Fee is a cryptocurrency transaction fees that is charged to users when performing crypto transactions */
@@ -1299,6 +1339,7 @@ export type Eip1559GasFee = {
 export type EvmTransaction = {
   __typename?: 'EVMTransaction';
   classified?: Maybe<ExplainedTransaction>;
+  decoded?: Maybe<DecodedTransaction>;
   fee: Scalars['JSON'];
   fromAddress: Scalars['String'];
   hash: Scalars['String'];
@@ -1310,6 +1351,23 @@ export type EvmTransaction = {
   toAddress: Scalars['String'];
   transfers: Array<AssetTransfer>;
   value: Scalars['String'];
+};
+
+export type EvmTransactionConnection = {
+  __typename?: 'EVMTransactionConnection';
+  /** A list of edges. */
+  edges: Array<EvmTransactionEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type EvmTransactionEdge = {
+  __typename?: 'EVMTransactionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: EvmTransaction;
 };
 
 export type EvmTransactionLog = {
@@ -1330,12 +1388,13 @@ export type Ethereum = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type EthereumBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -1355,6 +1414,7 @@ export type EthereumNftsArgs = {
 
 export type EthereumTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1377,12 +1437,13 @@ export type Fantom = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type FantomBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -1402,6 +1463,7 @@ export type FantomNftsArgs = {
 
 export type FantomTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1605,7 +1667,7 @@ export type MediaV2 = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addComment: ReputationComment;
+  addComment: Reputation;
   addUserAddress: User;
   anonymousLogin: Auth;
   claimFees?: Maybe<ClaimStatus>;
@@ -1860,12 +1922,13 @@ export type Polygon = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type PolygonBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -1885,6 +1948,7 @@ export type PolygonNftsArgs = {
 
 export type PolygonTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -1983,9 +2047,12 @@ export type Query = {
   compositeTokens: Array<CompositeTokenType>;
   cosmos: CosmosBasedChain;
   crescent: CosmosBasedChain;
+  cronos: CosmosBasedChain;
   cronosEVM: CronosEvm;
   /** Fetch list of all available tokens */
   cryptoCurrencies: Array<CryptoCurrencyType>;
+  dapp: DAppReputation;
+  decodeTransaction?: Maybe<DecodedTransaction>;
   dogecoin: DogeChain;
   ethereum: Ethereum;
   explainTransaction?: Maybe<ExplainedTransaction>;
@@ -2005,6 +2072,7 @@ export type Query = {
   osmosis: CosmosBasedChain;
   osmosisV2: CosmosBasedChainV2;
   polygon: Polygon;
+  quasar: CosmosBasedChain;
   reputation: Reputation;
   routing: RoutingType;
   routingV2?: Maybe<RoutingTypeV2>;
@@ -2039,6 +2107,15 @@ export type QueryCryptoCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   ids?: InputMaybe<Array<Scalars['String']>>;
   symbols?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type QueryDappArgs = {
+  app: DAppReputationInput;
+};
+
+export type QueryDecodeTransactionArgs = {
+  chain: Scalars['String'];
+  payload: Scalars['String'];
 };
 
 export type QueryExplainTransactionArgs = {
@@ -2722,6 +2799,16 @@ export enum TransactionType {
   WITHDRAW = 'WITHDRAW',
 }
 
+export type TrendingTokensType = {
+  __typename?: 'TrendingTokensType';
+  assetId: Scalars['String'];
+  icon?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  price: AssetAmountType;
+  symbol: Scalars['String'];
+  type: AssetInternalType;
+};
+
 export type Tron = {
   __typename?: 'Tron';
   balances: Array<Balance>;
@@ -2730,12 +2817,13 @@ export type Tron = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionConnection;
   version: Array<Version>;
 };
 
 export type TronBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -2751,6 +2839,7 @@ export type TronNftsArgs = {
 
 export type TronTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
