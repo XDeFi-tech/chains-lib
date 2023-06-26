@@ -44,6 +44,7 @@
     "types": [
       "./dist/index.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "external": ["@xdefi-tech/chains-cosmos"]
   }
 }
