@@ -15,6 +15,7 @@ query GetBalance($address: String!) {
         name
         image
         chain
+        decimals
         price {
           amount
           scalingFactor

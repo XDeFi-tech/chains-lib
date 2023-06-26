@@ -2984,6 +2984,7 @@ export type BitcoinBalanceQuery = {
         name?: string | null;
         image?: string | null;
         chain?: string | null;
+        decimals?: number | null;
         price?: {
           __typename?: 'AssetAmountType';
           amount: string;
@@ -3251,6 +3252,7 @@ export type EthereumBalanceQuery = {
         name?: string | null;
         image?: string | null;
         chain?: string | null;
+        decimals?: number | null;
         price?: {
           __typename?: 'AssetAmountType';
           amount: string;
@@ -3368,6 +3370,10 @@ export const BitcoinBalanceDocument = {
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
                             },
                             {
                               kind: 'Field',
@@ -4623,6 +4629,10 @@ export const EthereumBalanceDocument = {
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
                             },
                             {
                               kind: 'Field',

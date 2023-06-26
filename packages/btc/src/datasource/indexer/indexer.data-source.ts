@@ -47,9 +47,9 @@ export class IndexerDataSource extends DataSource {
               native: asset.contract === null || asset.contract === undefined,
               address: asset.contract,
               price: asset.price?.amount,
-              decimals: amount.scalingFactor as number,
+              decimals: asset.decimals || 0,
             }),
-            utils.formatUnits(amount.value, amount.scalingFactor as number)
+            utils.formatUnits(amount.value, asset.decimals || 0)
           )
         );
       }

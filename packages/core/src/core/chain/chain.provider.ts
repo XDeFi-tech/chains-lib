@@ -3,7 +3,7 @@ import { Injectable } from 'common';
 import { Coin } from 'core/coin';
 import { Msg, MsgData } from 'core/msg';
 import { Provider as SignerProvider, SignerType } from 'core/signer';
-import { Transaction } from 'core/transaction';
+import { Transaction, TransactionData } from 'core/transaction';
 import { ChainFeatures, Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { FeeOptions, GasFeeSpeed } from 'core/fee';
@@ -130,6 +130,14 @@ export abstract class Provider {
    * @param {string} address - The address for which to retrieve nonce.
    */
   abstract getNonce(address: string): Promise<number>;
+
+  /**
+   * Retrieves transaction details by transaction hash.
+   *
+   * @param {string} txHash - The hash of the transaction.
+   * @returns {Promise<TransactionData | null>} - A promise that resolves to the transaction details or null if the transaction is not found.
+   */
+  abstract getTransaction(txHash: string): Promise<TransactionData | null>;
 
   /**
    * Sign and broadcast the given messages using the specified signer.

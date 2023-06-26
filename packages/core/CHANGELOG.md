@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.0
+
+### Minor Changes
+
+- 3b06078: Add getTransaction method
+
 ## 1.0.6
 
 ### Patch Changes

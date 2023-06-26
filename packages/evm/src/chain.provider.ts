@@ -11,6 +11,8 @@ import {
   MsgData,
   Response,
   Transaction,
+  TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
@@ -92,6 +94,34 @@ export class EvmProvider extends Chain.Provider {
     return {
       IndexerDataSource: IndexerDataSource,
     };
+  }
+
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await this.rpcProvider.getTransaction(txHash);
+    if (!tx) {
+      return null;
+    }
+
+    const result: TransactionData = {
+      hash: tx.hash,
+      from: tx.from || '',
+      to: tx.to || '',
+      status: TransactionStatus.pending,
+    };
+
+    if (tx.blockNumber !== null) {
+      const receipt = await this.rpcProvider.getTransactionReceipt(txHash);
+
+      result.from = receipt.from;
+      result.to = receipt.to;
+      result.status =
+        receipt.status === 1
+          ? TransactionStatus.success
+          : TransactionStatus.failure;
+      result.data = tx.data;
+    }
+
+    return result;
   }
 
   static get staticUtils() {
