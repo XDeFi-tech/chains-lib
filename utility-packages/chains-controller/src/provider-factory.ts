@@ -1,6 +1,7 @@
 import { Chain } from '@xdefi-tech/chains-core';
 import { EvmProvider } from '@xdefi-tech/chains-evm';
 import { SolanaProvider } from '@xdefi-tech/chains-solana';
+import { CosmosProvider } from '@xdefi-tech/chains-cosmos';
 
 export enum DataSourceNames {
   IndexerDataSource = 'IndexerDataSource',
@@ -15,9 +16,13 @@ export interface ProviderOptions {
 export enum ProviderNames {
   EvmProvider = 'EvmProvider',
   SolanaProvider = 'SolanaProvider',
+  CosmosProvider = 'CosmosProvider',
 }
 
-export type AvailableProviders = typeof EvmProvider | typeof SolanaProvider;
+export type AvailableProviders =
+  | typeof EvmProvider
+  | typeof SolanaProvider
+  | typeof CosmosProvider;
 
 export class ProviderFactory {
   private readonly providerList: {
@@ -28,6 +33,7 @@ export class ProviderFactory {
     this.providerList = {
       [ProviderNames.EvmProvider]: EvmProvider,
       [ProviderNames.SolanaProvider]: SolanaProvider,
+      [ProviderNames.CosmosProvider]: CosmosProvider,
     };
   }
 

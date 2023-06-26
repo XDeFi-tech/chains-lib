@@ -1,27 +1,31 @@
 import {
-  DataSource,
+  Balance,
   Chain,
   ChainDecorator,
   Coin,
+  DataSource,
+  FeeData,
+  FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
   Response,
   Transaction,
-  Balance,
-  FeeData,
-  FeeOptions,
+  TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import {
   LcdClient,
-  setupBankExtension,
   setupAuthExtension,
+  setupBankExtension,
 } from '@cosmjs/launchpad';
 import { StdTx } from '@cosmjs/amino';
 import { some } from 'lodash';
-
+import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
+
 import { ChainMsg } from './msg';
+import * as manifests from './manifests';
 
 @ChainDecorator('CosmosProvider', {
   deps: [],
@@ -29,14 +33,19 @@ import { ChainMsg } from './msg';
 })
 export class CosmosProvider extends Chain.Provider {
   declare rpcProvider: LcdClient;
+  private readonly lcdAxiosClient: AxiosInstance;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
+    const manifest = this.manifest as manifests.CosmosManifest;
     this.rpcProvider = LcdClient.withExtensions(
-      { apiUrl: this.manifest.rpcURL },
+      { apiUrl: manifest.rpcURL },
       setupBankExtension,
       setupAuthExtension
     );
+    this.lcdAxiosClient = axios.create({
+      baseURL: manifest.lcdURL,
+    });
   }
 
   createMsg(data: MsgData): Msg {
@@ -87,5 +96,34 @@ export class CosmosProvider extends Chain.Provider {
     }
 
     return transactions;
+  }
+
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const { data: tx } = await this.lcdAxiosClient.get(
+      `/cosmos/tx/v1beta1/txs/${txHash}`
+    );
+
+    if (!tx) {
+      return null;
+    }
+
+    const result: TransactionData = {
+      hash: tx.tx_response.txhash,
+      from: tx.from || '',
+      to: tx.to || '',
+      status: TransactionStatus.pending,
+    };
+
+    if (tx.tx_response.code) {
+      result.status = TransactionStatus.failure;
+    } else {
+      const { data } = await this.lcdAxiosClient.get('/blocks/latest');
+      if (tx.tx_response.height <= data.block.header.height) {
+        result.status = TransactionStatus.success;
+        result.data = tx.tx_response.data;
+      }
+    }
+
+    return result;
   }
 }
