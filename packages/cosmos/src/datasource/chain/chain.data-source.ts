@@ -20,7 +20,7 @@ import {
   CryptoAssetArgs,
 } from '@xdefi-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
-import { uniqBy } from 'lodash';
+import { uniqBy, capitalize } from 'lodash';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import {
   QueryClient,
@@ -69,9 +69,10 @@ export class ChainDataSource extends DataSource {
       setupBankExtension
     );
     const balances = await client.bank.balances(address);
+    const chain = capitalize(this.manifest.chain) as AddressChain;
     const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
       ({ denom }) => ({
-        chain: this.manifest.chain as AddressChain,
+        chain: chain,
         contract: this.manifest.denom === denom ? null : denom,
       })
     );
