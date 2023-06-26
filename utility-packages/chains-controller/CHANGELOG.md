@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.4
+
+### Patch Changes
+
+- 80ea3e0: Exclude cosmos from cheching packages for tsup
+
 ## 1.0.3
 
 ### Patch Changes
