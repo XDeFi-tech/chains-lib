@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.5
+
+### Patch Changes
+
+- 5ed9381: Import cosmos chain
+
 ## 1.0.4
 
 ### Patch Changes
