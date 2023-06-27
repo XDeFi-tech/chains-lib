@@ -8,4 +8,5 @@ export interface Manifest {
   blockExplorerURL: string;
   chainId: ChainID;
   chain: string;
+  decimals: number;
 }

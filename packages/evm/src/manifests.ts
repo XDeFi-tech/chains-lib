@@ -19,6 +19,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://etherscan.io',
     chainId: '1',
     chain: 'ethereum',
+    decimals: 18,
   },
   [EVMChains.binancesmartchain]: {
     name: 'BNB Smart Chain',
@@ -28,6 +29,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://bscscan.com',
     chainId: '56',
     chain: 'binancesmartchain',
+    decimals: 18,
   },
   [EVMChains.polygon]: {
     name: 'Polygon',
@@ -37,6 +39,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://polygonscan.com',
     chainId: '137',
     chain: 'polygon',
+    decimals: 18,
   },
   [EVMChains.avalanche]: {
     name: 'Avalanche',
@@ -46,6 +49,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://snowtrace.io',
     chainId: '43114',
     chain: 'avalanche',
+    decimals: 18,
   },
   [EVMChains.fantom]: {
     name: 'Fantom',
@@ -55,6 +59,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://rpc.ftm.tools',
     chainId: '250',
     chain: 'fantom',
+    decimals: 18,
   },
   [EVMChains.arbitrum]: {
     name: 'Arbitrum',
@@ -64,6 +69,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://arbiscan.io',
     chainId: '42161',
     chain: 'arbitrum',
+    decimals: 18,
   },
   [EVMChains.aurora]: {
     name: 'Aurora',
@@ -73,5 +79,6 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://aurorascan.dev',
     chainId: '1313161554',
     chain: 'aurora',
+    decimals: 18,
   },
 };
