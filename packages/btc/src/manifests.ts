@@ -9,6 +9,11 @@ export const btcManifest: Chain.Manifest = {
   chainId: 'bitcoin',
   chain: 'bitcoin',
   decimals: 8,
+  feeGasStep: {
+    high: 2,
+    medium: 1.5,
+    low: 1,
+  },
 };
 
 export const DEFAULT_BLOCKSTREAM_URL = 'https://blockstream.info';

@@ -1,22 +1,23 @@
 import {
-  DataSource,
+  Asset,
+  Balance,
+  BalanceFilter,
+  Chain,
   Coin,
+  DataSource,
+  EIP1559Fee,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
-  Transaction,
   Injectable,
-  Chain,
+  Transaction,
   TransactionsFilter,
-  BalanceFilter,
-  Balance,
-  FeeData,
-  Asset,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
 import { providers } from 'ethers';
-import { capitalize, uniqBy, filter as lodashFilter } from 'lodash';
+import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 
 import { EVMChains } from '../../manifests';
@@ -36,11 +37,13 @@ export class ChainDataSource extends DataSource {
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
-    const { address } = filter;
+    const { address, afterBlock } = filter;
     const balance = await this.rpcProvider.getBalance(address);
     const logs = await this.rpcProvider.getLogs({
       address: undefined,
-      fromBlock: 0,
+      fromBlock: afterBlock
+        ? afterBlock
+        : (await this.rpcProvider.getBlockNumber()) - 1000,
       toBlock: 'latest',
       topics: [
         ethers.utils.id('Transfer(address,address,uint256)'),
@@ -162,14 +165,94 @@ export class ChainDataSource extends DataSource {
   }
 
   async estimateFee(
-    _msgs: ChainMsg[],
-    _speed: GasFeeSpeed = GasFeeSpeed.medium
+    msgs: ChainMsg[],
+    speed: GasFeeSpeed = GasFeeSpeed.medium
   ): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+    const fee = await this.gasFeeOptions();
+    const transactionFee = 21000; // Paid for every transaction
+
+    const feeData: FeeData[] = [];
+    if (!fee) {
+      return feeData;
+    }
+    for (const msg of msgs) {
+      const msgData = msg.toData();
+      let calculateData = msgData.data;
+      if (msgData.contractAddress) {
+        const { contractData } = await msg.getDataFromContract();
+        calculateData = contractData.data;
+      }
+      const feeForData =
+        calculateData && calculateData !== '0x'
+          ? 68 * new TextEncoder().encode(calculateData.toString()).length
+          : 0;
+      const gasLimit = Math.ceil((transactionFee + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
+      const msgFeeData = {
+        gasLimit,
+        gasPrice: undefined,
+        maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
+        maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
+      };
+      feeData.push(msgFeeData);
+    }
+
+    return feeData;
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    throw new Error('Method not implemented.');
+    const feeData = await this.rpcProvider.getFeeData();
+    if (
+      !feeData.gasPrice ||
+      !feeData.maxFeePerGas ||
+      !feeData.maxPriorityFeePerGas
+    ) {
+      return null;
+    }
+
+    const fee = {
+      gasPrice: ethers.utils.formatUnits(feeData.gasPrice, 'gwei'),
+      maxFeePerGas: ethers.utils.formatUnits(feeData.maxFeePerGas, 'gwei'),
+      maxPriorityFeePerGas: ethers.utils.formatUnits(
+        feeData.maxPriorityFeePerGas,
+        'gwei'
+      ),
+    };
+
+    return {
+      [GasFeeSpeed.high]: {
+        baseFeePerGas: new BigNumber(fee.gasPrice)
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .toNumber(),
+      },
+      [GasFeeSpeed.medium]: {
+        baseFeePerGas: new BigNumber(fee.gasPrice)
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .toNumber(),
+      },
+      [GasFeeSpeed.low]: {
+        baseFeePerGas: new BigNumber(fee.gasPrice)
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .toNumber(),
+      },
+    };
   }
 
   async getNonce(address: string): Promise<number> {

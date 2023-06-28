@@ -9,4 +9,9 @@ export interface Manifest {
   chainId: ChainID;
   chain: string;
   decimals: number;
+  feeGasStep: {
+    high: number;
+    medium: number;
+    low: number;
+  };
 }
