@@ -1,22 +1,29 @@
 import {
+  FeeEstimation,
   GasFeeSpeed,
   Msg as BaseMsg,
-  FeeEstimation,
+  NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';
 
-import { UTXODataSource, UTXO } from './datasource/utxo/utxo.data-source';
+import { UTXO, UTXODataSource } from './datasource/utxo/utxo.data-source';
+import type { BtcProvider } from './chain.provider';
+import { HaskoinDataSource } from './datasource';
+import { UTXOManifest } from './manifests';
 
 export interface BitcoinMessageBody {
-  amount: BigNumber;
-  recipient: string;
+  amount: NumberIsh;
+  to: string;
   memo?: string;
-  sender: string;
+  from: string;
+  gasLimit?: NumberIsh;
 }
 
-export type BitcoinTxBody = { txHex: string };
+export type BitcoinTxBody = { psbtHex: string };
+
+const defaultFeeEstimation: FeeEstimation = { fee: null, maxFee: null };
 
 export class BitcoinChainMessage extends BaseMsg<
   BitcoinMessageBody,
@@ -25,21 +32,13 @@ export class BitcoinChainMessage extends BaseMsg<
   declare signedTransaction: string | null;
   declare data: BitcoinMessageBody;
   declare keys: Bitcoin.ECPairInterface;
-  feeEstimation: FeeEstimation = { fee: null, maxFee: null };
-
-  constructor(
-    private utxoDataSource: UTXODataSource,
-    data: BitcoinMessageBody,
-    feeEstimation?: FeeEstimation
-  ) {
-    super(data);
-    if (feeEstimation) {
-      this.feeEstimation = feeEstimation;
-    }
-  }
-
-  get hasSignature() {
-    return !!this.keys;
+  public utxoDataSource: UTXODataSource;
+  feeEstimation: FeeEstimation = defaultFeeEstimation;
+  private prevSpeed: undefined | GasFeeSpeed;
+  constructor(msg: BitcoinMessageBody, provider?: BtcProvider) {
+    super(msg, provider);
+    const manifest = this.provider?.manifest as UTXOManifest;
+    this.utxoDataSource = new HaskoinDataSource(manifest.chainDataSourceURL);
   }
 
   public toData() {
@@ -47,8 +46,8 @@ export class BitcoinChainMessage extends BaseMsg<
   }
 
   async buildTx() {
-    const utxos = await this.utxoDataSource.scanUTXOs(this.data.sender);
-    const { fee } = this.feeEstimation ?? {};
+    const utxos = await this.utxoDataSource.scanUTXOs(this.data.from);
+    const { fee } = await this.getFee(GasFeeSpeed.low);
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
     const feeRateWhole = parseInt(fee);
@@ -59,8 +58,10 @@ export class BitcoinChainMessage extends BaseMsg<
     const targetOutputs = [];
 
     targetOutputs.push({
-      address: this.data.recipient,
-      value: this.data.amount.toNumber(),
+      address: this.data.to,
+      value: new BigNumber(this.data.amount.toString())
+        .multipliedBy(10 ** (this.provider?.manifest.decimals || 0))
+        .toNumber(),
     });
 
     if (compiledMemo) {
@@ -77,20 +78,19 @@ export class BitcoinChainMessage extends BaseMsg<
     }
 
     const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
-
-    inputs.forEach((utxo: UTXO) =>
-      psbt.addInput({
+    psbt.addInputs(
+      inputs.map((utxo: UTXO) => ({
         hash: utxo.hash,
         index: utxo.index,
         witnessUtxo: utxo.witnessUtxo,
-      })
+      }))
     );
 
     // psbt add outputs from accumulative outputs
     outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
       if (!output.address) {
         //an empty address means this is the change address
-        output.address = this.data.sender;
+        output.address = this.data.from;
       }
       if (!output.script) {
         psbt.addOutput(output);
@@ -103,31 +103,42 @@ export class BitcoinChainMessage extends BaseMsg<
       }
     });
 
-    const txHex = psbt.extractTransaction(true).toHex();
-
-    return { txHex, psbtHex: psbt.toHex(), psbt };
+    return { psbtHex: psbt.toHex(), psbt };
   }
 
-  compileMemo(memo: string) {
+  private compileMemo(memo: string) {
     return Bitcoin.script.compile([
       Bitcoin.opcodes.OP_RETURN,
       Buffer.from(memo, 'utf8'),
     ]);
   }
 
-  setKeys(keys: Bitcoin.ECPairInterface) {
-    this.keys = keys;
+  async getFee(speed?: GasFeeSpeed) {
+    if (
+      this.prevSpeed &&
+      speed === this.prevSpeed &&
+      this.feeEstimation &&
+      this.feeEstimation.fee
+    ) {
+      return this.feeEstimation;
+    }
 
-    return this;
-  }
+    let feeEstimation = defaultFeeEstimation;
 
-  setFees(feeEstimation: FeeEstimation) {
-    this.feeEstimation = feeEstimation;
+    if (this.provider) {
+      const feeOptions = await this.provider.gasFeeOptions();
+      if (!feeOptions) {
+        return defaultFeeEstimation;
+      }
 
-    return this;
-  }
+      this.feeEstimation = {
+        fee: feeOptions[speed || GasFeeSpeed.medium].toString(),
+        maxFee: feeOptions[GasFeeSpeed.high].toString(),
+      };
+      this.prevSpeed = speed;
+      feeEstimation = this.feeEstimation;
+    }
 
-  async getFee(_speed?: GasFeeSpeed) {
-    return this.feeEstimation;
+    return feeEstimation;
   }
 }

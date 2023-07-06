@@ -5,7 +5,6 @@ import {
   GasFeeSpeed,
   Transaction,
   Injectable,
-  Chain,
   TransactionsFilter,
   BalanceFilter,
   Balance,
@@ -18,12 +17,13 @@ import { Observable } from 'rxjs';
 import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { BitcoinChainMessage } from '../../msg';
+import type { UTXOManifest } from '../../manifests';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
-  constructor(manifest: Chain.Manifest) {
+  constructor(manifest: UTXOManifest) {
     super(manifest);
   }
 
@@ -99,12 +99,7 @@ export class IndexerDataSource extends DataSource {
   ): Promise<FeeData[]> {
     const feeOptions = await this.getFeeOptions();
     if (!feeOptions) return [];
-    return messages.map((message) => {
-      message.setFees({
-        fee: feeOptions[speed].toString(),
-        maxFee: feeOptions[GasFeeSpeed.high].toString(),
-      });
-
+    return messages.map(() => {
       return {
         gasLimit: feeOptions[speed],
       };

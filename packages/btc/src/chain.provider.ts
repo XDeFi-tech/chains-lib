@@ -1,46 +1,49 @@
 import {
-  DataSource,
+  Balance,
   Chain,
   ChainDecorator,
   Coin,
+  DataSource,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
   Response,
   Transaction,
-  Balance,
-  FeeData,
   TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { Axios } from 'axios';
+import axios, { Axios } from 'axios';
 
 import { BitcoinChainMessage, BitcoinMessageBody } from './msg';
-import { UTXODataSource } from './datasource/utxo/utxo.data-source';
-import { DEFAULT_BLOCKSTREAM_URL } from './manifests';
-
-interface BitcoinOptions extends Chain.IOptions {
-  blockstreamBaseUrl?: string;
-  utxoDataSource: UTXODataSource;
-}
+import {
+  DEFAULT_BLOCKSTREAM_URL,
+  DEFAULT_HASKOIN_URL,
+  UTXOManifest,
+} from './manifests';
+import { HaskoinDataSource, UTXODataSource } from './datasource';
 
 @ChainDecorator('BtcProvider', {
-  deps: [],
+  deps: [Chain.ChainFeatures.TOKENS],
   providerType: 'btc',
 })
 export class BtcProvider extends Chain.Provider {
   public rpcProvider = null;
   private api: Axios;
-  private utxoDataSource: UTXODataSource;
+  public chainDataSource: UTXODataSource;
 
-  constructor(dataSource: DataSource, options: BitcoinOptions) {
+  constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    this.api = new Axios({
-      baseURL: options?.blockstreamBaseUrl ?? DEFAULT_BLOCKSTREAM_URL,
+    const manifest = this.manifest as UTXOManifest;
+    this.api = axios.create({
+      baseURL: manifest.rpcURL || DEFAULT_BLOCKSTREAM_URL,
     });
-    this.utxoDataSource = options.utxoDataSource;
+    this.chainDataSource = new HaskoinDataSource(
+      manifest.chainDataSourceURL || DEFAULT_HASKOIN_URL
+    );
   }
 
   createMsg(data: BitcoinMessageBody): BitcoinChainMessage {
-    return new BitcoinChainMessage(this.utxoDataSource, data);
+    return new BitcoinChainMessage(data, this);
   }
 
   async getTransactions(
@@ -88,15 +91,20 @@ export class BtcProvider extends Chain.Provider {
         '/api/tx',
         signedTransaction
       );
-      const tx = await this.utxoDataSource.getTransaction(txid);
 
-      result.push(Transaction.fromData(tx));
+      result.push(Transaction.fromData({ hash: txid }));
     }
 
     return result;
   }
 
-  async getTransaction(_txHash: string): Promise<TransactionData | null> {
-    throw new Error('Method not implemented.');
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await this.chainDataSource.getTransaction(txHash);
+    return {
+      hash: tx.txid,
+      status: TransactionStatus.success,
+      from: '',
+      to: tx.outputs[0].address,
+    };
   }
 }

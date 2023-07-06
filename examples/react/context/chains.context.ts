@@ -12,6 +12,11 @@ import {
   ChainDataSource,
   COSMOS_MANIFESTS,
 } from '@xdefi-tech/chains-cosmos';
+import {
+  BTC_MANIFEST,
+  BtcProvider,
+  IndexerDataSource as BtcIndexerDataSource,
+} from '@xdefi-tech/chains-btc';
 
 export const ChainsContextDefaultValue = new ChainController();
 
