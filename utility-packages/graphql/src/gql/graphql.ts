@@ -195,6 +195,19 @@ export enum AddressChain {
   zkSync = 'zkSync',
 }
 
+/** Portfolio by wallet address */
+export type AddressPortfolioFiat = {
+  __typename?: 'AddressPortfolioFiat';
+  /** wallet address */
+  address: Scalars['String'];
+  /** errors if there was some issue with fetching data */
+  errors: Array<FetchingError>;
+  /** granularity of data (NOTE: experimental, can be removed) */
+  granularity?: Maybe<FiatGranularity>;
+  /** historical balances USD at specific datetime */
+  historicalBalanceSum: Array<DatedAmount>;
+};
+
 export type AddressRouteCheckTypeV2 = {
   __typename?: 'AddressRouteCheckTypeV2';
   address: Scalars['String'];
@@ -257,7 +270,7 @@ export type Arbitrum = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -400,7 +413,7 @@ export type AssetCryptoCurrencyType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  priceHistory: Array<Array<Scalars['Float']>>;
+  priceHistory: PriceHistoryType;
   scalingFactor?: Maybe<Scalars['Float']>;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
@@ -512,7 +525,7 @@ export type AssetTokenType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  priceHistory: Array<Array<Scalars['Float']>>;
+  priceHistory: PriceHistoryType;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
 };
@@ -541,6 +554,14 @@ export type AssetTransfer = {
   __typename?: 'AssetTransfer';
   amount: Amount;
   asset: CryptoAsset;
+  fromAddress?: Maybe<Scalars['String']>;
+  toAddress?: Maybe<Scalars['String']>;
+};
+
+export type AssetTransferV2 = {
+  __typename?: 'AssetTransferV2';
+  amount: Amount;
+  asset: AssetVariant;
   fromAddress?: Maybe<Scalars['String']>;
   toAddress?: Maybe<Scalars['String']>;
 };
@@ -606,6 +627,8 @@ export type AssetTypeTokensArgs = {
   page: ConnectionArgs;
 };
 
+export type AssetVariant = CryptoAsset | NftAsset;
+
 export type AssetWithAmount = {
   __typename?: 'AssetWithAmount';
   amount: Amount;
@@ -621,7 +644,7 @@ export type Aurora = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -669,7 +692,7 @@ export type Avalanche = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -744,12 +767,13 @@ export type BinanceSmartChain = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<EvmTransaction>;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
 export type BinanceSmartChainBalancesArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -769,6 +793,7 @@ export type BinanceSmartChainNftsArgs = {
 
 export type BinanceSmartChainTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
@@ -954,10 +979,21 @@ export enum Chain {
   POLYGON = 'POLYGON',
 }
 
+export type ChainPortfolio = {
+  __typename?: 'ChainPortfolio';
+  chain: PortfolioChainVariant;
+  portfolioByAddr: Array<AddressPortfolioFiat>;
+};
+
 export type ChainType = {
   __typename?: 'ChainType';
   fee: FeeType;
   name: Scalars['String'];
+};
+
+export type ChainedAddresses = {
+  addresses: Array<Scalars['String']>;
+  chain: PortfolioChainVariant;
 };
 
 export type ClaimStatus = {
@@ -1006,13 +1042,21 @@ export type ConnectionArgs = {
 
 export type CosmosBalanceChain = {
   __typename?: 'CosmosBalanceChain';
+  balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
+  status: Status;
+  version: Array<Version>;
+};
+
+export type CosmosBalanceChainBalancesArgs = {
+  address: Scalars['String'];
 };
 
 export type CosmosBasedChain = {
   __typename?: 'CosmosBasedChain';
   balances: Array<Balance>;
+  dailyBalances: Array<DailyBalances>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   status: Status;
@@ -1024,10 +1068,16 @@ export type CosmosBasedChainBalancesArgs = {
   address: Scalars['String'];
 };
 
-export type CosmosBasedChainTransactionsArgs = {
+export type CosmosBasedChainDailyBalancesArgs = {
   address: Scalars['String'];
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+};
+
+export type CosmosBasedChainTransactionsArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  dateRange?: OptDateRange;
+  first?: Scalars['Int'];
 };
 
 export type CosmosBasedChainV2 = {
@@ -1246,6 +1296,13 @@ export type DailyBalances = {
   asset: CryptoAsset;
 };
 
+/** Amount at specific point of time */
+export type DatedAmount = {
+  __typename?: 'DatedAmount';
+  amount: Amount;
+  date: Scalars['DateTime'];
+};
+
 export type DecodedTransaction = {
   __typename?: 'DecodedTransaction';
   args: Array<TransactionCallArg>;
@@ -1340,34 +1397,10 @@ export type EvmTransaction = {
   __typename?: 'EVMTransaction';
   classified?: Maybe<ExplainedTransaction>;
   decoded?: Maybe<DecodedTransaction>;
-  fee: Scalars['JSON'];
   fromAddress: Scalars['String'];
-  hash: Scalars['String'];
   inputData: Scalars['String'];
-  logs: Array<EvmTransactionLog>;
-  rawData: Scalars['String'];
-  status: Scalars['String'];
-  timestamp: Scalars['DateTime'];
   toAddress: Scalars['String'];
-  transfers: Array<AssetTransfer>;
   value: Scalars['String'];
-};
-
-export type EvmTransactionConnection = {
-  __typename?: 'EVMTransactionConnection';
-  /** A list of edges. */
-  edges: Array<EvmTransactionEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-};
-
-/** An edge in a connection. */
-export type EvmTransactionEdge = {
-  __typename?: 'EVMTransactionEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node: EvmTransaction;
 };
 
 export type EvmTransactionLog = {
@@ -1379,6 +1412,38 @@ export type EvmTransactionLog = {
   topic3?: Maybe<Scalars['String']>;
 };
 
+export type EvmTransactionV2 = {
+  __typename?: 'EVMTransactionV2';
+  fee: Scalars['JSON'];
+  fromAddress: Scalars['String'];
+  hash: Scalars['String'];
+  inputData: Scalars['String'];
+  logs: Array<EvmTransactionLog>;
+  rawData: Scalars['String'];
+  status: Scalars['String'];
+  timestamp: Scalars['DateTime'];
+  toAddress: Scalars['String'];
+  transfers: Array<AssetTransferV2>;
+  value: Scalars['String'];
+};
+
+export type EvmTransactionV2Connection = {
+  __typename?: 'EVMTransactionV2Connection';
+  /** A list of edges. */
+  edges: Array<EvmTransactionV2Edge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type EvmTransactionV2Edge = {
+  __typename?: 'EVMTransactionV2Edge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: EvmTransactionV2;
+};
+
 export type Ethereum = {
   __typename?: 'Ethereum';
   balances: Array<Balance>;
@@ -1388,7 +1453,7 @@ export type Ethereum = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -1437,7 +1502,7 @@ export type Fantom = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -1490,6 +1555,13 @@ export type FeeType = {
   value?: Maybe<Scalars['String']>;
 };
 
+/** Unable to fetch some or all tokens information */
+export type FetchingError = {
+  __typename?: 'FetchingError';
+  /** General error without with hidden details (for user) */
+  error: Scalars['String'];
+};
+
 export type FiatCurrencyFilter = {
   ids?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1510,6 +1582,12 @@ export type FiatCurrencyType = {
   scalingFactor: Scalars['Float'];
   symbol: Scalars['String'];
 };
+
+export enum FiatGranularity {
+  DAY = 'DAY',
+  FIVE_MINUTE = 'FIVE_MINUTE',
+  HOUR = 'HOUR',
+}
 
 export type FilterArgs = {
   chains?: InputMaybe<Array<Chain>>;
@@ -1546,6 +1624,7 @@ export type InvestingTypePoolsArgs = {
 export type JunoChain = {
   __typename?: 'JunoChain';
   balances: Array<Balance>;
+  dailyBalances: Array<DailyBalances>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1558,14 +1637,20 @@ export type JunoChainBalancesArgs = {
   address: Scalars['String'];
 };
 
+export type JunoChainDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: OptDateRange;
+};
+
 export type JunoChainNftsArgs = {
   address: Scalars['String'];
 };
 
 export type JunoChainTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  first?: Scalars['Int'];
 };
 
 export type LastBlock = {
@@ -1804,7 +1889,7 @@ export type NearChain = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: Array<NearTransaction>;
+  transactions: NearTransactionConnection;
   version: Array<Version>;
 };
 
@@ -1823,8 +1908,10 @@ export type NearChainNftsArgs = {
 
 export type NearChainTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type NearTransaction = {
@@ -1840,6 +1927,35 @@ export type NearTransaction = {
   toAddress: Scalars['String'];
   transfers: Array<AssetTransfer>;
   type: Scalars['String'];
+};
+
+export type NearTransactionConnection = {
+  __typename?: 'NearTransactionConnection';
+  /** A list of edges. */
+  edges: Array<NearTransactionEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type NearTransactionEdge = {
+  __typename?: 'NearTransactionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: NearTransaction;
+};
+
+export type NftAsset = {
+  __typename?: 'NftAsset';
+  /** supported list of chain are in [`Chain`] enum */
+  chain?: Maybe<Scalars['String']>;
+  /** ID of contract (contract address in most chain) */
+  contract?: Maybe<Scalars['String']>;
+  /** Details of the NFT */
+  nft?: Maybe<NfTv2>;
+  /** ID of the token. */
+  tokenId: Scalars['String'];
 };
 
 /** A both end inclusive range selector for block */
@@ -1922,7 +2038,7 @@ export type Polygon = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -1988,9 +2104,94 @@ export type PoolType = {
   totalSupply: Scalars['String'];
 };
 
+export enum PortfolioChainVariant {
+  Akash = 'Akash',
+  Arbitrum = 'Arbitrum',
+  AssetMantle = 'AssetMantle',
+  Aurora = 'Aurora',
+  Avalanche = 'Avalanche',
+  Axelar = 'Axelar',
+  Band = 'Band',
+  Binance = 'Binance',
+  Bitcanna = 'Bitcanna',
+  Bitcoin = 'Bitcoin',
+  Bitsong = 'Bitsong',
+  Canto = 'Canto',
+  CantoEVM = 'CantoEVM',
+  Celo = 'Celo',
+  Cerberus = 'Cerberus',
+  Chain = 'Chain',
+  Chihuahua = 'Chihuahua',
+  Comdex = 'Comdex',
+  Cosmos = 'Cosmos',
+  Crescent = 'Crescent',
+  Cronos = 'Cronos',
+  Cudos = 'Cudos',
+  Desmos = 'Desmos',
+  Dogecoin = 'Dogecoin',
+  Emoney = 'Emoney',
+  Ethereum = 'Ethereum',
+  Evmos = 'Evmos',
+  Fantom = 'Fantom',
+  Gnosis = 'Gnosis',
+  Harmony = 'Harmony',
+  Injective = 'Injective',
+  Iris = 'Iris',
+  JUNO = 'JUNO',
+  Kava = 'Kava',
+  KiChain = 'KiChain',
+  Klaytn = 'Klaytn',
+  Konstellation = 'Konstellation',
+  Kujira = 'Kujira',
+  LikeCoin = 'LikeCoin',
+  Litecoin = 'Litecoin',
+  Lum = 'Lum',
+  MarsProtocol = 'MarsProtocol',
+  Near = 'Near',
+  Neutron = 'Neutron',
+  OKExChain = 'OKExChain',
+  Oasis = 'Oasis',
+  Optimism = 'Optimism',
+  Osmosis = 'Osmosis',
+  Persistence = 'Persistence',
+  Polygon = 'Polygon',
+  Provenance = 'Provenance',
+  Regen = 'Regen',
+  Rizon = 'Rizon',
+  Secret = 'Secret',
+  Sentinel = 'Sentinel',
+  Shentu = 'Shentu',
+  Sifchain = 'Sifchain',
+  Smart = 'Smart',
+  Solana = 'Solana',
+  Sommelier = 'Sommelier',
+  Stargaze = 'Stargaze',
+  Starname = 'Starname',
+  Stride = 'Stride',
+  THORChain = 'THORChain',
+  Terra = 'Terra',
+  TerraClassic = 'TerraClassic',
+  TomoChain = 'TomoChain',
+  Tron = 'Tron',
+  Umee = 'Umee',
+}
+
 export type PostRouteTypeV2 = {
   __typename?: 'PostRouteTypeV2';
   routeId: Scalars['String'];
+};
+
+/** Prices history contains history information for each asset: its price, market caps and total volumes. All those metrics provided for different time frames: day, week, month and year. */
+export type PriceHistoryType = {
+  __typename?: 'PriceHistoryType';
+  /** History metrics of asset for last day */
+  day: TimeFrameItem;
+  /** History metrics of asset for last month */
+  month: TimeFrameItem;
+  /** History metrics of asset for last week */
+  week: TimeFrameItem;
+  /** History metrics of asset for last year */
+  year: TimeFrameItem;
 };
 
 export type PriceInputV2 = {
@@ -2064,7 +2265,7 @@ export type Query = {
   juno: JunoChain;
   junoV2: CosmosBasedChainWithNft;
   kava: CosmosBasedChain;
-  kuijra: CosmosBasedChain;
+  kujira: CosmosBasedChain;
   litecoin: LitecoinChain;
   mars: CosmosBasedChain;
   near: NearChain;
@@ -2072,11 +2273,12 @@ export type Query = {
   osmosis: CosmosBasedChain;
   osmosisV2: CosmosBasedChainV2;
   polygon: Polygon;
+  portfolio: Array<ChainPortfolio>;
   quasar: CosmosBasedChain;
   reputation: Reputation;
   routing: RoutingType;
   routingV2?: Maybe<RoutingTypeV2>;
-  sei: CosmosBasedChain;
+  sei: CosmosBalanceChain;
   solana: SolanaChain;
   stargaze: StargazeChain;
   stargazeV2: CosmosBasedChainWithNft;
@@ -2126,6 +2328,11 @@ export type QueryExplainTransactionArgs = {
 export type QueryFiatCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   ids?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type QueryPortfolioArgs = {
+  timePeriod: TimePeriod;
+  wallets: Array<ChainedAddresses>;
 };
 
 export type QueryReputationArgs = {
@@ -2646,6 +2853,7 @@ export type SolanaTransaction = {
 export type StargazeChain = {
   __typename?: 'StargazeChain';
   balances: Array<Balance>;
+  dailyBalances: Array<DailyBalances>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -2657,14 +2865,20 @@ export type StargazeChainBalancesArgs = {
   address: Scalars['String'];
 };
 
+export type StargazeChainDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: OptDateRange;
+};
+
 export type StargazeChainNftsArgs = {
   address: Scalars['String'];
 };
 
 export type StargazeChainTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  first?: Scalars['Int'];
 };
 
 export type Status = {
@@ -2733,6 +2947,35 @@ export type ThorchainTransactionEdge = {
   /** The item at the end of the edge */
   node: ThorchainTransaction;
 };
+
+/** Contains data item for each metric field of each time frame */
+export type TimeFrameData = {
+  __typename?: 'TimeFrameData';
+  /** Assets price */
+  price: Scalars['Float'];
+  /** Timestamp for assets price */
+  timestamp: Scalars['Float'];
+};
+
+/** Contains history metrcis of asset for one specific time frame */
+export type TimeFrameItem = {
+  __typename?: 'TimeFrameItem';
+  /** Contains market caps of asset for one time frame */
+  market_caps: Array<TimeFrameData>;
+  /** Contains prices of asset for one time frame */
+  prices: Array<TimeFrameData>;
+  /** Contains total_volumes of asset for one time frame */
+  total_volumes: Array<TimeFrameData>;
+};
+
+/** Chronoscales */
+export enum TimePeriod {
+  ALL = 'ALL',
+  DAY = 'DAY',
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  YEAR = 'YEAR',
+}
 
 export type TokenContractType = {
   __typename?: 'TokenContractType';
@@ -2817,7 +3060,7 @@ export type Tron = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
-  transactions: EvmTransactionConnection;
+  transactions: EvmTransactionV2Connection;
   version: Array<Version>;
 };
 
@@ -3239,7 +3482,8 @@ export type CosmosBalanceQuery = {
 export type GetCosmosTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
   dateRange: OptDateRange;
-  pagination: CursorPagination;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetCosmosTransactionsQuery = {
@@ -3375,6 +3619,111 @@ export type GetCryptoAssetsQuery = {
         scalingFactor: number;
       } | null;
     }> | null;
+  };
+};
+
+export type GetSolanaBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetSolanaBalanceQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      amount: { __typename?: 'Amount'; value: string };
+      asset: {
+        __typename?: 'CryptoAsset';
+        chain?: string | null;
+        contract?: string | null;
+        decimals?: number | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        symbol?: string | null;
+        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+      };
+    }>;
+  };
+};
+
+export type GetSolanaTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  slotRange: OptBlockRange;
+  dateRange: OptDateRange;
+}>;
+
+export type GetSolanaTransactionsQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    transactions: Array<{
+      __typename?: 'SolanaTransaction';
+      hash: string;
+      slot: number;
+      status: string;
+      timestamp?: any | null;
+      signers: Array<string>;
+      fee: {
+        __typename?: 'Fee';
+        payer: string;
+        amount: { __typename?: 'Amount'; value: string };
+      };
+      transfers: Array<{
+        __typename?: 'AssetTransfer';
+        fromAddress?: string | null;
+        toAddress?: string | null;
+        amount: { __typename?: 'Amount'; value: string };
+        asset: {
+          __typename?: 'CryptoAsset';
+          chain?: string | null;
+          contract?: string | null;
+          decimals?: number | null;
+          id?: string | null;
+          image?: string | null;
+          name?: string | null;
+          symbol?: string | null;
+        };
+      }>;
+    }>;
+  };
+};
+
+export type GetSolanaStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSolanaStatusQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    status: {
+      __typename?: 'SolanaStatus';
+      lastBlock?: {
+        __typename?: 'LastSlotStatus';
+        blockHeight?: number | null;
+        blockTime?: any | null;
+        blockhash?: string | null;
+        slot: number;
+        status: string;
+        updatedOn: any;
+      } | null;
+    };
+  };
+};
+
+export type GetSolanaFeeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSolanaFeeQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
   };
 };
 
@@ -4209,15 +4558,20 @@ export const GetCosmosTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pagination' },
+            name: { kind: 'Name', value: 'first' },
           },
           type: {
             kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'CursorPagination' },
-            },
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
           },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
         },
       ],
       selectionSet: {
@@ -4251,10 +4605,18 @@ export const GetCosmosTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pagination' },
+                      name: { kind: 'Name', value: 'first' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'pagination' },
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -4861,3 +5223,453 @@ export const GetCryptoAssetsDocument = {
   GetCryptoAssetsQuery,
   GetCryptoAssetsQueryVariables
 >;
+export const GetSolanaBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaBalanceQuery,
+  GetSolanaBalanceQueryVariables
+>;
+export const GetSolanaTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'slotRange' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'OptBlockRange' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dateRange' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'OptDateRange' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'slotRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'slotRange' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'dateRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'dateRange' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'payer' },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'slot' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'status' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'timestamp' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'transfers' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'asset' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'chain' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'contract' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'decimals' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'image' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'name' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'symbol' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'fromAddress' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'toAddress' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'signers' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaTransactionsQuery,
+  GetSolanaTransactionsQueryVariables
+>;
+export const GetSolanaStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockHeight' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockTime' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockhash' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'slot' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'status' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'updatedOn' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaStatusQuery,
+  GetSolanaStatusQueryVariables
+>;
+export const GetSolanaFeeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaFee' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetSolanaFeeQuery, GetSolanaFeeQueryVariables>;

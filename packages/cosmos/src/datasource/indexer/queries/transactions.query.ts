@@ -26,10 +26,8 @@ export const getTransactions = (
     query,
     variables: {
       address,
-      pagination: {
-        first: 1000,
-        after: null,
-      },
+      first: 1000,
+      after: null,
       dateRange: {
         from: null,
         to: null,

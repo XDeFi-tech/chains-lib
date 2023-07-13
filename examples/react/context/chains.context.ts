@@ -12,6 +12,11 @@ import {
   ChainDataSource,
   COSMOS_MANIFESTS,
 } from '@xdefi-tech/chains-cosmos';
+import {
+  SolanaProvider,
+  IndexerDataSource as SolanaIndexerDataSource,
+  SolanaManifest,
+} from '@xdefi-tech/chains-solana';
 
 export const ChainsContextDefaultValue = new ChainController();
 

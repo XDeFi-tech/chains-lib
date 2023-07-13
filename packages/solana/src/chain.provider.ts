@@ -1,18 +1,21 @@
 import {
-  DataSource,
+  Balance,
   Chain,
   ChainDecorator,
   Coin,
+  DataSource,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
   Msg,
   MsgData,
   Response,
   Transaction,
-  Balance,
-  FeeData,
   TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
+import { Connection } from '@solana/web3.js';
+import { some } from 'lodash';
 
 import { ChainMsg } from './msg';
 
@@ -21,9 +24,11 @@ import { ChainMsg } from './msg';
   providerType: 'Solana',
 })
 export class SolanaProvider extends Chain.Provider {
+  declare rpcProvider: Connection;
+
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    // this.rpcProvider = ;
+    this.rpcProvider = new Connection(this.manifest.rpcURL);
   }
 
   createMsg(data: MsgData): Msg {
@@ -40,8 +45,11 @@ export class SolanaProvider extends Chain.Provider {
     );
   }
 
-  async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+  async estimateFee(
+    msgs: Msg[],
+    speed: GasFeeSpeed = GasFeeSpeed.medium
+  ): Promise<FeeData[]> {
+    return this.dataSource.estimateFee(msgs, speed);
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
@@ -52,18 +60,47 @@ export class SolanaProvider extends Chain.Provider {
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    throw new Error('Method not implemented.');
+    return this.dataSource.gasFeeOptions();
   }
 
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
   }
 
-  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.');
+  async broadcast(msgs: ChainMsg[]): Promise<Transaction[]> {
+    if (some(msgs, (msg) => !msg.hasSignature)) {
+      throw new Error('Some message do not have signature, sign it first');
+    }
+
+    const transactions: Transaction[] = [];
+    for (const msg of msgs) {
+      const hash = await this.rpcProvider.sendRawTransaction(
+        msg.signedTransaction
+      );
+      transactions.push(Transaction.fromData({ hash }));
+    }
+
+    return transactions;
   }
 
-  async getTransaction(_txHash: string): Promise<TransactionData | null> {
-    throw new Error('Method not implemented.');
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await this.rpcProvider.getTransaction(txHash);
+    if (!tx) {
+      return null;
+    }
+    const result = {
+      hash: tx.transaction.message.recentBlockhash,
+      status: TransactionStatus.pending,
+      from: '',
+      to: '',
+    };
+
+    if (tx.meta?.err) {
+      result.status = TransactionStatus.failure;
+    } else if (tx.slot) {
+      result.status = TransactionStatus.success;
+    }
+
+    return result;
   }
 }

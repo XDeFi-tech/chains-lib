@@ -11,12 +11,15 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
+  NumberIsh,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 
 import { ChainMsg } from '../../msg';
 
-import { getBalance } from './queries';
+import { getBalance, getTransactions, getFees } from './queries';
+
+const DEFAULT_FEE = 5000;
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -28,7 +31,7 @@ export class IndexerDataSource extends DataSource {
     const { address } = _filter;
     const { data } = await getBalance(address);
     // cut off balances without asset
-    const balances = data[this.manifest.chain].balances._filter(
+    const balances = data.solana.balances.filter(
       (b: any) => b.asset.symbol && b.asset.id
     );
 
@@ -58,8 +61,13 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async getTransactions(_filter: TransactionsFilter): Promise<Transaction[]> {
-    throw new Error('Method not implemented.');
+  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
+    const { address } = filter;
+    const { data } = await getTransactions(address, {}, {});
+
+    return data.solana.transactions.map((transaction: any) => {
+      return Transaction.fromData(transaction);
+    });
   }
 
   async subscribeTransactions(
@@ -68,15 +76,28 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async estimateFee(
-    _msgs: ChainMsg[],
-    _speed: GasFeeSpeed
-  ): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
+    const feeOptions = await this.gasFeeOptions();
+    if (!feeOptions) {
+      return [];
+    }
+
+    return msgs.map(() => ({
+      gasLimit: 0,
+      gasPrice: feeOptions[speed] as NumberIsh,
+    }));
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    throw new Error('Method not implemented.');
+    const { data } = await getFees();
+    if (!data.solana.fee) {
+      return null;
+    }
+    return {
+      [GasFeeSpeed.high]: data.solana.fee.high || DEFAULT_FEE,
+      [GasFeeSpeed.medium]: data.solana.fee.medium || DEFAULT_FEE,
+      [GasFeeSpeed.low]: data.solana.fee.low || DEFAULT_FEE,
+    };
   }
 
   async getNonce(_address: string): Promise<number> {

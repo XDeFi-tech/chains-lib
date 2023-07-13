@@ -23,9 +23,9 @@ query CosmosBalance ($address: String!) {
   }
 }
 
-query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $pagination: CursorPagination!) {
+query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $first: Int!, $after: String) {
   cosmos {
-    transactions(address: $address, dateRange: $dateRange, pagination: $pagination) {
+    transactions(address: $address, dateRange: $dateRange, first: $first, after: $after) {
       pageInfo {
         endCursor
         hasNextPage

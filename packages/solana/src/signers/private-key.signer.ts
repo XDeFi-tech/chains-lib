@@ -22,8 +22,10 @@ export class PrivateKeySigner extends Signer.Provider {
     return keypair.publicKey.toBase58();
   }
 
-  async sign(_privateKey: string, _msg: ChainMsg): Promise<void> {
-    throw new Error('Method not implemented.');
+  async sign(privateKey: string, msg: ChainMsg): Promise<void> {
+    const tx = await msg.buildTx();
+    tx.sign(Keypair.fromSecretKey(Buffer.from(privateKey, 'hex')));
+    msg.sign(tx.serialize());
   }
 }
 

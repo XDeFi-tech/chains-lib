@@ -1,0 +1,81 @@
+query GetSolanaBalance($address: String!) {
+  solana {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        name
+        image
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetSolanaTransactions($address: String!, $slotRange: OptBlockRange!, $dateRange: OptDateRange!) {
+  solana {
+    transactions(address: $address, slotRange: $slotRange, dateRange: $dateRange) {
+      fee {
+        amount {
+          value
+        }
+        payer
+      }
+      hash
+      slot
+      status
+      timestamp
+      transfers {
+        amount {
+          value
+        }
+        asset {
+          chain
+          contract
+          decimals
+          id
+          image
+          name
+          symbol
+        }
+        fromAddress
+        toAddress
+      }
+      signers
+    }
+  }
+}
+
+query GetSolanaStatus {
+  solana {
+    status {
+      lastBlock {
+        blockHeight
+        blockTime
+        blockhash
+        slot
+        status
+        updatedOn
+      }
+    }
+  }
+}
+
+query GetSolanaFee {
+  solana {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
