@@ -9,12 +9,22 @@ import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
 import {
   CosmosProvider,
   ChainDataSource,
+  IndexerDataSource as IndexerCosmosDataSource,
   COSMOS_MANIFESTS,
 } from '@xdefi-tech/chains-cosmos';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new IndexerCosmosDataSource(COSMOS_MANIFESTS.cosmoshub))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
+  );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
@@ -39,12 +49,6 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
-  );
-  ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
-  );
-  ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
   );
 };
 
