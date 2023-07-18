@@ -221,7 +221,7 @@ export class ChainDataSource extends DataSource {
 
     return [
       {
-        gasLimit: data.gas_info.gas_used,
+        gasLimit: parseInt(data.gas_info.gas_used),
         gasPrice: this.manifest.feeGasStep[speed],
       },
     ];
