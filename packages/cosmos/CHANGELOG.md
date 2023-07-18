@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.3
+
+### Patch Changes
+
+- 0662495: Add getFees for cosmos chain indexer datasource
+- Updated dependencies [0662495]
+  - @xdefi-tech/chains-graphql@1.1.2
+
 ## 1.0.2
 
 ### Patch Changes
