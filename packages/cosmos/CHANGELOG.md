@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.4
+
+### Patch Changes
+
+- f254a0a: Add getFee method to cosmos chain message
+
 ## 1.0.3
 
 ### Patch Changes
