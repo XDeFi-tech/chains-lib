@@ -19,7 +19,8 @@ import {
   setupAuthExtension,
   setupBankExtension,
 } from '@cosmjs/launchpad';
-import { StdTx } from '@cosmjs/amino';
+import { BroadcastTxError } from '@cosmjs/stargate';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
@@ -89,10 +90,22 @@ export class CosmosProvider extends Chain.Provider {
     const transactions = [];
 
     for (const msg of msgs) {
-      const tx = await this.rpcProvider.broadcastTx(
-        msg.signedTransaction as StdTx
+      const tx = TxRaw.encode(msg.signedTransaction as TxRaw).finish();
+      const { data } = await this.lcdAxiosClient.post(
+        '/cosmos/tx/v1beta1/txs',
+        {
+          tx_bytes: Buffer.from(tx).toString('base64'),
+          mode: 'BROADCAST_MODE_SYNC',
+        }
       );
-      transactions.push(Transaction.fromData(tx));
+      if (data.tx_response.code) {
+        throw new BroadcastTxError(
+          data.tx_response.code,
+          data.tx_response.codespace,
+          data.tx_response.raw_log
+        );
+      }
+      transactions.push(Transaction.fromData(data.tx_response));
     }
 
     return transactions;

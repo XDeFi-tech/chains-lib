@@ -180,7 +180,7 @@ export class IndexerDataSource extends DataSource {
 
     return [
       {
-        gasLimit: parseInt(data.gas_info.gas_used),
+        gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 1.4),
         gasPrice: gasFeeOptions
           ? (gasFeeOptions[speed] as number)
           : this.manifest.feeGasStep[speed],

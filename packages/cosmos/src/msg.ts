@@ -45,19 +45,33 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
   async buildTx() {
     const msgData = this.toData();
     const msgToSend = {
-      from_address: msgData.from,
-      to_address: msgData.to,
+      fromAddress: msgData.from,
+      toAddress: msgData.to,
       amount: [
         {
-          amount: msgData.amount,
-          denom: msgData.denom,
+          amount: BigNumber(msgData.amount)
+            .multipliedBy(10 ** (this.manifest?.decimals || 0))
+            .toString(),
+          denom: msgData.denom || this.manifest?.denom,
         },
       ],
     };
+    const fee = {
+      amount: [
+        {
+          amount: BigNumber(msgData.gasPrice)
+            .multipliedBy(10 ** (this.manifest?.decimals || 0))
+            .toString(),
+          denom: msgData.denom || this.manifest?.denom,
+        },
+      ],
+      gas: BigNumber(msgData.gasLimit).toString(),
+    };
 
     return {
-      msgs: [msgToSend],
+      msgs: msgToSend,
       ...(msgData.memo && { memo: msgData.memo }),
+      fee,
     };
   }
 
