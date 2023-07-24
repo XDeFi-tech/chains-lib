@@ -41,9 +41,9 @@ export const COSMOS_MANIFESTS: {
     denom: 'uatom',
     decimals: 6,
     feeGasStep: {
-      high: 0.03,
-      medium: 0.025,
-      low: 0.01,
+      high: 0.003,
+      medium: 0.0025,
+      low: 0.001,
     },
   },
   [CosmosHubChains.osmosis]: {
