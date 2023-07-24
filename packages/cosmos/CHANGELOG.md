@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.5
+
+### Patch Changes
+
+- dae051d: Add fee to msg.buildTx() for cosmos chain
+
 ## 1.0.4
 
 ### Patch Changes
