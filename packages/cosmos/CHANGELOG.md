@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.6
+
+### Patch Changes
+
+- a359d2e: Add getAccount to cosmos chain provider
+
 ## 1.0.5
 
 ### Patch Changes
