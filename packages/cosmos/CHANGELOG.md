@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.7
+
+### Patch Changes
+
+- 20c8f4c: [cosmos] Fix getAccount method for new accounts
+- Updated dependencies [20c8f4c]
+  - @xdefi-tech/chains-core@1.1.2
+
 ## 1.0.6
 
 ### Patch Changes
