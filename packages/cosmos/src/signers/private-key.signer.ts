@@ -3,6 +3,7 @@ import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
@@ -50,7 +51,9 @@ export class PrivateKeySigner extends Signer.Provider {
       txData.fee,
       txData.memo
     );
-    msg.sign(signedTx);
+    const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+    const rawTx = Buffer.from(txBytes).toString('base64');
+    msg.sign(rawTx);
   }
 }
 

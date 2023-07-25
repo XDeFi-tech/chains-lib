@@ -19,6 +19,7 @@ export interface MsgBody {
   memo: string;
   gasLimit: NumberIsh;
   gasPrice: NumberIsh;
+  mode?: string;
 }
 
 export interface TxData {
@@ -27,8 +28,8 @@ export interface TxData {
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
-  signedTransaction: StdTx | undefined;
-  manifest: CosmosManifest | undefined;
+  declare signedTransaction: StdTx | undefined;
+  manifest?: CosmosManifest | undefined;
 
   public toData() {
     return this.data;

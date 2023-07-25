@@ -19,6 +19,7 @@ import {
   accountFromAny,
   QueryClient,
   setupAuthExtension,
+  Account,
 } from '@cosmjs/stargate';
 import axios, { AxiosInstance } from 'axios';
 import {
@@ -113,10 +114,6 @@ export class IndexerDataSource extends DataSource {
   }
 
   async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    const authExtension = setupAuthExtension(
-      QueryClient.withExtensions(client)
-    );
     let fromAddress = '';
     const _msgs = msgs.map((m) => {
       const messageData = m.toData();
@@ -137,13 +134,15 @@ export class IndexerDataSource extends DataSource {
         }).finish(),
       };
     });
-    const acc = await authExtension.auth.account(fromAddress);
-
-    if (!acc) {
-      return [];
+    const account = await this.getAccount(fromAddress);
+    if (!account) {
+      return [
+        {
+          gasLimit: 200000,
+          gasPrice: this.manifest.feeGasStep[speed],
+        },
+      ];
     }
-
-    const account = accountFromAny(acc);
     const tx = TxRaw.encode({
       bodyBytes: TxBody.encode(
         TxBody.fromPartial({
@@ -205,5 +204,23 @@ export class IndexerDataSource extends DataSource {
 
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
+  }
+
+  async getAccount(address: string): Promise<null | Account> {
+    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
+    const authExtension = setupAuthExtension(
+      QueryClient.withExtensions(client)
+    );
+    let acc = null;
+
+    try {
+      acc = await authExtension.auth.account(address);
+    } catch (err) {}
+
+    if (!acc) {
+      return null;
+    }
+
+    return accountFromAny(acc);
   }
 }
