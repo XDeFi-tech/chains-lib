@@ -19,21 +19,14 @@ import {
   setupAuthExtension,
   setupBankExtension,
 } from '@cosmjs/launchpad';
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import {
-  BroadcastTxError,
-  QueryClient,
-  setupAuthExtension as stargateAuthExtension,
-  accountFromAny,
-  Account,
-} from '@cosmjs/stargate';
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { BroadcastTxError, Account } from '@cosmjs/stargate';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
+import type { ChainDataSource, IndexerDataSource } from './datasource';
 
 @ChainDecorator('CosmosProvider', {
   deps: [],
@@ -42,6 +35,7 @@ import * as manifests from './manifests';
 export class CosmosProvider extends Chain.Provider {
   declare rpcProvider: LcdClient;
   private readonly lcdAxiosClient: AxiosInstance;
+  declare dataSource: ChainDataSource | IndexerDataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
@@ -71,7 +65,7 @@ export class CosmosProvider extends Chain.Provider {
   }
 
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    return this.dataSource.estimateFee(msgs, speed);
+    return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
@@ -90,19 +84,18 @@ export class CosmosProvider extends Chain.Provider {
     throw new Error('Method not implemented.');
   }
 
-  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+  async broadcast(msgs: ChainMsg[]): Promise<Transaction[]> {
     if (some(msgs, (msg) => !msg.hasSignature)) {
       throw new Error('Some message do not have signature, sign it first');
     }
     const transactions = [];
 
     for (const msg of msgs) {
-      const tx = TxRaw.encode(msg.signedTransaction as TxRaw).finish();
       const { data } = await this.lcdAxiosClient.post(
         '/cosmos/tx/v1beta1/txs',
         {
-          tx_bytes: Buffer.from(tx).toString('base64'),
-          mode: 'BROADCAST_MODE_SYNC',
+          tx_bytes: msg.signedTransaction,
+          mode: msg.toData().mode || 'BROADCAST_MODE_SYNC',
         }
       );
       if (data.tx_response.code) {
@@ -148,16 +141,6 @@ export class CosmosProvider extends Chain.Provider {
   }
 
   async getAccount(address: string): Promise<null | Account> {
-    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    const authExtension = stargateAuthExtension(
-      QueryClient.withExtensions(client)
-    );
-    const acc = await authExtension.auth.account(address);
-
-    if (!acc) {
-      return null;
-    }
-
-    return accountFromAny(acc);
+    return this.dataSource.getAccount(address);
   }
 }
