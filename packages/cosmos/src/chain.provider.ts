@@ -19,7 +19,14 @@ import {
   setupAuthExtension,
   setupBankExtension,
 } from '@cosmjs/launchpad';
-import { BroadcastTxError } from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import {
+  BroadcastTxError,
+  QueryClient,
+  setupAuthExtension as stargateAuthExtension,
+  accountFromAny,
+  Account,
+} from '@cosmjs/stargate';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
@@ -138,5 +145,19 @@ export class CosmosProvider extends Chain.Provider {
     }
 
     return result;
+  }
+
+  async getAccount(address: string): Promise<null | Account> {
+    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
+    const authExtension = stargateAuthExtension(
+      QueryClient.withExtensions(client)
+    );
+    const acc = await authExtension.auth.account(address);
+
+    if (!acc) {
+      return null;
+    }
+
+    return accountFromAny(acc);
   }
 }

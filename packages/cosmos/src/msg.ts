@@ -67,11 +67,20 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       ],
       gas: BigNumber(msgData.gasLimit).toString(),
     };
+    let acc = null;
+
+    if (this.provider) {
+      acc = await this.provider.getAccount(msgData.from);
+    }
 
     return {
       msgs: msgToSend,
       ...(msgData.memo && { memo: msgData.memo }),
       fee,
+      ...(acc && {
+        accountNumber: acc.accountNumber,
+        sequence: acc.sequence,
+      }),
     };
   }
 
