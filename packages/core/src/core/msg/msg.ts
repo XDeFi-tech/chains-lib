@@ -13,7 +13,7 @@ export interface FeeEstimation {
 }
 
 export abstract class Msg<OutData extends object = object, TxData extends object = object> {
-  public abstract signedTransaction: unknown;
+  public abstract signedTransaction: any;
 
   constructor(public readonly data: MsgData, public readonly provider?: Provider) {}
 
