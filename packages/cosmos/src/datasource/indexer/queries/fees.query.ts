@@ -1,18 +1,18 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import {
-  CosmosBalanceDocument,
-  OsmosisBalanceDocument,
-  AxelarBalanceDocument,
-  JunoBalanceDocument,
-  CrescentBalanceDocument,
-  KavaBalanceDocument,
-  StargazeBalanceDocument,
-  AkashBalanceDocument,
-  CronosBalanceDocument,
-  KujiraBalanceDocument,
-  StrideBalanceDocument,
-  MarsBalanceDocument,
-  Balance,
+  GetCosmosFeesDocument,
+  GetOsmosisFeesDocument,
+  GetAxelarFeesDocument,
+  GetJunoFeesDocument,
+  GetCrescentFeesDocument,
+  GetKavaFeesDocument,
+  GetStargazeFeesDocument,
+  GetAkashFeesDocument,
+  GetCronosFeesDocument,
+  GetKujiraFeesDocument,
+  GetStrideFeesDocument,
+  GetMarsFeesDocument,
+  DefaultGasFee,
 } from '@xdefi-tech/chains-graphql';
 
 import { CosmosHubChains } from '../../../manifests';
@@ -30,51 +30,51 @@ const getChainParams = (chain: string): CosmosChainParams => {
   const formattedChain = chain.toLowerCase();
   switch (formattedChain) {
     case CosmosHubChains.cosmos:
-      params.query = CosmosBalanceDocument;
+      params.query = GetCosmosFeesDocument;
       params.queryName = 'cosmos';
       break;
     case CosmosHubChains.osmosis:
-      params.query = OsmosisBalanceDocument;
+      params.query = GetOsmosisFeesDocument;
       params.queryName = 'osmosis';
       break;
     case CosmosHubChains.axelar:
-      params.query = AxelarBalanceDocument;
+      params.query = GetAxelarFeesDocument;
       params.queryName = 'axelar';
       break;
     case CosmosHubChains.juno:
-      params.query = JunoBalanceDocument;
+      params.query = GetJunoFeesDocument;
       params.queryName = 'juno';
       break;
     case CosmosHubChains.crescent:
-      params.query = CrescentBalanceDocument;
+      params.query = GetCrescentFeesDocument;
       params.queryName = 'crescent';
       break;
     case CosmosHubChains.kava:
-      params.query = KavaBalanceDocument;
+      params.query = GetKavaFeesDocument;
       params.queryName = 'kava';
       break;
     case CosmosHubChains.stargaze:
-      params.query = StargazeBalanceDocument;
+      params.query = GetStargazeFeesDocument;
       params.queryName = 'stargaze';
       break;
     case CosmosHubChains.akash:
-      params.query = AkashBalanceDocument;
+      params.query = GetAkashFeesDocument;
       params.queryName = 'akash';
       break;
     case CosmosHubChains.cronos:
-      params.query = CronosBalanceDocument;
+      params.query = GetCronosFeesDocument;
       params.queryName = 'cronos';
       break;
     case CosmosHubChains.kujira:
-      params.query = KujiraBalanceDocument;
+      params.query = GetKujiraFeesDocument;
       params.queryName = 'kujira';
       break;
     case CosmosHubChains.stride:
-      params.query = StrideBalanceDocument;
+      params.query = GetStrideFeesDocument;
       params.queryName = 'stride';
       break;
     case CosmosHubChains.mars:
-      params.query = MarsBalanceDocument;
+      params.query = GetMarsFeesDocument;
       params.queryName = 'mars';
       break;
   }
@@ -82,10 +82,7 @@ const getChainParams = (chain: string): CosmosChainParams => {
   return params;
 };
 
-export const getBalance = async (
-  chain: string,
-  address: string
-): Promise<Array<Balance>> => {
+export const getFees = async (chain: string): Promise<DefaultGasFee> => {
   const params = getChainParams(chain);
 
   if (!params.query) {
@@ -94,10 +91,7 @@ export const getBalance = async (
 
   const response = await gqlClient.query({
     query: params.query,
-    variables: {
-      address,
-    },
   });
 
-  return response.data[params.queryName].balances;
+  return response.data[params.queryName].fee;
 };

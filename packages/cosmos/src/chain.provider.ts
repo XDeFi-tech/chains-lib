@@ -19,13 +19,14 @@ import {
   setupAuthExtension,
   setupBankExtension,
 } from '@cosmjs/launchpad';
-import { StdTx } from '@cosmjs/amino';
+import { BroadcastTxError, Account } from '@cosmjs/stargate';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
+import type { ChainDataSource, IndexerDataSource } from './datasource';
 
 @ChainDecorator('CosmosProvider', {
   deps: [],
@@ -34,6 +35,7 @@ import * as manifests from './manifests';
 export class CosmosProvider extends Chain.Provider {
   declare rpcProvider: LcdClient;
   private readonly lcdAxiosClient: AxiosInstance;
+  declare dataSource: ChainDataSource | IndexerDataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
@@ -63,7 +65,7 @@ export class CosmosProvider extends Chain.Provider {
   }
 
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    return this.dataSource.estimateFee(msgs, speed);
+    return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
@@ -82,17 +84,28 @@ export class CosmosProvider extends Chain.Provider {
     throw new Error('Method not implemented.');
   }
 
-  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+  async broadcast(msgs: ChainMsg[]): Promise<Transaction[]> {
     if (some(msgs, (msg) => !msg.hasSignature)) {
       throw new Error('Some message do not have signature, sign it first');
     }
     const transactions = [];
 
     for (const msg of msgs) {
-      const tx = await this.rpcProvider.broadcastTx(
-        msg.signedTransaction as StdTx
+      const { data } = await this.lcdAxiosClient.post(
+        '/cosmos/tx/v1beta1/txs',
+        {
+          tx_bytes: msg.signedTransaction,
+          mode: msg.toData().mode || 'BROADCAST_MODE_SYNC',
+        }
       );
-      transactions.push(Transaction.fromData(tx));
+      if (data.tx_response.code) {
+        throw new BroadcastTxError(
+          data.tx_response.code,
+          data.tx_response.codespace,
+          data.tx_response.raw_log
+        );
+      }
+      transactions.push(Transaction.fromData(data.tx_response));
     }
 
     return transactions;
@@ -125,5 +138,9 @@ export class CosmosProvider extends Chain.Provider {
     }
 
     return result;
+  }
+
+  async getAccount(address: string): Promise<null | Account> {
+    return this.dataSource.getAccount(address);
   }
 }

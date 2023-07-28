@@ -1,59 +1,39 @@
-query CosmosBalance ($address: String!) {
+query CosmosBalance($address: String!) {
   cosmos {
     balances(address: $address) {
       address
       amount {
-        scalingFactor
         value
       }
       asset {
         chain
         contract
-        id
-        name
-        symbol
-        image
         decimals
+        id
+        image
+        name
         price {
-          scalingFactor
           amount
+          scalingFactor
         }
+        symbol
       }
     }
   }
 }
 
-query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $first: Int!, $after: String) {
+query GetCosmosTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
   cosmos {
-    transactions(address: $address, dateRange: $dateRange, first: $first, after: $after) {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
       pageInfo {
         endCursor
         hasNextPage
       }
       edges {
         node {
+          blockHeight
+          blockIndex
           hash
-          fee {
-            amount {
-              asset {
-                chain
-                contract
-                id
-                name
-                symbol
-                image
-                decimals
-                price {
-                  amount
-                  scalingFactor
-                }
-              }
-              amount {
-                value
-              }
-            }
-            payer
-          }
           status
           transfers {
             amount {
@@ -62,24 +42,48 @@ query GetCosmosTransactions($address: String!, $dateRange: OptDateRange!, $first
             asset {
               chain
               contract
-              id
               name
               symbol
               image
               decimals
-              price {
-                amount
-                scalingFactor
-              }
             }
             fromAddress
             toAddress
           }
           timestamp
-          blockHeight
-          blockIndex
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
         }
       }
+    }
+  }
+}
+
+query GetCosmosFees {
+  cosmos {
+    fee {
+      high
+      low
+      medium
     }
   }
 }
@@ -91,4 +95,1089 @@ query GetCosmosStatus {
     }
   }
 }
+
+query OsmosisBalance($address: String!) {
+  osmosis {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetOsmosisTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  osmosis {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetOsmosisFees {
+  osmosis {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetOsmosisStatus {
+  osmosis {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query AxelarBalance($address: String!) {
+  axelar {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetAxelarTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  axelar {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetAxelarFees {
+  axelar {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetAxelarStatus {
+  axelar {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query CrescentBalance($address: String!) {
+  crescent {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetCrescentTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  crescent {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetCrescentFees {
+  crescent {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetCrescentStatus {
+  crescent {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query KavaBalance($address: String!) {
+  kava {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetKavaTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  kava {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetKavaFees {
+  kava {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetKavaStatus {
+  kava {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query AkashBalance($address: String!) {
+  akash {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetAkashTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  akash {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetAkashFees {
+  akash {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetAkashStatus {
+  akash {
+    status {
+      lastBlock
+    }
+  }
+}
+
+
+query CronosBalance($address: String!) {
+  cronos {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetCronosTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  cronos {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetCronosFees {
+  cronos {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetCronosStatus {
+  cronos {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query KujiraBalance($address: String!) {
+  kujira {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetKujiraTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  kujira {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetKujiraFees {
+  kujira {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetKujiraStatus {
+  kujira {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query StrideBalance($address: String!) {
+  stride {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetStrideTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  stride {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetStrideFees {
+  stride {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetStrideStatus {
+  stride {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query MarsBalance($address: String!) {
+  mars {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetMarsTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  mars {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetMarsFees {
+  mars {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetMarsStatus {
+  mars {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query JunoBalance($address: String!) {
+  juno {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetJunoTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  juno {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetJunoFees {
+  juno {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetJunoStatus {
+  juno {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query StargazeBalance($address: String!) {
+  stargaze {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetStargazeTransactions($address: String!, $first: Int!, $dateRange: OptDateRange!, $after: String) {
+  stargaze {
+    transactions(address: $address, first: $first, dateRange: $dateRange, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          blockHeight
+          blockIndex
+          hash
+          status
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              name
+              symbol
+              image
+              decimals
+            }
+            fromAddress
+            toAddress
+          }
+          timestamp
+          fee {
+            amount {
+              amount {
+                value
+              }
+              asset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                symbol
+                price {
+                  amount
+                }
+              }
+            }
+            payer
+          }
+          signers
+        }
+      }
+    }
+  }
+}
+
+query GetStargazeFees {
+  stargaze {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetStargazeStatus {
+  stargaze {
+    status {
+      lastBlock
+    }
+  }
+}
+
+
+
+
+
+
 

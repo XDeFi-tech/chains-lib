@@ -117,6 +117,9 @@ const BalancesComponent = (props: IBalancesComponent) => {
         }}
       >
         {balances.map((coin: Coin) => {
+          const priceInUsd = coin.asset.price
+            ? `${coin.amount.multipliedBy(coin.asset.price).toFixed(2)}$`
+            : 'N/A';
           return (
             <ListItem button key={coin.asset.id || coin.asset.symbol}>
               <ListItemAvatar>
@@ -130,7 +133,7 @@ const BalancesComponent = (props: IBalancesComponent) => {
               <Typography>{coin.asset.symbol}</Typography>
               <ListItemText
                 primary={coin.amount.toFixed(8)}
-                secondary={`${coin.amount.toFixed(8)}$`}
+                secondary={priceInUsd}
                 sx={{ textAlign: 'end' }}
               />
             </ListItem>
