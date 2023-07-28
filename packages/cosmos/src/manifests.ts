@@ -32,7 +32,7 @@ export const COSMOS_MANIFESTS: {
   [CosmosHubChains.cosmos]: {
     name: 'Cosmos Hub',
     description: '',
-    rpcURL: 'https://rpc-proxey.xdefi.services/cosmos/rpc/mainnet',
+    rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
     lcdURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
     chainSymbol: 'ATOM',
     blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
