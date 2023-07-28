@@ -147,7 +147,18 @@ export class ChainDataSource extends DataSource {
       ],
       'txhash'
     );
-    return formattedTransactions.map((tx: any) => Transaction.fromData(tx));
+    return formattedTransactions.map((tx: any) =>
+      Transaction.fromData({
+        status: 'success',
+        hash: tx.data.txhash,
+        timestamp: tx.data.timestamp,
+        msgs: [],
+        fee: {
+          value: '',
+          asset: null,
+        },
+      })
+    );
   }
 
   async subscribeTransactions(
