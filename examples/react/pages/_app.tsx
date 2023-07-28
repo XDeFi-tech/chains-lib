@@ -11,15 +11,15 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     common: {
-      black: "#252829"
+      black: '#252829',
     },
     background: {
-      default: "#1C1E1F",
-      paper: "#30363B"
+      default: '#1C1E1F',
+      paper: '#30363B',
     },
     text: {
-      secondary: "#969DA3"
-    }
+      secondary: '#969DA3',
+    },
   },
 });
 

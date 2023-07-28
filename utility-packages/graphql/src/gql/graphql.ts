@@ -5005,6 +5005,111 @@ export type GetCryptoAssetsQuery = {
   };
 };
 
+export type GetSolanaBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetSolanaBalanceQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      amount: { __typename?: 'Amount'; value: string };
+      asset: {
+        __typename?: 'CryptoAsset';
+        chain?: string | null;
+        contract?: string | null;
+        decimals?: number | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        symbol?: string | null;
+        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+      };
+    }>;
+  };
+};
+
+export type GetSolanaTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  slotRange: OptBlockRange;
+  dateRange: OptDateRange;
+}>;
+
+export type GetSolanaTransactionsQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    transactions: Array<{
+      __typename?: 'SolanaTransaction';
+      hash: string;
+      slot: number;
+      status: string;
+      timestamp?: any | null;
+      signers: Array<string>;
+      fee: {
+        __typename?: 'Fee';
+        payer: string;
+        amount: { __typename?: 'Amount'; value: string };
+      };
+      transfers: Array<{
+        __typename?: 'AssetTransfer';
+        fromAddress?: string | null;
+        toAddress?: string | null;
+        amount: { __typename?: 'Amount'; value: string };
+        asset: {
+          __typename?: 'CryptoAsset';
+          chain?: string | null;
+          contract?: string | null;
+          decimals?: number | null;
+          id?: string | null;
+          image?: string | null;
+          name?: string | null;
+          symbol?: string | null;
+        };
+      }>;
+    }>;
+  };
+};
+
+export type GetSolanaStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSolanaStatusQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    status: {
+      __typename?: 'SolanaStatus';
+      lastBlock?: {
+        __typename?: 'LastSlotStatus';
+        blockHeight?: number | null;
+        blockTime?: any | null;
+        blockhash?: string | null;
+        slot: number;
+        status: string;
+        updatedOn: any;
+      } | null;
+    };
+  };
+};
+
+export type GetSolanaFeeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSolanaFeeQuery = {
+  __typename?: 'Query';
+  solana: {
+    __typename?: 'SolanaChain';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
+  };
+};
+
 export const BitcoinBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -13275,3 +13380,453 @@ export const GetCryptoAssetsDocument = {
   GetCryptoAssetsQuery,
   GetCryptoAssetsQueryVariables
 >;
+export const GetSolanaBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaBalanceQuery,
+  GetSolanaBalanceQueryVariables
+>;
+export const GetSolanaTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'slotRange' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'OptBlockRange' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dateRange' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'OptDateRange' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'slotRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'slotRange' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'dateRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'dateRange' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'payer' },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'slot' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'status' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'timestamp' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'transfers' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'asset' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'chain' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'contract' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'decimals' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'image' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'name' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'symbol' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'fromAddress' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'toAddress' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'signers' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaTransactionsQuery,
+  GetSolanaTransactionsQueryVariables
+>;
+export const GetSolanaStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockHeight' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockTime' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'blockhash' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'slot' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'status' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'updatedOn' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetSolanaStatusQuery,
+  GetSolanaStatusQueryVariables
+>;
+export const GetSolanaFeeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSolanaFee' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'solana' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetSolanaFeeQuery, GetSolanaFeeQueryVariables>;

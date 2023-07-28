@@ -117,7 +117,9 @@ const BalancesComponent = (props: IBalancesComponent) => {
         }}
       >
         {balances.map((coin: Coin) => {
-          const priceInUsd = coin.asset.price ? `${coin.amount.multipliedBy(coin.asset.price).toFixed(2)}$` : 'N/A'
+          const priceInUsd = coin.asset.price
+            ? `${coin.amount.multipliedBy(coin.asset.price).toFixed(2)}$`
+            : 'N/A';
           return (
             <ListItem button key={coin.asset.id || coin.asset.symbol}>
               <ListItemAvatar>

@@ -35,19 +35,19 @@ const SendTransaction = (props: IBroadcastComponent) => {
       setFee({
         fee: null,
         maxFee: null,
-      })
+      });
       return;
     }
     const getFee = async () => {
       const newFee = await msg.getFee();
       setFee(newFee);
-    }
+    };
     getFee();
-  }, [msg])
+  }, [msg]);
 
   useEffect(() => {
     if (!pk) {
-      return
+      return;
     }
     const getAddress = async () => {
       // @ts-ignore
@@ -56,14 +56,11 @@ const SendTransaction = (props: IBroadcastComponent) => {
       if (address) {
         setFromAddress(address);
       }
-    }
+    };
     getAddress();
   }, [pk]);
 
-  const handlePkChange = useCallback(
-    (event) => setPk(event.target.value),
-    []
-  );
+  const handlePkChange = useCallback((event) => setPk(event.target.value), []);
   const handleToAddressChange = useCallback(
     (event) => setToAddress(event.target.value),
     []
@@ -77,50 +74,41 @@ const SendTransaction = (props: IBroadcastComponent) => {
     []
   );
 
-  const handleEstimateFee = useCallback(
-    async () => {
-      const msg = await props.provider.createMsg({
-        from: fromAddress,
-        to: toAddress,
-        amount: parseFloat(amount),
-      })
-      const [fee] = await props.provider.estimateFee([msg], speed as GasFeeSpeed);
-      const msgWithFee = await props.provider.createMsg({
-        ...msg.toData(),
-        ...fee,
-      });
-      setMsg(msgWithFee)
-    },
-    [fromAddress, toAddress, amount, speed]
-  );
+  const handleEstimateFee = useCallback(async () => {
+    const msg = await props.provider.createMsg({
+      from: fromAddress,
+      to: toAddress,
+      amount: parseFloat(amount),
+    });
+    const [fee] = await props.provider.estimateFee([msg], speed as GasFeeSpeed);
+    const msgWithFee = await props.provider.createMsg({
+      ...msg.toData(),
+      ...fee,
+    });
+    setMsg(msgWithFee);
+  }, [fromAddress, toAddress, amount, speed]);
 
-  const handleSignTx = useCallback(
-    async () => {
-      if (!msg) {
-        return;
-      }
-      const signerInstance = new WebSigners[1]();
-      await signerInstance.sign(pk, msg);
-      if (msg.hasSignature) {
-        setSignedTx(msg.signedTransaction);
-      }
-    },
-    [msg]
-  );
-  const handleBroadcast = useCallback(
-    async () => {
-      if (!msg) {
-        return;
-      }
-      const [tx]: any = await props.provider.broadcast([msg]);
-      console.log(tx)
-      setHash(tx.data.txhash);
-    },
-    [msg]
-  );
+  const handleSignTx = useCallback(async () => {
+    if (!msg) {
+      return;
+    }
+    const signerInstance = new WebSigners[1]();
+    await signerInstance.sign(pk, msg);
+    if (msg.hasSignature) {
+      setSignedTx(msg.signedTransaction);
+    }
+  }, [msg]);
+  const handleBroadcast = useCallback(async () => {
+    if (!msg) {
+      return;
+    }
+    const [tx]: any = await props.provider.broadcast([msg]);
+    console.log(tx);
+    setHash(tx.data.txhash);
+  }, [msg]);
 
   return (
-    <Box sx={{marginBottom: '200px'}}>
+    <Box sx={{ marginBottom: '200px' }}>
       <Typography variant="h4">SendTransaction</Typography>
 
       <Box my={2}>
@@ -185,31 +173,34 @@ const SendTransaction = (props: IBroadcastComponent) => {
         </FormControl>
       </Box>
 
-      {msg && fee && fee.fee &&
+      {msg && fee && fee.fee && (
         <Typography my={2}>Estimation fee: {fee.fee}$</Typography>
-      }
+      )}
 
-      {msg && fee &&
+      {msg && fee && (
         <Button
           onClick={handleSignTx}
           sx={{
-            margin: '0 16px'
+            margin: '0 16px',
           }}
         >
           Sign
         </Button>
-      }
+      )}
 
-      {signedTx &&
+      {signedTx && (
         <>
-          <Typography my={2} sx={{ wordBreak: 'break-all'}}>Signed transaction: {signedTx}</Typography>
+          <Typography my={2} sx={{ wordBreak: 'break-all' }}>
+            Signed transaction: {signedTx}
+          </Typography>
           <Button onClick={handleBroadcast}>Broadcast</Button>
         </>
-      }
-      {hash &&
-        <Typography my={2} sx={{ wordBreak: 'break-all'}}>TxHash: {hash}</Typography>
-      }
-
+      )}
+      {hash && (
+        <Typography my={2} sx={{ wordBreak: 'break-all' }}>
+          TxHash: {hash}
+        </Typography>
+      )}
     </Box>
   );
 };
