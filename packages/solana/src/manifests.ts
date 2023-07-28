@@ -8,4 +8,10 @@ export const SolanaManifest: Chain.Manifest = {
   blockExplorerURL: 'https://explorer.solana.com/',
   chainId: 'mainnet-beta',
   chain: 'solana',
+  decimals: 6,
+  feeGasStep: {
+    high: 2,
+    medium: 1.5,
+    low: 1,
+  },
 };

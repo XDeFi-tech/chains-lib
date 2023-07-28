@@ -4,6 +4,7 @@ import {
   EVM_MANIFESTS,
   EvmProvider,
   IndexerDataSource as EvmDataSource,
+  ChainDataSource as EVMChainDataSource,
 } from '@xdefi-tech/chains-evm';
 import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
 import {
@@ -21,6 +22,11 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(new IndexerCosmosDataSource(COSMOS_MANIFESTS.osmosis))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new EvmProvider(new EVMChainDataSource(EVM_MANIFESTS.ethereum), {
+      signers: WebSigners,
+    })
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.ethereum), {

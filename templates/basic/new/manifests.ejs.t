@@ -12,4 +12,5 @@ export const <%= name %>Manifest: Chain.Manifest = {
    blockExplorerURL: '',
    chainId: '',
    chain: '',
+   decimals: 10,
 };

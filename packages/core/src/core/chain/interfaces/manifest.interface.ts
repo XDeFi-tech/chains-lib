@@ -8,4 +8,10 @@ export interface Manifest {
   blockExplorerURL: string;
   chainId: ChainID;
   chain: string;
+  decimals: number;
+  feeGasStep: {
+    high: number;
+    medium: number;
+    low: number;
+  };
 }

@@ -6,6 +6,7 @@ import { FeeData } from '../interfaces';
 
 export interface BalanceFilter {
   address: string;
+  afterBlock?: number | string;
 }
 
 export interface TransactionsFilter {
