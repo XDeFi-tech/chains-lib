@@ -56,15 +56,16 @@ export class IndexerDataSource extends DataSource {
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
-    const {
-      data: { cosmos },
-    } = await getBalance(this.manifest.chain as CosmosHubChains, address);
+    const balances = await getBalance(
+      this.manifest.chain as CosmosHubChains,
+      address
+    );
     // cut off balances without asset
-    const balances = cosmos.balances.filter(
+    const formattedBalances = balances.filter(
       (b) => b.asset.symbol && b.asset.id
     );
 
-    return balances.map((balance): Coin => {
+    return formattedBalances.map((balance): Coin => {
       const { asset, amount } = balance;
 
       return new Coin(
@@ -98,12 +99,27 @@ export class IndexerDataSource extends DataSource {
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
 
-    const {
-      data: { cosmos },
-    } = await getTransactions(this.manifest.chain as CosmosHubChains, address);
+    const transactions = await getTransactions(
+      this.manifest.chain as CosmosHubChains,
+      address
+    );
 
-    return cosmos.transactions.edges.map((transaction) => {
-      return Transaction.fromData(transaction);
+    return transactions.map((tx) => {
+      return Transaction.fromData({
+        status: tx.status,
+        hash: tx.hash,
+        timestamp: tx.timestamp,
+        msgs: tx.transfers.map((transfer) => ({
+          from: transfer.fromAddress,
+          to: transfer.toAddress,
+          amount: transfer.amount.value,
+          asset: transfer.asset,
+        })),
+        fee: {
+          value: tx.fee?.amount[0].amount.value,
+          asset: tx.fee?.amount[0].asset,
+        },
+      });
     });
   }
 
@@ -188,17 +204,16 @@ export class IndexerDataSource extends DataSource {
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    const { data } = await getFees();
-    if (!data.cosmos.fee) {
+    const fee = await getFees(this.manifest.chain);
+    if (!fee) {
       return null;
     }
     return {
       [GasFeeSpeed.high]:
-        data.cosmos.fee.high || this.manifest.feeGasStep[GasFeeSpeed.high],
+        fee.high || this.manifest.feeGasStep[GasFeeSpeed.high],
       [GasFeeSpeed.medium]:
-        data.cosmos.fee.medium || this.manifest.feeGasStep[GasFeeSpeed.medium],
-      [GasFeeSpeed.low]:
-        data.cosmos.fee.low || this.manifest.feeGasStep[GasFeeSpeed.low],
+        fee.medium || this.manifest.feeGasStep[GasFeeSpeed.medium],
+      [GasFeeSpeed.low]: fee.low || this.manifest.feeGasStep[GasFeeSpeed.low],
     };
   }
 
