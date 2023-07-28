@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.6
+
+### Patch Changes
+
+- 14c668d: Update fee fields for each chain. Add solana. Add EVM chain controller
+- Updated dependencies [14c668d]
+  - @xdefi-tech/chains-core@1.1.3
+  - @xdefi-tech/chains-cosmos@1.0.8
+  - @xdefi-tech/chains-evm@1.1.2
+  - @xdefi-tech/chains-solana@1.1.1
+  - @xdefi-tech/chains-graphql@1.1.3
+
 ## 1.0.5
 
 ### Patch Changes
