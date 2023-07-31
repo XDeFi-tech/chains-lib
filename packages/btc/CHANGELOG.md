@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-btc
 
+## 1.1.3
+
+### Patch Changes
+
+- aad501a: Fix issue with high fee rate
+
 ## 1.1.2
 
 ### Patch Changes
