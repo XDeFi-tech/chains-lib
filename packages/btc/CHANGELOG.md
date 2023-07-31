@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-btc
 
+## 1.1.2
+
+### Patch Changes
+
+- 14c16b1: Update BTC chain controller
+
 ## 1.1.1
 
 ### Patch Changes
