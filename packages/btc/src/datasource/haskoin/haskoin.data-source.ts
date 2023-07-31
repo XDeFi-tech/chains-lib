@@ -1,5 +1,5 @@
 import { Injectable } from '@xdefi-tech/chains-core';
-import { Axios } from 'axios';
+import axios, { Axios } from 'axios';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import { DEFAULT_HASKOIN_URL } from '../../manifests';
@@ -34,7 +34,7 @@ export class HaskoinDataSource implements UTXODataSource {
   private baseURL: string;
 
   constructor(baseURL = DEFAULT_HASKOIN_URL) {
-    this.api = new Axios({ baseURL });
+    this.api = axios.create({ baseURL });
     this.baseURL = baseURL;
   }
 

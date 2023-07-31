@@ -9,19 +9,23 @@ import {
 import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
 import {
   CosmosProvider,
-  ChainDataSource as ChainCosmosDataSource,
-  IndexerDataSource as IndexerCosmosDataSource,
+  ChainDataSource,
   COSMOS_MANIFESTS,
 } from '@xdefi-tech/chains-cosmos';
+import {
+  BTC_MANIFEST,
+  BtcProvider,
+  IndexerDataSource as BtcIndexerDataSource,
+} from '@xdefi-tech/chains-btc';
+import BtcSigners from '@xdefi-tech/chains-btc/web';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainCosmosDataSource(COSMOS_MANIFESTS.cosmos))
-  );
-  ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new IndexerCosmosDataSource(COSMOS_MANIFESTS.osmosis))
+    new BtcProvider(new BtcIndexerDataSource(BTC_MANIFEST), {
+      signers: BtcSigners,
+    })
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EVMChainDataSource(EVM_MANIFESTS.ethereum), {
@@ -52,6 +56,12 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmos))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
   );
 };
 

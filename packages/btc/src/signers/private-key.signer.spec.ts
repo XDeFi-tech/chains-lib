@@ -1,7 +1,5 @@
 import { PrivateKeySigner } from './private-key.signer';
-import { BitcoinChainMessage } from '../msg';
-import { HaskoinDataSource } from '../datasource/haskoin/haskoin.data-source';
-import BigNumber from 'bignumber.js';
+import { ChainMsg } from '../msg';
 
 describe('btc private-key.signer', () => {
   const MOCK = {
@@ -9,7 +7,6 @@ describe('btc private-key.signer', () => {
     address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
     signature: '',
   };
-  const haskoin = new HaskoinDataSource();
   const signer = new PrivateKeySigner();
 
   signer.withPhrase(
@@ -25,10 +22,10 @@ describe('btc private-key.signer', () => {
   });
 
   it('should sign a ChainMsg with the private key', async () => {
-    const msg = new BitcoinChainMessage(haskoin, {
-      amount: new BigNumber(1),
-      recipient: 'bc1q7cyrfmck2ffu2ud3rn5l5a8yv6f0chkp0zpemf',
-      sender: '39ACoGCp4riBaXQ5mfHMF4mi1Ztia2SZxQ',
+    const msg = new ChainMsg({
+      amount: 1,
+      to: 'bc1q7cyrfmck2ffu2ud3rn5l5a8yv6f0chkp0zpemf',
+      from: '39ACoGCp4riBaXQ5mfHMF4mi1Ztia2SZxQ',
     });
     await signer.sign(MOCK.privateKey, msg);
     expect(msg.hasSignature).toBe(true);

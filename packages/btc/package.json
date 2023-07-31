@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-btc",
   "version": "1.1.1",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -10,6 +10,22 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "exports": {
+    "./web": {
+      "require": "./dist/signers/web.js",
+      "import": "./dist/signers/web.mjs",
+      "types": "./dist/signers/web.d.ts"
+    },
+    "./react-native": {
+      "require": "./dist/signers/react-native.js",
+      "import": "./dist/signers/react-native.mjs",
+      "types": "./dist/signers/react-native.d.ts"
+    },
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "devDependencies": {
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
@@ -48,14 +64,17 @@
   },
   "tsup": {
     "entry": [
-      "src/index.ts"
+      "src/index.ts",
+      "src/signers/web.ts",
+      "src/signers/react-native.ts"
     ],
-    "outDir": "dist",
     "format": "esm",
     "splitting": false,
     "dts": true,
     "types": [
-      "./dist/index.d.ts"
+      "./dist/index.d.ts",
+      "./dist/signers/web.d.ts",
+      "./dist/signers/react-native.d.ts"
     ],
     "platform": "browser"
   },

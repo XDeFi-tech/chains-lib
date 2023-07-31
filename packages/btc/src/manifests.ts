@@ -1,11 +1,16 @@
 import { Chain } from '@xdefi-tech/chains-core';
 
-export const btcManifest: Chain.Manifest = {
+export interface UTXOManifest extends Chain.Manifest {
+  chainDataSourceURL: string;
+}
+
+export const BTC_MANIFEST: UTXOManifest = {
   name: 'Bitcoin',
   description: '',
-  rpcURL: '',
+  rpcURL: 'https://blockstream.info',
   chainSymbol: 'BTC',
   blockExplorerURL: 'https://blockchair.com/bitcoin',
+  chainDataSourceURL: 'https://api.haskoin.com/btc/',
   chainId: 'bitcoin',
   chain: 'bitcoin',
   decimals: 8,

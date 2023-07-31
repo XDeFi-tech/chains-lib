@@ -47,7 +47,8 @@
     ],
     "platform": "browser",
     "external": [
-      "@xdefi-tech/chains-cosmos"
+      "@xdefi-tech/chains-cosmos",
+      "@xdefi-tech/chains-btc"
     ]
   }
 }
