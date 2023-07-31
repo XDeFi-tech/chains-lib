@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.3
+
+### Patch Changes
+
+- 14c668d: Update fee fields for each chain. Add solana. Add EVM chain controller
+
+## 1.1.2
+
+### Patch Changes
+
+- 0662495: Add getFees for cosmos chain indexer datasource
+
 ## 1.1.1
 
 ### Patch Changes

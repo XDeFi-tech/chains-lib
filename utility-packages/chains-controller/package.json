@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-controller",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "license": "MIT",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "main": "dist/index.mjs",
@@ -47,7 +47,8 @@
     ],
     "platform": "browser",
     "external": [
-      "@xdefi-tech/chains-cosmos"
+      "@xdefi-tech/chains-cosmos",
+      "@xdefi-tech/chains-btc"
     ]
   }
 }

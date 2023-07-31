@@ -16,7 +16,7 @@ import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
-import { BitcoinChainMessage } from '../../msg';
+import { ChainMsg } from '../../msg';
 import type { UTXOManifest } from '../../manifests';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
@@ -94,7 +94,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async estimateFee(
-    messages: BitcoinChainMessage[],
+    messages: ChainMsg[],
     speed: GasFeeSpeed
   ): Promise<FeeData[]> {
     const feeOptions = await this.getFeeOptions();

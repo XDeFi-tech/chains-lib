@@ -3,7 +3,7 @@ import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 
-import { BitcoinChainMessage } from '../msg';
+import { ChainMsg } from '../msg';
 
 export type Signature = {
   v: number;
@@ -35,7 +35,7 @@ export class LedgerSigner extends Signer.Provider {
     return address.bitcoinAddress;
   }
 
-  async sign(derivation: string, msg: BitcoinChainMessage) {
+  async sign(derivation: string, msg: ChainMsg) {
     const transport = await Transport.create();
     const app = new App({ transport, currency: 'bitcoin' });
     const { txHex } = await msg.buildTx();

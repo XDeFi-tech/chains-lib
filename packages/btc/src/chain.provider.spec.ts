@@ -1,8 +1,7 @@
-import { BitcoinChainMessage } from './msg';
+import { ChainMsg } from './msg';
 import { BtcProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BTC_MANIFEST } from './manifests';
-import BigNumber from 'bignumber.js';
 
 describe('chain.provider', () => {
   let btcProvider: BtcProvider;
@@ -18,6 +17,6 @@ describe('chain.provider', () => {
       from: '39ACoGCp4riBaXQ5mfHMF4mi1Ztia2SZxQ',
     });
 
-    expect(msg).toBeInstanceOf(BitcoinChainMessage);
+    expect(msg).toBeInstanceOf(ChainMsg);
   });
 });

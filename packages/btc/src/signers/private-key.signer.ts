@@ -2,7 +2,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 
-import { BitcoinChainMessage } from '../msg';
+import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -30,7 +30,7 @@ export class PrivateKeySigner extends Signer.Provider {
     return address;
   }
 
-  async sign(privateKey: string, message: BitcoinChainMessage) {
+  async sign(privateKey: string, message: ChainMsg) {
     const { psbt } = await message.buildTx();
     psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
     psbt.finalizeAllInputs();

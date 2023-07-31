@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-solana",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -19,8 +19,9 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.73.3",
+    "@solana/web3.js": "^1.78.0",
     "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
     "reflect-metadata": "^0.1.13",

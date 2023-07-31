@@ -25,10 +25,7 @@ export type BitcoinTxBody = { psbtHex: string };
 
 const defaultFeeEstimation: FeeEstimation = { fee: null, maxFee: null };
 
-export class BitcoinChainMessage extends BaseMsg<
-  BitcoinMessageBody,
-  BitcoinTxBody
-> {
+export class ChainMsg extends BaseMsg<BitcoinMessageBody, BitcoinTxBody> {
   declare signedTransaction: string | null;
   declare data: BitcoinMessageBody;
   declare keys: Bitcoin.ECPairInterface;

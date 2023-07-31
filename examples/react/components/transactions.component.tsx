@@ -1,5 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Box, Typography, Button, Divider, List } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import { Chain, Transaction } from '@xdefi-tech/chains-core';
 
 export interface ITransactionsComponent {
@@ -7,7 +15,7 @@ export interface ITransactionsComponent {
   address: string;
 }
 const TransactionsComponent = (props: ITransactionsComponent) => {
-  const [_transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transactionsError, setTransactionsError] = useState<null | string>(
     null
   );
@@ -58,21 +66,43 @@ const TransactionsComponent = (props: ITransactionsComponent) => {
           overflow: 'auto',
         }}
       >
-        {/*{transactions.map((coin: Transaction) => {*/}
-        {/*    return (*/}
-        {/*        <ListItem button key={coin.asset.id || coin.asset.symbol}>*/}
-        {/*            <ListItemAvatar>*/}
-        {/*                <img width="30" height="30" src={coin.asset.icon} alt={coin.asset.symbol} />*/}
-        {/*            </ListItemAvatar>*/}
-        {/*            <Typography>{coin.asset.symbol}</Typography>*/}
-        {/*            <ListItemText*/}
-        {/*                primary={coin.amount.toFixed(8)}*/}
-        {/*                secondary={`${coin.amount.toFixed(8)}$`}*/}
-        {/*                sx={{ textAlign: 'end' }}*/}
-        {/*            />*/}
-        {/*        </ListItem>*/}
-        {/*    )*/}
-        {/*})}*/}
+        {transactions.map((tx: any) => {
+          const data = tx.data;
+          const fee = {
+            value: data.fee.value / 10 ** data.fee.asset.decimals,
+            price:
+              (data.fee.value / 10 ** data.fee.asset.decimals) *
+              data.fee.asset.price.amount,
+            symbol: data.fee.asset.symbol,
+          };
+          return (
+            <ListItem button key={data.hash}>
+              <Typography>{data.timestamp}</Typography>
+              <Typography mx={2}>{data.status}</Typography>
+              <Typography width={200} sx={{ wordBreak: 'break-all' }}>
+                {data.hash}
+              </Typography>
+              <ListItemText
+                primary={`${fee.value} ${fee.symbol}`}
+                secondary={`${fee.price}$`}
+                sx={{ textAlign: 'end', maxWidth: '100px', margin: '0 16px' }}
+              />
+              <Box>
+                <Typography>Messages</Typography>
+                {data.msgs.map((m, i) => (
+                  <Box key={i}>
+                    <Typography>From: {m.from}</Typography>
+                    <Typography>To: {m.to}</Typography>
+                    <Typography>
+                      Amount: {m.amount / 10 ** m.asset.decimals}{' '}
+                      {m.asset.symbol}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </ListItem>
+          );
+        })}
       </List>
 
       <Divider

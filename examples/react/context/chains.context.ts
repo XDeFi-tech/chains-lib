@@ -17,10 +17,16 @@ import {
   BtcProvider,
   IndexerDataSource as BtcIndexerDataSource,
 } from '@xdefi-tech/chains-btc';
+import BtcSigners from '@xdefi-tech/chains-btc/web';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  ChainsContextDefaultValue.addProvider(
+    new BtcProvider(new BtcIndexerDataSource(BTC_MANIFEST), {
+      signers: BtcSigners,
+    })
+  );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EVMChainDataSource(EVM_MANIFESTS.ethereum), {
       signers: WebSigners,
@@ -52,7 +58,7 @@ export const initDefaultProviders = () => {
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
   );
   ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmoshub))
+    new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.cosmos))
   );
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))

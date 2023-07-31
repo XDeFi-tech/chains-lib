@@ -14,7 +14,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 
-import { BitcoinChainMessage, BitcoinMessageBody } from './msg';
+import { ChainMsg, BitcoinMessageBody } from './msg';
 import {
   DEFAULT_BLOCKSTREAM_URL,
   DEFAULT_HASKOIN_URL,
@@ -23,8 +23,9 @@ import {
 import { HaskoinDataSource, UTXODataSource } from './datasource';
 
 @ChainDecorator('BtcProvider', {
-  deps: [Chain.ChainFeatures.TOKENS],
-  providerType: 'btc',
+  deps: [],
+  providerType: 'UTXO',
+  features: [Chain.ChainFeatures.TOKENS],
 })
 export class BtcProvider extends Chain.Provider {
   public rpcProvider = null;
@@ -42,8 +43,8 @@ export class BtcProvider extends Chain.Provider {
     );
   }
 
-  createMsg(data: BitcoinMessageBody): BitcoinChainMessage {
-    return new BitcoinChainMessage(data, this);
+  createMsg(data: BitcoinMessageBody): ChainMsg {
+    return new ChainMsg(data, this);
   }
 
   async getTransactions(
@@ -57,7 +58,7 @@ export class BtcProvider extends Chain.Provider {
   }
 
   async estimateFee(
-    messages: BitcoinChainMessage[],
+    messages: ChainMsg[],
     speed: GasFeeSpeed
   ): Promise<FeeData[]> {
     return this.dataSource.estimateFee(messages, speed);
@@ -78,7 +79,7 @@ export class BtcProvider extends Chain.Provider {
     return this.dataSource.getNonce(address);
   }
 
-  async broadcast(messages: BitcoinChainMessage[]): Promise<Transaction[]> {
+  async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
     const result: Transaction[] = [];
     for await (const message of messages) {
       const { signedTransaction } = message;

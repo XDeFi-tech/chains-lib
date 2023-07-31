@@ -1,7 +1,7 @@
 import { Chain, GasFeeSpeed } from '@xdefi-tech/chains-core';
 
 export enum CosmosHubChains {
-  cosmoshub = 'cosmoshub',
+  cosmos = 'cosmos',
   osmosis = 'osmosis',
   axelar = 'axelar',
   juno = 'juno',
@@ -29,7 +29,7 @@ export interface CosmosManifest extends Chain.Manifest {
 export const COSMOS_MANIFESTS: {
   [key in CosmosHubChains]: CosmosManifest;
 } = {
-  [CosmosHubChains.cosmoshub]: {
+  [CosmosHubChains.cosmos]: {
     name: 'Cosmos Hub',
     description: '',
     rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
@@ -41,21 +41,21 @@ export const COSMOS_MANIFESTS: {
     denom: 'uatom',
     decimals: 6,
     feeGasStep: {
-      high: 0.03,
-      medium: 0.025,
-      low: 0.01,
+      high: 0.003,
+      medium: 0.0025,
+      low: 0.001,
     },
   },
   [CosmosHubChains.osmosis]: {
     name: 'Osmosis',
     description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/osmosis/lcd/mainnet',
+    rpcURL: 'https://rpc-proxy.xdefi.services/osmosis/rpc/mainnet',
     lcdURL: 'https://rpc-proxy.xdefi.services/osmosis/lcd/mainnet',
     chainSymbol: 'OSMO',
     blockExplorerURL: 'https://www.mintscan.io/osmosis/account',
     chainId: 'osmosis-1',
     chain: 'osmosis',
-    denom: 'uatom',
+    denom: 'uosmo',
     decimals: 6,
     feeGasStep: {
       high: 0.03,

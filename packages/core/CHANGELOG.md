@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-core
 
+## 1.1.3
+
+### Patch Changes
+
+- 14c668d: Update fee fields for each chain. Add solana. Add EVM chain controller
+
+## 1.1.2
+
+### Patch Changes
+
+- 20c8f4c: [cosmos] Fix getAccount method for new accounts
+
 ## 1.1.1
 
 ### Patch Changes

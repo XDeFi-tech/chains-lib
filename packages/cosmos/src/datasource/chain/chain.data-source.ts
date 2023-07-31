@@ -26,6 +26,7 @@ import {
   QueryClient,
   setupAuthExtension,
   accountFromAny,
+  Account,
 } from '@cosmjs/stargate';
 import axios, { AxiosInstance } from 'axios';
 import {
@@ -38,8 +39,8 @@ import {
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
-import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
+import { ChainMsg } from '../../msg';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -146,7 +147,18 @@ export class ChainDataSource extends DataSource {
       ],
       'txhash'
     );
-    return formattedTransactions.map((tx: any) => Transaction.fromData(tx));
+    return formattedTransactions.map((tx: any) =>
+      Transaction.fromData({
+        status: 'success',
+        hash: tx.data.txhash,
+        timestamp: tx.data.timestamp,
+        msgs: [],
+        fee: {
+          value: '',
+          asset: null,
+        },
+      })
+    );
   }
 
   async subscribeTransactions(
@@ -156,10 +168,6 @@ export class ChainDataSource extends DataSource {
   }
 
   async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    const authExtension = setupAuthExtension(
-      QueryClient.withExtensions(client)
-    );
     let fromAddress = '';
     const _msgs = msgs.map((m) => {
       const messageData = m.toData();
@@ -180,13 +188,16 @@ export class ChainDataSource extends DataSource {
         }).finish(),
       };
     });
-    const acc = await authExtension.auth.account(fromAddress);
 
-    if (!acc) {
-      return [];
+    const account = await this.getAccount(fromAddress);
+    if (!account) {
+      return [
+        {
+          gasLimit: 200000,
+          gasPrice: this.manifest.feeGasStep[speed],
+        },
+      ];
     }
-
-    const account = accountFromAny(acc);
     const tx = TxRaw.encode({
       bodyBytes: TxBody.encode(
         TxBody.fromPartial({
@@ -221,7 +232,7 @@ export class ChainDataSource extends DataSource {
 
     return [
       {
-        gasLimit: data.gas_info.gas_used,
+        gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 1.4),
         gasPrice: this.manifest.feeGasStep[speed],
       },
     ];
@@ -233,5 +244,23 @@ export class ChainDataSource extends DataSource {
 
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
+  }
+
+  async getAccount(address: string): Promise<null | Account> {
+    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
+    const authExtension = setupAuthExtension(
+      QueryClient.withExtensions(client)
+    );
+    let acc = null;
+
+    try {
+      acc = await authExtension.auth.account(address);
+    } catch (err) {}
+
+    if (!acc) {
+      return null;
+    }
+
+    return accountFromAny(acc);
   }
 }

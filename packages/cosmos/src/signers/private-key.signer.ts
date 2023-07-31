@@ -1,6 +1,9 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { SigningCosmosClient, Secp256k1HdWallet } from '@cosmjs/launchpad';
+import { Secp256k1HdWallet } from '@cosmjs/launchpad';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { SigningStargateClient } from '@cosmjs/stargate';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
@@ -28,14 +31,29 @@ export class PrivateKeySigner extends Signer.Provider {
   async sign(privateKey: string, msg: ChainMsg): Promise<void> {
     const txData = await msg.buildTx();
     const wallet = await Secp256k1HdWallet.fromMnemonic(privateKey);
+    const tendermintClient = await Tendermint34Client.connect(
+      msg.provider?.manifest.rpcURL as string
+    );
     const [{ address: senderAddress }] = await wallet.getAccounts();
-    const client = new SigningCosmosClient(
-      msg.provider?.manifest.rpcURL as string,
-      senderAddress,
+    const client = await SigningStargateClient.createWithSigner(
+      tendermintClient,
       wallet
     );
-    const signedTx = await client.sign(txData.msgs, txData.fee, txData.memo);
-    msg.sign(signedTx);
+    const msgs = [
+      {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: txData.msgs,
+      },
+    ];
+    const signedTx = await client.sign(
+      senderAddress,
+      msgs,
+      txData.fee,
+      txData.memo
+    );
+    const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+    const rawTx = Buffer.from(txBytes).toString('base64');
+    msg.sign(rawTx);
   }
 }
 
