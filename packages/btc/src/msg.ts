@@ -129,8 +129,12 @@ export class ChainMsg extends BaseMsg<BitcoinMessageBody, BitcoinTxBody> {
       }
 
       this.feeEstimation = {
-        fee: feeOptions[speed || GasFeeSpeed.medium].toString(),
-        maxFee: feeOptions[GasFeeSpeed.high].toString(),
+        fee: BigNumber(feeOptions[speed || GasFeeSpeed.medium].toString())
+          .dividedBy(10 ** this.provider.manifest.decimals)
+          .toString(),
+        maxFee: BigNumber(feeOptions[speed || GasFeeSpeed.high].toString())
+          .dividedBy(10 ** this.provider.manifest.decimals)
+          .toString(),
       };
       this.prevSpeed = speed;
       feeEstimation = this.feeEstimation;
