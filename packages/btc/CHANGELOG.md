@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-btc
 
+## 1.1.4
+
+### Patch Changes
+
+- 706348a: Update buildTx method for trust wallet signer
+
 ## 1.1.3
 
 ### Patch Changes
