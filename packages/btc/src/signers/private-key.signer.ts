@@ -3,6 +3,7 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
+import { UTXO } from '../datasource';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -31,7 +32,33 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async sign(privateKey: string, message: ChainMsg) {
-    const { psbt } = await message.buildTx();
+    const data = message.toData();
+    const { inputs, outputs, compiledMemo } = await message.buildTx();
+    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+    psbt.addInputs(
+      inputs.map((utxo: UTXO) => ({
+        hash: utxo.hash,
+        index: utxo.index,
+        witnessUtxo: utxo.witnessUtxo,
+      }))
+    );
+
+    // psbt add outputs from accumulative outputs
+    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+      if (!output.address) {
+        //an empty address means this is the change address
+        output.address = data.from;
+      }
+      if (!output.script) {
+        psbt.addOutput(output);
+      } else {
+        //we need to add the compiled memo this way to
+        //avoid dust error tx when accumulating memo output with 0 value
+        if (compiledMemo) {
+          psbt.addOutput({ script: compiledMemo, value: 0 });
+        }
+      }
+    });
     psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
     psbt.finalizeAllInputs();
 
