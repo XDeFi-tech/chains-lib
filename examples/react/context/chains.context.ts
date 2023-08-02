@@ -18,10 +18,18 @@ import {
   IndexerDataSource as BtcIndexerDataSource,
 } from '@xdefi-tech/chains-btc';
 import BtcSigners from '@xdefi-tech/chains-btc/web';
+import {
+  BINANCE_MANIFEST,
+  BinanceProvider,
+  IndexerDataSource as BbcIndexerDataSource,
+} from '@xdefi-tech/chains-binance';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  ChainsContextDefaultValue.addProvider(
+    new BinanceProvider(new BbcIndexerDataSource(BINANCE_MANIFEST))
+  );
   ChainsContextDefaultValue.addProvider(
     new BtcProvider(new BtcIndexerDataSource(BTC_MANIFEST), {
       signers: BtcSigners,

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { Chain, GasFeeSpeed } from '@xdefi-tech/chains-core';
 // @ts-ignore
-import WebSigners from '@xdefi-tech/chains-cosmos/web';
+import WebSigners from '@xdefi-tech/chains-binance/web';
 
 export interface IBroadcastComponent {
   provider: Chain.Provider;
@@ -51,7 +51,7 @@ const SendTransaction = (props: IBroadcastComponent) => {
     }
     const getAddress = async () => {
       // @ts-ignore
-      const signerInstance = new WebSigners[1]();
+      const signerInstance = new WebSigners[0]();
       const address = await signerInstance.getAddress(pk);
       if (address) {
         setFromAddress(address);
@@ -92,7 +92,7 @@ const SendTransaction = (props: IBroadcastComponent) => {
     if (!msg) {
       return;
     }
-    const signerInstance = new WebSigners[1]();
+    const signerInstance = new WebSigners[0]();
     await signerInstance.sign(pk, msg);
     if (msg.hasSignature) {
       setSignedTx(msg.signedTransaction);

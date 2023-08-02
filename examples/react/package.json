@@ -11,6 +11,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.12",
+    "@xdefi-tech/chains-binance": "*",
     "@xdefi-tech/chains-btc": "*",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-evm": "*",
