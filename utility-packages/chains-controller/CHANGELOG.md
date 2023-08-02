@@ -1,5 +1,16 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.8
+
+### Patch Changes
+
+- 1641eeb: Fix package.json. Disable lint for chains controller (temp)
+- Updated dependencies [1641eeb]
+- Updated dependencies [3a7e0bb]
+  - @xdefi-tech/chains-solana@1.1.2
+  - @xdefi-tech/chains-graphql@1.1.4
+  - @xdefi-tech/chains-core@1.1.4
+
 ## 1.0.7
 
 ### Patch Changes

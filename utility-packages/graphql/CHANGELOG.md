@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.4
+
+### Patch Changes
+
+- 3a7e0bb: Add Binance Beacon Chain
+
 ## 1.1.3
 
 ### Patch Changes
