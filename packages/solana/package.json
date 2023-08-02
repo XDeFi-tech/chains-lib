@@ -11,6 +11,7 @@
     "README.md"
   ],
   "devDependencies": {
+    "eslint-config-custom": "*",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",

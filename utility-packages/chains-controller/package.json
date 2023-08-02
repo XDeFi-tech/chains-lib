@@ -17,9 +17,7 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
-    "clean": "rimraf dist .turbo node_modules",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "clean": "rimraf dist .turbo node_modules"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
