@@ -1,0 +1,84 @@
+query GetBinanceBalances($address: String!) {
+  binance {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        symbol
+        price {
+          amount
+          scalingFactor
+        }
+      }
+    }
+  }
+}
+
+query GetBinanceTransactions($address: String!, $pagination: CursorPagination, $dateRange: OptDateSelector, $blockRange: OptBlockSelector) {
+  binance {
+    transactions(address: $address, pagination: $pagination, dateRange: $dateRange, blockRange: $blockRange) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          amount {
+            value
+          }
+          asset {
+            chain
+            contract
+            decimals
+            id
+            image
+            name
+            price {
+              amount
+              scalingFactor
+            }
+            symbol
+          }
+          fee {
+            value
+          }
+          hash
+          status
+          time
+          toAddress
+          fromAddress
+          type
+          blockHeight
+        }
+      }
+    }
+  }
+}
+
+query GetBinanceFee {
+  binance {
+    fee
+  }
+}
+
+query GetBinanceStatus {
+  binance {
+    status {
+      lastBlock {
+        hash
+        height
+        time
+        txCount
+      }
+    }
+  }
+}
+
