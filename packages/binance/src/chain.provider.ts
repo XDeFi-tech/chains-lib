@@ -12,7 +12,7 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { BncClient } from '@binance-chain/javascript-sdk';
+import { BncClient } from '@binance-chain/javascript-sdk/lib/client';
 import axios, { Axios } from 'axios';
 
 import { ChainMsg, MsgBody } from './msg';
