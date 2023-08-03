@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.2
+
+### Patch Changes
+
+- ba1bafb: Remove @binance-chain/javascript-sdk ledger dependency
+
 ## 1.0.1
 
 ### Patch Changes
