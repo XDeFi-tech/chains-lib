@@ -1,5 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { crypto, Transaction, types } from '@binance-chain/javascript-sdk';
+import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
+import * as types from '@binance-chain/javascript-sdk/lib/types';
+import Transaction from '@binance-chain/javascript-sdk/lib/tx';
 
 import { ChainMsg } from '../msg';
 
@@ -22,31 +24,43 @@ export class PrivateKeySigner extends Signer.Provider {
     // do not touch messages
     /* eslint-disable */
     const msgToSend = {
-      inputs: [{
-        address: crypto.decodeAddress(txData.from),
-        coins: [coin]
-      }],
-      outputs: [{
-        address: crypto.decodeAddress(txData.to),
-        coins: [coin]
-      }],
+      inputs: [
+        {
+          address: crypto.decodeAddress(txData.from),
+          coins: [coin],
+        },
+      ],
+      outputs: [
+        {
+          address: crypto.decodeAddress(txData.to),
+          coins: [coin],
+        },
+      ],
       aminoPrefix: types.AminoPrefix.MsgSend,
     };
     const msgToSign = {
-      inputs: [{
-        address: txData.from,
-        coins: [{
-          amount: txData.value,
-          denom: txData.denom
-        }]
-      }],
-      outputs: [{
-        address: txData.to,
-        coins: [{
-          amount: txData.value,
-          denom: txData.denom
-        }]
-      }]
+      inputs: [
+        {
+          address: txData.from,
+          coins: [
+            {
+              amount: txData.value,
+              denom: txData.denom,
+            },
+          ],
+        },
+      ],
+      outputs: [
+        {
+          address: txData.to,
+          coins: [
+            {
+              amount: txData.value,
+              denom: txData.denom,
+            },
+          ],
+        },
+      ],
     };
     /* eslint-enable */
     const tx = new Transaction({
