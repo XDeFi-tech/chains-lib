@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.3
+
+### Patch Changes
+
+- 619b0b7: Fix fee issue with solana chain
+
 ## 1.1.2
 
 ### Patch Changes
