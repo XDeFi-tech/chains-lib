@@ -23,10 +23,18 @@ import {
   BinanceProvider,
   IndexerDataSource as BbcIndexerDataSource,
 } from '@xdefi-tech/chains-binance';
+import {
+  SOLANA_MANIFEST,
+  SolanaProvider,
+  IndexerDataSource as SolanaIndexerDataSource,
+} from '@xdefi-tech/chains-solana';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  ChainsContextDefaultValue.addProvider(
+    new SolanaProvider(new SolanaIndexerDataSource(SOLANA_MANIFEST))
+  );
   ChainsContextDefaultValue.addProvider(
     new BinanceProvider(new BbcIndexerDataSource(BINANCE_MANIFEST))
   );

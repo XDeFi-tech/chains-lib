@@ -23,7 +23,7 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async sign(privateKey: string, msg: ChainMsg): Promise<void> {
-    const tx = await msg.buildTx();
+    const { tx } = await msg.buildTx();
     tx.sign(Keypair.fromSecretKey(Buffer.from(privateKey, 'hex')));
     msg.sign(tx.serialize());
   }
