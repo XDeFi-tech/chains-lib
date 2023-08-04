@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-solana",
   "version": "1.1.2",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -10,6 +10,22 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "exports": {
+    "./web": {
+      "require": "./dist/signers/web.js",
+      "import": "./dist/signers/web.mjs",
+      "types": "./dist/signers/web.d.ts"
+    },
+    "./react-native": {
+      "require": "./dist/signers/react-native.js",
+      "import": "./dist/signers/react-native.mjs",
+      "types": "./dist/signers/react-native.d.ts"
+    },
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "devDependencies": {
     "eslint-config-custom": "*",
     "jest": "^27.5.1",
@@ -40,7 +56,6 @@
     "lint:fix": "eslint . --fix",
     "test:watch": "jest --watch"
   },
-  "type": "module",
   "tsup": {
     "entry": [
       "src/index.ts",

@@ -16,10 +16,9 @@ import {
 import { Observable } from 'rxjs';
 
 import { ChainMsg } from '../../msg';
+import { DEFAULT_FEE } from '../../constants';
 
 import { getBalance, getTransactions, getFees } from './queries';
-
-const DEFAULT_FEE = 5000;
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -88,16 +87,24 @@ export class IndexerDataSource extends DataSource {
     }));
   }
 
-  async gasFeeOptions(): Promise<FeeOptions | null> {
-    const { data } = await getFees();
-    if (!data.solana.fee) {
-      return null;
-    }
-    return {
-      [GasFeeSpeed.high]: data.solana.fee.high || DEFAULT_FEE,
-      [GasFeeSpeed.medium]: data.solana.fee.medium || DEFAULT_FEE,
-      [GasFeeSpeed.low]: data.solana.fee.low || DEFAULT_FEE,
+  async gasFeeOptions(): Promise<FeeOptions> {
+    const result: FeeOptions = {
+      [GasFeeSpeed.high]: DEFAULT_FEE,
+      [GasFeeSpeed.medium]: DEFAULT_FEE,
+      [GasFeeSpeed.low]: DEFAULT_FEE,
     };
+    try {
+      const { data } = await getFees();
+      if (data.solana.fee) {
+        result[GasFeeSpeed.high] = data.solana.fee.high || DEFAULT_FEE;
+        result[GasFeeSpeed.medium] = data.solana.fee.medium || DEFAULT_FEE;
+        result[GasFeeSpeed.low] = data.solana.fee.low || DEFAULT_FEE;
+      }
+    } catch (err) {
+      console.error('Error while getting fees for solana');
+      console.error(err);
+    }
+    return result;
   }
 
   async getNonce(_address: string): Promise<number> {

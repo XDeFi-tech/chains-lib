@@ -32,7 +32,7 @@ export class SolanaProvider extends Chain.Provider {
   }
 
   createMsg(data: MsgData): Msg {
-    return new ChainMsg(data);
+    return new ChainMsg(data, this);
   }
 
   async getTransactions(

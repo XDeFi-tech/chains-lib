@@ -1,17 +1,17 @@
 import { Chain } from '@xdefi-tech/chains-core';
 
-export const SolanaManifest: Chain.Manifest = {
+export const SOLANA_MANIFEST: Chain.Manifest = {
   name: 'Solana',
   description: '',
-  rpcURL: 'https://api.mainnet-beta.solana.com',
+  rpcURL: 'https://solanalb-rpc.xdefi.services',
   chainSymbol: 'SOL',
   blockExplorerURL: 'https://explorer.solana.com/',
   chainId: 'mainnet-beta',
   chain: 'solana',
   decimals: 6,
   feeGasStep: {
-    high: 2,
-    medium: 1.5,
+    high: 1,
+    medium: 1,
     low: 1,
   },
 };
