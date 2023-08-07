@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.4
+
+### Patch Changes
+
+- e60113a: Add send token support for solana chain.
+
 ## 1.1.3
 
 ### Patch Changes
