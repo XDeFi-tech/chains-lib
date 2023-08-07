@@ -15,7 +15,8 @@ import {
 import {
   TOKEN_PROGRAM_ID,
   getMint,
-  createMintToInstruction,
+  createTransferInstruction,
+  getAssociatedTokenAddress,
 } from '@solana/spl-token';
 
 import type { SolanaProvider } from './chain.provider';
@@ -81,9 +82,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       value = BigNumber(msgData.amount)
         .multipliedBy(10 ** mint.decimals)
         .toNumber();
-      instruction = createMintToInstruction(
-        mint.address,
-        recipientPublicKey,
+      const [fromTokenAcc, toTokenAcc] = await Promise.all([
+        getAssociatedTokenAddress(mint.address, senderPublicKey),
+        getAssociatedTokenAddress(mint.address, recipientPublicKey),
+      ]);
+      instruction = createTransferInstruction(
+        fromTokenAcc,
+        toTokenAcc,
         senderPublicKey,
         value
       );
