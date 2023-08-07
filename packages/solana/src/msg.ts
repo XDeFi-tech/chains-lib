@@ -10,17 +10,25 @@ import {
   SystemProgram,
   Transaction as SolanaTransaction,
   TransactionInstruction,
+  LAMPORTS_PER_SOL,
 } from '@solana/web3.js';
+import {
+  TOKEN_PROGRAM_ID,
+  getMint,
+  createTransferInstruction,
+  getAssociatedTokenAddress,
+} from '@solana/spl-token';
 
 import type { SolanaProvider } from './chain.provider';
-import { DEFAULT_FEE, LAMPORTS_SCALING_FACTOR } from './constants';
+import { DEFAULT_FEE } from './constants';
 
 export interface MsgBody {
   amount: NumberIsh;
   to: string;
   from: string;
-  data?: string;
   gasPrice?: NumberIsh;
+  decimals?: number;
+  contractAddress?: string;
 }
 
 export interface TxBody {
@@ -29,7 +37,8 @@ export interface TxBody {
   to: string;
   from: string;
   gasPrice: number;
-  data?: any;
+  decimals: number;
+  programId: PublicKey;
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
@@ -46,29 +55,63 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
+    let decimals = msgData.decimals || 9; // 9 - lamports in SOL
     let gasPrice = msgData.gasPrice;
+    let programId;
     const senderPublicKey = new PublicKey(msgData.from);
     const recipientPublicKey = new PublicKey(msgData.to);
-    const value = BigNumber(msgData.amount)
-      .multipliedBy(10 ** LAMPORTS_SCALING_FACTOR)
-      .toNumber();
+    let value;
     const { blockhash } = await this.provider.rpcProvider.getRecentBlockhash();
-    const instruction = new TransactionInstruction({
-      keys: [
-        { pubkey: senderPublicKey, isSigner: true, isWritable: true },
-        { pubkey: recipientPublicKey, isSigner: false, isWritable: true },
-      ],
-      programId: SystemProgram.programId, // token vs native
-      data: SystemProgram.transfer({
-        fromPubkey: senderPublicKey,
-        toPubkey: recipientPublicKey,
-        lamports: value,
-      }).data,
-    });
+
     const transaction = new SolanaTransaction({
       feePayer: senderPublicKey,
       recentBlockhash: blockhash,
     });
+
+    let instruction;
+    if (msgData.contractAddress) {
+      const mintPublicKey = new PublicKey(msgData.contractAddress);
+
+      const mint = await getMint(
+        this.provider.rpcProvider,
+        mintPublicKey,
+        'confirmed',
+        TOKEN_PROGRAM_ID
+      );
+      programId = TOKEN_PROGRAM_ID;
+      value = BigNumber(msgData.amount)
+        .multipliedBy(10 ** mint.decimals)
+        .toNumber();
+      const [fromTokenAcc, toTokenAcc] = await Promise.all([
+        getAssociatedTokenAddress(mint.address, senderPublicKey),
+        getAssociatedTokenAddress(mint.address, recipientPublicKey),
+      ]);
+      instruction = createTransferInstruction(
+        fromTokenAcc,
+        toTokenAcc,
+        senderPublicKey,
+        value
+      );
+      decimals = mint.decimals;
+    } else {
+      value = BigNumber(msgData.amount)
+        .multipliedBy(LAMPORTS_PER_SOL)
+        .toNumber();
+      instruction = new TransactionInstruction({
+        keys: [
+          { pubkey: senderPublicKey, isSigner: true, isWritable: true },
+          { pubkey: recipientPublicKey, isSigner: false, isWritable: true },
+        ],
+        programId: SystemProgram.programId, // token vs native
+        data: SystemProgram.transfer({
+          fromPubkey: senderPublicKey,
+          toPubkey: recipientPublicKey,
+          lamports: value,
+        }).data,
+      });
+      programId = SystemProgram.programId;
+    }
+
     transaction.add(instruction);
 
     if (!gasPrice) {
@@ -83,8 +126,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       value: value,
       to: msgData.to,
       from: msgData.from,
-      data: msgData.data,
       gasPrice: gasPrice,
+      decimals,
+      programId,
     };
   }
 
@@ -97,14 +141,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
     if (msgData.gasPrice) {
       result.fee = BigNumber(msgData.gasPrice)
-        .dividedBy(10 ** LAMPORTS_SCALING_FACTOR)
+        .dividedBy(LAMPORTS_PER_SOL)
         .toString();
     } else {
       const options = await this.provider.gasFeeOptions();
       result.fee = BigNumber(
         options ? (options[speed || GasFeeSpeed.medium] as number) : DEFAULT_FEE
       )
-        .dividedBy(10 ** LAMPORTS_SCALING_FACTOR)
+        .dividedBy(LAMPORTS_PER_SOL)
         .toString();
     }
 

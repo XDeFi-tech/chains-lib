@@ -36,6 +36,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@solana/spl-token": "^0.3.8",
     "@solana/web3.js": "^1.78.0",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
