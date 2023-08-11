@@ -39,6 +39,9 @@ export interface TxBody {
   gasPrice: number;
   decimals: number;
   programId: PublicKey;
+  contractAddress?: string;
+  toTokenAddress?: string;
+  fromTokenAddress?: string;
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
@@ -61,6 +64,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const senderPublicKey = new PublicKey(msgData.from);
     const recipientPublicKey = new PublicKey(msgData.to);
     let value;
+    const contractInfo: any = {};
     const { blockhash } = await this.provider.rpcProvider.getRecentBlockhash();
 
     const transaction = new SolanaTransaction({
@@ -86,6 +90,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         getAssociatedTokenAddress(mint.address, senderPublicKey),
         getAssociatedTokenAddress(mint.address, recipientPublicKey),
       ]);
+      contractInfo.contractAddress = msgData.contractAddress;
+      contractInfo.toTokenAddress = toTokenAcc.toBase58();
+      contractInfo.fromTokenAddress = fromTokenAcc.toBase58();
+
       instruction = createTransferInstruction(
         fromTokenAcc,
         toTokenAcc,
@@ -129,6 +137,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       gasPrice: gasPrice,
       decimals,
       programId,
+      ...contractInfo,
     };
   }
 
