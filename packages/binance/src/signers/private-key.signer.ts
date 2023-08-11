@@ -63,7 +63,9 @@ export class PrivateKeySigner extends Signer.Provider {
       ],
     };
     /* eslint-enable */
-    const tx = new Transaction({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const tx = new Transaction.default({
       accountNumber: txData.accountNumber,
       chainId: txData.chainId,
       memo: txData.memo || '',

@@ -105,7 +105,11 @@ export class CosmosProvider extends Chain.Provider {
           data.tx_response.raw_log
         );
       }
-      transactions.push(Transaction.fromData(data.tx_response));
+      transactions.push(
+        Transaction.fromData({
+          hash: data.tx_response.txhash,
+        })
+      );
     }
 
     return transactions;

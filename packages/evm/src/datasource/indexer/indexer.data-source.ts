@@ -12,7 +12,7 @@ import {
   Balance,
   FeeData,
 } from '@xdefi-tech/chains-core';
-import { utils } from 'ethers';
+import { utils, providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -24,6 +24,7 @@ import { getBalance, getFees, getStatus, getTransaction } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
+  declare rpcProvider: providers.StaticJsonRpcProvider;
   constructor(manifest: Chain.Manifest) {
     super(manifest);
     if (!EVM_MANIFESTS[manifest.chain as EVMChains]) {
@@ -31,6 +32,9 @@ export class IndexerDataSource extends DataSource {
         'Please use EVM_MANIFESTS for indexer data source to avoid gql incompatibility'
       );
     }
+    this.rpcProvider = new providers.StaticJsonRpcProvider(
+      this.manifest.rpcURL
+    );
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
