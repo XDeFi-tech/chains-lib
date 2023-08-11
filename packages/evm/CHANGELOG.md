@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.3
+
+### Patch Changes
+
+- 2bb0b36: Minor fixes
+
 ## 1.1.2
 
 ### Patch Changes

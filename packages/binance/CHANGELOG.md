@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.3
+
+### Patch Changes
+
+- 2bb0b36: Minor fixes
+
 ## 1.0.2
 
 ### Patch Changes

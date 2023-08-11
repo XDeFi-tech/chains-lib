@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.9
+
+### Patch Changes
+
+- 2bb0b36: Minor fixes
+
 ## 1.0.8
 
 ### Patch Changes
