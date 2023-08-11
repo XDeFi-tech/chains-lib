@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.5
+
+### Patch Changes
+
+- 5c82b86: Add contract info to buildTx method for Solana chain
+
 ## 1.1.4
 
 ### Patch Changes
