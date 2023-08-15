@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.4
+
+### Patch Changes
+
+- 982319e: Fix gasLimit estimation for ERC
+
 ## 1.1.3
 
 ### Patch Changes
