@@ -22,6 +22,7 @@ import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 
 import { EVMChains } from '../../manifests';
 import { ChainMsg } from '../../msg';
+import { DEFAULT_CONTRACT_FEE, DEFAULT_TRANSACTION_FEE } from '../../constants';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -169,24 +170,24 @@ export class ChainDataSource extends DataSource {
     speed: GasFeeSpeed = GasFeeSpeed.medium
   ): Promise<FeeData[]> {
     const fee = await this.gasFeeOptions();
-    const transactionFee = 21000; // Paid for every transaction
-
     const feeData: FeeData[] = [];
     if (!fee) {
       return feeData;
     }
     for (const msg of msgs) {
       const msgData = msg.toData();
-      let calculateData = msgData.data;
+      let gasLimit: number;
+
       if (msgData.contractAddress) {
-        const { contractData } = await msg.getDataFromContract();
-        calculateData = contractData.data;
+        gasLimit = DEFAULT_CONTRACT_FEE;
+      } else {
+        const calculateData = msgData.data;
+        const feeForData =
+          calculateData && calculateData !== '0x'
+            ? 68 * new TextEncoder().encode(calculateData.toString()).length
+            : 0;
+        gasLimit = Math.ceil((DEFAULT_TRANSACTION_FEE + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       }
-      const feeForData =
-        calculateData && calculateData !== '0x'
-          ? 68 * new TextEncoder().encode(calculateData.toString()).length
-          : 0;
-      const gasLimit = Math.ceil((transactionFee + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       const msgFeeData = {
         gasLimit,
         gasPrice: undefined,
