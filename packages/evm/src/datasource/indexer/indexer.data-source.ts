@@ -18,6 +18,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { EVMChains, EVM_MANIFESTS } from '../../manifests';
 import { ChainMsg } from '../../msg';
+import { DEFAULT_CONTRACT_FEE, DEFAULT_TRANSACTION_FEE } from '../../constants';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
 import { getBalance, getFees, getStatus, getTransaction } from './queries';
@@ -137,7 +138,6 @@ export class IndexerDataSource extends DataSource {
     const { data } = await getFees(this.manifest.chain);
     const fee = data[this.manifest.chain].fee;
     const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number';
-    const transactionFee = 21000; // Paid for every transaction
 
     // gasLimit = 21000 + 68 * dataByteLength
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
@@ -145,16 +145,18 @@ export class IndexerDataSource extends DataSource {
     const feeData: FeeData[] = [];
     for (const msg of msgs) {
       const msgData = msg.toData();
-      let calculateData = msgData.data;
+      let gasLimit: number;
+
       if (msgData.contractAddress) {
-        const { contractData } = await msg.getDataFromContract();
-        calculateData = contractData.data;
+        gasLimit = DEFAULT_CONTRACT_FEE;
+      } else {
+        const calculateData = msgData.data;
+        const feeForData =
+          calculateData && calculateData !== '0x'
+            ? 68 * new TextEncoder().encode(calculateData.toString()).length
+            : 0;
+        gasLimit = Math.ceil((DEFAULT_TRANSACTION_FEE + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       }
-      const feeForData =
-        calculateData && calculateData !== '0x'
-          ? 68 * new TextEncoder().encode(calculateData.toString()).length
-          : 0;
-      const gasLimit = Math.ceil((transactionFee + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       const msgFeeData = isEIP1559
         ? {
             gasLimit,

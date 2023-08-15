@@ -1,0 +1,2 @@
+export const DEFAULT_TRANSACTION_FEE = 21000;
+export const DEFAULT_CONTRACT_FEE = 100000;
