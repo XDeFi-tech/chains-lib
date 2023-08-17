@@ -1,0 +1,85 @@
+{
+  "name": "@xdefi-tech/chains-thor",
+  "version": "0.0.0",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
+  "license": "MIT",
+  "exports": {
+    "./web": {
+      "require": "./dist/signers/web.js",
+      "import": "./dist/signers/web.mjs",
+      "types": "./dist/signers/web.d.ts"
+    },
+    "./react-native": {
+      "require": "./dist/signers/react-native.js",
+      "import": "./dist/signers/react-native.mjs",
+      "types": "./dist/signers/react-native.d.ts"
+    },
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "eslint-config-custom": "*",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
+    "jest-watch-typeahead": "^1.0.0",
+    "ts-jest": "^27.1.4",
+    "tsup": "^6.6.3",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@cosmos-client/core": "^0.47.1",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-graphql": "*",
+    "axios": "^1.4.0",
+    "bech32": "^2.0.0",
+    "bech32-buffer": "^0.2.1",
+    "bignumber.js": "^9.0.2",
+    "bip39": "^3.1.0",
+    "crypto-browserify": "^3.12.0",
+    "long": "^5.2.3",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^4.4.0",
+    "rxjs": "^7.8.0",
+    "stream-browserify": "^3.0.0",
+    "ts-node": "^10.7.0"
+  },
+  "scripts": {
+    "build": "tsup --minify --clean",
+    "watch": "tsup --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rimraf dist .turbo node_modules"
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest/presets/js-with-ts",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
+  }
+}

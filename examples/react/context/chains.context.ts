@@ -28,6 +28,11 @@ import {
   SolanaProvider,
   IndexerDataSource as SolanaIndexerDataSource,
 } from '@xdefi-tech/chains-solana';
+import {
+  THOR_MANIFEST,
+  ThorProvider,
+  ChainDataSource as ThorChainDataSource,
+} from '@xdefi-tech/chains-thor';
 
 export const ChainsContextDefaultValue = new ChainController();
 
@@ -78,6 +83,9 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(new ChainDataSource(COSMOS_MANIFESTS.kava))
+  );
+  ChainsContextDefaultValue.addProvider(
+    new ThorProvider(new ThorChainDataSource(THOR_MANIFEST))
   );
 };
 
