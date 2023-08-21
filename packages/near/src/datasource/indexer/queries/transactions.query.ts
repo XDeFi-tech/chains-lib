@@ -1,16 +1,17 @@
 import {
-  GetBitcoinTransactionsDocument,
+  GetNearTransactionsDocument,
   Scalars,
   OptBlockRange,
 } from '@xdefi-tech/chains-graphql';
 import { gqlClient } from '@xdefi-tech/chains-core';
+import { map } from 'lodash';
 
-export const getTransaction = (
+export const getTransaction = async (
   address: Scalars['String'],
   blockRange: OptBlockRange
 ) => {
-  return gqlClient.query({
-    query: GetBitcoinTransactionsDocument,
+  const response = await gqlClient.query({
+    query: GetNearTransactionsDocument,
     variables: {
       address,
       blockRange,
@@ -18,8 +19,10 @@ export const getTransaction = (
         from: null,
         to: null,
       },
-      pageNumber: 1,
-      pageSize: 1000,
+      first: 500,
+      after: null,
     },
   });
+
+  return map(response.data.near.transactions.edges, 'node');
 };

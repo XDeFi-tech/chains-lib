@@ -11,3 +11,4 @@ export * from './datasource';
 export * from './asset';
 export * from './observer';
 export * from './interfaces';
+export * from './exceptions';

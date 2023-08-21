@@ -16,6 +16,7 @@
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-evm": "*",
     "@xdefi-tech/chains-thor": "*",
+    "@xdefi-tech/chains-near": "*",
     "@xdefi-tech/chains-solana": "*",
     "@xdefi-tech/chains-cosmos": "*",
     "@xdefi-tech/chains-controller": "*",

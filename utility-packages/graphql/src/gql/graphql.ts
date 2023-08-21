@@ -58,6 +58,11 @@ export type Scalars = {
   NaiveDateTime: any;
 };
 
+export type Apr = {
+  __typename?: 'APR';
+  smaApr: Scalars['Float'];
+};
+
 export type Address = {
   __typename?: 'Address';
   address: Scalars['String'];
@@ -205,7 +210,7 @@ export type AddressPortfolioFiat = {
   /** granularity of data (NOTE: experimental, can be removed) */
   granularity?: Maybe<FiatGranularity>;
   /** historical balances USD at specific datetime */
-  historicalBalanceSum: Array<DatedAmount>;
+  historicalBalanceSum: Array<DatedAmountFiat>;
 };
 
 export type AddressRouteCheckTypeV2 = {
@@ -248,6 +253,13 @@ export type Amount = {
   /** @deprecated use `decimals` from CryptoAsset */
   scalingFactor?: Maybe<Scalars['Int']>;
   value: Scalars['String'];
+};
+
+/** Represent fiat amount in USD */
+export type AmountFiat = {
+  __typename?: 'AmountFiat';
+  amount: Scalars['String'];
+  scalingFactor: Scalars['Int'];
 };
 
 export type AmountInputType = {
@@ -506,6 +518,8 @@ export type AssetTokenContractType = {
   defiProtocol?: Maybe<AssetDefiProtocolType>;
   /** Chain fee */
   fee: AssetFeeType;
+  /** Unique identifier in the database */
+  id: Scalars['Float'];
   /** The scaling factor is needed to convert contract to token price */
   scalingFactor: Scalars['Float'];
   /** The symbol that identifies token */
@@ -514,7 +528,7 @@ export type AssetTokenContractType = {
 
 export type AssetTokenType = AssetBaseType & {
   __typename?: 'AssetTokenType';
-  /** Currency market cap */
+  /** Assets contracts */
   contracts?: Maybe<Array<AssetTokenContractType>>;
   /** Additional info about asset: description, social and tech links, etc. */
   externalData: Scalars['JSON'];
@@ -836,26 +850,25 @@ export type BinanceTransactionEdge = {
 export type BitcoinChain = {
   __typename?: 'BitcoinChain';
   balances: Array<Balance>;
-  buildRawTransaction: Scalars['String'];
+  broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
   getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
   legacyNFTs: Array<NfTv2>;
   name: Scalars['String'];
-  sendRawTransaction: Scalars['String'];
   status: Status;
-  transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputV3Connection;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
 };
 
 export type BitcoinChainBalancesArgs = {
   address: Scalars['String'];
 };
 
-export type BitcoinChainBuildRawTransactionArgs = {
-  inputs?: Array<CreateRawTransactionInput>;
-  outputs?: Array<CreateRawTransactionOutput>;
+export type BitcoinChainBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
 };
 
 export type BitcoinChainDailyBalancesArgs = {
@@ -875,44 +888,88 @@ export type BitcoinChainLegacyNfTsArgs = {
   address: Scalars['String'];
 };
 
-export type BitcoinChainSendRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
 export type BitcoinChainTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: OptBlockRange;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
 };
 
-export type BitcoinChainUnspentTxsArgs = {
+export type BitcoinChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
-  pagination: UtxocursorPagination;
+  page: Scalars['Int'];
+};
+
+export type BitcoinChainTestNet = {
+  __typename?: 'BitcoinChainTestNet';
+  balances: Array<Balance>;
+  broadcastTransaction: Scalars['String'];
+  dailyBalances: DailyBalances;
+  decodeRawTransaction: Scalars['String'];
+  getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
+  name: Scalars['String'];
+  status: Status;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+};
+
+export type BitcoinChainTestNetBalancesArgs = {
+  address: Scalars['String'];
+};
+
+export type BitcoinChainTestNetBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type BitcoinChainTestNetDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: OptDateRange;
+};
+
+export type BitcoinChainTestNetDecodeRawTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type BitcoinChainTestNetGetTransactionByHashArgs = {
+  txHash: Scalars['String'];
+};
+
+export type BitcoinChainTestNetTransactionsArgs = {
+  address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoinChainTestNetUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
 };
 
 export type BitcoincashChain = {
   __typename?: 'BitcoincashChain';
   balances: Array<Balance>;
-  buildRawTransaction: Scalars['String'];
+  broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
   getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  sendRawTransaction: Scalars['String'];
   status: Status;
-  transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputV3Connection;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
 };
 
 export type BitcoincashChainBalancesArgs = {
   address: Scalars['String'];
 };
 
-export type BitcoincashChainBuildRawTransactionArgs = {
-  inputs?: Array<CreateRawTransactionInput>;
-  outputs?: Array<CreateRawTransactionOutput>;
+export type BitcoincashChainBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
 };
 
 export type BitcoincashChainDailyBalancesArgs = {
@@ -928,20 +985,65 @@ export type BitcoincashChainGetTransactionByHashArgs = {
   txHash: Scalars['String'];
 };
 
-export type BitcoincashChainSendRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
 export type BitcoincashChainTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: OptBlockRange;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
 };
 
-export type BitcoincashChainUnspentTxsArgs = {
+export type BitcoincashChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
-  pagination: UtxocursorPagination;
+  page: Scalars['Int'];
+};
+
+export type BitcoincashChainTestNet = {
+  __typename?: 'BitcoincashChainTestNet';
+  balances: Array<Balance>;
+  broadcastTransaction: Scalars['String'];
+  dailyBalances: DailyBalances;
+  decodeRawTransaction: Scalars['String'];
+  getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
+  name: Scalars['String'];
+  status: Status;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+};
+
+export type BitcoincashChainTestNetBalancesArgs = {
+  address: Scalars['String'];
+};
+
+export type BitcoincashChainTestNetBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type BitcoincashChainTestNetDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: OptDateRange;
+};
+
+export type BitcoincashChainTestNetDecodeRawTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type BitcoincashChainTestNetGetTransactionByHashArgs = {
+  txHash: Scalars['String'];
+};
+
+export type BitcoincashChainTestNetTransactionsArgs = {
+  address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoincashChainTestNetUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
 };
 
 export type BridgeTokenInput = {
@@ -1030,6 +1132,12 @@ export type CompositeTokenType = {
   token?: Maybe<TokenType>;
 };
 
+export type ConfigArgs = {
+  asset: SupportedAssets;
+  provider: Providers;
+  type: StakingTypes;
+};
+
 /** Pagination options. Requires first or last */
 export type ConnectionArgs = {
   /** Paginate after opaque cursor */
@@ -1042,21 +1150,22 @@ export type ConnectionArgs = {
   last?: InputMaybe<Scalars['Float']>;
 };
 
+export type Contract = {
+  __typename?: 'Contract';
+  info: CryptoAsset;
+  name: Scalars['String'];
+};
+
 export type CosmosBalanceChain = {
   __typename?: 'CosmosBalanceChain';
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
-  legacyNFTs: Array<NfTv2>;
   name: Scalars['String'];
   status: Status;
   version: Array<Version>;
 };
 
 export type CosmosBalanceChainBalancesArgs = {
-  address: Scalars['String'];
-};
-
-export type CosmosBalanceChainLegacyNfTsArgs = {
   address: Scalars['String'];
 };
 
@@ -1163,15 +1272,14 @@ export type CosmosLikeTransactionEdge = {
   node: CosmosLikeTransaction;
 };
 
-export type CreateRawTransactionInput = {
-  sequence?: InputMaybe<Scalars['Int']>;
-  txid: Scalars['String'];
-  vout: Scalars['Int'];
-};
+export enum CreditOutcome {
+  CONSUMED = 'CONSUMED',
+  INSUFFICIENT = 'INSUFFICIENT',
+}
 
-export type CreateRawTransactionOutput = {
-  address: Scalars['String'];
-  amount: Scalars['Float'];
+export type Credits = {
+  __typename?: 'Credits';
+  amount: Scalars['Int'];
 };
 
 export type CronosEvm = {
@@ -1297,16 +1405,17 @@ export type DailyBalances = {
   asset: CryptoAsset;
 };
 
-/** Amount at specific point of time */
-export type DatedAmount = {
-  __typename?: 'DatedAmount';
-  amount: Amount;
+/** Fiat amount at specific point of time (similar to `DatedAmount`) */
+export type DatedAmountFiat = {
+  __typename?: 'DatedAmountFiat';
+  amount: AmountFiat;
   date: Scalars['DateTime'];
 };
 
 export type DecodedTransaction = {
   __typename?: 'DecodedTransaction';
   args: Array<TransactionCallArg>;
+  contract: Contract;
   fname: Scalars['String'];
   type: Scalars['String'];
 };
@@ -1329,25 +1438,24 @@ export type DefiProtocolType = {
 export type DogeChain = {
   __typename?: 'DogeChain';
   balances: Array<Balance>;
-  buildRawTransaction: Scalars['String'];
+  broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
   getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  sendRawTransaction: Scalars['String'];
   status: Status;
-  transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputV3Connection;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
 };
 
 export type DogeChainBalancesArgs = {
   address: Scalars['String'];
 };
 
-export type DogeChainBuildRawTransactionArgs = {
-  inputs?: Array<CreateRawTransactionInput>;
-  outputs?: Array<CreateRawTransactionOutput>;
+export type DogeChainBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
 };
 
 export type DogeChainDailyBalancesArgs = {
@@ -1363,20 +1471,17 @@ export type DogeChainGetTransactionByHashArgs = {
   txHash: Scalars['String'];
 };
 
-export type DogeChainSendRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
 export type DogeChainTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: OptBlockRange;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
 };
 
-export type DogeChainUnspentTxsArgs = {
+export type DogeChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
-  pagination: UtxocursorPagination;
+  page: Scalars['Int'];
 };
 
 export type Eip1559Fee = {
@@ -1407,7 +1512,6 @@ export type EvmTransactionV2 = {
   __typename?: 'EVMTransactionV2';
   blockIndex: Scalars['Int'];
   blockNumber: Scalars['Int'];
-  classified?: Maybe<ExplainedTransaction>;
   decoded?: Maybe<DecodedTransaction>;
   fee: Scalars['JSON'];
   fromAddress: Scalars['String'];
@@ -1589,6 +1693,12 @@ export type FilterArgs = {
   pool?: InputMaybe<Pool>;
 };
 
+export type GetBalance = {
+  __typename?: 'GetBalance';
+  balance?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']>;
+};
+
 export type GetTokensArgs = {
   address?: InputMaybe<Array<Scalars['String']>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
@@ -1662,28 +1772,40 @@ export type LastSlotStatus = {
   updatedOn: Scalars['DateTime'];
 };
 
+export type LidoStakePreviw = {
+  __typename?: 'LidoStakePreviw';
+  chainId: Scalars['Int'];
+  data: Scalars['String'];
+  fromAddress: Scalars['String'];
+  gas: Scalars['String'];
+  maxFeePerGas: Scalars['String'];
+  maxPriorityFeePerGas: Scalars['String'];
+  nonce: Scalars['Int'];
+  toAddress: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type LitecoinChain = {
   __typename?: 'LitecoinChain';
   balances: Array<Balance>;
-  buildRawTransaction: Scalars['String'];
+  broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
   getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  sendRawTransaction: Scalars['String'];
   status: Status;
-  transactions: UtxoTransactionConnection;
-  unspentTxs: UnspentTransactionOutputV3Connection;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
 };
 
 export type LitecoinChainBalancesArgs = {
   address: Scalars['String'];
 };
 
-export type LitecoinChainBuildRawTransactionArgs = {
-  inputs?: Array<CreateRawTransactionInput>;
-  outputs?: Array<CreateRawTransactionOutput>;
+export type LitecoinChainBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
 };
 
 export type LitecoinChainDailyBalancesArgs = {
@@ -1699,20 +1821,65 @@ export type LitecoinChainGetTransactionByHashArgs = {
   txHash: Scalars['String'];
 };
 
-export type LitecoinChainSendRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
 export type LitecoinChainTransactionsArgs = {
   address: Scalars['String'];
   blockRange?: OptBlockRange;
   dateRange?: OptDateRange;
-  pagination?: CursorPagination;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
 };
 
-export type LitecoinChainUnspentTxsArgs = {
+export type LitecoinChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
-  pagination: UtxocursorPagination;
+  page: Scalars['Int'];
+};
+
+export type LitecoinChainTestNet = {
+  __typename?: 'LitecoinChainTestNet';
+  balances: Array<Balance>;
+  broadcastTransaction: Scalars['String'];
+  dailyBalances: DailyBalances;
+  decodeRawTransaction: Scalars['String'];
+  getTransactionByHash: UtxoTransactionByHashV2;
+  isTestNet: Scalars['Boolean'];
+  name: Scalars['String'];
+  status: Status;
+  transactions: Array<UtxoTransaction>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+};
+
+export type LitecoinChainTestNetBalancesArgs = {
+  address: Scalars['String'];
+};
+
+export type LitecoinChainTestNetBroadcastTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type LitecoinChainTestNetDailyBalancesArgs = {
+  address: Scalars['String'];
+  dateRange?: OptDateRange;
+};
+
+export type LitecoinChainTestNetDecodeRawTransactionArgs = {
+  rawHex: Scalars['String'];
+};
+
+export type LitecoinChainTestNetGetTransactionByHashArgs = {
+  txHash: Scalars['String'];
+};
+
+export type LitecoinChainTestNetTransactionsArgs = {
+  address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type LitecoinChainTestNetUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
 };
 
 export enum LoginChain {
@@ -1742,12 +1909,30 @@ export type MediaV2 = {
 export type Mutation = {
   __typename?: 'Mutation';
   addComment: Reputation;
+  addCreditsForUser: Credits;
   addUserAddress: User;
   anonymousLogin: Auth;
   claimFees?: Maybe<ClaimStatus>;
+  consumeCreditsForUser: CreditOutcome;
   /** @deprecated Use upsertReferrer instead */
   createReferrer?: Maybe<Referrer>;
   createUser: Auth;
+  /**
+   * The difference between these two credit consumption methods is that first checks and tries
+   * to consume credits or fails if they are insufficent
+   * the second one just blindly subtracts them with possibility to go to negative
+   * Those two methods are required to support the following scenario for query cost calculation:
+   * 1. router gets request from user
+   * 2. it calculates (statically) query cost and credits by analyzing query and tries to subtract credits
+   * BEFORE query execution. Rejects if insufficient credits
+   * 3. when query is executed, response is analyzed to calculated adjusted cost and credits
+   * 4. router then forces user credit subtraction without any tries, because query is already executed
+   * If we go into negative territory it will efficiently stop query execution at point 2. anyway and also
+   * will require user to cover for any consumed credits
+   * Alternative approach would be permit or reservation based, when step 2. reserves some amount and step 4. commits actual one,
+   * but it still requires to know reservation size in advance and requires more coordination on db level.
+   */
+  forceConsumeCreditsForUser: CreditOutcome;
   loginWithPassword: Auth;
   loginWithSignature: Auth;
   refreshAccessToken: Auth;
@@ -1766,10 +1951,20 @@ export type MutationAddCommentArgs = {
   source: Scalars['String'];
 };
 
+export type MutationAddCreditsForUserArgs = {
+  creditAmount: Scalars['Int'];
+  externalUserId: Scalars['String'];
+};
+
 export type MutationAddUserAddressArgs = {
   address: Scalars['String'];
   chain: LoginChain;
   signature: Scalars['String'];
+};
+
+export type MutationConsumeCreditsForUserArgs = {
+  creditAmount: Scalars['Int'];
+  externalUserId: Scalars['String'];
 };
 
 export type MutationCreateReferrerArgs = {
@@ -1783,6 +1978,11 @@ export type MutationCreateReferrerArgs = {
 export type MutationCreateUserArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type MutationForceConsumeCreditsForUserArgs = {
+  creditAmount: Scalars['Int'];
+  externalUserId: Scalars['String'];
 };
 
 export type MutationLoginWithPasswordArgs = {
@@ -2103,15 +2303,16 @@ export enum PortfolioChainVariant {
   Avalanche = 'Avalanche',
   Axelar = 'Axelar',
   Band = 'Band',
-  Binance = 'Binance',
+  BinanceChain = 'BinanceChain',
+  BinanceSmartChain = 'BinanceSmartChain',
   Bitcanna = 'Bitcanna',
   Bitcoin = 'Bitcoin',
+  BitcoinCash = 'BitcoinCash',
   Bitsong = 'Bitsong',
   Canto = 'Canto',
   CantoEVM = 'CantoEVM',
   Celo = 'Celo',
   Cerberus = 'Cerberus',
-  Chain = 'Chain',
   Chihuahua = 'Chihuahua',
   Comdex = 'Comdex',
   Cosmos = 'Cosmos',
@@ -2153,7 +2354,6 @@ export enum PortfolioChainVariant {
   Sentinel = 'Sentinel',
   Shentu = 'Shentu',
   Sifchain = 'Sifchain',
-  Smart = 'Smart',
   Solana = 'Solana',
   Sommelier = 'Sommelier',
   Stargaze = 'Stargaze',
@@ -2220,6 +2420,13 @@ export type ProviderTypeV2 = {
   time: Scalars['String'];
 };
 
+export enum Providers {
+  Lido = 'Lido',
+  Meria = 'Meria',
+  StakeLab = 'StakeLab',
+  Stride = 'Stride',
+}
+
 export type Query = {
   __typename?: 'Query';
   akash: CosmosBasedChain;
@@ -2231,13 +2438,16 @@ export type Query = {
   binance: Binance;
   binanceSmartChain: BinanceSmartChain;
   bitcoin: BitcoinChain;
+  bitcoinTestnet: BitcoinChainTestNet;
   bitcoincash: BitcoincashChain;
+  bitcoincashTestnet: BitcoincashChainTestNet;
   canto: CantoChain;
   cantoEVM: CantoEvm;
   chains: Array<ChainType>;
   /** Fetch composite tokens */
   compositeTokens: Array<CompositeTokenType>;
   cosmos: CosmosBasedChain;
+  cosmoshub: CosmosBasedChain;
   crescent: CosmosBasedChain;
   cronos: CosmosBasedChain;
   cronosEVM: CronosEvm;
@@ -2258,6 +2468,7 @@ export type Query = {
   kava: CosmosBasedChain;
   kujira: CosmosBasedChain;
   litecoin: LitecoinChain;
+  litecoinTestnet: LitecoinChainTestNet;
   mars: CosmosBasedChain;
   near: NearChain;
   optimism: Optimism;
@@ -2271,13 +2482,14 @@ export type Query = {
   routingV2?: Maybe<RoutingTypeV2>;
   sei: CosmosBalanceChain;
   solana: SolanaChain;
+  staking: StakingService;
   stargaze: StargazeChain;
   stargazeV2: CosmosBasedChainWithNft;
   stride: CosmosBasedChain;
   /** Terra2 */
-  terra: CosmosBalanceChain;
+  terra: TerraChain;
   /** Terra1 */
-  terraClassic: CosmosBalanceChain;
+  terraClassic: TerraChain;
   thorchain: ThorChain;
   /** Fetch list of all available tokens */
   tokens: Array<TokenType>;
@@ -2311,6 +2523,7 @@ export type QueryDappArgs = {
 export type QueryDecodeTransactionArgs = {
   chain: Scalars['String'];
   payload: Scalars['String'];
+  to: Scalars['String'];
 };
 
 export type QueryExplainTransactionArgs = {
@@ -2435,6 +2648,19 @@ export type ReputationComment = {
   text: Scalars['String'];
 };
 
+export type RewardInputType = {
+  amount?: Scalars['Decimal'];
+  amountUsd?: Scalars['Decimal'];
+  asset: RoutingTokenInputTypeV2;
+};
+
+export type RewardType = {
+  __typename?: 'RewardType';
+  amount: Scalars['Decimal'];
+  amountUsd: Scalars['Decimal'];
+  asset: RoutingTokenTypeV2;
+};
+
 export type RouteInputTypeV2 = {
   addresses: Array<AddressRouteInputTypeV2>;
   amountIn: Scalars['Decimal'];
@@ -2489,6 +2715,7 @@ export type RouteTradeTypeV2 = {
   priceRateUsdAssetOut: Scalars['Decimal'];
   provider: ProviderTypeV2;
   referral?: Maybe<ReferralType>;
+  reward?: Maybe<RewardType>;
   tradeType: Scalars['String'];
 };
 
@@ -2843,6 +3070,44 @@ export type SolanaTransaction = {
   transfers: Array<AssetTransfer>;
 };
 
+export type StakingService = {
+  __typename?: 'StakingService';
+  getBalance: GetBalance;
+  getLidoStakePreview: LidoStakePreviw;
+  getSmaApr: Apr;
+  name: Scalars['String'];
+  stakingServiceStatus: StakingServiceStatus;
+};
+
+export type StakingServiceGetBalanceArgs = {
+  address: Scalars['String'];
+  configurationArgs: ConfigArgs;
+};
+
+export type StakingServiceGetLidoStakePreviewArgs = {
+  address: Scalars['String'];
+  configurationArgs: ConfigArgs;
+  gasHex: Scalars['String'];
+  maxFeePerGasHex: Scalars['String'];
+  maxPriorityFeePerGasHex: Scalars['String'];
+  stakeValueHex: Scalars['String'];
+};
+
+export type StakingServiceGetSmaAprArgs = {
+  configurationArgs: ConfigArgs;
+};
+
+export type StakingServiceStatus = {
+  __typename?: 'StakingServiceStatus';
+  error?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+};
+
+export enum StakingTypes {
+  LiquidStaking = 'LiquidStaking',
+  NativeOrNode = 'NativeOrNode',
+}
+
 export type StargazeChain = {
   __typename?: 'StargazeChain';
   balances: Array<Balance>;
@@ -2872,6 +3137,44 @@ export type StargazeChainTransactionsArgs = {
 export type Status = {
   __typename?: 'Status';
   lastBlock: Scalars['Int'];
+};
+
+export enum SupportedAssets {
+  AKASH = 'AKASH',
+  ATOM = 'ATOM',
+  AVAX = 'AVAX',
+  AXL = 'AXL',
+  CRE = 'CRE',
+  ETH = 'ETH',
+  JUNO = 'JUNO',
+  KAVA = 'KAVA',
+  KUJI = 'KUJI',
+  LUNA = 'LUNA',
+  MATIC = 'MATIC',
+  NEAR = 'NEAR',
+  OSMO = 'OSMO',
+  SEI = 'SEI',
+  SOL = 'SOL',
+  STARS = 'STARS',
+  STRD = 'STRD',
+}
+
+export type TerraChain = {
+  __typename?: 'TerraChain';
+  balances: Array<Balance>;
+  fee?: Maybe<DefaultGasFee>;
+  legacyNFTs: Array<NfTv2>;
+  name: Scalars['String'];
+  status: Status;
+  version: Array<Version>;
+};
+
+export type TerraChainBalancesArgs = {
+  address: Scalars['String'];
+};
+
+export type TerraChainLegacyNfTsArgs = {
+  address: Scalars['String'];
 };
 
 export type ThorChain = {
@@ -2992,6 +3295,7 @@ export type TradeRouteInputTypeV2 = {
   priceRateUsdAssetOut: Scalars['Decimal'];
   provider: ProviderInputTypeV2;
   referral?: InputMaybe<ReferralInputType>;
+  reward?: InputMaybe<RewardInputType>;
   tradeType: Scalars['String'];
 };
 
@@ -3083,12 +3387,13 @@ export type UtxoScriptSig = {
 
 export type UtxoTransaction = {
   __typename?: 'UTXOTransaction';
+  balanceChange?: Maybe<Amount>;
   blockIndex?: Maybe<Scalars['Int']>;
   blockNumber?: Maybe<Scalars['Int']>;
-  fee: Amount;
+  fee?: Maybe<Amount>;
   hash: Scalars['String'];
-  inputs: Array<Input>;
-  outputs: Array<Output>;
+  inputs?: Maybe<Array<Input>>;
+  outputs?: Maybe<Array<Output>>;
   status?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['DateTime']>;
 };
@@ -3141,23 +3446,6 @@ export type UtxoTransactionByHashV2 = {
   weight?: Maybe<Scalars['Int']>;
 };
 
-export type UtxoTransactionConnection = {
-  __typename?: 'UTXOTransactionConnection';
-  /** A list of edges. */
-  edges: Array<UtxoTransactionEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-};
-
-/** An edge in a connection. */
-export type UtxoTransactionEdge = {
-  __typename?: 'UTXOTransactionEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node: UtxoTransaction;
-};
-
 export type UtxoVinV2 = {
   __typename?: 'UTXOVinV2';
   /** (string, optional) Coinbase, if the transactions is a coinbase tx */
@@ -3184,57 +3472,33 @@ export type UtxoVout = {
   value: Scalars['Float'];
 };
 
-export type UnspentTransactionOutputV3 = {
-  __typename?: 'UnspentTransactionOutputV3';
-  address: Scalars['String'];
+export type UnspentTransactionOutputV4 = {
+  __typename?: 'UnspentTransactionOutputV4';
+  address?: Maybe<Scalars['String']>;
   iTxHash?: Maybe<Scalars['String']>;
   iTxIndex?: Maybe<Scalars['Int']>;
-  isCoinbase: Scalars['Boolean'];
+  isCoinbase?: Maybe<Scalars['Boolean']>;
   isSpent: Scalars['Boolean'];
   oIndex: Scalars['Int'];
   oTxHash: Scalars['String'];
   oTxHex?: Maybe<Scalars['String']>;
-  oTxTime: Scalars['DateTime'];
-  scriptHex: Scalars['String'];
+  oTxTime?: Maybe<Scalars['DateTime']>;
+  scriptHex?: Maybe<Scalars['String']>;
   value: Amount;
-};
-
-export type UnspentTransactionOutputV3Connection = {
-  __typename?: 'UnspentTransactionOutputV3Connection';
-  /** A list of edges. */
-  edges: Array<UnspentTransactionOutputV3Edge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-};
-
-/** An edge in a connection. */
-export type UnspentTransactionOutputV3Edge = {
-  __typename?: 'UnspentTransactionOutputV3Edge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node: UnspentTransactionOutputV3;
 };
 
 export type User = {
   __typename?: 'User';
-  addresses?: Maybe<Array<Address>>;
+  addresses: Array<Address>;
+  credits: Credits;
   id: Scalars['ID'];
-  settings?: Maybe<Settings>;
+  settings: Settings;
   username: Scalars['String'];
 };
 
 export type UserSettingsInput = {
   private?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['Int']>;
-};
-
-/**
- * pagination cursor for loading unspent transaction outputs of utxos
- * restricted to 10 record per page.
- */
-export type UtxocursorPagination = {
-  pageCursor?: InputMaybe<Scalars['String']>;
 };
 
 export type Version = {
@@ -3438,49 +3702,34 @@ export type GetBitcoinStatusQuery = {
 export type GetBitcoinTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
   blockRange: OptBlockRange;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  dateRange: OptDateRange;
 }>;
 
 export type GetBitcoinTransactionsQuery = {
   __typename?: 'Query';
   bitcoin: {
     __typename?: 'BitcoinChain';
-    transactions: {
-      __typename?: 'UTXOTransactionConnection';
-      edges: Array<{
-        __typename?: 'UTXOTransactionEdge';
-        node: {
-          __typename?: 'UTXOTransaction';
-          blockIndex?: number | null;
-          blockNumber?: number | null;
-          hash: string;
-          status?: string | null;
-          timestamp?: any | null;
-          fee: {
-            __typename?: 'Amount';
-            scalingFactor?: number | null;
-            value: string;
-          };
-          inputs: Array<{
-            __typename?: 'Input';
-            address: string;
-            amount: {
-              __typename?: 'Amount';
-              value: string;
-              scalingFactor?: number | null;
-            };
-          }>;
-          outputs: Array<{
-            __typename?: 'Output';
-            address: string;
-            amount: {
-              __typename?: 'Amount';
-              value: string;
-              scalingFactor?: number | null;
-            };
-          }>;
-        };
-      }>;
-    };
+    transactions: Array<{
+      __typename?: 'UTXOTransaction';
+      blockIndex?: number | null;
+      blockNumber?: number | null;
+      hash: string;
+      status?: string | null;
+      timestamp?: any | null;
+      balanceChange?: { __typename?: 'Amount'; value: string } | null;
+      inputs?: Array<{
+        __typename?: 'Input';
+        address: string;
+        amount: { __typename?: 'Amount'; value: string };
+      }> | null;
+      outputs?: Array<{
+        __typename?: 'Output';
+        address: string;
+        amount: { __typename?: 'Amount'; value: string };
+      }> | null;
+    }>;
   };
 };
 
@@ -5104,6 +5353,120 @@ export type GetCryptoAssetsQuery = {
   };
 };
 
+export type NearBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type NearBalanceQuery = {
+  __typename?: 'Query';
+  near: {
+    __typename?: 'NearChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      amount: { __typename?: 'Amount'; value: string };
+      asset: {
+        __typename?: 'CryptoAsset';
+        chain?: string | null;
+        contract?: string | null;
+        decimals?: number | null;
+        id?: string | null;
+        image?: string | null;
+        name?: string | null;
+        symbol?: string | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          scalingFactor: number;
+        } | null;
+      };
+    }>;
+  };
+};
+
+export type GetNearStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetNearStatusQuery = {
+  __typename?: 'Query';
+  near: {
+    __typename?: 'NearChain';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetNearFeeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetNearFeeQuery = {
+  __typename?: 'Query';
+  near: {
+    __typename?: 'NearChain';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
+  };
+};
+
+export type GetNearTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  dateRange?: InputMaybe<OptDateRange>;
+  blockRange?: InputMaybe<OptBlockRange>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetNearTransactionsQuery = {
+  __typename?: 'Query';
+  near: {
+    __typename?: 'NearChain';
+    transactions: {
+      __typename?: 'NearTransactionConnection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'NearTransactionEdge';
+        node: {
+          __typename?: 'NearTransaction';
+          blockIndex: number;
+          blockNumber: number;
+          fromAddress: string;
+          hash: string;
+          status: string;
+          toAddress: string;
+          type: string;
+          timestamp: any;
+          transfers: Array<{
+            __typename?: 'AssetTransfer';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset: {
+              __typename?: 'CryptoAsset';
+              chain?: string | null;
+              contract?: string | null;
+              decimals?: number | null;
+              id?: string | null;
+              image?: string | null;
+              name?: string | null;
+              symbol?: string | null;
+              price?: {
+                __typename?: 'AssetAmountType';
+                amount: string;
+                scalingFactor: number;
+              } | null;
+            };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
 export type GetSolanaBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -5997,6 +6360,42 @@ export const GetBitcoinTransactionsDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'pageNumber' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'pageSize' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dateRange' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'OptDateRange' },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -6027,157 +6426,115 @@ export const GetBitcoinTransactionsDocument = {
                         name: { kind: 'Name', value: 'blockRange' },
                       },
                     },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'pageNumber' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'pageNumber' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'pageSize' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'pageSize' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'dateRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'dateRange' },
+                      },
+                    },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'edges' },
+                        name: { kind: 'Name', value: 'balanceChange' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
                             {
                               kind: 'Field',
-                              name: { kind: 'Name', value: 'node' },
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockIndex' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockNumber' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'inputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   {
                                     kind: 'Field',
-                                    name: { kind: 'Name', value: 'blockIndex' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'blockNumber',
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'fee' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'scalingFactor',
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'value',
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'hash' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'inputs' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'address',
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'amount',
-                                          },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'value',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'scalingFactor',
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'outputs' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'address',
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'amount',
-                                          },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'value',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'scalingFactor',
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'status' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'timestamp' },
+                                    name: { kind: 'Name', value: 'value' },
                                   },
                                 ],
                               },
                             },
                           ],
                         },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'outputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'status' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'timestamp' },
                       },
                     ],
                   },
@@ -13998,6 +14355,549 @@ export const GetCryptoAssetsDocument = {
 } as unknown as DocumentNode<
   GetCryptoAssetsQuery,
   GetCryptoAssetsQueryVariables
+>;
+export const NearBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'NearBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'near' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'scalingFactor',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NearBalanceQuery, NearBalanceQueryVariables>;
+export const GetNearStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetNearStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'near' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetNearStatusQuery, GetNearStatusQueryVariables>;
+export const GetNearFeeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetNearFee' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'near' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetNearFeeQuery, GetNearFeeQueryVariables>;
+export const GetNearTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetNearTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dateRange' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'OptDateRange' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'blockRange' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'OptBlockRange' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'near' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'dateRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'dateRange' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'blockRange' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'blockRange' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'toAddress' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'type' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'chain',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'contract',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'decimals',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'id',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'image',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'name',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'symbol',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'price',
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'amount',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'scalingFactor',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetNearTransactionsQuery,
+  GetNearTransactionsQueryVariables
 >;
 export const GetSolanaBalanceDocument = {
   kind: 'Document',

@@ -40,36 +40,29 @@ query GetBitcoinStatus {
   }
 }
 
-query GetBitcoinTransactions($address: String!, $blockRange: OptBlockRange!) {
+query GetBitcoinTransactions($address: String!, $blockRange: OptBlockRange!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!) {
   bitcoin {
-    transactions(address: $address, blockRange: $blockRange) {
-      edges {
-        node {
-          blockIndex
-          blockNumber
-          fee {
-            scalingFactor
-            value
-          }
-          hash
-          inputs {
-            address
-            amount {
-              value
-              scalingFactor
-            }
-          }
-          outputs {
-            address
-            amount {
-              value
-              scalingFactor
-            }
-          }
-          status
-          timestamp
+    transactions(address: $address, blockRange: $blockRange, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange) {
+      balanceChange {
+        value
+      }
+      blockIndex
+      blockNumber
+      hash
+      inputs {
+        address
+        amount {
+          value
         }
       }
+      outputs {
+        amount {
+          value
+        }
+        address
+      }
+      status
+      timestamp
     }
   }
 }

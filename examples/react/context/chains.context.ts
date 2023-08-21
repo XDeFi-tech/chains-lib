@@ -33,11 +33,16 @@ import {
   ThorProvider,
   ChainDataSource as ThorChainDataSource,
 } from '@xdefi-tech/chains-thor';
+import {
+  NEAR_MANIFEST,
+  NearProvider,
+  IndexerDataSource as NearIndexerDataSource,
+} from '@xdefi-tech/chains-near';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
-  ChainsContextDefaultValue.addProvider(
+  ChainsContextDefaultValue.addProvider( // 0
     new SolanaProvider(new SolanaIndexerDataSource(SOLANA_MANIFEST))
   );
   ChainsContextDefaultValue.addProvider(
@@ -58,7 +63,7 @@ export const initDefaultProviders = () => {
       signers: WebSigners,
     })
   );
-  ChainsContextDefaultValue.addProvider(
+  ChainsContextDefaultValue.addProvider( //5
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.binancesmartchain))
   );
   ChainsContextDefaultValue.addProvider(
@@ -75,7 +80,7 @@ export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.arbitrum))
   );
-  ChainsContextDefaultValue.addProvider(
+  ChainsContextDefaultValue.addProvider( // 10
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
   );
   ChainsContextDefaultValue.addProvider(
@@ -86,6 +91,9 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new ThorProvider(new ThorChainDataSource(THOR_MANIFEST))
+  );
+  ChainsContextDefaultValue.addProvider( // 14
+    new NearProvider(new NearIndexerDataSource(NEAR_MANIFEST))
   );
 };
 
