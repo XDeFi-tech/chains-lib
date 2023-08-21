@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.5
+
+### Patch Changes
+
+- 2431a1d: Add Near chain controller. Fix GQL issues
+
 ## 1.1.4
 
 ### Patch Changes
