@@ -12,28 +12,33 @@ import {
   FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
+import BigNumber from 'bignumber.js';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
-import type { UTXOManifest } from '../../manifests';
+import type { NearManifest } from '../../manifests';
+import {
+  DEFAULT_GAS,
+  FT_MINIMUM_STORAGE_BALANCE_LARGE,
+  FT_STORAGE_DEPOSIT_GAS,
+  FT_TRANSFER_DEPOSIT,
+} from '../../constants';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
-  constructor(manifest: UTXOManifest) {
+  constructor(manifest: NearManifest) {
     super(manifest);
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
-    const {
-      data: { bitcoin },
-    } = await getBalance(address);
+    const balances = await getBalance(address);
 
-    return bitcoin.balances.reduce((result, balance) => {
+    return balances.reduce((result, balance) => {
       const { asset, amount } = balance;
       if (asset.id && asset.symbol && asset.name) {
         result.push(
@@ -67,24 +72,20 @@ export class IndexerDataSource extends DataSource {
     afterBlock: TransactionsFilter['afterBlock']
   ): Promise<OptBlockRange> {
     if (afterBlock === undefined || afterBlock === null) return {};
-    const { data } = await getStatus();
+    const status = await getStatus();
 
     return {
       from: parseInt(`${afterBlock}`),
-      to: data.bitcoin.status.lastBlock,
+      to: status.lastBlock,
     };
   }
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address, afterBlock } = filter;
-
     const blockRange = await this.getBlockRange(afterBlock);
+    const transactions = await getTransaction(address, blockRange);
 
-    const { data } = await getTransaction(address, blockRange);
-
-    return data.bitcoin.transactions.map((transaction) =>
-      Transaction.fromData(transaction)
-    );
+    return transactions.map((transaction) => Transaction.fromData(transaction));
   }
 
   async subscribeTransactions(
@@ -98,10 +99,24 @@ export class IndexerDataSource extends DataSource {
     speed: GasFeeSpeed
   ): Promise<FeeData[]> {
     const feeOptions = await this.getFeeOptions();
-    if (!feeOptions) return [];
-    return messages.map(() => {
+    const baseFee = feeOptions
+      ? feeOptions[speed]
+      : this.manifest.feeGasStep[speed];
+    return messages.map((msg) => {
+      const msgData = msg.toData();
+      let gasLimit = DEFAULT_GAS;
+      if (msgData.contractAddress) {
+        gasLimit = new BigNumber(0.00001)
+          .multipliedBy(Math.pow(10, 24))
+          .plus(FT_MINIMUM_STORAGE_BALANCE_LARGE)
+          .plus(FT_STORAGE_DEPOSIT_GAS)
+          .plus(FT_TRANSFER_DEPOSIT)
+          .toString(10);
+      }
+
       return {
-        gasLimit: feeOptions[speed],
+        gasLimit: gasLimit,
+        gasPrice: baseFee,
       };
     });
   }
@@ -111,14 +126,12 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getFeeOptions(): Promise<DefaultFeeOptions> {
-    const { data } = await getFees();
-    const bitcoinFeeOptions = data.chains.find(
-      ({ name }) => name === 'Bitcoin'
-    );
-
-    return bitcoinFeeOptions && bitcoinFeeOptions.fee.value
-      ? JSON.parse(bitcoinFeeOptions.fee.value)
-      : null;
+    const fee = await getFees();
+    return {
+      [GasFeeSpeed.high]: fee!.high as number,
+      [GasFeeSpeed.medium]: fee!.medium as number,
+      [GasFeeSpeed.low]: fee!.low as number,
+    };
   }
 
   async getNonce(_address: string): Promise<number> {
