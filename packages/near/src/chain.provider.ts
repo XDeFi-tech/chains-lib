@@ -15,7 +15,8 @@ import {
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { some } from 'lodash';
-import Near, { keyStores } from 'near-api-js';
+import * as Near from 'near-api-js';
+import { keyStores } from 'near-api-js';
 import { SignedTransaction } from 'near-api-js/lib/transaction';
 
 import { ChainMsg } from './msg';
