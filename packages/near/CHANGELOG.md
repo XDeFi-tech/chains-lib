@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-near
 
+## 1.0.1
+
+### Patch Changes
+
+- eb7ebb4: Fix import near
+
 ## 1.0.0
 
 ### Major Changes
