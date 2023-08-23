@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.5
+
+### Patch Changes
+
+- e4ba874: Add estimateFee for ERC721 & ERC1155 contracts
+
 ## 1.1.4
 
 ### Patch Changes
