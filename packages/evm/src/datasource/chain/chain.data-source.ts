@@ -21,8 +21,13 @@ import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 
 import { EVMChains } from '../../manifests';
-import { ChainMsg } from '../../msg';
-import { DEFAULT_CONTRACT_FEE, DEFAULT_TRANSACTION_FEE } from '../../constants';
+import { ChainMsg, TokenType } from '../../msg';
+import {
+  DEFAULT_CONTRACT_FEE,
+  DEFAULT_TRANSACTION_FEE,
+  ERC1155_SAFE_TRANSFER_METHOD,
+  ERC721_SAFE_TRANSFER_METHOD,
+} from '../../constants';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -178,7 +183,46 @@ export class ChainDataSource extends DataSource {
       const msgData = msg.toData();
       let gasLimit: number;
 
-      if (msgData.contractAddress) {
+      if (msgData.contractAddress && msgData.nftId) {
+        const { contract } = await msg.getDataFromContract();
+        if (!contract) {
+          throw new Error(
+            `Invalid contract for address ${msgData.contractAddress}`
+          );
+        }
+        switch (msgData.tokenType) {
+          case TokenType.ERC721:
+            const gasLimit721 = await contract.estimateGas[
+              ERC721_SAFE_TRANSFER_METHOD
+            ](msgData.from, msgData.to, msgData.nftId);
+            gasLimit =
+              gasLimit721.toNumber() < DEFAULT_CONTRACT_FEE
+                ? DEFAULT_CONTRACT_FEE
+                : gasLimit721.toNumber();
+            break;
+          case TokenType.ERC1155:
+            const gasLimit1155 = await contract.estimateGas[
+              ERC1155_SAFE_TRANSFER_METHOD
+            ](msgData.from, msgData.to, msgData.nftId, 1, [], {
+              from: msgData.from,
+            });
+            gasLimit =
+              gasLimit1155.toNumber() < DEFAULT_CONTRACT_FEE
+                ? DEFAULT_CONTRACT_FEE
+                : gasLimit1155.toNumber();
+            break;
+          default:
+            throw new Error(
+              'Please select correct tokenType field for NFT from TokenType enum'
+            );
+        }
+      } else if (msgData.contractAddress) {
+        const { contract } = await msg.getDataFromContract();
+        if (!contract) {
+          throw new Error(
+            `Invalid contract for address ${msgData.contractAddress}`
+          );
+        }
         gasLimit = DEFAULT_CONTRACT_FEE;
       } else {
         const calculateData = msgData.data;
@@ -188,6 +232,7 @@ export class ChainDataSource extends DataSource {
             : 0;
         gasLimit = Math.ceil((DEFAULT_TRANSACTION_FEE + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
       }
+
       const msgFeeData = {
         gasLimit,
         gasPrice: undefined,
