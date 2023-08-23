@@ -123,7 +123,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           .toHexString();
     }
 
-    return { populatedTx, contractData };
+    return { contract, populatedTx, contractData };
   }
 
   async getFee(speed?: GasFeeSpeed) {
