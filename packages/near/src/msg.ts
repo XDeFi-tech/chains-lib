@@ -48,10 +48,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
 
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
-    if (
-      (msgData.contractAddress && typeof msgData.decimals !== 'number') ||
-      (!msgData.contractAddress && typeof msgData.decimals === 'number')
-    ) {
+    if (msgData.contractAddress && typeof msgData.decimals !== 'number') {
       throw new ChainsException('contractAddress and decimals should exist');
     }
     const value = BigNumber(msgData.amount)
