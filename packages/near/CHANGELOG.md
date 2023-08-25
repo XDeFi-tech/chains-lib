@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-near
 
+## 1.0.2
+
+### Patch Changes
+
+- 11b5b56: Add nearToLittleEndianHexString method to static utils
+
 ## 1.0.1
 
 ### Patch Changes
