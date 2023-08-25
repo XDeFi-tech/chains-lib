@@ -39,7 +39,7 @@ query DefaultGasFees {
 }
 `;
 
-export const getFees = (chain: string) => {
+export const getFees = async (chain: string) => {
   let query;
   switch (chain) {
     case EVMChains.ethereum:
@@ -60,7 +60,9 @@ export const getFees = (chain: string) => {
     throw new Error('Invalid chain');
   }
 
-  return gqlClient.query({
+  const response = await gqlClient.query({
     query,
   });
+
+  return response.data[chain].fee;
 };
