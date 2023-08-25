@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.6
+
+### Patch Changes
+
+- 7c5633c: Fix use wei insted of grew for gasPrice for EVM chains
+
 ## 1.1.5
 
 ### Patch Changes
