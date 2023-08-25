@@ -21,6 +21,7 @@ import { SignedTransaction } from 'near-api-js/lib/transaction';
 
 import { ChainMsg } from './msg';
 import { NearManifest } from './manifests';
+import { nearToLittleEndianHexString } from './utils';
 
 @ChainDecorator('NearProvider', {
   deps: [],
@@ -124,5 +125,11 @@ export class NearProvider extends Chain.Provider {
       console.error(err);
       return null;
     }
+  }
+
+  static get staticUtils() {
+    return {
+      nearToLittleEndianHexString,
+    };
   }
 }
