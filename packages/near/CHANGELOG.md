@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-near
 
+## 1.0.3
+
+### Patch Changes
+
+- 7489abd: Fix buildTx for Near chain when trying to send native token
+
 ## 1.0.2
 
 ### Patch Changes
