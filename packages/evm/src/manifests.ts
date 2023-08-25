@@ -74,9 +74,9 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
   [EVMChains.fantom]: {
     name: 'Fantom',
     description: '',
-    rpcURL: 'https://api.avax.network/ext/bc/C/rpc',
+    rpcURL: 'https://fantom-mainnet.xdefiservices.com',
     chainSymbol: 'FTM',
-    blockExplorerURL: 'https://rpc.ftm.tools',
+    blockExplorerURL: 'https://ftmscan.com',
     chainId: '250',
     chain: 'fantom',
     decimals: 18,

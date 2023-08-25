@@ -11,11 +11,15 @@ import {
   BalanceFilter,
   Balance,
   FeeData,
+  EIP1559Fee,
+  EIP1559FeeOptions,
+  DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
 import { utils, providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+import { parseGwei } from '../../utils';
 import { EVMChains, EVM_MANIFESTS } from '../../manifests';
 import { ChainMsg, TokenType } from '../../msg';
 import {
@@ -140,9 +144,11 @@ export class IndexerDataSource extends DataSource {
     msgs: ChainMsg[],
     speed: GasFeeSpeed = GasFeeSpeed.medium
   ): Promise<FeeData[]> {
-    const { data } = await getFees(this.manifest.chain);
-    const fee = data[this.manifest.chain].fee;
-    const isEIP1559 = typeof fee[speed]?.priorityFeePerGas === 'number';
+    const fee = await this.gasFeeOptions();
+    if (!fee) {
+      throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
+    }
+    const isEIP1559 = typeof fee[speed] !== 'number';
 
     // gasLimit = 21000 + 68 * dataByteLength
     // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
@@ -205,8 +211,8 @@ export class IndexerDataSource extends DataSource {
         ? {
             gasLimit,
             gasPrice: undefined,
-            maxFeePerGas: fee[speed]?.maxFeePerGas,
-            maxPriorityFeePerGas: fee[speed]?.priorityFeePerGas,
+            maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
+            maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
           }
         : {
             gasLimit,
@@ -214,15 +220,41 @@ export class IndexerDataSource extends DataSource {
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
           };
-      feeData.push(msgFeeData);
+      feeData.push(msgFeeData as FeeData);
     }
 
     return feeData;
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    const { data } = await getFees(this.manifest.chain);
-    return data[this.manifest.chain].fee;
+    const fee = await getFees(this.manifest.chain); // fee in gwei
+    let result: FeeOptions | null = null;
+
+    if (typeof fee.high === 'number') {
+      result = {} as DefaultFeeOptions;
+      result[GasFeeSpeed.high] = parseGwei(fee.high).toNumber();
+      result[GasFeeSpeed.medium] = parseGwei(fee.medium).toNumber();
+      result[GasFeeSpeed.low] = parseGwei(fee.low).toNumber();
+    } else if (typeof fee.high === 'object') {
+      result = {} as EIP1559FeeOptions;
+      result[GasFeeSpeed.high] = {
+        priorityFeePerGas: parseGwei(fee.high.priorityFeePerGas).toNumber(),
+        maxFeePerGas: parseGwei(fee.high.maxFeePerGas).toNumber(),
+        baseFeePerGas: parseGwei(fee.high.baseFeePerGas).toNumber(),
+      } as EIP1559Fee;
+      result[GasFeeSpeed.medium] = {
+        priorityFeePerGas: parseGwei(fee.medium.priorityFeePerGas).toNumber(),
+        maxFeePerGas: parseGwei(fee.medium.maxFeePerGas).toNumber(),
+        baseFeePerGas: parseGwei(fee.medium.baseFeePerGas).toNumber(),
+      } as EIP1559Fee;
+      result[GasFeeSpeed.low] = {
+        priorityFeePerGas: parseGwei(fee.low.priorityFeePerGas).toNumber(),
+        maxFeePerGas: parseGwei(fee.low.maxFeePerGas).toNumber(),
+        baseFeePerGas: parseGwei(fee.low.baseFeePerGas).toNumber(),
+      } as EIP1559Fee;
+    }
+
+    return result;
   }
 
   async getNonce(address: string): Promise<number> {

@@ -19,6 +19,7 @@ import * as ethers from 'ethers';
 import { providers } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
+import { formatFixed } from '@ethersproject/bignumber';
 
 import { EVMChains } from '../../manifests';
 import { ChainMsg, TokenType } from '../../msg';
@@ -246,56 +247,52 @@ export class ChainDataSource extends DataSource {
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    const feeData = await this.rpcProvider.getFeeData();
-    if (
-      !feeData.gasPrice ||
-      !feeData.maxFeePerGas ||
-      !feeData.maxPriorityFeePerGas
-    ) {
+    const fee = await this.rpcProvider.getFeeData();
+    if (!fee.gasPrice || !fee.maxFeePerGas || !fee.maxPriorityFeePerGas) {
       return null;
     }
 
-    const fee = {
-      gasPrice: ethers.utils.formatUnits(feeData.gasPrice, 'gwei'),
-      maxFeePerGas: ethers.utils.formatUnits(feeData.maxFeePerGas, 'gwei'),
-      maxPriorityFeePerGas: ethers.utils.formatUnits(
-        feeData.maxPriorityFeePerGas,
-        'gwei'
-      ),
-    };
-
     return {
       [GasFeeSpeed.high]: {
-        baseFeePerGas: new BigNumber(fee.gasPrice)
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
           .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
       },
       [GasFeeSpeed.medium]: {
-        baseFeePerGas: new BigNumber(fee.gasPrice)
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
           .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
       },
       [GasFeeSpeed.low]: {
-        baseFeePerGas: new BigNumber(fee.gasPrice)
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
           .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        maxFeePerGas: new BigNumber(fee.maxFeePerGas)
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(fee.maxPriorityFeePerGas)
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
           .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
       },
     };

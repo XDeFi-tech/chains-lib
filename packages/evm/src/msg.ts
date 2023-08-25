@@ -7,6 +7,7 @@ import {
   utils,
 } from '@xdefi-tech/chains-core';
 import { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
 
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
@@ -15,7 +16,7 @@ import {
   ERC1155_SAFE_TRANSFER_METHOD,
   ERC721_SAFE_TRANSFER_METHOD,
 } from './consts';
-import { parseGwei } from './utils';
+import type { EvmProvider } from './chain.provider';
 
 export enum TokenType {
   None = 'None', // common tx
@@ -38,7 +39,7 @@ export interface MsgBody {
   chainId: NumberIsh;
   data?: HexString;
   gasLimit?: NumberIsh;
-  gasPrice?: NumberIsh;
+  gasPrice?: NumberIsh; // wei
   maxFeePerGas?: NumberIsh;
   maxPriorityFeePerGas?: NumberIsh;
   tokenType?: TokenType;
@@ -63,6 +64,11 @@ export interface TxData {
 
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
+  declare provider: EvmProvider;
+
+  constructor(data: MsgBody, provider: EvmProvider) {
+    super(data, provider);
+  }
 
   async getDataFromContract() {
     const msgData = this.toData();
@@ -115,11 +121,11 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         contractData.to = populatedTx.to;
         break;
       default:
+        const decimals =
+          (msgData.decimals && msgData.decimals.toString()) ||
+          this.provider.manifest.decimals;
         contractData.value = ethers.utils
-          .parseUnits(
-            msgData.amount.toString(),
-            msgData.decimals && msgData.decimals.toString()
-          )
+          .parseUnits(msgData.amount.toString(), decimals)
           .toHexString();
     }
 
@@ -163,8 +169,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       this.data.txType !== TransactionType.Legacy &&
       feeOptions.maxFeePerGas
     ) {
-      const maxFee = parseGwei(feeOptions.maxFeePerGas);
-      const priorityFee = parseGwei(feeOptions.maxPriorityFeePerGas);
+      const maxFee = BigNumber(feeOptions.maxFeePerGas);
+      const priorityFee = BigNumber(feeOptions.maxPriorityFeePerGas);
       const maxFeeWithPriority = maxFee.plus(priorityFee);
       estimation.fee = ethers.utils
         .formatUnits(
@@ -182,8 +188,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       if (!feeOptions.gasPrice) {
         return estimation;
       }
-      const gasPrice = parseGwei(feeOptions.gasPrice);
-      const gasFee = gasPrice.plus(feeOptions.gasLimit);
+      const gasPrice = BigNumber(feeOptions.gasPrice);
+      const gasFee = gasPrice.multipliedBy(feeOptions.gasLimit);
 
       estimation.fee = ethers.utils
         .formatUnits(gasFee.toString(), 'ether')
@@ -254,11 +260,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       msgData.maxFeePerGas &&
       msgData.maxPriorityFeePerGas
     ) {
-      baseTx.maxFeePerGas = utils.toHex(
-        parseGwei(msgData.maxFeePerGas).toString()
-      );
+      baseTx.maxFeePerGas = utils.toHex(msgData.maxFeePerGas.toString());
       baseTx.maxPriorityFeePerGas = utils.toHex(
-        parseGwei(msgData.maxPriorityFeePerGas).toString()
+        msgData.maxPriorityFeePerGas.toString()
       );
       baseTx.type = 2;
     } else {
@@ -267,7 +271,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           'Legacy transactions required gasPrice and gasLimit fields'
         );
       }
-      baseTx.gasPrice = utils.toHex(msgData.gasPrice as NumberIsh);
+      if (!msgData.gasPrice) {
+        throw new Error(`Invalid gasPrice value: ${msgData.gasPrice}`);
+      }
+      baseTx.gasPrice = utils.toHex(msgData.gasPrice.toString());
     }
 
     const { contractData } = await this.getDataFromContract();
