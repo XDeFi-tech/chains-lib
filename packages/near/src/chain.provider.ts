@@ -18,10 +18,16 @@ import { some } from 'lodash';
 import * as Near from 'near-api-js';
 import { keyStores } from 'near-api-js';
 import { SignedTransaction } from 'near-api-js/lib/transaction';
+import BN from 'bn.js';
 
 import { ChainMsg } from './msg';
 import { NearManifest } from './manifests';
 import { nearToLittleEndianHexString } from './utils';
+import {
+  FT_MINIMUM_STORAGE_BALANCE,
+  FT_MINIMUM_STORAGE_BALANCE_LARGE,
+  FT_STORAGE_DEPOSIT_GAS,
+} from './constants';
 
 @ChainDecorator('NearProvider', {
   deps: [],
@@ -124,6 +130,71 @@ export class NearProvider extends Chain.Provider {
       console.error('Error while getting tx');
       console.error(err);
       return null;
+    }
+  }
+
+  async getStorageBalance(address: string, contractAddress: string) {
+    const account = await this.rpcProvider.account('dontcare');
+
+    return account.viewFunction({
+      contractId: contractAddress,
+      methodName: 'storage_balance_of',
+      args: {
+        account_id: address,
+      },
+    });
+  }
+
+  async transferStorageDeposit(
+    account: Near.Account,
+    contractAddress: string,
+    receiverAddress: string,
+    storageDepositAmount: string
+  ) {
+    return account.signAndSendTransaction({
+      receiverId: contractAddress,
+      actions: [
+        Near.transactions.functionCall(
+          'storage_deposit',
+          {
+            account_id: receiverAddress,
+            registration_only: true,
+          },
+          new BN(FT_STORAGE_DEPOSIT_GAS),
+          new BN(storageDepositAmount)
+        ),
+      ],
+    });
+  }
+
+  async checkStorageBalance(msg: ChainMsg) {
+    const msgData = msg.toData();
+
+    if (msgData.contractAddress) {
+      const storageBalance = await this.getStorageBalance(
+        msgData.to,
+        msgData.contractAddress
+      );
+      if (!storageBalance || storageBalance.total === undefined) {
+        const account = await this.rpcProvider.account(msgData.from);
+        try {
+          await msg.provider.transferStorageDeposit(
+            account,
+            msgData.contractAddress,
+            msgData.to,
+            FT_MINIMUM_STORAGE_BALANCE
+          );
+        } catch (e: any) {
+          if (e.message.includes('attached deposit is less than')) {
+            await msg.provider.transferStorageDeposit(
+              account,
+              msgData.contractAddress,
+              msgData.to,
+              FT_MINIMUM_STORAGE_BALANCE_LARGE
+            );
+          }
+        }
+      }
     }
   }
 
