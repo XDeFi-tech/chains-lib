@@ -12,19 +12,13 @@ import {
   FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import BigNumber from 'bignumber.js';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
 import type { NearManifest } from '../../manifests';
-import {
-  DEFAULT_GAS,
-  FT_MINIMUM_STORAGE_BALANCE_LARGE,
-  FT_STORAGE_DEPOSIT_GAS,
-  FT_TRANSFER_DEPOSIT,
-} from '../../constants';
+import { DEFAULT_GAS, FT_TRANSFER_GAS } from '../../constants';
 
 import { getBalance, getStatus, getTransaction, getFees } from './queries';
 
@@ -106,12 +100,7 @@ export class IndexerDataSource extends DataSource {
       const msgData = msg.toData();
       let gasLimit = DEFAULT_GAS;
       if (msgData.contractAddress) {
-        gasLimit = new BigNumber(0.00001)
-          .multipliedBy(Math.pow(10, 24))
-          .plus(FT_MINIMUM_STORAGE_BALANCE_LARGE)
-          .plus(FT_STORAGE_DEPOSIT_GAS)
-          .plus(FT_TRANSFER_DEPOSIT)
-          .toString(10);
+        gasLimit = FT_TRANSFER_GAS;
       }
 
       return {

@@ -35,9 +35,11 @@ export class PrivateKeySigner extends Signer.Provider {
       accountId,
       keyPair
     );
+    await msg.provider.checkStorageBalance(msg); // need to add before calculate nonce
     const account = await client.account(accountId);
+    const receiverId = txData.contractAddress || txData.to;
     const accessKeyInfo = await account.findAccessKey(
-      txData.to,
+      receiverId,
       txData.actions
     );
     if (!accessKeyInfo) {
@@ -50,7 +52,7 @@ export class PrivateKeySigner extends Signer.Provider {
     const nonce = accessKey.nonce.add(new BN(1));
     const blockHash = block.header.hash;
     const [_txHash, signedTx] = await transactions.signTransaction(
-      txData.to,
+      receiverId,
       nonce,
       txData.actions,
       borsh.baseDecode(blockHash),

@@ -7,8 +7,13 @@ import {
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
-import { transactions } from 'near-api-js';
+import { transactions, utils } from 'near-api-js';
 
+import {
+  FT_MINIMUM_STORAGE_BALANCE_LARGE,
+  FT_STORAGE_DEPOSIT_GAS,
+  FT_TRANSFER_DEPOSIT,
+} from './constants';
 import type { NearProvider } from './chain.provider';
 
 export interface MsgBody {
@@ -75,12 +80,12 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
         transactions.functionCall(
           'ft_transfer',
           {
-            amount: new BN(value),
+            amount: value,
             memo: msgData.memo,
             receiver_id: msgData.to,
           },
           new BN(gas.gasLimit),
-          new BN('1')
+          new BN(FT_TRANSFER_DEPOSIT)
         )
       );
     } else {
@@ -100,10 +105,15 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     };
   }
 
-  async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
-    const [{ gasLimit }] = await this.provider.estimateFee([this], speed);
+  async getFee(_speed?: GasFeeSpeed): Promise<FeeEstimation> {
+    const fee = new BigNumber(utils.format.parseNearAmount('0.00001') as string)
+      .plus(FT_MINIMUM_STORAGE_BALANCE_LARGE)
+      .plus(FT_STORAGE_DEPOSIT_GAS)
+      .plus(FT_TRANSFER_DEPOSIT)
+      .toString(10);
+
     return {
-      fee: gasLimit as string,
+      fee: utils.format.formatNearAmount(fee),
       maxFee: null,
     };
   }
