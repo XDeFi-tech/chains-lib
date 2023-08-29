@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-near
 
+## 1.0.4
+
+### Patch Changes
+
+- 65e5274: [Near] Fix sending token, add calculating fee for tx
+
 ## 1.0.3
 
 ### Patch Changes
