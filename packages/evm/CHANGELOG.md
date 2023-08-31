@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.7
+
+### Patch Changes
+
+- 9856e25: Fix queries for indexer datasource (balance, txs, fees, status). Update estimating gasLimit for common transfers and sending ERC20 tokens. Update manifests
+
 ## 1.1.6
 
 ### Patch Changes
