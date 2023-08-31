@@ -41,19 +41,26 @@ query DefaultGasFees {
 
 export const getFees = async (chain: string) => {
   let query;
+  let indexerChain = chain;
   switch (chain) {
     case EVMChains.ethereum:
     case EVMChains.polygon:
     case EVMChains.avalanche:
-      query = EIP1559_GAS_FEES(chain);
+      query = EIP1559_GAS_FEES(indexerChain);
       break;
     case EVMChains.binancesmartchain:
+      indexerChain = 'binanceSmartChain';
+      query = DEFAULT_GAS_FEES(indexerChain);
+      break;
     case EVMChains.fantom:
-      query = DEFAULT_GAS_FEES(chain);
+      query = DEFAULT_GAS_FEES(indexerChain);
       break;
     case EVMChains.arbitrum:
+      query = DEFAULT_GAS_FEES(indexerChain);
+      break;
     case EVMChains.aurora:
-      throw new Error('Not implemented yet');
+      query = DEFAULT_GAS_FEES(indexerChain);
+      break;
   }
 
   if (!query) {
@@ -64,5 +71,5 @@ export const getFees = async (chain: string) => {
     query,
   });
 
-  return response.data[chain].fee;
+  return response.data[indexerChain].fee;
 };

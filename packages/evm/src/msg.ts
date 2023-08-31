@@ -88,7 +88,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
             msgData.decimals && msgData.decimals.toString()
           )
         );
-        contractData.value = '0x00';
+        contractData.value = '0x0';
         contractData.data = populatedTx.data;
         contractData.to = populatedTx.to;
         break;

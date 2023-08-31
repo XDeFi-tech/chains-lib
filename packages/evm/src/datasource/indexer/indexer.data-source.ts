@@ -18,6 +18,7 @@ import {
 import { utils, providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import axios, { Axios } from 'axios';
 
 import { parseGwei } from '../../utils';
 import { EVMChains, EVM_MANIFESTS } from '../../manifests';
@@ -27,14 +28,18 @@ import {
   DEFAULT_TRANSACTION_FEE,
   ERC1155_SAFE_TRANSFER_METHOD,
   ERC721_SAFE_TRANSFER_METHOD,
+  FACTOR_ESTIMATE,
 } from '../../constants';
+import { RestEstimateGasRequest } from '../../types';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
-import { getBalance, getFees, getStatus, getTransaction } from './queries';
+import { getBalance, getFees, getStatus, getTransactions } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
   declare rpcProvider: providers.StaticJsonRpcProvider;
+  public rest: Axios;
+
   constructor(manifest: Chain.Manifest) {
     super(manifest);
     if (!EVM_MANIFESTS[manifest.chain as EVMChains]) {
@@ -45,18 +50,14 @@ export class IndexerDataSource extends DataSource {
     this.rpcProvider = new providers.StaticJsonRpcProvider(
       this.manifest.rpcURL
     );
+    this.rest = axios.create({ baseURL: this.manifest.rpcURL });
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
-    const { data } = await getBalance(
+    const balances = await getBalance(
       this.manifest.chain as EVMChains,
       address
-    );
-
-    // cut off balances without asset
-    const balances = data[this.manifest.chain].balances.filter(
-      (b: any) => b.asset.symbol && b.asset.id
     );
 
     return balances.map((balance: any): Coin => {
@@ -100,20 +101,20 @@ export class IndexerDataSource extends DataSource {
     let blockRange = null;
 
     if (typeof afterBlock === 'number' || typeof afterBlock === 'string') {
-      const { data } = await getStatus(this.manifest.chain);
+      const status = await getStatus(this.manifest.chain);
       blockRange = {
         from: parseInt(String(afterBlock)),
-        to: data[this.manifest.chain].status.lastBlock,
+        to: status.lastBlock,
       };
     }
 
-    const { data } = await getTransaction(
+    const transactions = await getTransactions(
       this.manifest.chain as EVMChains,
       address,
       blockRange
     );
 
-    return data[this.manifest.chain].transactions.map((transaction: any) => {
+    return transactions.map((transaction: any) => {
       return Transaction.fromData(transaction);
     });
   }
@@ -138,6 +139,26 @@ export class IndexerDataSource extends DataSource {
         throw new Error(error);
       })
     );
+  }
+
+  private async _estimateGasLimit(
+    txParams: RestEstimateGasRequest
+  ): Promise<number | null> {
+    try {
+      const { data: response } = await this.rest.post('/', {
+        method: 'eth_estimateGas',
+        params: [txParams],
+        id: 'dontcare',
+        jsonrpc: '2.0',
+      });
+      if (!response.result) {
+        return null;
+      }
+      return parseInt(response.result);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   async estimateFee(
@@ -192,20 +213,43 @@ export class IndexerDataSource extends DataSource {
             );
         }
       } else if (msgData.contractAddress) {
-        const { contract } = await msg.getDataFromContract();
+        const { contract, contractData } = await msg.getDataFromContract();
         if (!contract) {
           throw new Error(
             `Invalid contract for address ${msgData.contractAddress}`
           );
         }
-        gasLimit = DEFAULT_CONTRACT_FEE;
+        const calculatedGasLimit = await this._estimateGasLimit({
+          from: msgData.from,
+          to: contractData.to as string,
+          value: contractData.value as string,
+          data: contractData.data as string,
+        });
+        if (calculatedGasLimit) {
+          gasLimit = calculatedGasLimit;
+        } else {
+          gasLimit = DEFAULT_CONTRACT_FEE;
+        }
       } else {
-        const calculateData = msgData.data;
-        const feeForData =
-          calculateData && calculateData !== '0x'
-            ? 68 * new TextEncoder().encode(calculateData.toString()).length
-            : 0;
-        gasLimit = Math.ceil((DEFAULT_TRANSACTION_FEE + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
+        const { contractData } = await msg.getDataFromContract();
+        const calculatedGasLimit = await this._estimateGasLimit({
+          from: msgData.from,
+          to: msgData.to,
+          value: contractData.value as string,
+          ...(msgData.data && { data: msgData.data }),
+        });
+        if (calculatedGasLimit) {
+          gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
+        } else {
+          const calculateData = msgData.data;
+          const feeForData =
+            calculateData && calculateData !== '0x'
+              ? 68 * new TextEncoder().encode(calculateData.toString()).length
+              : 0;
+          gasLimit = Math.ceil(
+            (DEFAULT_TRANSACTION_FEE + feeForData) * FACTOR_ESTIMATE
+          );
+        }
       }
       const msgFeeData = isEIP1559
         ? {

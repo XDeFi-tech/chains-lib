@@ -20,6 +20,8 @@ import { providers } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 import { formatFixed } from '@ethersproject/bignumber';
+import axios, { Axios } from 'axios';
+import { RestEstimateGasRequest } from '@/types';
 
 import { EVMChains } from '../../manifests';
 import { ChainMsg, TokenType } from '../../msg';
@@ -28,12 +30,14 @@ import {
   DEFAULT_TRANSACTION_FEE,
   ERC1155_SAFE_TRANSFER_METHOD,
   ERC721_SAFE_TRANSFER_METHOD,
+  FACTOR_ESTIMATE,
 } from '../../constants';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
   declare rpcProvider: providers.StaticJsonRpcProvider;
   etherscanProvider: providers.EtherscanProvider;
+  public rest: Axios;
 
   constructor(manifest: Chain.Manifest) {
     super(manifest);
@@ -41,6 +45,7 @@ export class ChainDataSource extends DataSource {
       this.manifest.rpcURL
     );
     this.etherscanProvider = new providers.EtherscanProvider();
+    this.rest = axios.create({ baseURL: this.manifest.rpcURL });
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
@@ -171,6 +176,26 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
+  private async _estimateGasLimit(
+    txParams: RestEstimateGasRequest
+  ): Promise<number | null> {
+    try {
+      const { data: response } = await this.rest.post('/', {
+        method: 'eth_estimateGas',
+        params: [txParams],
+        id: 'dontcare',
+        jsonrpc: '2.0',
+      });
+      if (!response.result) {
+        return null;
+      }
+      return parseInt(response.result);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
   async estimateFee(
     msgs: ChainMsg[],
     speed: GasFeeSpeed = GasFeeSpeed.medium
@@ -178,7 +203,7 @@ export class ChainDataSource extends DataSource {
     const fee = await this.gasFeeOptions();
     const feeData: FeeData[] = [];
     if (!fee) {
-      return feeData;
+      throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
     }
     for (const msg of msgs) {
       const msgData = msg.toData();
@@ -218,20 +243,43 @@ export class ChainDataSource extends DataSource {
             );
         }
       } else if (msgData.contractAddress) {
-        const { contract } = await msg.getDataFromContract();
+        const { contract, contractData } = await msg.getDataFromContract();
         if (!contract) {
           throw new Error(
             `Invalid contract for address ${msgData.contractAddress}`
           );
         }
-        gasLimit = DEFAULT_CONTRACT_FEE;
+        const calculatedGasLimit = await this._estimateGasLimit({
+          from: msgData.from,
+          to: contractData.to as string,
+          value: contractData.value as string,
+          data: contractData.data as string,
+        });
+        if (calculatedGasLimit) {
+          gasLimit = calculatedGasLimit;
+        } else {
+          gasLimit = DEFAULT_CONTRACT_FEE;
+        }
       } else {
-        const calculateData = msgData.data;
-        const feeForData =
-          calculateData && calculateData !== '0x'
-            ? 68 * new TextEncoder().encode(calculateData.toString()).length
-            : 0;
-        gasLimit = Math.ceil((DEFAULT_TRANSACTION_FEE + feeForData) * 1.5); // 1.5 -> FACTOR_ESTIMATE
+        const { contractData } = await msg.getDataFromContract();
+        const calculatedGasLimit = await this._estimateGasLimit({
+          from: msgData.from,
+          to: msgData.to,
+          value: contractData.value as string,
+          ...(msgData.data && { data: msgData.data }),
+        });
+        if (calculatedGasLimit) {
+          gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
+        } else {
+          const calculateData = msgData.data;
+          const feeForData =
+            calculateData && calculateData !== '0x'
+              ? 68 * new TextEncoder().encode(calculateData.toString()).length
+              : 0;
+          gasLimit = Math.ceil(
+            (DEFAULT_TRANSACTION_FEE + feeForData) * FACTOR_ESTIMATE
+          );
+        }
       }
 
       const msgFeeData = {
