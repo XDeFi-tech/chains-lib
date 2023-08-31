@@ -19,14 +19,19 @@ export class PrivateKeySigner extends Signer.Provider {
     const wallet = new Wallet(privateKey);
     const txData = await msg.buildTx();
     const signature = await wallet.signTransaction({
-      ...txData,
       to: txData.to,
       from: txData.from,
       nonce: txData.nonce,
       gasLimit: txData.gasLimit,
-      gasPrice: txData.gasPrice,
       value: txData.value,
       chainId: parseInt(txData.chainId),
+      ...(txData.maxPriorityFeePerGas && {
+        maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
+      }),
+      ...(txData.maxFeePerGas && { maxFeePerGas: txData.maxFeePerGas }),
+      ...(txData.gasPrice && { gasPrice: txData.gasPrice }),
+      data: txData.data,
+      type: txData.type,
     });
     msg.sign(signature);
   }

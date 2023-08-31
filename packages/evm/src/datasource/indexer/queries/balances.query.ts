@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
 import { gqlClient } from '@xdefi-tech/chains-core';
+import filter from 'lodash/filter';
 
 import { EVMChains } from '../../../manifests';
 
-export const GET_BALANCE = (chain: EVMChains) => gql`
+export const GET_BALANCE = (chain: string) => gql`
 query GetBalance($address: String!) {
   ${chain} {
     balances(address: $address) {
@@ -30,11 +31,23 @@ query GetBalance($address: String!) {
 }
 `;
 
-export const getBalance = (chain: EVMChains, address: string) => {
-  return gqlClient.query({
-    query: GET_BALANCE(chain),
+export const getBalance = async (chain: EVMChains, address: string) => {
+  let indexerChain: string = chain;
+  switch (chain) {
+    case EVMChains.binancesmartchain:
+      indexerChain = 'binanceSmartChain';
+      break;
+  }
+  const response = await gqlClient.query({
+    query: GET_BALANCE(indexerChain),
     variables: {
       address,
+      first: 100,
     },
   });
+
+  return filter(
+    response.data[indexerChain].balances,
+    (b: any) => b.asset.symbol && b.asset.id // cut off balances without asset
+  );
 };

@@ -1,9 +1,57 @@
 import { gql } from '@apollo/client';
 import { gqlClient } from '@xdefi-tech/chains-core';
+import capitalize from 'lodash/capitalize';
+import map from 'lodash/map';
 
 import { EVMChains } from '../../../manifests';
 
-export const GET_TRANSACTION = (chain: EVMChains) => gql`
+export const GET_TRANSACTION_WITH_PAGINATION = (chain: string) => gql`
+query Get${capitalize(chain)}Transactions($address: String!, $first: Int) {
+  ${chain} {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const GET_TRANSACTION = (chain: string) => gql`
 query GetTransactions($address: String!) {
   ${chain} {
     transactions(address: $address) {
@@ -43,16 +91,24 @@ export interface BlockRange {
   to: number;
 }
 
-export const getTransaction = (
+export const getTransactions = async (
   chain: EVMChains,
   address: string,
   blockRange: BlockRange | null
 ) => {
-  return gqlClient.query({
-    query: GET_TRANSACTION(chain),
+  let indexerChain: string = chain;
+  switch (chain) {
+    case EVMChains.binancesmartchain:
+      indexerChain = 'binanceSmartChain';
+      break;
+  }
+  const response = await gqlClient.query({
+    query: GET_TRANSACTION_WITH_PAGINATION(indexerChain),
     variables: {
       address,
       ...(blockRange && { blockRange }),
     },
   });
+
+  return map(response.data[indexerChain].transactions.edges, 'node');
 };
