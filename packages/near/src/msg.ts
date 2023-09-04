@@ -37,6 +37,8 @@ export interface TxBody {
   memo?: string;
   gasLimit: string;
   gasPrice: number;
+  blockHash: string;
+  nonce: number;
 }
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
@@ -91,6 +93,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     } else {
       actions.push(transactions.transfer(new BN(value))); // common tx
     }
+    const { nonce, blockHash } = await this.provider.getNonce(msgData.from);
 
     return {
       actions: actions,
@@ -102,6 +105,8 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       memo: msgData.memo,
       gasPrice: gas.gasPrice,
       gasLimit: gas.gasLimit,
+      blockHash,
+      nonce,
     };
   }
 
