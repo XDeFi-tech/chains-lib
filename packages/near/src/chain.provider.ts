@@ -19,6 +19,7 @@ import * as Near from 'near-api-js';
 import { keyStores } from 'near-api-js';
 import { SignedTransaction } from 'near-api-js/lib/transaction';
 import BN from 'bn.js';
+import axios, { Axios } from 'axios';
 
 import { ChainMsg } from './msg';
 import { NearManifest } from './manifests';
@@ -35,10 +36,12 @@ import {
 })
 export class NearProvider extends Chain.Provider {
   declare rpcProvider: Near.Near;
+  declare rest: Axios;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
     const manifest = this.manifest as NearManifest;
+    this.rest = axios.create({ baseURL: manifest.rpcURL });
     Near.connect({
       networkId: manifest.chainId,
       keyStore: new keyStores.InMemoryKeyStore(),
@@ -82,8 +85,23 @@ export class NearProvider extends Chain.Provider {
     return this.dataSource.gasFeeOptions();
   }
 
-  async getNonce(_address: string): Promise<number> {
-    throw new Error('Method not implemented.');
+  async getNonce(address: string): Promise<any> {
+    const { data: response } = await this.rest.post('/', {
+      jsonrpc: '2.0',
+      id: '',
+      method: 'query',
+      params: {
+        request_type: 'view_access_key_list',
+        finality: 'final',
+        account_id: address,
+      },
+    });
+    const keys = response.result.keys;
+
+    return {
+      blockHash: response.result.block_hash,
+      nonce: keys && keys.length > 0 ? keys[0].access_key.nonce : 0,
+    };
   }
 
   async broadcast(msgs: ChainMsg[]): Promise<Transaction[]> {

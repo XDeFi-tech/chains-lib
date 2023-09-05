@@ -1,8 +1,4 @@
-import {
-  ChainsException,
-  Signer,
-  SignerDecorator,
-} from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { KeyPair, utils, transactions } from 'near-api-js';
 import BN from 'bn.js';
 import borsh from 'borsh';
@@ -23,7 +19,6 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async sign(privateKey: string, msg: ChainMsg): Promise<void> {
-    const txData = await msg.buildTx();
     const keyPair = KeyPair.fromString(privateKey);
     const publicKey = keyPair.getPublicKey();
     const accountId = Buffer.from(
@@ -35,27 +30,15 @@ export class PrivateKeySigner extends Signer.Provider {
       accountId,
       keyPair
     );
-    await msg.provider.checkStorageBalance(msg); // need to add before calculate nonce
-    const account = await client.account(accountId);
+    await msg.provider.checkStorageBalance(msg); // need to add before calculate nonce but after setting key to provider
+
+    const txData = await msg.buildTx();
     const receiverId = txData.contractAddress || txData.to;
-    const accessKeyInfo = await account.findAccessKey(
-      receiverId,
-      txData.actions
-    );
-    if (!accessKeyInfo) {
-      throw new ChainsException(
-        `Can not sign transactions for account ${accountId} on network ${msg.provider.manifest.chainId}, no matching key pair exists for this account`
-      );
-    }
-    const { accessKey } = accessKeyInfo;
-    const block = await client.connection.provider.block({ finality: 'final' });
-    const nonce = accessKey.nonce.add(new BN(1));
-    const blockHash = block.header.hash;
     const [_txHash, signedTx] = await transactions.signTransaction(
       receiverId,
-      nonce,
+      new BN(txData.nonce).add(new BN(1)),
       txData.actions,
-      borsh.baseDecode(blockHash),
+      borsh.baseDecode(txData.blockHash),
       client.connection.signer,
       accountId,
       msg.provider.manifest.chainId
