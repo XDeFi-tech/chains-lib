@@ -15,32 +15,26 @@ import {
 import axios, { Axios } from 'axios';
 
 import { ChainMsg, BitcoinMessageBody } from './msg';
-import {
-  DEFAULT_BLOCKSTREAM_URL,
-  DEFAULT_HASKOIN_URL,
-  UTXOManifest,
-} from './manifests';
+import { UTXOManifest } from './manifests';
 import { HaskoinDataSource, UTXODataSource } from './datasource';
 
-@ChainDecorator('BtcProvider', {
+@ChainDecorator('UtxoProvider', {
   deps: [],
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BtcProvider extends Chain.Provider {
+export class UtxoProvider extends Chain.Provider {
   public rpcProvider = null;
-  private api: Axios;
+  private rest: Axios;
   public chainDataSource: UTXODataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
     const manifest = this.manifest as UTXOManifest;
-    this.api = axios.create({
-      baseURL: manifest.rpcURL || DEFAULT_BLOCKSTREAM_URL,
+    this.rest = axios.create({
+      baseURL: manifest.rpcURL,
     });
-    this.chainDataSource = new HaskoinDataSource(
-      manifest.chainDataSourceURL || DEFAULT_HASKOIN_URL
-    );
+    this.chainDataSource = new HaskoinDataSource(manifest.chainDataSourceURL);
   }
 
   createMsg(data: BitcoinMessageBody): ChainMsg {
@@ -88,7 +82,7 @@ export class BtcProvider extends Chain.Provider {
         throw new Error(`Message ${message} is not signed`);
       }
 
-      const { data: txid } = await this.api.post<string>(
+      const { data: txid } = await this.rest.post<string>(
         '/api/tx',
         signedTransaction
       );

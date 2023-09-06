@@ -9,7 +9,7 @@ import accumulative from 'coinselect/accumulative';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import { UTXODataSource } from './datasource/utxo/utxo.data-source';
-import type { BtcProvider } from './chain.provider';
+import type { UtxoProvider } from './chain.provider';
 import { HaskoinDataSource } from './datasource';
 import { UTXOManifest } from './manifests';
 
@@ -29,7 +29,7 @@ export class ChainMsg extends BaseMsg<BitcoinMessageBody, any> {
   declare keys: Bitcoin.ECPairInterface;
   public utxoDataSource: UTXODataSource;
   feeEstimation: FeeEstimation = defaultFeeEstimation;
-  constructor(msg: BitcoinMessageBody, provider?: BtcProvider) {
+  constructor(msg: BitcoinMessageBody, provider: UtxoProvider) {
     super(msg, provider);
     const manifest = this.provider?.manifest as UTXOManifest;
     this.utxoDataSource = new HaskoinDataSource(manifest.chainDataSourceURL);

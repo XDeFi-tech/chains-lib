@@ -75,7 +75,7 @@ export class IndexerDataSource extends DataSource {
           price: asset.price?.amount,
           decimals: asset.decimals,
         }),
-        utils.formatUnits(amount.value, amount.scalingFactor)
+        utils.formatUnits(amount.value, asset.decimals)
       );
     });
   }

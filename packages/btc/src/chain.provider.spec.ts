@@ -1,13 +1,13 @@
 import { ChainMsg } from './msg';
 import { BtcProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
-import { BTC_MANIFEST } from './manifests';
+import { UTXO_MANIFESTS } from './manifests';
 
 describe('chain.provider', () => {
   let btcProvider: BtcProvider;
 
   beforeEach(() => {
-    btcProvider = new BtcProvider(new IndexerDataSource(BTC_MANIFEST));
+    btcProvider = new BtcProvider(new IndexerDataSource(UTXO_MANIFESTS.bitcoin));
   });
 
   it('createMsg(): should create message with data', () => {

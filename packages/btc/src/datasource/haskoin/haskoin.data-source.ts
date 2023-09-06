@@ -2,7 +2,6 @@ import { Injectable } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 import * as Bitcoin from 'bitcoinjs-lib';
 
-import { DEFAULT_HASKOIN_URL } from '../../manifests';
 import { UTXODataSource, Transaction, UTXO } from '../utxo/utxo.data-source';
 
 export declare type HaskoinAddressBalance = {
@@ -33,7 +32,7 @@ export class HaskoinDataSource implements UTXODataSource {
   private api: Axios;
   private baseURL: string;
 
-  constructor(baseURL = DEFAULT_HASKOIN_URL) {
+  constructor(baseURL: string) {
     this.api = axios.create({ baseURL });
     this.baseURL = baseURL;
   }

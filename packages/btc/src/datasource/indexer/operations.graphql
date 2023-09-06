@@ -2,32 +2,31 @@ query BitcoinBalance($address: String!) {
   bitcoin {
     balances(address: $address) {
       address
-      asset {
-        symbol
-        contract
-        id
-        name
-        image
-        chain
-        decimals
-        price {
-          amount
-          scalingFactor
-        }
-      }
       amount {
         value
-        scalingFactor
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+        }
+        symbol
       }
     }
   }
 }
 
-query GetFees($filter: String) {
-  chains(filter: $filter) {
-    name
+query GetBitcoinFees {
+  bitcoin {
     fee {
-      value
+      high
+      low
+      medium
     }
   }
 }
@@ -40,15 +39,14 @@ query GetBitcoinStatus {
   }
 }
 
-query GetBitcoinTransactions($address: String!, $blockRange: OptBlockRange!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!) {
+query GetBitcoinTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
   bitcoin {
-    transactions(address: $address, blockRange: $blockRange, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange) {
-      balanceChange {
-        value
-      }
-      blockIndex
-      blockNumber
+    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
       hash
+      blockNumber
+      blockIndex
+      status
+      timestamp
       inputs {
         address
         amount {
@@ -61,8 +59,225 @@ query GetBitcoinTransactions($address: String!, $blockRange: OptBlockRange!, $pa
         }
         address
       }
+      fee {
+        value
+      }
+      balanceChange {
+        value
+      }
+    }
+  }
+}
+
+query LitecoinBalance($address: String!) {
+  litecoin {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetLitecoinFees {
+  litecoin {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetLitecoinStatus {
+  litecoin {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query GetLitecoinTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
+  litecoin {
+    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
+      hash
+      blockNumber
+      blockIndex
       status
       timestamp
+      inputs {
+        address
+        amount {
+          value
+        }
+      }
+      outputs {
+        amount {
+          value
+        }
+        address
+      }
+      fee {
+        value
+      }
+      balanceChange {
+        value
+      }
+    }
+  }
+}
+
+query DogecoinBalance($address: String!) {
+  dogecoin {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetDogecoinFees {
+  dogecoin {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetDogecoinStatus {
+  dogecoin {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query GetDogecoinTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
+  dogecoin {
+    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
+      hash
+      blockNumber
+      blockIndex
+      status
+      timestamp
+      inputs {
+        address
+        amount {
+          value
+        }
+      }
+      outputs {
+        amount {
+          value
+        }
+        address
+      }
+      fee {
+        value
+      }
+      balanceChange {
+        value
+      }
+    }
+  }
+}
+
+query BitcoinCashBalance($address: String!) {
+  bitcoincash {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetBitcoinCashFees {
+  bitcoincash {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetBitcoinCashStatus {
+  bitcoincash {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query GetBitcoinCashTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
+  bitcoincash {
+    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
+      hash
+      blockNumber
+      blockIndex
+      status
+      timestamp
+      inputs {
+        address
+        amount {
+          value
+        }
+      }
+      outputs {
+        amount {
+          value
+        }
+        address
+      }
+      fee {
+        value
+      }
+      balanceChange {
+        value
+      }
     }
   }
 }

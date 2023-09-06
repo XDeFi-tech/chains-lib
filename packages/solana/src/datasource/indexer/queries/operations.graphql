@@ -21,36 +21,47 @@ query GetSolanaBalance($address: String!) {
   }
 }
 
-query GetSolanaTransactions($address: String!, $slotRange: OptBlockRange!, $dateRange: OptDateRange!) {
+query GetSolanaTransactions($address: String!, $first: Int!, $after: String) {
   solana {
-    transactions(address: $address, slotRange: $slotRange, dateRange: $dateRange) {
-      fee {
-        amount {
-          value
-        }
-        payer
+    transactions(address: $address, first: $first, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
       }
-      hash
-      slot
-      status
-      timestamp
-      transfers {
-        amount {
-          value
+      edges {
+        node {
+          fee {
+            amount {
+              value
+            }
+            payer
+          }
+          hash
+          slot
+          status
+          timestamp
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              decimals
+              id
+              image
+              name
+              price {
+                amount
+              }
+              symbol
+            }
+            fromAddress
+            toAddress
+          }
+          signers
         }
-        asset {
-          chain
-          contract
-          decimals
-          id
-          image
-          name
-          symbol
-        }
-        fromAddress
-        toAddress
       }
-      signers
     }
   }
 }
