@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.9
+
+### Patch Changes
+
+- 1e359d3: Disable manifest check for indexer data source
+
 ## 1.1.8
 
 ### Patch Changes
