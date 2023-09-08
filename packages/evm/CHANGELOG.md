@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.8
+
+### Patch Changes
+
+- bffd7df: Rename binancesmartchain to smartchain
+
 ## 1.1.7
 
 ### Patch Changes
