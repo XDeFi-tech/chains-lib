@@ -2,7 +2,7 @@ import { Chain } from '@xdefi-tech/chains-core';
 
 export enum EVMChains {
   ethereum = 'ethereum',
-  binancesmartchain = 'binancesmartchain',
+  smartchain = 'smartchain',
   polygon = 'polygon',
   avalanche = 'avalanche',
   fantom = 'fantom',
@@ -26,7 +26,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
   },
-  [EVMChains.binancesmartchain]: {
+  [EVMChains.smartchain]: {
     name: 'BNB Smart Chain',
     description: '',
     rpcURL: 'https://bsc-dataseed1.defibit.io',
