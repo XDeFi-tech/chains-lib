@@ -21,7 +21,7 @@ import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
 
 import { parseGwei } from '../../utils';
-import { EVMChains, EVM_MANIFESTS } from '../../manifests';
+import { EVMChains } from '../../manifests';
 import { ChainMsg, TokenType } from '../../msg';
 import {
   DEFAULT_CONTRACT_FEE,
@@ -42,11 +42,6 @@ export class IndexerDataSource extends DataSource {
 
   constructor(manifest: Chain.Manifest) {
     super(manifest);
-    if (!EVM_MANIFESTS[manifest.chain as EVMChains]) {
-      throw new Error(
-        'Please use EVM_MANIFESTS for indexer data source to avoid gql incompatibility'
-      );
-    }
     this.rpcProvider = new providers.StaticJsonRpcProvider(
       this.manifest.rpcURL
     );
