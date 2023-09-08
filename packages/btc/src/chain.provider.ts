@@ -14,9 +14,17 @@ import {
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 
-import { ChainMsg, BitcoinMessageBody } from './msg';
+import { ChainMsg, MsgBody } from './msg';
 import { UTXOManifest } from './manifests';
-import { HaskoinDataSource, UTXODataSource } from './datasource';
+import {
+  HaskoinDataSource,
+  UTXODataSource,
+  BlockChairDataSource,
+} from './datasource';
+
+export interface UtxoProviderOptions extends Chain.IOptions {
+  apiKey?: string;
+}
 
 @ChainDecorator('UtxoProvider', {
   deps: [],
@@ -26,18 +34,27 @@ import { HaskoinDataSource, UTXODataSource } from './datasource';
 export class UtxoProvider extends Chain.Provider {
   public rpcProvider = null;
   private rest: Axios;
-  public chainDataSource: UTXODataSource;
+  public utxoDataSource: UTXODataSource;
 
-  constructor(dataSource: DataSource, options?: Chain.IOptions) {
+  constructor(dataSource: DataSource, options?: UtxoProviderOptions) {
     super(dataSource, options);
     const manifest = this.manifest as UTXOManifest;
     this.rest = axios.create({
       baseURL: manifest.rpcURL,
     });
-    this.chainDataSource = new HaskoinDataSource(manifest.chainDataSourceURL);
+    if (manifest.utxoDataSourceType === 'haskoin') {
+      this.utxoDataSource = new HaskoinDataSource(manifest.utxoDataSourceURL);
+    } else if (manifest.utxoDataSourceType === 'blockchair') {
+      this.utxoDataSource = new BlockChairDataSource(
+        manifest.utxoDataSourceURL,
+        options?.apiKey || ''
+      );
+    } else {
+      throw new Error('Invalid data source type');
+    }
   }
 
-  createMsg(data: BitcoinMessageBody): ChainMsg {
+  createMsg(data: MsgBody): ChainMsg {
     return new ChainMsg(data, this);
   }
 
@@ -82,24 +99,36 @@ export class UtxoProvider extends Chain.Provider {
         throw new Error(`Message ${message} is not signed`);
       }
 
-      const { data: txid } = await this.rest.post<string>(
-        '/api/tx',
-        signedTransaction
-      );
+      if (this.manifest.utxoDataSourceType === 'blockchair') {
+        const dataSource: BlockChairDataSource = this
+          .utxoDataSource as BlockChairDataSource;
+        const hash = await dataSource.broadcast(signedTransaction as string);
 
-      result.push(Transaction.fromData({ hash: txid }));
+        result.push(Transaction.fromData({ hash: hash }));
+      } else {
+        const { data: txid } = await this.rest.post<string>(
+          '/api/tx',
+          signedTransaction
+        );
+
+        result.push(Transaction.fromData({ hash: txid }));
+      }
     }
 
     return result;
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
-    const tx = await this.chainDataSource.getTransaction(txHash);
+    const tx = await this.utxoDataSource.getTransaction(txHash);
     return {
-      hash: tx.txid,
+      hash: tx.hash,
       status: TransactionStatus.success,
       from: '',
       to: tx.outputs[0].address,
     };
+  }
+
+  public get manifest(): UTXOManifest {
+    return this.dataSource.manifest as UTXOManifest;
   }
 }

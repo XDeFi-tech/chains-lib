@@ -2,7 +2,7 @@ import { Chain } from '@xdefi-tech/chains-core';
 import { EvmProvider } from '@xdefi-tech/chains-evm';
 import { SolanaProvider } from '@xdefi-tech/chains-solana';
 import { CosmosProvider } from '@xdefi-tech/chains-cosmos';
-import { BtcProvider } from '@xdefi-tech/chains-btc';
+import { UtxoProvider } from '@xdefi-tech/chains-btc';
 
 export enum DataSourceNames {
   IndexerDataSource = 'IndexerDataSource',
@@ -18,14 +18,14 @@ export enum ProviderNames {
   EvmProvider = 'EvmProvider',
   SolanaProvider = 'SolanaProvider',
   CosmosProvider = 'CosmosProvider',
-  BtcProvider = 'BtcProvider',
+  UTXOProvider = 'UTXOProvider',
 }
 
 export type AvailableProviders =
   | typeof EvmProvider
   | typeof SolanaProvider
   | typeof CosmosProvider
-  | typeof BtcProvider;
+  | typeof UtxoProvider;
 
 export class ProviderFactory {
   private readonly providerList: {
@@ -37,7 +37,7 @@ export class ProviderFactory {
       [ProviderNames.EvmProvider]: EvmProvider,
       [ProviderNames.SolanaProvider]: SolanaProvider,
       [ProviderNames.CosmosProvider]: CosmosProvider,
-      [ProviderNames.BtcProvider]: BtcProvider,
+      [ProviderNames.UTXOProvider]: UtxoProvider,
     };
   }
 

@@ -75,8 +75,14 @@ export class IndexerDataSource extends DataSource {
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address, afterBlock } = filter;
+    let blockRange: OptBlockRange = {
+      from: null,
+      to: null,
+    };
 
-    const blockRange = await this.getBlockRange(afterBlock);
+    if (afterBlock) {
+      blockRange = await this.getBlockRange(afterBlock);
+    }
 
     const transactions = await getTransactions(
       this.manifest.chain,

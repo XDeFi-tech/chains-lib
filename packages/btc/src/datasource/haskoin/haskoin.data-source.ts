@@ -1,8 +1,12 @@
 import { Injectable } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
-import * as Bitcoin from 'bitcoinjs-lib';
+import * as UTXOLib from 'bitcoinjs-lib';
 
-import { UTXODataSource, Transaction, UTXO } from '../utxo/utxo.data-source';
+import {
+  UTXODataSource,
+  UTXOTransaction,
+  UTXO,
+} from '../utxo/utxo.data-source';
 
 export declare type HaskoinAddressBalance = {
   received: number;
@@ -25,16 +29,46 @@ export declare type HaskoinTxUnspent = {
   txid: string;
 };
 
-export type HaskoinTransaction = Transaction;
+export type HaskoinTransaction = {
+  block: {
+    heigh: number;
+    position: number;
+  };
+  deleted: false;
+  fee: number;
+  locktime: number;
+  inputs: {
+    address: string;
+    coinbase: boolean;
+    output: number;
+    pkscript: string;
+    sequence: number;
+    sigscript: string;
+    txid: string;
+    value: number;
+    witness: string[];
+  }[];
+  outputs: {
+    address: string;
+    pkscript: string;
+    spender: { input: number; txid: string } | null;
+    spent: boolean;
+    value: number;
+  }[];
+  rbf: boolean;
+  size: number;
+  time: number;
+  txid: string;
+  version: number;
+  weight: number;
+};
 
 @Injectable()
 export class HaskoinDataSource implements UTXODataSource {
   private api: Axios;
-  private baseURL: string;
 
   constructor(baseURL: string) {
     this.api = axios.create({ baseURL });
-    this.baseURL = baseURL;
   }
 
   async getAccount(address: string): Promise<HaskoinAddressBalance> {
@@ -58,10 +92,38 @@ export class HaskoinDataSource implements UTXODataSource {
     return data.result;
   }
 
-  async getTransaction(txId: string): Promise<HaskoinTransaction> {
-    const { data } = await this.api.get(`/transaction/${txId}`);
+  async getTransaction(txId: string): Promise<UTXOTransaction> {
+    const { data } = await this.api.get<HaskoinTransaction>(
+      `/transaction/${txId}`
+    );
 
-    return data;
+    return {
+      blockId: data.block.heigh,
+      weight: data.weight,
+      size: data.size,
+      rbf: data.rbf,
+      version: data.version,
+      lockTime: data.locktime,
+      fee: data.fee,
+      date: new Date(data.time).toLocaleDateString('en-EU'),
+      time: data.time,
+      hash: data.txid,
+      inputs: data.inputs.map((i) => ({
+        hash: i.txid,
+        index: i.output,
+        pkscript: i.pkscript,
+        spendingSequence: i.sequence,
+        spendingWitness: i.witness,
+        value: i.value,
+        address: i.address,
+      })),
+      outputs: data.outputs.map((o) => ({
+        address: o.address,
+        pkscript: o.pkscript,
+        value: o.value,
+        spent: o.spent,
+      })),
+    };
   }
 
   async scanUTXOs(address: string) {
@@ -75,7 +137,7 @@ export class HaskoinDataSource implements UTXODataSource {
         index: utxo.index,
         witnessUtxo: {
           value: utxo.value,
-          script: Bitcoin.script.compile(Buffer.from(utxo.pkscript, 'hex')),
+          script: UTXOLib.script.compile(Buffer.from(utxo.pkscript, 'hex')),
         },
         txHex: await this.getRawTransaction(utxo.txid),
       });

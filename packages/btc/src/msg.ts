@@ -6,33 +6,27 @@ import {
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
-import * as Bitcoin from 'bitcoinjs-lib';
+import * as UTXOLib from 'bitcoinjs-lib';
 
-import { UTXODataSource } from './datasource/utxo/utxo.data-source';
 import type { UtxoProvider } from './chain.provider';
-import { HaskoinDataSource } from './datasource';
-import { UTXOManifest } from './manifests';
 
-export interface BitcoinMessageBody {
+export interface MsgBody {
   amount: NumberIsh;
   to: string;
   memo?: string;
   from: string;
   gasLimit?: NumberIsh; // ByteFee
+  decimals?: number;
 }
 
-const defaultFeeEstimation: FeeEstimation = { fee: null, maxFee: null };
-
-export class ChainMsg extends BaseMsg<BitcoinMessageBody, any> {
+export class ChainMsg extends BaseMsg<MsgBody, any> {
   declare signedTransaction: string | null;
-  declare data: BitcoinMessageBody;
-  declare keys: Bitcoin.ECPairInterface;
-  public utxoDataSource: UTXODataSource;
-  feeEstimation: FeeEstimation = defaultFeeEstimation;
-  constructor(msg: BitcoinMessageBody, provider: UtxoProvider) {
-    super(msg, provider);
-    const manifest = this.provider?.manifest as UTXOManifest;
-    this.utxoDataSource = new HaskoinDataSource(manifest.chainDataSourceURL);
+
+  constructor(
+    public readonly data: MsgBody,
+    public readonly provider: UtxoProvider
+  ) {
+    super(data, provider);
   }
 
   public toData() {
@@ -40,21 +34,22 @@ export class ChainMsg extends BaseMsg<BitcoinMessageBody, any> {
   }
 
   async buildTx() {
-    const utxos = await this.utxoDataSource.scanUTXOs(this.data.from);
+    const msgData = this.toData();
+    const utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
     const feeRateWhole = parseInt(fee);
-    const compiledMemo = this.data.memo
-      ? this.compileMemo(this.data.memo)
-      : null;
+    const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
 
     targetOutputs.push({
-      address: this.data.to,
-      value: new BigNumber(this.data.amount.toString())
-        .multipliedBy(10 ** (this.provider?.manifest.decimals || 0))
+      address: msgData.to,
+      value: new BigNumber(msgData.amount.toString())
+        .multipliedBy(
+          10 ** (msgData.decimals || this.provider.manifest.decimals)
+        )
         .toNumber(),
     });
 
@@ -71,38 +66,42 @@ export class ChainMsg extends BaseMsg<BitcoinMessageBody, any> {
       throw new Error('Insufficient Balance for transaction');
     }
 
-    return { inputs, outputs, utxos, fee, compiledMemo };
+    return {
+      to: msgData.to,
+      from: msgData.from,
+      inputs,
+      outputs,
+      utxos,
+      fee,
+      compiledMemo,
+    };
   }
 
   private compileMemo(memo: string) {
-    return Bitcoin.script.compile([
-      Bitcoin.opcodes.OP_RETURN,
+    return UTXOLib.script.compile([
+      UTXOLib.opcodes.OP_RETURN,
       Buffer.from(memo, 'utf8'),
     ]);
   }
 
-  async getFee(speed?: GasFeeSpeed) {
-    let feeEstimation = defaultFeeEstimation;
+  async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
+    const feeEstimation: FeeEstimation = { fee: null, maxFee: null };
     const msgData = this.toData();
     if (msgData.gasLimit) {
       feeEstimation.fee = BigNumber(msgData.gasLimit.toString())
-        .dividedBy(10 ** (this.provider?.manifest.decimals || 0))
+        .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
         .toString();
-    } else if (this.provider) {
+    } else {
       const feeOptions = await this.provider.gasFeeOptions();
       if (!feeOptions) {
-        return defaultFeeEstimation;
+        return feeEstimation;
       }
 
-      this.feeEstimation = {
-        fee: BigNumber(feeOptions[speed || GasFeeSpeed.medium].toString())
-          .dividedBy(10 ** this.provider.manifest.decimals)
-          .toString(),
-        maxFee: BigNumber(feeOptions[GasFeeSpeed.high].toString())
-          .dividedBy(10 ** this.provider.manifest.decimals)
-          .toString(),
-      };
-      feeEstimation = this.feeEstimation;
+      feeEstimation.fee = BigNumber(
+        feeOptions[speed || GasFeeSpeed.medium].toString()
+      )
+        .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
+        .toString();
     }
 
     return feeEstimation;

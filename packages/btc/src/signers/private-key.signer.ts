@@ -1,6 +1,7 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import * as Bitcoin from 'bitcoinjs-lib';
+import * as UTXOLib from 'bitcoinjs-lib';
+import coininfo from 'coininfo';
 
 import { ChainMsg } from '../msg';
 import { UTXO } from '../datasource';
@@ -9,7 +10,7 @@ import { UTXO } from '../datasource';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Bitcoin.address.toOutputScript(address);
+      UTXOLib.address.toOutputScript(address);
       return true;
     } catch (err) {
       return false;
@@ -20,10 +21,10 @@ export class PrivateKeySigner extends Signer.Provider {
     privateKey: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
-    const pk = Bitcoin.ECPair.fromWIF(privateKey);
-    const { address } = Bitcoin.payments[type]({
+    const pk = UTXOLib.ECPair.fromWIF(privateKey);
+    const { address } = UTXOLib.payments[type]({
       pubkey: pk.publicKey,
-      network: Bitcoin.networks.bitcoin,
+      network: UTXOLib.networks.bitcoin,
     });
 
     if (!address) throw new Error('BTC address is undefined');
@@ -32,34 +33,32 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async sign(privateKey: string, message: ChainMsg) {
-    const data = message.toData();
-    const { inputs, outputs, compiledMemo } = await message.buildTx();
-    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+    const { inputs, outputs, compiledMemo, from } = await message.buildTx();
+    const network =
+      coininfo[message.provider.manifest.chain].main.toBitcoinJS();
+    const psbt = new UTXOLib.Psbt({ network });
     psbt.addInputs(
       inputs.map((utxo: UTXO) => ({
         hash: utxo.hash,
         index: utxo.index,
         witnessUtxo: utxo.witnessUtxo,
+        nonWitnessUtxo: Buffer.from(utxo.txHex, 'hex'),
       }))
     );
 
-    // psbt add outputs from accumulative outputs
-    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+    outputs.forEach((output: UTXOLib.PsbtTxOutput) => {
       if (!output.address) {
-        //an empty address means this is the change address
-        output.address = data.from;
+        output.address = from;
       }
       if (!output.script) {
         psbt.addOutput(output);
       } else {
-        //we need to add the compiled memo this way to
-        //avoid dust error tx when accumulating memo output with 0 value
         if (compiledMemo) {
           psbt.addOutput({ script: compiledMemo, value: 0 });
         }
       }
     });
-    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
+    psbt.signAllInputs(UTXOLib.ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());
