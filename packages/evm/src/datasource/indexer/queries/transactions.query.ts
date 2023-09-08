@@ -98,7 +98,7 @@ export const getTransactions = async (
 ) => {
   let indexerChain: string = chain;
   switch (chain) {
-    case EVMChains.binancesmartchain:
+    case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
   }

@@ -16,7 +16,7 @@ query GetStatus {
 export const getStatus = async (chain: string) => {
   let indexerChain: string = chain;
   switch (chain) {
-    case EVMChains.binancesmartchain:
+    case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
   }

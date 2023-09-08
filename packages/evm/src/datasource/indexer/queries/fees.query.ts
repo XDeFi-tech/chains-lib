@@ -48,7 +48,7 @@ export const getFees = async (chain: string) => {
     case EVMChains.avalanche:
       query = EIP1559_GAS_FEES(indexerChain);
       break;
-    case EVMChains.binancesmartchain:
+    case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       query = DEFAULT_GAS_FEES(indexerChain);
       break;

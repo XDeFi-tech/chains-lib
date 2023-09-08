@@ -34,7 +34,7 @@ query GetBalance($address: String!) {
 export const getBalance = async (chain: EVMChains, address: string) => {
   let indexerChain: string = chain;
   switch (chain) {
-    case EVMChains.binancesmartchain:
+    case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
   }
