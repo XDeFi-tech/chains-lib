@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.6
+
+### Patch Changes
+
+- 35b848f: Add UTXO chains, update GQL schemas
+
 ## 1.1.5
 
 ### Patch Changes

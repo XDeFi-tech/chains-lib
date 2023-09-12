@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.6
+
+### Patch Changes
+
+- 35b848f: Add UTXO chains, update GQL schemas
+- Updated dependencies [35b848f]
+  - @xdefi-tech/chains-graphql@1.1.6
+
 ## 1.1.5
 
 ### Patch Changes

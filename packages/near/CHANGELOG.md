@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-near
 
+## 1.0.5
+
+### Patch Changes
+
+- eb87031: Fix lint issues
+- Updated dependencies [35b848f]
+  - @xdefi-tech/chains-graphql@1.1.6
+
 ## 1.0.4
 
 ### Patch Changes
