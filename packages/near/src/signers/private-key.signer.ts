@@ -38,6 +38,7 @@ export class PrivateKeySigner extends Signer.Provider {
       receiverId,
       new BN(txData.nonce).add(new BN(1)),
       txData.actions,
+      // eslint-disable-next-line import/no-named-as-default-member
       borsh.baseDecode(txData.blockHash),
       client.connection.signer,
       accountId,

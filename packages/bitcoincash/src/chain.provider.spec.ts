@@ -7,7 +7,9 @@ describe('chain.provider', () => {
   let btcProvider: BitcoinCashProvider;
 
   beforeEach(() => {
-    btcProvider = new BitcoinCashProvider(new IndexerDataSource(BITCOINCASH_MANIFEST));
+    btcProvider = new BitcoinCashProvider(
+      new IndexerDataSource(BITCOINCASH_MANIFEST)
+    );
   });
 
   it('createMsg(): should create message with data', () => {
