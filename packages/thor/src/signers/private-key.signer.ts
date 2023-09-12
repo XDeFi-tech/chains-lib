@@ -2,10 +2,13 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';
-import * as bip32 from 'bip32';
+import * as ecc from 'tiny-secp256k1';
+import { BIP32Factory } from 'bip32';
 import Long from 'long';
 
 import { ChainMsg } from '../msg';
+
+const bip32 = BIP32Factory(ecc);
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {

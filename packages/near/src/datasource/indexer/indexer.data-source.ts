@@ -114,12 +114,16 @@ export class IndexerDataSource extends DataSource {
     return await this.getFeeOptions();
   }
 
-  async getFeeOptions(): Promise<DefaultFeeOptions> {
+  async getFeeOptions(): Promise<DefaultFeeOptions | null> {
     const fee = await getFees();
+    if (!fee) {
+      return null;
+    }
+
     return {
-      [GasFeeSpeed.high]: fee!.high as number,
-      [GasFeeSpeed.medium]: fee!.medium as number,
-      [GasFeeSpeed.low]: fee!.low as number,
+      [GasFeeSpeed.high]: fee.high as number,
+      [GasFeeSpeed.medium]: fee.medium as number,
+      [GasFeeSpeed.low]: fee.low as number,
     };
   }
 

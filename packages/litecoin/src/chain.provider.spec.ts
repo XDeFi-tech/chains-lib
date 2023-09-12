@@ -7,7 +7,9 @@ describe('chain.provider', () => {
   let btcProvider: LitecoinProvider;
 
   beforeEach(() => {
-    btcProvider = new LitecoinProvider(new IndexerDataSource(LITECOIN_MANIFEST));
+    btcProvider = new LitecoinProvider(
+      new IndexerDataSource(LITECOIN_MANIFEST)
+    );
   });
 
   it('createMsg(): should create message with data', () => {

@@ -36,7 +36,8 @@ import {
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
-  ChainsContextDefaultValue.addProvider( // 0
+  ChainsContextDefaultValue.addProvider(
+    // 0
     new SolanaProvider(new SolanaIndexerDataSource(SOLANA_MANIFEST))
   );
   ChainsContextDefaultValue.addProvider(
@@ -52,8 +53,9 @@ export const initDefaultProviders = () => {
       signers: WebSigners,
     })
   );
-  ChainsContextDefaultValue.addProvider( //5
-    new EvmProvider(new EvmDataSource(EVM_MANIFESTS.binancesmartchain))
+  ChainsContextDefaultValue.addProvider(
+    //5
+    new EvmProvider(new EvmDataSource(EVM_MANIFESTS.smartchain))
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.polygon), {
@@ -69,7 +71,8 @@ export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.arbitrum))
   );
-  ChainsContextDefaultValue.addProvider( // 10
+  ChainsContextDefaultValue.addProvider(
+    // 10
     new EvmProvider(new EvmDataSource(EVM_MANIFESTS.aurora))
   );
   ChainsContextDefaultValue.addProvider(
@@ -81,7 +84,8 @@ export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
     new ThorProvider(new ThorChainDataSource(THOR_MANIFEST))
   );
-  ChainsContextDefaultValue.addProvider( // 14
+  ChainsContextDefaultValue.addProvider(
+    // 14
     new NearProvider(new NearIndexerDataSource(NEAR_MANIFEST))
   );
 };
@@ -110,6 +114,7 @@ export const restoreProviders = (): boolean => {
 };
 
 export const saveProviders = () => {
+  return; // disable save providers
   const serialisedData = ChainsContextDefaultValue.serialize();
   localStorage.setItem(CHAINS_DATA_KEY, serialisedData);
 };

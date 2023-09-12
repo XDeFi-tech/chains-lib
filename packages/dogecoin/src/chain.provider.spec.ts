@@ -7,7 +7,9 @@ describe('chain.provider', () => {
   let btcProvider: DogecoinProvider;
 
   beforeEach(() => {
-    btcProvider = new DogecoinProvider(new IndexerDataSource(DOGECOIN_MANIFEST));
+    btcProvider = new DogecoinProvider(
+      new IndexerDataSource(DOGECOIN_MANIFEST)
+    );
   });
 
   it('createMsg(): should create message with data', () => {

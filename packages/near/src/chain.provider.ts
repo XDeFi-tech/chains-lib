@@ -113,7 +113,7 @@ export class NearProvider extends Chain.Provider {
       const response =
         await this.rpcProvider.connection.provider.sendTransaction(
           SignedTransaction.decode(
-            Buffer.from(msg.signedTransaction!, 'base64')
+            Buffer.from(msg.signedTransaction as string, 'base64')
           )
         );
       transactions.push(
