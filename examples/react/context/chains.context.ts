@@ -13,12 +13,6 @@ import {
   COSMOS_MANIFESTS,
 } from '@xdefi-tech/chains-cosmos';
 import {
-  BTC_MANIFEST,
-  BtcProvider,
-  IndexerDataSource as BtcIndexerDataSource,
-} from '@xdefi-tech/chains-btc';
-import BtcSigners from '@xdefi-tech/chains-btc/web';
-import {
   BINANCE_MANIFEST,
   BinanceProvider,
   IndexerDataSource as BbcIndexerDataSource,
@@ -47,11 +41,6 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new BinanceProvider(new BbcIndexerDataSource(BINANCE_MANIFEST))
-  );
-  ChainsContextDefaultValue.addProvider(
-    new BtcProvider(new BtcIndexerDataSource(BTC_MANIFEST), {
-      signers: BtcSigners,
-    })
   );
   ChainsContextDefaultValue.addProvider(
     new EvmProvider(new EVMChainDataSource(EVM_MANIFESTS.ethereum), {

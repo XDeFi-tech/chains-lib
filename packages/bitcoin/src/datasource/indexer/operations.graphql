@@ -1,0 +1,70 @@
+query BitcoinBalance($address: String!) {
+  bitcoin {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetBitcoinFees {
+  bitcoin {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetBitcoinStatus {
+  bitcoin {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query GetBitcoinTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
+  bitcoin {
+    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
+      hash
+      blockNumber
+      blockIndex
+      status
+      timestamp
+      inputs {
+        address
+        amount {
+          value
+        }
+      }
+      outputs {
+        amount {
+          value
+        }
+        address
+      }
+      fee {
+        value
+      }
+      balanceChange {
+        value
+      }
+    }
+  }
+}

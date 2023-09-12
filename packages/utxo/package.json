@@ -1,0 +1,82 @@
+{
+  "name": "@xdefi-tech/chains-utxo",
+  "version": "0.0.0",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
+    "jest-watch-typeahead": "^1.0.0",
+    "ts-jest": "^27.1.4",
+    "tsup": "^6.6.3",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@xdefi-tech/chains-core": "*",
+    "axios": "^1.3.4",
+    "bignumber.js": "^9.0.2",
+    "bitcoinjs-lib": "5.2.0",
+    "coinselect": "^3.1.13",
+    "eslint-config-custom": "*",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^4.4.0",
+    "rxjs": "^7.8.0",
+    "tiny-secp256k1": "2.2.1",
+    "ts-node": "^10.7.0"
+  },
+  "scripts": {
+    "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
+    "watch": "tsup --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rimraf dist .turbo node_modules"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": "esm",
+    "splitting": false,
+    "dts": true,
+    "types": [
+      "./dist/index.d.ts"
+    ],
+    "platform": "browser"
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest/presets/js-with-ts",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
+  }
+}

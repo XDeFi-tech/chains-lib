@@ -62,9 +62,9 @@ export class IndexerDataSource extends DataSource {
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
-    const { data } = await getTransactions(address, {}, {});
+    const transactions = await getTransactions(address);
 
-    return data.solana.transactions.map((transaction: any) => {
+    return transactions.map((transaction) => {
       return Transaction.fromData(transaction);
     });
   }
