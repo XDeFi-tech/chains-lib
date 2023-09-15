@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.10
+
+### Patch Changes
+
+- e59dcb5: Add prefix to cosmos chain provider
+
 ## 1.0.9
 
 ### Patch Changes
