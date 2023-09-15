@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.9
+
+### Patch Changes
+
+- fee9328: Remove BTC controller
+
 ## 1.0.8
 
 ### Patch Changes
