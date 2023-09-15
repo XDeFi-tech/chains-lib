@@ -27,9 +27,10 @@ import 'reflect-metadata';
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
 import type { ChainDataSource, IndexerDataSource } from './datasource';
+import type { CosmosManifest } from './manifests';
 
 @ChainDecorator('CosmosProvider', {
-  deps: [],
+  deps: [Chain.ChainFeatures.TOKENS],
   providerType: 'Cosmos',
 })
 export class CosmosProvider extends Chain.Provider {
@@ -146,5 +147,9 @@ export class CosmosProvider extends Chain.Provider {
 
   async getAccount(address: string): Promise<null | Account> {
     return this.dataSource.getAccount(address);
+  }
+
+  public get manifest(): CosmosManifest {
+    return this.dataSource.manifest as CosmosManifest;
   }
 }
