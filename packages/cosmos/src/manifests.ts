@@ -1,4 +1,4 @@
-import { Chain, GasFeeSpeed } from '@xdefi-tech/chains-core';
+import { Chain } from '@xdefi-tech/chains-core';
 
 export enum CosmosHubChains {
   cosmos = 'cosmos',
@@ -18,12 +18,7 @@ export enum CosmosHubChains {
 export interface CosmosManifest extends Chain.Manifest {
   lcdURL: string;
   denom: string;
-  decimals: number;
-  feeGasStep: {
-    [GasFeeSpeed.high]: number;
-    [GasFeeSpeed.medium]: number;
-    [GasFeeSpeed.low]: number;
-  };
+  prefix: string;
 }
 
 export const COSMOS_MANIFESTS: {
@@ -40,6 +35,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'cosmos',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'cosmos',
     feeGasStep: {
       high: 0.003,
       medium: 0.0025,
@@ -57,6 +53,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'osmosis',
     denom: 'uosmo',
     decimals: 6,
+    prefix: 'osmo',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -74,6 +71,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'alexar',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'alexar',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -91,6 +89,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'juno',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'juno',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -108,6 +107,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'crescent',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'cre',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -125,6 +125,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'Kava',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'kava',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -142,6 +143,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'stargaze',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'stars',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -159,6 +161,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'akash',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'akash',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -176,6 +179,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'cronos',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'cro',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -193,6 +197,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'kujira',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'kujira',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -210,6 +215,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'stride',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'stride',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,
@@ -227,6 +233,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'mars',
     denom: 'uatom',
     decimals: 6,
+    prefix: 'mars',
     feeGasStep: {
       high: 0.03,
       medium: 0.025,

@@ -10,29 +10,33 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
+  verifyAddress(address: string, prefix: string): boolean {
     try {
       const result = bech32.decode(address);
-      return result.prefix === 'cosmos' && result.words.length === 32;
+      return result.prefix === prefix && result.words.length === 32;
     } catch (err) {
       return false;
     }
   }
 
-  async getAddress(privateKey: string): Promise<string> {
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(privateKey);
+  async getAddress(mnemonic: string, prefix: string): Promise<string> {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+      prefix,
+    });
     const [{ address }] = await wallet.getAccounts();
-    if (!this.verifyAddress(address)) {
+    if (!this.verifyAddress(address, prefix)) {
       throw new Error('Invalid address');
     }
     return address;
   }
 
-  async sign(privateKey: string, msg: ChainMsg): Promise<void> {
+  async sign(mnemonic: string, msg: ChainMsg): Promise<void> {
     const txData = await msg.buildTx();
-    const wallet = await Secp256k1HdWallet.fromMnemonic(privateKey);
+    const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+      prefix: msg.provider.manifest.prefix,
+    });
     const tendermintClient = await Tendermint34Client.connect(
-      msg.provider?.manifest.rpcURL as string
+      msg.provider.manifest.rpcURL
     );
     const [{ address: senderAddress }] = await wallet.getAccounts();
     const client = await SigningStargateClient.createWithSigner(
