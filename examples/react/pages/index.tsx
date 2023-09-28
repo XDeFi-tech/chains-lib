@@ -21,29 +21,6 @@ import {
 import BalancesComponent from '../components/balances.component';
 import TransactionsComponent from '../components/transactions.component';
 import BroadcastComponent from '../components/broadcast.component';
-import EthereumComponent from '../components/tests/evm/ethereum-indexer.component';
-import EthereumChainComponent from '../components/tests/evm/ethereum-chain.component';
-import BinanceSmartChainComponent from '../components/tests/evm/binancesmartchain-indexer.component';
-import BinanceSmartChainChainComponent from '../components/tests/evm/binancesmartchain-chain.component';
-import PolygonComponent from '../components/tests/evm/polygon-indexer.component';
-import PolygonChainComponent from '../components/tests/evm/polygon-chain.component';
-import AvalancheComponent from '../components/tests/evm/avalanche-indexer.component';
-import AvalancheChainComponent from '../components/tests/evm/avalanche-chain.component';
-import FantomComponent from '../components/tests/evm/fantom-indexer.component';
-import FantomChainComponent from '../components/tests/evm/fantom-chain.component';
-import ArbitrumComponent from '../components/tests/evm/arbitrum-indexer.component';
-import ArbitrumChainComponent from '../components/tests/evm/arbitrum-chain.component';
-import AuroraComponent from '../components/tests/evm/aurora-indexer.component';
-import AuroraChainComponent from '../components/tests/evm/aurora-chain.component';
-import BitcoinIndexerComponent from '../components/tests/utxo/bitcoin.component';
-import LitecoinIndexerComponent from '../components/tests/utxo/litecoin.component';
-import DogecoinIndexerComponent from '../components/tests/utxo/dogecoin.component';
-import BitcoinCashIndexerComponent from '../components/tests/utxo/bitoincash.component';
-import CosmosIndexerComponent from '../components/tests/cosmos/cosmos-indexer.component';
-import OsmosisIndexerComponent from '../components/tests/cosmos/osmosis-indexer.component';
-import SolanaIndexerComponent from '../components/tests/solana.component';
-import ChainsControllerComponent from '../components/tests/chains-controller.component';
-import ThorComponent from '../components/tests/thor.component';
 
 const Home: NextPage = () => {
   const chains = useContext(ChainsContext);
@@ -84,30 +61,6 @@ const Home: NextPage = () => {
 
   return (
     <Container>
-      <EthereumComponent/>
-      <EthereumChainComponent/>
-      <BinanceSmartChainComponent/>
-      <BinanceSmartChainChainComponent/>
-      <PolygonComponent/>
-      <PolygonChainComponent/>
-      <AvalancheComponent/>
-      <AvalancheChainComponent/>
-      <FantomComponent />
-      <FantomChainComponent />
-      <ArbitrumComponent/>
-      <ArbitrumChainComponent/>
-      <AuroraComponent/>
-      <AuroraChainComponent/>
-      <BitcoinIndexerComponent/>
-      <LitecoinIndexerComponent/>
-      <DogecoinIndexerComponent/>
-      <BitcoinCashIndexerComponent/>
-      <CosmosIndexerComponent/>
-      <OsmosisIndexerComponent/>
-      <SolanaIndexerComponent/>
-      <ChainsControllerComponent/>
-      <ThorComponent/>
-
       <Typography variant="h3" my={3}>
         <svg
           width="40"
