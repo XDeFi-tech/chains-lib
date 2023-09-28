@@ -17,6 +17,7 @@ import {
 import { Connection } from '@solana/web3.js';
 import { some } from 'lodash';
 
+import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
 
 @ChainDecorator('SolanaProvider', {
@@ -102,5 +103,11 @@ export class SolanaProvider extends Chain.Provider {
     }
 
     return result;
+  }
+
+  static get dataSourceList() {
+    return {
+      IndexerDataSource: IndexerDataSource,
+    };
   }
 }

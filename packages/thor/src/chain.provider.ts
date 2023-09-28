@@ -18,6 +18,7 @@ import { some } from 'lodash';
 import { ChainMsg, MsgBody } from './msg';
 import { ThorManifest } from './manifests';
 import { AccountInfo } from './types';
+import { ChainDataSource } from './datasource';
 
 @ChainDecorator('ThorProvider', {
   deps: [],
@@ -123,5 +124,11 @@ export class ThorProvider extends Chain.Provider {
 
   public get manifest(): ThorManifest {
     return this.dataSource.manifest as ThorManifest;
+  }
+
+  static get dataSourceList() {
+    return {
+      ChainDataSource: ChainDataSource,
+    };
   }
 }

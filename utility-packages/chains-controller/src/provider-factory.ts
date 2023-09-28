@@ -2,6 +2,12 @@ import { Chain } from '@xdefi-tech/chains-core';
 import { EvmProvider } from '@xdefi-tech/chains-evm';
 import { SolanaProvider } from '@xdefi-tech/chains-solana';
 import { CosmosProvider } from '@xdefi-tech/chains-cosmos';
+import { BinanceProvider } from '@xdefi-tech/chains-binance';
+import { BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
+import { BitcoinCashProvider } from '@xdefi-tech/chains-bitcoincash';
+import { DogecoinProvider } from '@xdefi-tech/chains-dogecoin';
+import { LitecoinProvider } from '@xdefi-tech/chains-litecoin';
+import { ThorProvider } from '@xdefi-tech/chains-thor';
 
 export enum DataSourceNames {
   IndexerDataSource = 'IndexerDataSource',
@@ -17,12 +23,24 @@ export enum ProviderNames {
   EvmProvider = 'EvmProvider',
   SolanaProvider = 'SolanaProvider',
   CosmosProvider = 'CosmosProvider',
+  BinanceProvider = 'BinanceProvider',
+  BitcoinProvider = 'BitcoinProvider',
+  BitcoinCashProvider = 'BitcoinCashProvider',
+  DogecoinProvider = 'DogecoinProvider',
+  LitecoinProvider = 'LitecoinProvider',
+  ThorProvider = 'ThorProvider',
 }
 
 export type AvailableProviders =
   | typeof EvmProvider
   | typeof SolanaProvider
-  | typeof CosmosProvider;
+  | typeof CosmosProvider
+  | typeof BinanceProvider
+  | typeof BitcoinProvider
+  | typeof BitcoinCashProvider
+  | typeof DogecoinProvider
+  | typeof LitecoinProvider
+  | typeof ThorProvider;
 
 export class ProviderFactory {
   private readonly providerList: {
@@ -34,6 +52,12 @@ export class ProviderFactory {
       [ProviderNames.EvmProvider]: EvmProvider,
       [ProviderNames.SolanaProvider]: SolanaProvider,
       [ProviderNames.CosmosProvider]: CosmosProvider,
+      [ProviderNames.BinanceProvider]: BinanceProvider,
+      [ProviderNames.BitcoinProvider]: BitcoinProvider,
+      [ProviderNames.BitcoinCashProvider]: BitcoinCashProvider,
+      [ProviderNames.DogecoinProvider]: DogecoinProvider,
+      [ProviderNames.LitecoinProvider]: LitecoinProvider,
+      [ProviderNames.ThorProvider]: ThorProvider,
     };
   }
 
@@ -47,23 +71,10 @@ export class ProviderFactory {
     }
 
     const ProviderClass = this.providerList[className as ProviderNames];
-    const providerOptions: Chain.IOptions = {};
+    const { dataSourceClassName, ...providerOptions }  = options;
 
-    const DataSourceClass =
-      ProviderClass.dataSourceList[options.dataSourceClassName];
-    if (!DataSourceClass) {
-      throw new Error(
-        `Invalid datasource (${options.dataSourceClassName}) for provider: ${className}`
-      );
-    }
-
-    if (options.providerId) {
-      providerOptions.providerId = options.providerId;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const dataSource = new DataSourceClass(manifest);
+    const dataSource = new ProviderClass.dataSourceList[dataSourceClassName](manifest);
     return new ProviderClass(dataSource, providerOptions);
   }
 }

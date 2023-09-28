@@ -17,7 +17,7 @@ import {
 import { providers } from 'ethers';
 import { some } from 'lodash';
 
-import { IndexerDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
 import { decryptParams, paramToString } from './utils';
 
@@ -90,9 +90,10 @@ export class EvmProvider extends Chain.Provider {
     return this.dataSource.getNonce(address);
   }
 
-  static get dataSourceList(): Chain.DataSourceList<typeof IndexerDataSource> {
+  static get dataSourceList() {
     return {
       IndexerDataSource: IndexerDataSource,
+      ChainDataSource: ChainDataSource,
     };
   }
 
