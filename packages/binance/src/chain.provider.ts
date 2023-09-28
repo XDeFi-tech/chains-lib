@@ -15,6 +15,7 @@ import {
 import { BncClient } from '@binance-chain/javascript-sdk/lib/client';
 import axios, { Axios } from 'axios';
 
+import { IndexerDataSource } from './datasource';
 import { ChainMsg, MsgBody } from './msg';
 
 @ChainDecorator('BinanceProvider', {
@@ -119,6 +120,12 @@ export class BinanceProvider extends Chain.Provider {
         response.code === 0
           ? TransactionStatus.success
           : TransactionStatus.failure,
+    };
+  }
+
+  static get dataSourceList() {
+    return {
+      IndexerDataSource: IndexerDataSource,
     };
   }
 }

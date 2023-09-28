@@ -112,13 +112,13 @@ export class ChainController {
   /**
    * Retrieves an array of `Chain.Provider` instances from the collection based on the specified chain and type.
    *
-   * @param {string} chain - The chain value to match.
    * @param {string} type - The type value to match.
+   * @param {string} chain - The chain value to match.
    * @returns {Chain.Provider[]} An array of `Chain.Provider` instances matching the specified chain and type.
    */
   public getProviderByTypeAndChain(
-    chain: string,
-    type: string
+    type: string,
+    chain: string
   ): Chain.Provider[] {
     return Object.values(this.providers).reduce(
       (acc: Chain.Provider[], provider) => {

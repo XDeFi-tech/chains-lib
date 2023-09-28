@@ -29,6 +29,7 @@ export interface MsgBody {
   gasPrice?: NumberIsh;
   decimals?: number;
   contractAddress?: string;
+  memo?: string;
 }
 
 export interface TxBody {
@@ -42,6 +43,7 @@ export interface TxBody {
   contractAddress?: string;
   toTokenAddress?: string;
   fromTokenAddress?: string;
+  memo?: string;
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
@@ -122,6 +124,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
     transaction.add(instruction);
 
+    if (msgData.memo) {
+      transaction.add(
+        new TransactionInstruction({
+          keys: [{ pubkey: senderPublicKey, isSigner: true, isWritable: true }],
+          programId: new PublicKey(
+            'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
+          ),
+          data: Buffer.from(msgData.memo, 'utf-8'),
+        })
+      );
+    }
+
     if (!gasPrice) {
       const options = await this.provider.gasFeeOptions();
       gasPrice = options
@@ -135,8 +149,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       to: msgData.to,
       from: msgData.from,
       gasPrice: gasPrice,
+      memo: msgData.data,
       decimals,
       programId,
+      memoProgramId: new PublicKey(
+        'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
+      ),
       ...contractInfo,
     };
   }

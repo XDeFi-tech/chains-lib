@@ -26,7 +26,7 @@ import 'reflect-metadata';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
-import type { ChainDataSource, IndexerDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import type { CosmosManifest } from './manifests';
 
 @ChainDecorator('CosmosProvider', {
@@ -151,5 +151,12 @@ export class CosmosProvider extends Chain.Provider {
 
   public get manifest(): CosmosManifest {
     return this.dataSource.manifest as CosmosManifest;
+  }
+
+  static get dataSourceList() {
+    return {
+      IndexerDataSource: IndexerDataSource,
+      ChainDataSource: ChainDataSource,
+    };
   }
 }

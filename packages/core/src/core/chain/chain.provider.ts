@@ -16,7 +16,7 @@ export interface IOptions {
   providerId?: string;
 }
 
-export interface DataSourceList<T> {
+export interface DataSourceList<T extends DataSource> {
   [key: string]: T;
 }
 
@@ -220,7 +220,7 @@ export abstract class Provider {
     const features = typeof feature === 'string' ? [feature] : feature;
     const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
     const providerFeatures = options?.features;
-    return features.every((feature) => providerFeatures.includes(feature));
+    return providerFeatures && features.every((feature) => providerFeatures.includes(feature));
   }
 
   /**
@@ -232,7 +232,7 @@ export abstract class Provider {
     return this.dataSource.manifest;
   }
 
-  static get dataSourceList(): DataSourceList<typeof DataSource> {
+  static get dataSourceList(): Record<string, typeof DataSource> {
     return {};
   }
 }
