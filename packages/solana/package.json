@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-solana",
   "version": "1.1.7",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -13,17 +13,17 @@
   "exports": {
     "./web": {
       "require": "./dist/signers/web.js",
-      "import": "./dist/signers/web.mjs",
+      "import": "./dist/signers/web.js",
       "types": "./dist/signers/web.d.ts"
     },
     "./react-native": {
       "require": "./dist/signers/react-native.js",
-      "import": "./dist/signers/react-native.mjs",
+      "import": "./dist/signers/react-native.js",
       "types": "./dist/signers/react-native.d.ts"
     },
     ".": {
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     }
   },
   "devDependencies": {
@@ -42,6 +42,7 @@
     "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
@@ -57,13 +58,14 @@
     "lint:fix": "eslint . --fix",
     "test:watch": "jest --watch"
   },
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts",
       "src/signers/web.ts",
       "src/signers/react-native.ts"
     ],
-    "format": "esm",
+    "format": "cjs",
     "splitting": false,
     "dts": true,
     "types": [
@@ -71,7 +73,8 @@
       "./dist/signers/web.d.ts",
       "./dist/signers/react-native.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "target": "ES6"
   },
   "jest": {
     "setupFiles": [

@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-binance",
   "version": "1.0.4",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -13,17 +13,17 @@
   "exports": {
     "./web": {
       "require": "./dist/signers/web.js",
-      "import": "./dist/signers/web.mjs",
+      "import": "./dist/signers/web.js",
       "types": "./dist/signers/web.d.ts"
     },
     "./react-native": {
       "require": "./dist/signers/react-native.js",
-      "import": "./dist/signers/react-native.mjs",
+      "import": "./dist/signers/react-native.js",
       "types": "./dist/signers/react-native.d.ts"
     },
     ".": {
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     }
   },
   "devDependencies": {
@@ -56,13 +56,14 @@
     "lint:fix": "eslint . --fix",
     "clean": "rimraf dist .turbo node_modules"
   },
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts",
       "src/signers/web.ts",
       "src/signers/react-native.ts"
     ],
-    "format": "esm",
+    "format": "cjs",
     "splitting": false,
     "dts": true,
     "types": [
@@ -71,6 +72,7 @@
       "./dist/signers/react-native.d.ts"
     ],
     "platform": "browser",
+    "targer": "ES6",
     "external": [
       "@binance-chain/javascript-sdk"
     ]

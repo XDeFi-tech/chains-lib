@@ -3,7 +3,7 @@
   "version": "1.1.6",
   "license": "MIT",
   "repository": "https://github.com/XDeFi-tech/chains/",
-  "main": "dist/index.mjs",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -38,12 +38,13 @@
       "src/gql/index.ts"
     ],
     "outDir": "dist",
-    "format": "esm",
+    "format": "cjs",
     "splitting": false,
     "dts": true,
     "types": [
       "./dist/index.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "target": "es2015"
   }
 }

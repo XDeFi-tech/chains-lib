@@ -71,10 +71,12 @@ export class ProviderFactory {
     }
 
     const ProviderClass = this.providerList[className as ProviderNames];
-    const { dataSourceClassName, ...providerOptions }  = options;
+    const { dataSourceClassName, ...providerOptions } = options;
 
     // @ts-ignore
-    const dataSource = new ProviderClass.dataSourceList[dataSourceClassName](manifest);
+    const dataSource = new ProviderClass.dataSourceList[dataSourceClassName](
+      manifest
+    );
     return new ProviderClass(dataSource, providerOptions);
   }
 }

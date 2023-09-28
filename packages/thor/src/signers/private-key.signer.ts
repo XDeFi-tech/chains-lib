@@ -2,16 +2,27 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';
+import { BIP32Factory, BIP32API } from 'bip32';
 import * as ecc from 'tiny-secp256k1';
-import { BIP32Factory } from 'bip32';
 import Long from 'long';
 
 import { ChainMsg } from '../msg';
 
-const bip32 = BIP32Factory(ecc);
-
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
+  private bip32?: BIP32API;
+
+  constructor() {
+    super();
+    this.initBip32().then((secp256k1) => {
+      this.bip32 = BIP32Factory(secp256k1);
+    });
+  }
+
+  async initBip32() {
+    return await ecc;
+  }
+
   verifyAddress(address: string): boolean {
     try {
       const result = bech32.decode(address);
@@ -29,15 +40,18 @@ export class PrivateKeySigner extends Signer.Provider {
       throw new Error('Invalid phrase');
     }
     const seed = await bip39.mnemonicToSeed(mnemonic);
-    const node = bip32.fromSeed(seed);
+    if (!this.bip32) {
+      throw new Error('Invalid bip32');
+    }
+    const node = this.bip32.fromSeed(seed);
     const child = node.derivePath(derivationPath);
 
     if (!child.privateKey) {
       throw new Error('Invalid child');
     }
-
+    //
     return new cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey({
-      key: child.privateKey,
+      key: new Uint8Array([]),
     });
   }
 

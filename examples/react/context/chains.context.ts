@@ -1,30 +1,12 @@
 import React from 'react';
 import { ChainController } from '@xdefi-tech/chains-controller';
-import {
-  EVM_MANIFESTS,
-  EvmProvider,
-} from '@xdefi-tech/chains-evm';
-import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
-import {
-  CosmosProvider,
-  COSMOS_MANIFESTS,
-} from '@xdefi-tech/chains-cosmos';
-import {
-  BINANCE_MANIFEST,
-  BinanceProvider,
-} from '@xdefi-tech/chains-binance';
-import {
-  SOLANA_MANIFEST,
-  SolanaProvider,
-} from '@xdefi-tech/chains-solana';
-import {
-  THOR_MANIFEST,
-  ThorProvider,
-} from '@xdefi-tech/chains-thor';
-import {
-  BITCOIN_MANIFEST,
-  BitcoinProvider,
-} from '@xdefi-tech/chains-bitcoin';
+import { EVM_MANIFESTS, EvmProvider } from '@xdefi-tech/chains-evm';
+import WebSigners from '@xdefi-tech/chains-evm/web';
+import { COSMOS_MANIFESTS, CosmosProvider } from '@xdefi-tech/chains-cosmos';
+import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
+import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
+import { THOR_MANIFEST, ThorProvider } from '@xdefi-tech/chains-thor';
+import { BITCOIN_MANIFEST, BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
 import {
   LITECOIN_MANIFEST,
   LitecoinProvider,
@@ -41,159 +23,247 @@ import {
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  console.log('EVM_MANIFESTS', EVM_MANIFESTS);
+  console.log('COSMOS_MANIFESTS', COSMOS_MANIFESTS);
+  console.log('BINANCE_MANIFEST', BINANCE_MANIFEST);
+  console.log('SOLANA_MANIFEST', SOLANA_MANIFEST);
+  console.log('THOR_MANIFEST', THOR_MANIFEST);
+  console.log('BITCOIN_MANIFEST', BITCOIN_MANIFEST);
+  console.log('LITECOIN_MANIFEST', LITECOIN_MANIFEST);
+  console.log('DOGECOIN_MANIFEST', DOGECOIN_MANIFEST);
+  console.log('BITCOINCASH_MANIFEST', BITCOINCASH_MANIFEST);
+
+  console.log('SolanaProvider', SolanaProvider);
+  console.log('SolanaProvider.dataSourceList', SolanaProvider.dataSourceList);
   ChainsContextDefaultValue.addProvider(
     // 0
-    new SolanaProvider(new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST), {
-      providerId: 'solana'
-    })
+    new SolanaProvider(
+      new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST),
+      {
+        providerId: 'solana',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new BinanceProvider(new BinanceProvider.dataSourceList.IndexerDataSource(BINANCE_MANIFEST), {
-      providerId: 'binance'
-    })
+    new BinanceProvider(
+      new BinanceProvider.dataSourceList.IndexerDataSource(BINANCE_MANIFEST),
+      {
+        providerId: 'binance',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.ethereum), {
-      signers: WebSigners,
-      providerId: 'ethereum'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.ethereum),
+      {
+        signers: WebSigners,
+        providerId: 'ethereum',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.ethereum,
-      name: `${EVM_MANIFESTS.ethereum.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'ethereum-chain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.ethereum,
+        name: `${EVM_MANIFESTS.ethereum.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'ethereum-chain',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
     //5
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.smartchain), {
-      providerId: 'smartchain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(
+        EVM_MANIFESTS.smartchain
+      ),
+      {
+        providerId: 'smartchain',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.smartchain,
-      name: `${EVM_MANIFESTS.smartchain.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'smartchain-chain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.smartchain,
+        name: `${EVM_MANIFESTS.smartchain.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'smartchain-chain',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.polygon), {
-      signers: WebSigners,
-      providerId: 'polygon'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.polygon),
+      {
+        signers: WebSigners,
+        providerId: 'polygon',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.polygon,
-      name: `${EVM_MANIFESTS.polygon.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'polygon-chain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.polygon,
+        name: `${EVM_MANIFESTS.polygon.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'polygon-chain',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.avalanche), {
-      providerId: 'avalanche'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.avalanche),
+      {
+        providerId: 'avalanche',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.avalanche,
-      name: `${EVM_MANIFESTS.avalanche.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'avalanche-chain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.avalanche,
+        name: `${EVM_MANIFESTS.avalanche.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'avalanche-chain',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.fantom), {
-      providerId: 'fantom'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.fantom),
+      {
+        providerId: 'fantom',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.fantom,
-      name: `${EVM_MANIFESTS.fantom.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'fantom-chain'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.fantom,
+        name: `${EVM_MANIFESTS.fantom.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'fantom-chain',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.arbitrum), {
-      providerId: 'arbitrum'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.arbitrum),
+      {
+        providerId: 'arbitrum',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.arbitrum,
-      name: `${EVM_MANIFESTS.arbitrum.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'arbitrum-chain'
-    })
-  );
-  ChainsContextDefaultValue.addProvider( // 10
-    new EvmProvider(new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.aurora), {
-      providerId: 'aurora'
-    })
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.arbitrum,
+        name: `${EVM_MANIFESTS.arbitrum.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'arbitrum-chain',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(new EvmProvider.dataSourceList.ChainDataSource({
-      ...EVM_MANIFESTS.aurora,
-      name: `${EVM_MANIFESTS.aurora.name} chain`
-    }), {
-      signers: WebSigners,
-      providerId: 'aurora-chain'
-    })
+    // 10
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.aurora),
+      {
+        providerId: 'aurora',
+      }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
+    new EvmProvider(
+      new EvmProvider.dataSourceList.ChainDataSource({
+        ...EVM_MANIFESTS.aurora,
+        name: `${EVM_MANIFESTS.aurora.name} chain`,
+      }),
+      {
+        signers: WebSigners,
+        providerId: 'aurora-chain',
+      }
+    )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new CosmosProvider.dataSourceList.ChainDataSource(COSMOS_MANIFESTS.cosmos), {
-      providerId: 'cosmos'
-    })
+    new CosmosProvider(
+      new CosmosProvider.dataSourceList.ChainDataSource(
+        COSMOS_MANIFESTS.cosmos
+      ),
+      {
+        providerId: 'cosmos',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new CosmosProvider(new CosmosProvider.dataSourceList.ChainDataSource(COSMOS_MANIFESTS.kava), {
-      providerId: 'kava'
-    })
+    new CosmosProvider(
+      new CosmosProvider.dataSourceList.ChainDataSource(COSMOS_MANIFESTS.kava),
+      {
+        providerId: 'kava',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new ThorProvider(new ThorProvider.dataSourceList.ChainDataSource(THOR_MANIFEST), {
-      providerId: 'thor'
-    })
+    new ThorProvider(
+      new ThorProvider.dataSourceList.ChainDataSource(THOR_MANIFEST),
+      {
+        providerId: 'thor',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new BitcoinProvider(new BitcoinProvider.dataSourceList.IndexerDataSource(BITCOIN_MANIFEST), {
-      providerId: 'bitcoin'
-    })
+    new BitcoinProvider(
+      new BitcoinProvider.dataSourceList.IndexerDataSource(BITCOIN_MANIFEST),
+      {
+        providerId: 'bitcoin',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new LitecoinProvider(new LitecoinProvider.dataSourceList.IndexerDataSource(LITECOIN_MANIFEST), {
-      providerId: 'litecoin'
-    })
+    new LitecoinProvider(
+      new LitecoinProvider.dataSourceList.IndexerDataSource(LITECOIN_MANIFEST),
+      {
+        providerId: 'litecoin',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new DogecoinProvider(new DogecoinProvider.dataSourceList.IndexerDataSource(DOGECOIN_MANIFEST), {
-      providerId: 'dogecoin'
-    })
+    new DogecoinProvider(
+      new DogecoinProvider.dataSourceList.IndexerDataSource(DOGECOIN_MANIFEST),
+      {
+        providerId: 'dogecoin',
+      }
+    )
   );
   ChainsContextDefaultValue.addProvider(
-    new BitcoinCashProvider(new BitcoinCashProvider.dataSourceList.IndexerDataSource(BITCOINCASH_MANIFEST), {
-      providerId: 'bitcoincash'
-    })
+    new BitcoinCashProvider(
+      new BitcoinCashProvider.dataSourceList.IndexerDataSource(
+        BITCOINCASH_MANIFEST
+      ),
+      {
+        providerId: 'bitcoincash',
+      }
+    )
   );
 };
 
