@@ -1,24 +1,24 @@
 {
   "name": "@xdefi-tech/chains-cosmos",
   "version": "1.0.11",
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
+  "type": "commonjs",
   "exports": {
     "./web": {
       "require": "./dist/signers/web.js",
-      "import": "./dist/signers/web.mjs",
+      "import": "./dist/signers/web.js",
       "types": "./dist/signers/web.d.ts"
     },
     "./react-native": {
       "require": "./dist/signers/react-native.js",
-      "import": "./dist/signers/react-native.mjs",
+      "import": "./dist/signers/react-native.js",
       "types": "./dist/signers/react-native.d.ts"
     },
     ".": {
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -50,6 +50,7 @@
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",
+    "lodash": "^4.17.21",
     "os-browserify": "^0.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",

@@ -3,10 +3,9 @@
   "compilerOptions": {
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "outDir": "./dist"
   },
-  "include": ["."],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "dist", "node_modules"]
+  "allowJs": true,
+  "include": ["./src/custom.d.ts", "./src/**/*"],
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

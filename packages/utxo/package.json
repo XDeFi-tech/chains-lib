@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-utxo",
   "version": "1.0.0",
-  "main": "dist/index.mjs",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "exports": {
     ".": {
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     }
   },
   "devDependencies": {
@@ -47,17 +47,19 @@
     "lint:fix": "eslint . --fix",
     "clean": "rimraf dist .turbo node_modules"
   },
+  "type": "commonjs",
   "tsup": {
     "entry": [
       "src/index.ts"
     ],
-    "format": "esm",
+    "format": "cjs",
     "splitting": false,
     "dts": true,
     "types": [
       "./dist/index.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "target": "ES6"
   },
   "jest": {
     "setupFiles": [

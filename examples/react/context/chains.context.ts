@@ -4,10 +4,10 @@ import {
   EVM_MANIFESTS,
   EvmProvider,
 } from '@xdefi-tech/chains-evm';
-import WebSigners from '@xdefi-tech/chains-evm/dist/signers/web';
+import WebSigners from '@xdefi-tech/chains-evm/web';
 import {
-  CosmosProvider,
   COSMOS_MANIFESTS,
+  CosmosProvider,
 } from '@xdefi-tech/chains-cosmos';
 import {
   BINANCE_MANIFEST,
@@ -41,6 +41,19 @@ import {
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
+  console.log('EVM_MANIFESTS', EVM_MANIFESTS);
+  console.log('COSMOS_MANIFESTS', COSMOS_MANIFESTS);
+  console.log('BINANCE_MANIFEST', BINANCE_MANIFEST);
+  console.log('SOLANA_MANIFEST', SOLANA_MANIFEST);
+  console.log('THOR_MANIFEST', THOR_MANIFEST);
+  console.log('BITCOIN_MANIFEST', BITCOIN_MANIFEST);
+  console.log('LITECOIN_MANIFEST', LITECOIN_MANIFEST);
+  console.log('DOGECOIN_MANIFEST', DOGECOIN_MANIFEST);
+  console.log('BITCOINCASH_MANIFEST', BITCOINCASH_MANIFEST);
+
+
+  console.log('SolanaProvider', SolanaProvider);
+  console.log('SolanaProvider.dataSourceList', SolanaProvider.dataSourceList);
   ChainsContextDefaultValue.addProvider(
     // 0
     new SolanaProvider(new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST), {

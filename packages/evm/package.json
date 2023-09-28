@@ -1,7 +1,7 @@
 {
   "name": "@xdefi-tech/chains-evm",
   "version": "1.1.10",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
@@ -10,6 +10,22 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "exports": {
+    "./web": {
+      "require": "./dist/signers/web.js",
+      "import": "./dist/signers/web.js",
+      "types": "./dist/signers/web.d.ts"
+    },
+    "./react-native": {
+      "require": "./dist/signers/react-native.js",
+      "import": "./dist/signers/react-native.js",
+      "types": "./dist/signers/react-native.d.ts"
+    },
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
   "devDependencies": {
     "@babel/preset-typescript": "^7.21.0",
     "@types/jest": "^27.4.1",
@@ -30,6 +46,7 @@
     "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "^9.0.2",
     "ethers": "^5.6.4",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
@@ -52,7 +69,7 @@
       "src/signers/web.ts",
       "src/signers/react-native.ts"
     ],
-    "format": "esm",
+    "format": "cjs",
     "splitting": false,
     "dts": true,
     "types": [
@@ -60,7 +77,8 @@
       "./dist/signers/web.d.ts",
       "./dist/signers/react-native.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "target": "ES6"
   },
   "jest": {
     "setupFiles": [

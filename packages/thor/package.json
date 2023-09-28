@@ -1,24 +1,24 @@
 {
   "name": "@xdefi-tech/chains-thor",
   "version": "1.0.2",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "license": "MIT",
   "exports": {
     "./web": {
       "require": "./dist/signers/web.js",
-      "import": "./dist/signers/web.mjs",
+      "import": "./dist/signers/web.js",
       "types": "./dist/signers/web.d.ts"
     },
     "./react-native": {
       "require": "./dist/signers/react-native.js",
-      "import": "./dist/signers/react-native.mjs",
+      "import": "./dist/signers/react-native.js",
       "types": "./dist/signers/react-native.d.ts"
     },
     ".": {
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -47,6 +47,7 @@
     "bip32": "^4.0.0",
     "bip39": "^3.1.0",
     "crypto-browserify": "^3.12.0",
+    "lodash": "^4.17.21",
     "long": "^5.2.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
@@ -64,6 +65,7 @@
     "lint:fix": "eslint . --fix",
     "clean": "rimraf dist .turbo node_modules"
   },
+  "type": "commonjs",
   "jest": {
     "setupFiles": [
       "./jest-setup-file.ts"

@@ -23,6 +23,7 @@ import { ChainMsg } from './msg';
 @ChainDecorator('SolanaProvider', {
   deps: [],
   providerType: 'Solana',
+  features: [Chain.ChainFeatures.TOKENS],
 })
 export class SolanaProvider extends Chain.Provider {
   declare rpcProvider: Connection;
