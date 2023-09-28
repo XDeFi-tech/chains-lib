@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.6
+
+### Patch Changes
+
+- cca1491: Update chains-controller, add providerList to each chain. Fix solana memo message
+
 ## 1.1.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.10
+
+### Patch Changes
+
+- cca1491: Update chains-controller, add providerList to each chain. Fix solana memo message
+- Updated dependencies [cca1491]
+  - @xdefi-tech/chains-core@1.1.6
+
 ## 1.1.9
 
 ### Patch Changes

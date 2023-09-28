@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.11
+
+### Patch Changes
+
+- cca1491: Update chains-controller, add providerList to each chain. Fix solana memo message
+- Updated dependencies [cca1491]
+  - @xdefi-tech/chains-core@1.1.6
+
 ## 1.0.10
 
 ### Patch Changes

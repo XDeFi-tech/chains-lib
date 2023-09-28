@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.4
+
+### Patch Changes
+
+- cca1491: Update chains-controller, add providerList to each chain. Fix solana memo message
+- Updated dependencies [cca1491]
+  - @xdefi-tech/chains-core@1.1.6
+
 ## 1.0.3
 
 ### Patch Changes
