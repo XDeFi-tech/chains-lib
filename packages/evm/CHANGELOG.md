@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.11
+
+### Patch Changes
+
+- 1efef82: Change import from mjs to common js
+- Updated dependencies [1efef82]
+  - @xdefi-tech/chains-graphql@1.1.7
+  - @xdefi-tech/chains-core@1.1.7
+
 ## 1.1.10
 
 ### Patch Changes

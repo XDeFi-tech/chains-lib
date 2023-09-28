@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.7
+
+### Patch Changes
+
+- 1efef82: Change import from mjs to common js
+
 ## 1.1.6
 
 ### Patch Changes

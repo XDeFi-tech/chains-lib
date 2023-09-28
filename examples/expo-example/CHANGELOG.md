@@ -1,5 +1,13 @@
 # @xdefi/expo-example
 
+## 1.0.2
+
+### Patch Changes
+
+- 1efef82: Change import from mjs to common js
+- Updated dependencies [1efef82]
+  - @xdefi-tech/chains-controller@1.0.11
+
 ## 1.0.1
 
 ### Patch Changes
