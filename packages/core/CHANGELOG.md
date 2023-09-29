@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.8
+
+### Patch Changes
+
+- b2bfe69: Add seed phrase signer type, update core signer's interface
+
 ## 1.1.7
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.9
+
+### Patch Changes
+
+- b2bfe69: Add seed phrase signer type, update core signer's interface
+- Updated dependencies [b2bfe69]
+  - @xdefi-tech/chains-core@1.1.8
+
 ## 1.1.8
 
 ### Patch Changes

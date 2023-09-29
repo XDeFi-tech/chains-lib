@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 1.0.4
+
+### Patch Changes
+
+- b2bfe69: Add seed phrase signer type, update core signer's interface
+- Updated dependencies [b2bfe69]
+  - @xdefi-tech/chains-core@1.1.8
+
 ## 1.0.3
 
 ### Patch Changes

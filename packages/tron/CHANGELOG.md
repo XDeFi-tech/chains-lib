@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.3
+
+### Patch Changes
+
+- b2bfe69: Add seed phrase signer type, update core signer's interface
+- Updated dependencies [b2bfe69]
+  - @xdefi-tech/chains-core@1.1.8
+
 ## 1.1.2
 
 ### Patch Changes
