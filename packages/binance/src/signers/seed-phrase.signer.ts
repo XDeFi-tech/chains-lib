@@ -5,21 +5,23 @@ import Transaction from '@binance-chain/javascript-sdk/lib/tx';
 
 import { ChainMsg } from '../msg';
 
-@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.SEED_PHRASE)
+export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string, prefix = 'bnb'): boolean {
     return crypto.checkAddress(address, prefix);
   }
 
   async getPrivateKey(_derivation: string) {
-    return this.key;
+    // TODO add parse derivation to get derive index
+    return crypto.getPrivateKeyFromMnemonic(this.key, true, 0);
   }
 
-  async getAddress(prefix = 'bnb'): Promise<string> {
-    return crypto.getAddressFromPrivateKey(this.key, prefix);
+  async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
+    const pk = await this.getPrivateKey(derivation);
+    return crypto.getAddressFromPrivateKey(pk, prefix);
   }
 
-  async sign(msg: ChainMsg): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const txData = await msg.buildTx();
     const coin = {
       denom: txData.denom,
@@ -77,10 +79,11 @@ export class PrivateKeySigner extends Signer.Provider {
       sequence: txData.sequence,
       source: txData.source,
     });
-    const signedTx = tx.sign(this.key, msgToSign);
+    const pk = await this.getPrivateKey(derivation);
+    const signedTx = tx.sign(pk, msgToSign);
 
     msg.sign(signedTx.serialize());
   }
 }
 
-export default PrivateKeySigner;
+export default SeedPhraseSigner;

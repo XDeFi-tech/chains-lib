@@ -1,5 +1,4 @@
-import { PrivateKeySigner } from './private-key.signer';
-import { ChainMsg } from '../msg';
+import { SeedPhraseSigner } from './seed-phrase.signer';
 
 describe('bbc private-key.signer', () => {
   const MOCK = {
@@ -7,7 +6,7 @@ describe('bbc private-key.signer', () => {
     address: '',
     signature: '',
   };
-  const signer = new PrivateKeySigner();
+  const signer = new SeedPhraseSigner();
 
   it('should return true for a valid address', () => {
     expect(signer.verifyAddress(MOCK.address)).toBe(true);

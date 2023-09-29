@@ -16,11 +16,15 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
   async getAddress(
-    privateKey: string,
+    _derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
-    const pk = Bitcoin.ECPair.fromWIF(privateKey);
+    const pk = Bitcoin.ECPair.fromWIF(this.key);
     const { address } = Bitcoin.payments[type]({
       pubkey: pk.publicKey,
       network: Bitcoin.networks.bitcoin,
@@ -31,7 +35,7 @@ export class PrivateKeySigner extends Signer.Provider {
     return address;
   }
 
-  async sign(privateKey: string, message: ChainMsg) {
+  async sign(message: ChainMsg) {
     const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
     psbt.addInputs(
@@ -55,7 +59,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
+    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(this.key));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

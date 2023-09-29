@@ -35,7 +35,7 @@ export class LedgerSigner extends Signer.Provider {
     }
   }
 
-  async sign(derivation: string, msg: ChainMsg): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const transport = await Transport.create();
     try {
       const signer = new CosmosLedgerSigner(transport, {

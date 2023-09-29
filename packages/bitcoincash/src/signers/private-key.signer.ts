@@ -18,12 +18,16 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
   async getAddress(
-    privateKey: string,
+    _derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = BitcoinCash.ECPair.fromWIF(privateKey, network);
+    const pk = BitcoinCash.ECPair.fromWIF(this.key, network);
     const { address } = BitcoinCash.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -38,7 +42,7 @@ export class PrivateKeySigner extends Signer.Provider {
     return bchaddr.toLegacyAddress(address);
   }
 
-  async sign(privateKey: string, message: ChainMsg) {
+  async sign(message: ChainMsg) {
     const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const network = coininfo.bitcoincash.main.toBitcoinJS();
     const builder = new BitcoinCash.TransactionBuilder(network);
@@ -66,7 +70,7 @@ export class PrivateKeySigner extends Signer.Provider {
     inputs.forEach((utxo: UTXO, index: number) => {
       builder.sign(
         index,
-        BitcoinCash.ECPair.fromWIF(privateKey, network),
+        BitcoinCash.ECPair.fromWIF(this.key, network),
         undefined,
         0x41,
         utxo.witnessUtxo.value

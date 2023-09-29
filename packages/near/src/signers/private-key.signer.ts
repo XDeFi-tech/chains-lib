@@ -11,15 +11,19 @@ export class PrivateKeySigner extends Signer.Provider {
     throw new Error('Method not implemented.');
   }
 
-  async getAddress(privateKey: string): Promise<string> {
-    if (!this.verifyAddress(privateKey)) {
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
+  async getAddress(_derivation: string): Promise<string> {
+    if (!this.verifyAddress(this.key)) {
       throw new Error('Invalid address');
     }
     throw new Error('Method not implemented.');
   }
 
-  async sign(privateKey: string, msg: ChainMsg): Promise<void> {
-    const keyPair = KeyPair.fromString(privateKey);
+  async sign(msg: ChainMsg): Promise<void> {
+    const keyPair = KeyPair.fromString(this.key);
     const publicKey = keyPair.getPublicKey();
     const accountId = Buffer.from(
       utils.PublicKey.fromString(publicKey.toString()).data

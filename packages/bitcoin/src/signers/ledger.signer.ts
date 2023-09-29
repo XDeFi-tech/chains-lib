@@ -30,7 +30,7 @@ export class LedgerSigner extends Signer.Provider {
     return address.bitcoinAddress;
   }
 
-  async sign(derivation: string, msg: ChainMsg) {
+  async sign(msg: ChainMsg, derivation: string) {
     const transport = await Transport.create();
     const app = new App({ transport, currency: 'bitcoin' });
     const { inputs, outputs, compiledMemo, from } = await msg.buildTx();

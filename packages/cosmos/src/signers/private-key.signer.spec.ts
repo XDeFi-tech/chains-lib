@@ -1,4 +1,4 @@
-import { PrivateKeySigner } from './private-key.signer';
+import { SeedPhraseSigner } from './seed-phrase.signer';
 import { ChainMsg } from '../msg';
 
 describe('cosmos private-key.signer', () => {
@@ -7,7 +7,7 @@ describe('cosmos private-key.signer', () => {
     address: '',
     signature: '',
   };
-  const signer = new PrivateKeySigner();
+  const signer = new SeedPhraseSigner();
 
   it('should return true for a valid address', () => {
     expect(signer.verifyAddress(MOCK.address)).toBe(true);

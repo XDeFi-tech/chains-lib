@@ -14,17 +14,21 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async getAddress(privateKey: string): Promise<string> {
-    if (!this.verifyAddress(privateKey)) {
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
+  async getAddress(_derivation: string): Promise<string> {
+    if (!this.verifyAddress(this.key)) {
       throw new Error('Invalid address');
     }
-    const keypair = Keypair.fromSecretKey(Buffer.from(privateKey, 'hex'));
+    const keypair = Keypair.fromSecretKey(Buffer.from(this.key, 'hex'));
     return keypair.publicKey.toBase58();
   }
 
-  async sign(privateKey: string, msg: ChainMsg): Promise<void> {
+  async sign(msg: ChainMsg): Promise<void> {
     const { tx } = await msg.buildTx();
-    tx.sign(Keypair.fromSecretKey(Buffer.from(privateKey, 'hex')));
+    tx.sign(Keypair.fromSecretKey(Buffer.from(this.key, 'hex')));
     msg.sign(tx.serialize());
   }
 }

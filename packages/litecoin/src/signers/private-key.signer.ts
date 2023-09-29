@@ -17,12 +17,16 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
   async getAddress(
-    privateKey: string,
+    derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const pk = Litecoin.ECPair.fromWIF(privateKey, network);
+    const pk = Litecoin.ECPair.fromWIF(this.key, network);
     const { address } = Litecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -33,7 +37,7 @@ export class PrivateKeySigner extends Signer.Provider {
     return address;
   }
 
-  async sign(privateKey: string, message: ChainMsg) {
+  async sign(message: ChainMsg) {
     const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const network = coininfo.litecoin.main.toBitcoinJS();
     const psbt = new Litecoin.Psbt({ network });
@@ -57,7 +61,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

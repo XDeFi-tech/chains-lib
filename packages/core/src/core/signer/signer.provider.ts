@@ -3,7 +3,7 @@ import { MsgData } from '../msg';
 
 @Injectable()
 export abstract class Provider {
-  protected key?: string;
+  constructor(protected readonly _key?: string) {}
 
   /**
    * Retrieves the public address corresponding to a given derivation path.
@@ -19,12 +19,17 @@ export abstract class Provider {
    * Signs a message using the specified derivation.
    *
    * @async
-   * @param {string} derivation The derivation path to sign the message.
    * @param {Msg} msg The message to sign.
+   * @param {string} derivation The derivation path to sign the message.
    * @param {any} rest - rest props for custom signer
    * @returns {Promise<any>} A promise that resolves to the signature.
    */
-  abstract sign(derivation: string, msg: MsgData, ...rest: any): Promise<void>;
+  abstract sign(msg: MsgData, derivation: string, ...rest: any): Promise<void>;
+  abstract sign(msg: MsgData, ...rest: any): Promise<void>;
+
+  async getPrivateKey(_derivation: string, ..._rest: any): Promise<string | unknown> {
+    throw new Error('Method not implemented.');
+  }
 
   /**
    * Verifies if the given address is valid.
@@ -35,8 +40,11 @@ export abstract class Provider {
    */
   abstract verifyAddress(address: string, ...rest: any): boolean;
 
-  withPhrase(value: string) {
-    this.key = value;
-    return this;
+  get key(): string {
+    if (!this._key) {
+      throw new Error('key is required');
+    }
+
+    return this._key as string;
   }
 }

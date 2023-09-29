@@ -8,8 +8,8 @@ import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
 
-@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.SEED_PHRASE)
+export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string, prefix: string): boolean {
     try {
       const result = bech32.decode(address);
@@ -19,8 +19,8 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async getAddress(mnemonic: string, prefix: string): Promise<string> {
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+  async getAddress(derivation: string, prefix: string): Promise<string> {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
       prefix,
     });
     const [{ address }] = await wallet.getAccounts();
@@ -30,9 +30,9 @@ export class PrivateKeySigner extends Signer.Provider {
     return address;
   }
 
-  async sign(mnemonic: string, msg: ChainMsg): Promise<void> {
+  async sign(msg: ChainMsg): Promise<void> {
     const txData = await msg.buildTx();
-    const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
       prefix: msg.provider.manifest.prefix,
     });
     const tendermintClient = await Tendermint34Client.connect(
@@ -61,4 +61,4 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 }
 
-export default PrivateKeySigner;
+export default SeedPhraseSigner;

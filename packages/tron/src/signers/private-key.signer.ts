@@ -15,18 +15,22 @@ export class PrivateKeySigner extends Signer.Provider {
     return tronWeb.isAddress(address);
   }
 
-  async getAddress(privateKey: string): Promise<string> {
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
+  async getAddress(_derivation: string): Promise<string> {
     const tronWeb = new TronWeb({
       fullHost: 'https://api.trongrid.io',
       solidityNode: 'https://api.trongrid.io',
       eventServer: 'https://api.trongrid.io',
-      privateKey: privateKey,
+      privateKey: this.key,
     });
 
     return tronWeb.defaultAddress.base58;
   }
 
-  async sign(_privateKey: string, _msg: ChainMsg): Promise<void> {
+  async sign(_msg: ChainMsg): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

@@ -17,12 +17,16 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation: string): Promise<string> {
+    return this.key;
+  }
+
   async getAddress(
-    privateKey: string,
+    derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = Dogecoin.ECPair.fromWIF(privateKey, network);
+    const pk = Dogecoin.ECPair.fromWIF(this.key, network);
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -33,7 +37,7 @@ export class PrivateKeySigner extends Signer.Provider {
     return address;
   }
 
-  async sign(privateKey: string, message: ChainMsg) {
+  async sign(message: ChainMsg) {
     const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const network = coininfo.dogecoin.main.toBitcoinJS();
     const psbt = new Dogecoin.Psbt({ network });
@@ -58,7 +62,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

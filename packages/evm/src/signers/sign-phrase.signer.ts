@@ -3,23 +3,26 @@ import { utils, Wallet } from 'ethers';
 
 import { ChainMsg } from '../msg';
 
-@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.SEED_PHRASE)
+export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     return utils.isAddress(address);
   }
 
-  async getPrivateKey(): Promise<string> {
-    return this.key;
+  async getPrivateKey(derivation: string) {
+    const wallet = Wallet.fromMnemonic(this.key, derivation);
+    return utils.isHexString(wallet.privateKey)
+      ? wallet.privateKey.slice(2)
+      : wallet.privateKey;
   }
 
-  async getAddress(): Promise<string> {
-    const wallet = new Wallet(this.key);
+  async getAddress(derivation: string): Promise<string> {
+    const wallet = Wallet.fromMnemonic(this.key, derivation);
     return wallet.address;
   }
 
-  async sign(msg: ChainMsg): Promise<void> {
-    const wallet = new Wallet(this.key);
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+    const wallet = Wallet.fromMnemonic(this.key, derivation);
     const txData = await msg.buildTx();
     const signature = await wallet.signTransaction({
       to: txData.to,
@@ -40,4 +43,4 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 }
 
-export default PrivateKeySigner;
+export default SeedPhraseSigner;

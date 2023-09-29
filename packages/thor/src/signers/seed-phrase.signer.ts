@@ -8,8 +8,8 @@ import Long from 'long';
 
 import { ChainMsg } from '../msg';
 
-@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
-export class PrivateKeySigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.SEED_PHRASE)
+export class SeedPhraseSigner extends Signer.Provider {
   private bip32?: BIP32API;
 
   constructor() {
@@ -32,51 +32,58 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async getPrivateKeyFromMnemonik(
-    mnemonic: string,
-    derivationPath: string
-  ): Promise<cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey> {
-    if (!bip39.validateMnemonic(mnemonic)) {
+  async getPrivateKey(derivation: string) {
+    if (!bip39.validateMnemonic(this.key)) {
       throw new Error('Invalid phrase');
     }
-    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const seed = await bip39.mnemonicToSeed(this.key);
     if (!this.bip32) {
       throw new Error('Invalid bip32');
     }
     const node = this.bip32.fromSeed(seed);
-    const child = node.derivePath(derivationPath);
+    const child = node.derivePath(derivation);
 
     if (!child.privateKey) {
       throw new Error('Invalid child');
     }
-    //
+
+    return child.toBase58();
+  }
+
+  async getCosmosPrivateKey(
+    derivation: string
+  ): Promise<cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey> {
+    if (!bip39.validateMnemonic(this.key)) {
+      throw new Error('Invalid phrase');
+    }
+    const seed = await bip39.mnemonicToSeed(this.key);
+    if (!this.bip32) {
+      throw new Error('Invalid bip32');
+    }
+    const node = this.bip32.fromSeed(seed);
+    const child = node.derivePath(derivation);
+
+    if (!child.privateKey) {
+      throw new Error('Invalid child');
+    }
+
     return new cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey({
       key: new Uint8Array([]),
     });
   }
 
-  async getAddress(mnemonic: string, derivationPath: any): Promise<string> {
-    const privKey = await this.getPrivateKeyFromMnemonik(
-      mnemonic,
-      derivationPath
-    );
+  async getAddress(derivation: string): Promise<string> {
+    const privKey = await this.getCosmosPrivateKey(derivation);
     return cosmosclient.AccAddress.fromPublicKey(privKey.pubKey()).toString();
   }
 
-  async sign(
-    mnemonic: string,
-    msg: ChainMsg,
-    derivationPath: string
-  ): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const { txBody, accountNumber, account, gasPrice, gasLimit } =
       await msg.buildTx();
     if (!txBody) {
       return;
     }
-    const privKey = await this.getPrivateKeyFromMnemonik(
-      mnemonic,
-      derivationPath
-    );
+    const privKey = await this.getCosmosPrivateKey(derivation);
     const authInfo = new cosmosclient.proto.cosmos.tx.v1beta1.AuthInfo({
       signer_infos: [
         {
@@ -111,4 +118,4 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 }
 
-export default PrivateKeySigner;
+export default SeedPhraseSigner;
