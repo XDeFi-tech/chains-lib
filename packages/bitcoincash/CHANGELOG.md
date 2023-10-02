@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 1.0.4
+
+### Patch Changes
+
+- fc06dee: Change something
+
 ## 1.0.3
 
 ### Patch Changes

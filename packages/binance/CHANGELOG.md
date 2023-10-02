@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.7
+
+### Patch Changes
+
+- fc06dee: Change something
+
 ## 1.0.6
 
 ### Patch Changes
