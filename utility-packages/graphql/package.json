@@ -22,7 +22,7 @@
     "compile:watch": "graphql-codegen -w",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "devDependencies": {
+  "dependencies": {
     "@graphql-codegen/cli": "^3.2.2",
     "@graphql-codegen/client-preset": "^2.1.1",
     "@graphql-codegen/named-operations-object": "^2.3.1",

@@ -61,8 +61,6 @@ const Home: NextPage = () => {
 
   return (
     <Container>
-      <EthereumIndexerComponent />
-      <PolygonIndexerComponent />
       <Typography variant="h3" my={3}>
         <svg
           width="40"
