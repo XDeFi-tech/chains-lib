@@ -69,14 +69,7 @@ query GetSolanaTransactions($address: String!, $first: Int!, $after: String) {
 query GetSolanaStatus {
   solana {
     status {
-      lastBlock {
-        blockHeight
-        blockTime
-        blockhash
-        slot
-        status
-        updatedOn
-      }
+      lastBlock
     }
   }
 }
