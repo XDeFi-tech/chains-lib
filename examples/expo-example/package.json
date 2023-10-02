@@ -2,7 +2,7 @@
   "name": "@xdefi/expo-example",
   "version": "1.0.2",
   "scripts": {
-    "dev": "expo start",
+    "dev:expo": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
