@@ -86,7 +86,7 @@ export class BinanceProvider extends Chain.Provider {
     const result: Transaction[] = [];
     for await (const message of messages) {
       if (!message.hasSignature) {
-        throw new Error(`Message ${message} is not signed`);
+        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
       }
 
       const { data: response } = await this.rest.post(
