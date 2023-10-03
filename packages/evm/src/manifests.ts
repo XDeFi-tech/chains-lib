@@ -33,7 +33,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     chainSymbol: 'BNB',
     blockExplorerURL: 'https://bscscan.com',
     chainId: '56',
-    chain: 'binancesmartchain',
+    chain: 'smartchain',
     decimals: 18,
     feeGasStep: {
       high: 1.5,
