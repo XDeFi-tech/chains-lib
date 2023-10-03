@@ -39,7 +39,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRateWhole = parseInt(fee);
+    const feeRateWhole = parseInt(fee) < 1 ? 1 : parseInt(fee);
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];

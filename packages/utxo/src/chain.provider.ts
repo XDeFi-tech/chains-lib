@@ -28,7 +28,7 @@ export interface UtxoProviderOptions extends Chain.IOptions {
 
 export class UtxoProvider extends Chain.Provider {
   public rpcProvider = null;
-  private rest: Axios;
+  public rest: Axios;
   public utxoDataSource: UTXODataProvider;
 
   constructor(dataSource: DataSource, options?: UtxoProviderOptions) {
@@ -96,7 +96,7 @@ export class UtxoProvider extends Chain.Provider {
       const { signedTransaction } = message;
 
       if (!message.hasSignature) {
-        throw new Error(`Message ${message} is not signed`);
+        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
       }
 
       if (this.manifest.dataProviderType === 'blockchair') {
