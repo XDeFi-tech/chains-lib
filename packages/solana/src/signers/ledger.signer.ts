@@ -12,7 +12,7 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getPrivateKey(_derivation: string) {
-    return this.key;
+    return new Error('Cannot extract private key from Ledger device');
   }
 
   async getAddress(derivation: string): Promise<string> {

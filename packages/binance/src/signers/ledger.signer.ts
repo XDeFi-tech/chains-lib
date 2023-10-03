@@ -14,7 +14,7 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getPrivateKey(_derivation: string) {
-    return this.key;
+    return new Error('Cannot extract private key from Ledger device');
   }
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
@@ -41,7 +41,7 @@ export class LedgerSigner extends Signer.Provider {
     }
   }
 
-  async sign(msg: ChainMsg): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const txData = await msg.buildTx();
     const coin = {
       denom: txData.denom,
@@ -104,9 +104,12 @@ export class LedgerSigner extends Signer.Provider {
         source: txData.source,
       });
 
-      const hdPath = [44, 714, 0, 0, txData.accountNumber];
-      await app.showAddress('bnb', hdPath);
-      const signedTx = await app.sign(tx.getSignBytes(), hdPath);
+      const derivationArray = derivation
+        .replace("'", '')
+        .split('/')
+        .map(Number);
+      await app.showAddress('bnb', derivationArray);
+      const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
 
       msg.sign(signedTx.signature);
     } finally {
