@@ -8,11 +8,12 @@ import { ChainMsg } from '../msg';
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
-    return PublicKey.isOnCurve(new PublicKey(address));
+    const publicKey = new PublicKey(address);
+    return publicKey.toBase58() === address;
   }
 
   async getPrivateKey(_derivation: string) {
-    return new Error('Cannot extract private key from Ledger device');
+    throw new Error('Cannot extract private key from Ledger device');
   }
 
   async getAddress(derivation: string): Promise<string> {
