@@ -8,8 +8,12 @@ import { ChainMsg } from '../msg';
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
-    const publicKey = new PublicKey(address);
-    return publicKey.toBase58() === address;
+    try {
+      const publicKey = new PublicKey(address);
+      return publicKey.toBase58() === address;
+    } catch (error) {
+      return false;
+    }
   }
 
   async getPrivateKey(_derivation: string) {
