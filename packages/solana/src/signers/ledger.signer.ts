@@ -25,9 +25,7 @@ export class LedgerSigner extends Signer.Provider {
     try {
       const app = new Solana(transport);
       const addressBuffer = await app.getAddress(derivation);
-      const address = new PublicKey(addressBuffer.address).toBase58();
-
-      return address;
+      return new PublicKey(addressBuffer.address).toBase58();
     } finally {
       transport.close();
     }
@@ -37,16 +35,15 @@ export class LedgerSigner extends Signer.Provider {
     const transport = await Transport.create();
     try {
       const app = new Solana(transport);
-      /* eslint-enable */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const { tx } = await msg.buildTx();
       const signedTx = await app.signTransaction(
         derivation,
         tx.serializeMessage()
       );
+      const addressBuffer = await app.getAddress(derivation);
+      tx.addSignature(new PublicKey(addressBuffer.address), signedTx.signature);
 
-      msg.sign(signedTx.signature);
+      msg.sign(tx.serialize());
     } finally {
       transport.close();
     }
