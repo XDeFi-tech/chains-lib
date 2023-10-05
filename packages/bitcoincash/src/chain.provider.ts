@@ -24,12 +24,18 @@ export class BitcoinCashProvider extends UtxoProvider {
         throw new Error(`Message ${JSON.stringify(message)} is not signed`);
       }
 
-      const { data: txid } = await this.rest.post<string>(
-        '/transactions',
-        signedTransaction
-      );
+      const { data: response } = await this.rest.post('', {
+        jsonrpc: '2.0',
+        method: 'sendrawtransaction',
+        params: [signedTransaction],
+        id: '',
+      });
 
-      result.push(Transaction.fromData({ hash: txid }));
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      result.push(Transaction.fromData({ hash: response.result }));
     }
 
     return result;
