@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.14
+
+### Patch Changes
+
+- 980c696: Fix chain provider deps list
+
 ## 1.0.13
 
 ### Patch Changes
