@@ -1,5 +1,6 @@
 import { DiContainer } from 'common';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
+import { TrezorProvider } from 'core/signer';
 import { SignerType } from 'core/signer/interfaces';
 
 export function SignerDecorator(type: SignerType) {
@@ -20,5 +21,18 @@ export function SignerDecorator(type: SignerType) {
     DiContainer.bind(SIGNER_SCOPE_NAME).toService(target);
 
     return target;
+  };
+}
+
+export function IsTrezorInitialized(target: any, key: string, descriptor: PropertyDescriptor): void {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function () {
+    if (!TrezorProvider.getInstance().initialized) {
+      throw new Error('Trezor connection is not initialized yet!');
+    }
+
+    // eslint-disable-next-line prefer-rest-params
+    return originalMethod.apply(this, arguments);
   };
 }
