@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.13
+
+### Patch Changes
+
+- 152115f: Update smartchain manifest
+- Updated dependencies [152115f]
+  - @xdefi-tech/chains-core@1.1.9
+
 ## 1.1.12
 
 ### Patch Changes

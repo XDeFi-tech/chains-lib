@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-litecoin
 
+## 1.0.5
+
+### Patch Changes
+
+- b04503d: Split msg object from chains-utxo package to each chain individualy to keep a difference between chains
+- Updated dependencies [b04503d]
+- Updated dependencies [152115f]
+  - @xdefi-tech/chains-utxo@1.0.2
+  - @xdefi-tech/chains-core@1.1.9
+
 ## 1.0.4
 
 ### Patch Changes

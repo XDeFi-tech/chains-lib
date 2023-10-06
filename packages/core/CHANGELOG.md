@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.9
+
+### Patch Changes
+
+- 152115f: Add fallback datasource support
+
 ## 1.1.8
 
 ### Patch Changes

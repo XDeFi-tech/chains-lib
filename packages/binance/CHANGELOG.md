@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.8
+
+### Patch Changes
+
+- b04503d: Fix minor error message
+- Updated dependencies [152115f]
+  - @xdefi-tech/chains-core@1.1.9
+
 ## 1.0.7
 
 ### Patch Changes
