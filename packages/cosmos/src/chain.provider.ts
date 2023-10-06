@@ -30,8 +30,9 @@ import { ChainDataSource, IndexerDataSource } from './datasource';
 import type { CosmosManifest } from './manifests';
 
 @ChainDecorator('CosmosProvider', {
-  deps: [Chain.ChainFeatures.TOKENS],
+  deps: [],
   providerType: 'Cosmos',
+  features: [Chain.ChainFeatures.TOKENS],
 })
 export class CosmosProvider extends Chain.Provider {
   declare rpcProvider: LcdClient;
