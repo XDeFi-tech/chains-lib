@@ -37,6 +37,7 @@
   "dependencies": {
     "@ledgerhq/hw-app-btc": "^10.0.0",
     "@ledgerhq/hw-transport-webhid": "^6.27.12",
+    "@trezor/connect-web": "^9.1.4",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "@xdefi-tech/chains-utxo": "*",
