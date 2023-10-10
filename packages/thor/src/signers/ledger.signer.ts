@@ -1,9 +1,7 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
 import { Client } from '@xchainjs/xchain-thorchain';
-import cosmosclient from '@cosmos-client/core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import Long from 'long';
 
 import { ChainMsg } from '../msg';
 
@@ -24,7 +22,7 @@ export class LedgerSigner extends Signer.Provider {
     try {
       const app = new THORChainApp(transport);
       const derivationArray = derivation
-        .replace("'", '')
+        .replace(/'/g, '')
         .split('/')
         .map(Number);
       const { bech32Address } = await app.getAddressAndPubKey(
