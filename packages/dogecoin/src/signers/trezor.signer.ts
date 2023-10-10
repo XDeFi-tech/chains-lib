@@ -1,10 +1,14 @@
-import * as Bitcoin from 'bitcoinjs-lib';
+import * as Dogecoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,
   IsTrezorInitialized,
 } from '@xdefi-tech/chains-core';
-import TrezorConnect, { Params, SignTransaction } from '@trezor/connect-web';
+import TrezorConnect, {
+  Params,
+  SignTransaction,
+  Manifest,
+} from '@trezor/connect-web';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 
 import { ChainMsg } from '../msg';
@@ -13,7 +17,7 @@ import { ChainMsg } from '../msg';
 export class TrezorSigner extends Signer.TrezorProvider {
   verifyAddress(address: string): boolean {
     try {
-      Bitcoin.address.toOutputScript(address);
+      Dogecoin.address.toOutputScript(address);
       return true;
     } catch (err) {
       return false;
@@ -28,7 +32,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async getAddress(derivation: string): Promise<string> {
     const address = await TrezorConnect.getAddress({
       path: derivation,
-      coin: 'btc',
+      coin: 'doge',
     });
     if (address.success) {
       return address.payload.address;
@@ -38,7 +42,15 @@ export class TrezorSigner extends Signer.TrezorProvider {
   }
 
   @IsTrezorInitialized
-  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+  async sign(
+    msg: ChainMsg,
+    derivation: string,
+    manifest?: Manifest
+  ): Promise<void> {
+    if (manifest) {
+      await TrezorConnect.manifest(manifest);
+    }
+
     const txData = await msg.buildTx();
 
     const derivationArray = derivation
@@ -48,24 +60,11 @@ export class TrezorSigner extends Signer.TrezorProvider {
       .map(Number);
 
     const inputs = txData.inputs.map((utxo: UTXO) => {
-      let scriptType: string;
-      if (derivationArray[0] === 84) {
-        scriptType = 'SPENDWITNESS';
-      } else if (derivationArray[0] === 49) {
-        scriptType = 'SPENDP2SHWITNESS';
-      } else if (derivationArray[0] === 86) {
-        scriptType = 'SPENDTAPROOT';
-      } else if (derivationArray[0] === 44) {
-        scriptType = 'SPENDADDRESS';
-      } else {
-        throw new Error(`Unsupported path type: ${derivationArray[0]}`);
-      }
-
       return {
         prev_hash: utxo.hash,
         prev_index: utxo.index,
         amount: utxo.value,
-        script_type: scriptType,
+        script_type: 'SPENDADDRESS',
         address_n: [
           (derivationArray[0] | 0x80000000) >>> 0,
           (derivationArray[1] | 0x80000000) >>> 0,
@@ -76,18 +75,17 @@ export class TrezorSigner extends Signer.TrezorProvider {
       };
     });
 
-    const outputs = txData.outputs.map((output: Bitcoin.PsbtTxOutput) => {
+    const outputs = txData.outputs.map((output: Dogecoin.PsbtTxOutput) => {
       const to = output.address ? output.address : txData.from;
       return {
         address: to,
         value: output.value,
       };
     });
-
     const unsignedTx: Params<SignTransaction> = {
       inputs: inputs,
       outputs: outputs,
-      coin: 'btc',
+      coin: 'Dogecoin',
       serialize: true,
     };
 

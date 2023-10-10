@@ -82,4 +82,11 @@ export class TrezorProvider extends Provider {
     }
     TrezorProvider.getInstance().initialized = true;
   }
+
+  async setManifest(email: string, appUrl: string): Promise<void> {
+    if (!TrezorProvider.getInstance().initialized) {
+      await TrezorConnect.manifest({ email, appUrl });
+      TrezorProvider.getInstance().initialized = true;
+    }
+  }
 }

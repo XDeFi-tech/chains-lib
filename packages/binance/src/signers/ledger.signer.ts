@@ -22,7 +22,7 @@ export class LedgerSigner extends Signer.Provider {
     try {
       const app = new LedgerApp(transport);
       const derivationArray = derivation
-        .replace("'", '')
+        .replace(/'/g, '')
         .split('/')
         .map(Number);
       const publicKey = await app.getPublicKey(derivationArray);
@@ -34,7 +34,7 @@ export class LedgerSigner extends Signer.Provider {
 
         return address;
       } else {
-        return '';
+        throw new Error(`Cant get address from Ledger`);
       }
     } finally {
       transport.close();
@@ -105,7 +105,7 @@ export class LedgerSigner extends Signer.Provider {
       });
 
       const derivationArray = derivation
-        .replace("'", '')
+        .replace(/'/g, '')
         .split('/')
         .map(Number);
       await app.showAddress('bnb', derivationArray);
