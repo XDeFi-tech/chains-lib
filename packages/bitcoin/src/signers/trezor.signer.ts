@@ -80,7 +80,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
       const to = output.address ? output.address : txData.from;
       return {
         address: to,
-        value: output.value,
+        amount: output.value,
       };
     });
 

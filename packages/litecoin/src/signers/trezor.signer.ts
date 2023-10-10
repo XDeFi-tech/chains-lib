@@ -1,4 +1,4 @@
-import * as Dogecoin from 'bitcoinjs-lib';
+import * as Litecoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,
@@ -17,7 +17,7 @@ import { ChainMsg } from '../msg';
 export class TrezorSigner extends Signer.TrezorProvider {
   verifyAddress(address: string): boolean {
     try {
-      Dogecoin.address.toOutputScript(address);
+      Litecoin.address.toOutputScript(address);
       return true;
     } catch (err) {
       return false;
@@ -32,7 +32,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async getAddress(derivation: string): Promise<string> {
     const address = await TrezorConnect.getAddress({
       path: derivation,
-      coin: 'doge',
+      coin: 'ltc',
     });
     if (address.success) {
       return address.payload.address;
@@ -59,33 +59,31 @@ export class TrezorSigner extends Signer.TrezorProvider {
       .split('/')
       .map(Number);
 
-    const inputs = txData.inputs.map((utxo: UTXO) => {
-      return {
-        prev_hash: utxo.hash,
-        prev_index: utxo.index,
-        amount: utxo.value,
-        script_type: 'SPENDADDRESS',
-        address_n: [
-          (derivationArray[0] | 0x80000000) >>> 0,
-          (derivationArray[1] | 0x80000000) >>> 0,
-          (derivationArray[2] | 0x80000000) >>> 0,
-          derivationArray[3],
-          derivationArray[4],
-        ],
-      };
-    });
+    const inputs = txData.inputs.map((utxo: UTXO) => ({
+      prev_hash: utxo.hash,
+      prev_index: utxo.index,
+      amount: utxo.value,
+      address_n: [
+        (derivationArray[0] | 0x80000000) >>> 0,
+        (derivationArray[1] | 0x80000000) >>> 0,
+        (derivationArray[2] | 0x80000000) >>> 0,
+        derivationArray[3],
+        derivationArray[4],
+      ],
+    }));
 
-    const outputs = txData.outputs.map((output: Dogecoin.PsbtTxOutput) => {
+    const outputs = txData.outputs.map((output: Litecoin.PsbtTxOutput) => {
       const to = output.address ? output.address : txData.from;
       return {
         address: to,
         amount: output.value,
       };
     });
+
     const unsignedTx: Params<SignTransaction> = {
       inputs: inputs,
       outputs: outputs,
-      coin: 'Dogecoin',
+      coin: 'ltc',
       serialize: true,
     };
 
