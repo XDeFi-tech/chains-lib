@@ -26,11 +26,11 @@ export class TrezorProvider extends Provider {
    * Retrieves the public address corresponding to a given derivation path.
    *
    * @async
-   * @param {string} derivation - The derivation path to retrieve the address for.
-   * @param {any} rest - rest props for custom signer
+   * @param {string} _derivation - The derivation path to retrieve the address for.
+   * @param {any} _rest - rest props for custom signer
    * @returns {Promise<string>} The public address corresponding to the derivation path.
    */
-  async getAddress(derivation: string, ...rest: any): Promise<string> {
+  async getAddress(_derivation: string, ..._rest: any): Promise<string> {
     throw new Error('Method must be implented in an inhereted class');
   }
 
@@ -38,12 +38,12 @@ export class TrezorProvider extends Provider {
    * Signs a message using the specified derivation.
    *
    * @async
-   * @param {Msg} msg The message to sign.
+   * @param {Msg} _msg The message to sign.
    * @param {string} derivation The derivation path to sign the message.
-   * @param {any} rest - rest props for custom signer
+   * @param {any} _rest - rest props for custom signer
    * @returns {Promise<any>} A promise that resolves to the signature.
    */
-  async sign(msg: MsgData, ...rest: any): Promise<void> {
+  async sign(_msg: MsgData, ..._rest: any): Promise<void> {
     throw new Error('Method must be implented in an inhereted class');
   }
 
@@ -54,11 +54,11 @@ export class TrezorProvider extends Provider {
   /**
    * Verifies if the given address is valid.
    *
-   * @param {string} address - The address to verify.
-   * @param {any} rest - rest props for custom signer
+   * @param {string} _address - The address to verify.
+   * @param {any} _rest - rest props for custom signer
    * @returns {boolean} True if the address is valid, false otherwise.
    */
-  verifyAddress(address: string, ...rest: any): boolean {
+  verifyAddress(_address: string, ..._rest: any): boolean {
     throw new Error('Method must be implented in an inhereted class');
   }
 
