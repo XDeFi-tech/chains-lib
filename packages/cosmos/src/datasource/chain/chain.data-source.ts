@@ -232,7 +232,7 @@ export class ChainDataSource extends DataSource {
 
     return [
       {
-        gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 1.4),
+        gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 2),
         gasPrice: this.manifest.feeGasStep[speed],
       },
     ];

@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.15
+
+### Patch Changes
+
+- 534cef3: Increase gas limit multiplier
+
 ## 1.0.14
 
 ### Patch Changes
