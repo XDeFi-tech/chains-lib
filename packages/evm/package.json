@@ -42,6 +42,7 @@
     "@ledgerhq/cryptoassets": "^9.1.0",
     "@ledgerhq/hw-app-eth": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
+    "@trezor/connect-web": "^9.1.4",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "^9.0.2",

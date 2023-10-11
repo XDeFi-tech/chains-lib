@@ -1,73 +1,94 @@
+import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
+import { stringToPath } from '@cosmjs/crypto';
+import { fromBech32 } from '@cosmjs/encoding';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { SigningStargateClient, GasPrice } from '@cosmjs/stargate';
-import { LedgerSigner as CosmosLedgerSigner } from '@cosmjs/ledger-amino';
-import { stringToPath } from '@cosmjs/crypto';
-import { bech32 } from 'bech32';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { SigningStargateClient } from '@cosmjs/stargate';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
+  verifyAddress(address: string, requiredPrefix: string): boolean {
     try {
-      const result = bech32.decode(address);
-      return result.prefix === 'cosmos' && result.words.length === 32;
-    } catch (err) {
+      const { prefix, data } = fromBech32(address);
+      if (prefix !== requiredPrefix) {
+        return false;
+      }
+      return data.length === 20;
+    } catch {
       return false;
     }
   }
 
-  async getAddress(derivation: string): Promise<string> {
+  async getPrivateKey(_derivation: string) {
+    throw new Error('Cannot extract private key from Ledger device');
+  }
+
+  async getAddress(derivation: string, prefix: string): Promise<string> {
     const transport = await Transport.create();
     try {
-      const signer = new CosmosLedgerSigner(transport, {
+      const hdPath = stringToPath(derivation);
+      const app = new LedgerApp(transport, {
         testModeAllowed: true,
-        hdPaths: [stringToPath(derivation)],
+        hdPaths: [hdPath],
+        prefix,
       });
-      const [{ address }] = await signer.getAccounts();
+
+      const [{ address }] = await app.getAccounts();
 
       return address;
-    } catch (err) {
-      throw err;
     } finally {
       transport.close();
     }
   }
 
-  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string, prefix: string): Promise<void> {
     const transport = await Transport.create();
     try {
-      const signer = new CosmosLedgerSigner(transport, {
+      if (!derivation.startsWith('m/')) {
+        derivation = 'm/' + derivation;
+      }
+
+      const hdPath = stringToPath(derivation);
+      const app = new LedgerApp(transport, {
         testModeAllowed: true,
-        hdPaths: [stringToPath(derivation)],
-        prefix: msg.provider?.manifest.chain,
+        hdPaths: [hdPath],
+        prefix,
       });
-      const msgData = msg.toData();
+
+      const tendermintClient = await Tendermint34Client.connect(
+        msg.provider.manifest.rpcURL
+      );
+
+      const client = await SigningStargateClient.createWithSigner(
+        tendermintClient,
+        app
+      );
+
+      /* eslint-enable */
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const txData = await msg.buildTx();
-      const client = await SigningStargateClient.connectWithSigner(
-        msg.provider?.manifest.chain as string,
-        signer,
+      const [{ address: senderAddress }] = await app.getAccounts();
+
+      const msgs = [
         {
-          broadcastTimeoutMs: 600_000,
-          broadcastPollIntervalMs: 5_000,
-          gasPrice: GasPrice.fromString(
-            `2500${msg.provider?.manifest.chainSymbol}`
-          ),
-        }
-      );
-      const signature = await client.sign(
-        msgData.from,
-        txData.msgs.map((msg: any) => ({
-          typeUrl: '/cosmos.tx.v1beta1.TxBody',
-          value: msg,
-        })),
+          typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+          value: txData.msgs,
+        },
+      ];
+      const signedTx = await client.sign(
+        senderAddress,
+        msgs,
         txData.fee,
-        txData.memo || ''
+        txData.memo
       );
-      msg.sign(signature);
-    } catch (err) {
-      throw err;
+      const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+      const rawTx = Buffer.from(txBytes).toString('base64');
+      msg.sign(rawTx);
     } finally {
       transport.close();
     }
