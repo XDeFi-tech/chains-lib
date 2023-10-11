@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 1.0.3
+
+### Patch Changes
+
+- 2c9033b: Added Trezor and Ledger Signers
+- Updated dependencies [2c9033b]
+  - @xdefi-tech/chains-core@1.1.10
+
 ## 1.0.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.8
+
+### Patch Changes
+
+- 2c9033b: Added Trezor and Ledger Signers
+- Updated dependencies [2c9033b]
+  - @xdefi-tech/chains-core@1.1.10
+
 ## 1.1.7
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.10
+
+### Patch Changes
+
+- 2c9033b: Added Trezor and Ledger Signers
+- Updated dependencies [2c9033b]
+  - @xdefi-tech/chains-core@1.1.10
+  - @xdefi-tech/chains-graphql@1.1.8
+
 ## 1.1.9
 
 ### Patch Changes

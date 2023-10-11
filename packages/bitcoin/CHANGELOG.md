@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-bitcoin
 
+## 1.0.5
+
+### Patch Changes
+
+- 2c9033b: Added Trezor and Ledger Signers
+- Updated dependencies [2c9033b]
+  - @xdefi-tech/chains-core@1.1.10
+  - @xdefi-tech/chains-utxo@1.0.3
+  - @xdefi-tech/chains-graphql@1.1.8
+
 ## 1.0.4
 
 ### Patch Changes

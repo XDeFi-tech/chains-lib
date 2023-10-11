@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.14
+
+### Patch Changes
+
+- 2c9033b: Added Trezor and Ledger Signers
+- Updated dependencies [2c9033b]
+  - @xdefi-tech/chains-core@1.1.10
+  - @xdefi-tech/chains-graphql@1.1.8
+
 ## 1.1.13
 
 ### Patch Changes
