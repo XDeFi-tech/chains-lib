@@ -31,8 +31,6 @@ describe('trezor.signer', () => {
   let message: Msg;
 
   beforeEach(() => {
-    jest.mock('@trezor/connect-web'); // this happens automatically with automocking
-
     signer = new TrezorSigner();
 
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
