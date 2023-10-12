@@ -1,5 +1,10 @@
 import { Msg } from '@xdefi-tech/chains-core';
-import { EthereumSignedTx, Success } from '@trezor/connect-web';
+import {
+  EthereumSignedTx,
+  GetAddress,
+  Params,
+  Success,
+} from '@trezor/connect-web';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -21,6 +26,19 @@ jest.mock('@trezor/connect-web', () => ({
 
     return txResponse;
   }),
+  ethereumGetAddress: jest
+    .fn()
+    .mockImplementation((params: Params<GetAddress>) => {
+      const addressResponse: Success<GetAddress> = {
+        success: true,
+        payload: {
+          address: '0x62e4f988d231E16c9A666DD9220865934a347900',
+          path: params.path,
+        },
+      };
+
+      return addressResponse;
+    }),
 }));
 
 describe('trezor.signer', () => {
@@ -48,16 +66,41 @@ describe('trezor.signer', () => {
     message = provider.createMsg(txInput);
   });
 
-  it('should sign a transaction using a trezor device', async () => {
+  it('should fail signing if trezor device is not initialized', async () => {
+    expect(async () => {
+      await signer.sign(message as ChainMsg, derivationPath);
+    }).rejects.toThrow();
+  });
+
+  it('should fail getting addresses if trezor device is not initialized', async () => {
+    expect(async () => {
+      await signer.getAddress(derivationPath);
+    }).rejects.toThrow();
+  });
+
+  it('should get an address from the trezor device', async () => {
     await signer.initTrezor('test@test.com', 'localhost');
+
+    expect(await signer.getAddress(derivationPath)).toBe(
+      '0x62e4f988d231E16c9A666DD9220865934a347900'
+    );
+  });
+
+  it('should sign a transaction using a trezor device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });
 
-  it('should fail if trezor device is not initialized', async () => {
-    expect(
-      signer.sign(message as ChainMsg, derivationPath)
-    ).rejects.toThrowError();
+  it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should validate an address', async () => {
+    expect(signer.verifyAddress(txInput.from)).toBe(true);
+  });
+
+  it('should fail if private key is requested', async () => {
+    expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
   });
 });
