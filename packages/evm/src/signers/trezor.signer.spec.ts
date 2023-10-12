@@ -81,9 +81,7 @@ describe('trezor.signer', () => {
   it('should get an address from the trezor device', async () => {
     await signer.initTrezor('test@test.com', 'localhost');
 
-    expect(await signer.getAddress(derivationPath)).toBe(
-      '0x62e4f988d231E16c9A666DD9220865934a347900'
-    );
+    expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
   it('should sign a transaction using a trezor device', async () => {
