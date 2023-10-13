@@ -42,6 +42,10 @@ export class ChainDataSource extends DataSource {
     this.rest = axios.create({ baseURL: this.manifest.rpcURL });
   }
 
+  async getNFTBalance(address: string) {
+    throw new Error('Current chain do not support NFTs');
+  }
+
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
     const { data: resp } = await this.rest.get<{ balances: Array<any> }>(

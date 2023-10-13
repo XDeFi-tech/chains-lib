@@ -67,6 +67,10 @@ export class BinanceProvider extends Chain.Provider {
     return this.dataSource.estimateFee(messages, speed);
   }
 
+  async getNFTBalance(address: string) {
+    return this.dataSource.getNFTBalance(address);
+  }
+
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
     return new Response(
       () => this.dataSource.getBalance({ address }),

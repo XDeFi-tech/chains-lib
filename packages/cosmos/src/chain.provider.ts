@@ -70,6 +70,10 @@ export class CosmosProvider extends Chain.Provider {
     return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
   }
 
+  async getNFTBalance(address: string) {
+    return this.dataSource.getNFTBalance(address);
+  }
+
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
     return new Response(
       () => this.dataSource.getBalance({ address }),
