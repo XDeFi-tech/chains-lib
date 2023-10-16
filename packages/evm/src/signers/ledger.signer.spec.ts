@@ -1,5 +1,4 @@
 import { Msg } from '@xdefi-tech/chains-core';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
