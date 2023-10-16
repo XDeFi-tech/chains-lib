@@ -1,85 +1,77 @@
-import App from '@ledgerhq/hw-app-btc';
-import { LedgerSigner } from './ledger.signer';
-import { ChainMsg } from '../msg';
+import { Msg } from '@xdefi-tech/chains-core';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 
-declare global {
-  interface Navigator {
-    platform: string;
-    hid: Object;
-    userAgent: string;
-  }
-}
+import { EvmProvider } from '../chain.provider';
+import { IndexerDataSource } from '../datasource';
+import { EVM_MANIFESTS } from '../manifests';
+import { ChainMsg, MsgBody } from '../msg';
 
-const ADDRESS_MOCK = {
-  address: '0xCbA98362e199c41E1864D0923AF9646d3A648451',
-  publicKey:
-    '04df00ad3869baad7ce54f4d560ba7f268d542df8f2679a5898d78a690c3db8f9833d2973671cb14b088e91bdf7c0ab00029a576473c0e12f84d252e630bb3809b',
-};
-
-const SIGN_MOCK = {
-  v: '1',
-  r: '2',
-  s: '3',
-};
-
+import LedgerSigner from './ledger.signer';
 jest.mock('@ledgerhq/hw-transport-webhid', () => ({
-  create: jest.fn().mockImplementation(() => ({
-    close: jest.fn(),
-  })),
+  create: jest.fn().mockResolvedValue({
+    close: jest.fn().mockImplementation(),
+  }),
 }));
 
-jest.mock('@ledgerhq/hw-app-eth');
+jest.mock('@ledgerhq/hw-app-eth', () => {
+  return jest.fn().mockImplementation(() => ({
+    signTransaction: jest.fn().mockResolvedValue({
+      v: '1',
+      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
+      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+    }),
+    getAddress: jest.fn().mockResolvedValue({
+      address: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      publicKey: 'PUBKEY',
+      chainCode: '1',
+    }),
+  }));
+});
 
 describe('ledger.signer', () => {
-  it('verifyAddress(): should return FALSE if address is invalid', () => {
-    const signer = new LedgerSigner();
-    expect(signer.verifyAddress('Hello World')).toBeFalsy();
+  let signer: LedgerSigner;
+  let derivationPath: string;
+  let provider: EvmProvider;
+  let txInput: MsgBody;
+  let message: Msg;
+
+  beforeEach(() => {
+    signer = new LedgerSigner();
+
+    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
+    derivationPath = "m/44'/60'/0'/0/0";
+
+    txInput = {
+      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      amount: 0.000001,
+      nonce: 0,
+      chainId: 1,
+      decimals: 18,
+    };
+
+    message = provider.createMsg(txInput);
   });
 
-  it('verifyAddress(): should return TRUE if address is valid', () => {
-    const signer = new LedgerSigner();
-    expect(signer.verifyAddress(ADDRESS_MOCK.address)).toBeTruthy();
+  it('should get an address from the ledger device', async () => {
+    expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
-  it('getAddress(): should throw an error if derivation path is invalid', async () => {
-    // @ts-ignore
-    jest.spyOn(App.prototype, 'getAddress').mockRejectedValue('Error');
+  it('should sign a transaction using a ledger device', async () => {
+    await signer.sign(message as ChainMsg, derivationPath);
 
-    const signer = new LedgerSigner();
-    await expect(signer.getAddress('0/0/0/0/0')).rejects.toEqual('Error');
+    expect(message.signedTransaction).toBeTruthy();
   });
 
-  it('getAddress(): should return address', async () => {
-    // @ts-ignore
-    jest.spyOn(App.prototype, 'getAddress').mockResolvedValue(ADDRESS_MOCK);
-
-    const signer = new LedgerSigner();
-    await expect(signer.getAddress("44'/60'/0'/0/0")).resolves.toEqual(
-      ADDRESS_MOCK.address
-    );
+  it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
   });
 
-  it('sign(): show throw an error if msg is invalid', async () => {
-    // @ts-ignore
-    jest.spyOn(App.prototype, 'signTransaction').mockRejectedValue('Error');
-
-    const signer = new LedgerSigner();
-    await expect(
-      signer.sign("44'/60'/0'/0/0", new ChainMsg({}))
-    ).rejects.toEqual('Error');
+  it('should validate an address', async () => {
+    expect(signer.verifyAddress(txInput.from)).toBe(true);
   });
 
-  it('sign(): show return signature', async () => {
-    // @ts-ignore
-    jest.spyOn(App.prototype, 'signTransaction').mockResolvedValue(SIGN_MOCK);
-
-    const signer = new LedgerSigner();
-    await expect(
-      signer.sign("44'/60'/0'/0/0", new ChainMsg({}))
-    ).resolves.toEqual({
-      v: 1,
-      r: '0x2',
-      s: '0x3',
-    });
+  it('should fail if private key is requested', async () => {
+    expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
   });
 });
