@@ -60,7 +60,7 @@ describe('trezor.signer', () => {
     provider = new LitecoinProvider(dataSource, {
       apiKey: process.env.BLOCKCHAIR_API_KEY,
     });
-    derivationPath = "m/44'/0'/0'/0/0";
+    derivationPath = "m/44'/2'/0'/0/0";
 
     txInput = {
       from: 'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY',
