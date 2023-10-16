@@ -9,10 +9,9 @@ import { ChainMsg } from '../msg';
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
-    try {
-      Dogecoin.address.toOutputScript(address);
+    if (address.startsWith('D') && address.length == 34) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
   }

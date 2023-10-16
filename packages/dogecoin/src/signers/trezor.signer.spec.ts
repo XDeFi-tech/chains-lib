@@ -58,9 +58,9 @@ describe('trezor.signer', () => {
     const dataSource = new IndexerDataSource(DOGECOIN_MANIFEST);
 
     provider = new DogecoinProvider(dataSource, {
-      apiKey: process.env.BLOCKCHAIR_API_KEY
+      apiKey: process.env.BLOCKCHAIR_API_KEY,
     });
-    derivationPath = "m/44'/0'/0'/0/0";
+    derivationPath = "m/44'/3'/0'/0/0";
 
     txInput = {
       from: 'DPbphsB3Hgb4Q2Sz32e2NoLbmofMNrp1wn',

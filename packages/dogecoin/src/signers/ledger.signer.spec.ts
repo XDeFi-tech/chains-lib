@@ -1,9 +1,9 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
-import { BitcoinCashProvider } from '../chain.provider';
+import { DogecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
-import { BITCOINCASH_MANIFEST } from '../manifests';
-import { MsgBody } from '../msg';
+import { DOGECOIN_MANIFEST } from '../manifests';
+import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
 jest.mock('@ledgerhq/hw-transport-webhid', () => ({
@@ -20,7 +20,7 @@ jest.mock('@ledgerhq/hw-app-btc', () => {
       s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
     }),
     getWalletPublicKey: jest.fn().mockResolvedValue({
-      bitcoinAddress: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      bitcoinAddress: 'DPbphsB3Hgb4Q2Sz32e2NoLbmofMNrp1wn',
       publicKey: 'PUBKEY',
       chainCode: 'code',
     }),
@@ -36,21 +36,24 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
-  let provider: BitcoinCashProvider;
+  let provider: DogecoinProvider;
   let txInput: MsgBody;
   let message: Msg;
 
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new BitcoinCashProvider(
-      new IndexerDataSource(BITCOINCASH_MANIFEST)
-    );
-    derivationPath = "m/44'/145'/0'/0/0";
+    const dataSource = new IndexerDataSource(DOGECOIN_MANIFEST);
+
+    provider = new DogecoinProvider(dataSource, {
+      apiKey: process.env.BLOCKCHAIR_API_KEY,
+    });
+
+    derivationPath = "m/44'/3'/0'/0/0";
 
     txInput = {
-      from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
-      to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      from: 'DPbphsB3Hgb4Q2Sz32e2NoLbmofMNrp1wn',
+      to: 'DPbphsB3Hgb4Q2Sz32e2NoLbmofMNrp1wn',
       amount: 0.000001,
     };
 
