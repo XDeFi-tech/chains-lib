@@ -58,7 +58,7 @@ describe('trezor.signer', () => {
     const dataSource = new IndexerDataSource(BITCOINCASH_MANIFEST);
 
     provider = new BitcoinCashProvider(dataSource);
-    derivationPath = "m/84'/0'/0'/0/0";
+    derivationPath = "m/44'/145'/0'/0/0";
 
     txInput = {
       from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
