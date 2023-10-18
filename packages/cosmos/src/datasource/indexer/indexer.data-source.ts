@@ -36,7 +36,7 @@ import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
 import { CosmosHubChains } from '../../manifests';
 
-import { getBalance, getFees, getTransactions } from './queries';
+import { getBalance, getFees, getTransactions, getNFTBalance } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -55,7 +55,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getNFTBalance(address: string) {
-    throw new Error('Current chain do not support NFTs');
+    return getNFTBalance(this.manifest.chain, address);
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {

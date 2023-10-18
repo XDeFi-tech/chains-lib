@@ -43,15 +43,9 @@ export class SeedPhraseSigner extends Signer.Provider {
       tendermintClient,
       wallet
     );
-    const msgs = [
-      {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: txData.msgs,
-      },
-    ];
     const signedTx = await client.sign(
       senderAddress,
-      msgs,
+      txData.msgs,
       txData.fee,
       txData.memo
     );
