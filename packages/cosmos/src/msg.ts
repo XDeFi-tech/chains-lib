@@ -76,7 +76,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
             msg: {
               transfer_nft: {
                 recipient: msgData.to,
-                tokenId: msgData.nftId,
+                token_id: msgData.nftId,
               },
             },
           },
@@ -114,19 +114,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const fee = {
       amount: [
         {
-          amount: isNaN(
-            BigNumber(msgData.gasPrice)
-              .multipliedBy(10 ** this.provider.manifest.decimals)
-              .toNumber()
-          )
-            ? '200000'
-            : BigNumber(msgData.gasPrice)
-                .multipliedBy(10 ** this.provider.manifest.decimals)
-                .toString(),
+          amount: BigNumber(msgData.gasPrice)
+            .multipliedBy(10 ** this.provider.manifest.decimals)
+            .toString(),
           denom: this.provider.manifest.denom,
         },
       ],
-      gas: BigNumber(msgData.gasLimit || '200000').toString(),
+      gas: BigNumber(msgData.gasLimit).toString(),
     };
     const acc = await this.provider.getAccount(msgData.from);
 
