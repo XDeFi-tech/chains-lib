@@ -1,8 +1,9 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import { Transaction } from '@solana/web3.js';
 
-import { EvmProvider } from '../chain.provider';
+import { SolanaProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
-import { EVM_MANIFESTS } from '../manifests';
+import { SOLANA_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
@@ -12,17 +13,20 @@ jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   }),
 }));
 
-jest.mock('@ledgerhq/hw-app-eth', () => {
+jest.mock('@ledgerhq/hw-app-solana', () => {
   return jest.fn().mockImplementation(() => ({
     signTransaction: jest.fn().mockResolvedValue({
-      v: '1',
-      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
-      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+      signature: Buffer.from(
+        '9a0ec4778a533891fae6ef51386f9598d8f01cb6bdbfc7c3ff914f8f63a6d0dafcb766221cdaeb4c07776f94a1fb1ba61c8f542e35ac00d50e1be6546eef5b03',
+        'hex'
+      ),
     }),
     getAddress: jest.fn().mockResolvedValue({
-      address: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      publicKey: 'PUBKEY',
-      chainCode: '1',
+      address: Buffer.from(
+        // 7HZYYfdqQgDgNduLA5gh8y4A5Mr3rCLVWeXBF4Vg9qZZ
+        '5d643645e1fffa03e7f6bb896475765731daf04ae745909c543f7ad036cd0210',
+        'hex'
+      ),
     }),
   }));
 });
@@ -30,23 +34,21 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
-  let provider: EvmProvider;
+  let provider: SolanaProvider;
   let txInput: MsgBody;
   let message: Msg;
 
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
+    provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
     derivationPath = "m/44'/60'/0'/0/0";
 
     txInput = {
-      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      from: '7HZYYfdqQgDgNduLA5gh8y4A5Mr3rCLVWeXBF4Vg9qZZ',
+      to: '7HZYYfdqQgDgNduLA5gh8y4A5Mr3rCLVWeXBF4Vg9qZZ',
       amount: 0.000001,
-      nonce: 0,
-      chainId: 1,
-      decimals: 18,
+      gasPrice: 100,
     };
 
     message = provider.createMsg(txInput);
@@ -57,6 +59,9 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
+    jest
+      .spyOn(Transaction.prototype, 'serialize')
+      .mockImplementation(() => Buffer.from('0xDEADBEEF', 'hex'));
     await signer.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();

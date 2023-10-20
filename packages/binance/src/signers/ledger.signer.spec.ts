@@ -1,8 +1,8 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
-import { EvmProvider } from '../chain.provider';
+import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
-import { EVM_MANIFESTS } from '../manifests';
+import { BINANCE_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
@@ -12,41 +12,43 @@ jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   }),
 }));
 
-jest.mock('@ledgerhq/hw-app-eth', () => {
+jest.mock('@binance-chain/javascript-sdk/lib/ledger/ledger-app', () => {
   return jest.fn().mockImplementation(() => ({
-    signTransaction: jest.fn().mockResolvedValue({
-      v: '1',
-      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
-      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+    sign: jest.fn().mockResolvedValue({
+      signature: Buffer.from(
+        '9a0ec4778a533891fae6ef51386f9598d8f01cb6bdbfc7c3ff914f8f63a6d0dafcb766221cdaeb4c07776f94a1fb1ba61c8f542e35ac00d50e1be6546eef5b03',
+        'hex'
+      ),
     }),
-    getAddress: jest.fn().mockResolvedValue({
-      address: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      publicKey: 'PUBKEY',
-      chainCode: '1',
+    getPublicKey: jest.fn().mockResolvedValue({
+      pk: Buffer.from(
+        // bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy
+        '04ac5075afd72637cbf5913994b51f4aa508a31cd96f8580d50c29a4bc585f6174c628640d13e54ab41b911f2b1cc61fbd2e40bbb8e543c8d01ea84e7e6a484418',
+        'hex'
+      ),
     }),
+    showAddress: jest.fn().mockResolvedValue({}),
   }));
 });
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
-  let provider: EvmProvider;
+  let provider: BinanceProvider;
   let txInput: MsgBody;
   let message: Msg;
 
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    derivationPath = "m/44'/60'/0'/0/0";
+    provider = new BinanceProvider(new IndexerDataSource(BINANCE_MANIFEST));
+    derivationPath = "m/44'/714'/0'/0/0";
 
     txInput = {
-      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      from: 'bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy',
+      to: 'bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy',
       amount: 0.000001,
-      nonce: 0,
-      chainId: 1,
-      decimals: 18,
+      denom: 'bnb',
     };
 
     message = provider.createMsg(txInput);

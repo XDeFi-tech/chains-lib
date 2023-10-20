@@ -1,4 +1,5 @@
 import * as BitcoinCash from 'bitcoinjs-lib';
+import { isValidAddress } from 'bchaddrjs';
 import {
   Signer,
   SignerDecorator,
@@ -9,17 +10,14 @@ import TrezorConnect, {
   SignTransaction,
   Manifest,
 } from '@trezor/connect-web';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-
-import { ChainMsg } from '../msg';
+import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
   verifyAddress(address: string): boolean {
-    try {
-      BitcoinCash.address.toOutputScript(address);
+    if (isValidAddress(address)) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
   }

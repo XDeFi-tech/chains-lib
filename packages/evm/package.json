@@ -92,6 +92,10 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
+    "testEnvironment": "jsdom",
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"

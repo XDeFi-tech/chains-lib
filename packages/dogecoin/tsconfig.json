@@ -8,5 +8,4 @@
   },
   "allowJs": true,
   "include": ["./src/custom.d.ts", "./src/**/*"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

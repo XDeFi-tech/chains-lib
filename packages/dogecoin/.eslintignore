@@ -1,7 +1,3 @@
 .eslintrc.js
-**/*.spec.ts
-**/*.test.ts
-*.spec.ts
-*.test.ts
 webpack*
 jest-setup-file.ts

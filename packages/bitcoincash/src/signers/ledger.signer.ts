@@ -1,5 +1,6 @@
 import App from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
+import { isValidAddress } from 'bchaddrjs';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as BitcoinCash from 'bitcoinjs-lib';
@@ -9,10 +10,9 @@ import { ChainMsg } from '../msg';
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
-    try {
-      BitcoinCash.address.toOutputScript(address);
+    if (isValidAddress(address)) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
   }

@@ -1,8 +1,8 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
-import { EvmProvider } from '../chain.provider';
+import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
-import { EVM_MANIFESTS } from '../manifests';
+import { BITCOIN_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
@@ -12,41 +12,44 @@ jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   }),
 }));
 
-jest.mock('@ledgerhq/hw-app-eth', () => {
+jest.mock('@ledgerhq/hw-app-btc', () => {
   return jest.fn().mockImplementation(() => ({
-    signTransaction: jest.fn().mockResolvedValue({
-      v: '1',
+    signMessage: jest.fn().mockResolvedValue({
+      v: 1,
       r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
       s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
     }),
-    getAddress: jest.fn().mockResolvedValue({
-      address: '0x62e4f988d231E16c9A666DD9220865934a347900',
+    getWalletPublicKey: jest.fn().mockResolvedValue({
+      bitcoinAddress: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
       publicKey: 'PUBKEY',
-      chainCode: '1',
+      chainCode: 'code',
     }),
   }));
 });
 
+jest.mock('../datasource/indexer/queries/balances.query', () => ({
+  getBalance: () => {
+    return [];
+  },
+}));
+
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
-  let provider: EvmProvider;
+  let provider: BitcoinProvider;
   let txInput: MsgBody;
   let message: Msg;
 
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    derivationPath = "m/44'/60'/0'/0/0";
+    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
+    derivationPath = "m/84'/0'/0'/0/0";
 
     txInput = {
-      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
       amount: 0.000001,
-      nonce: 0,
-      chainId: 1,
-      decimals: 18,
     };
 
     message = provider.createMsg(txInput);

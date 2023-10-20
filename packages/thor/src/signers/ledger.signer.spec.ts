@@ -1,8 +1,8 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
-import { EvmProvider } from '../chain.provider';
-import { IndexerDataSource } from '../datasource';
-import { EVM_MANIFESTS } from '../manifests';
+import { ThorProvider } from '../chain.provider';
+import { ChainDataSource } from '../datasource';
+import { THOR_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
@@ -12,40 +12,38 @@ jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   }),
 }));
 
-jest.mock('@ledgerhq/hw-app-eth', () => {
+jest.mock('@thorchain/ledger-thorchain', () => {
   return jest.fn().mockImplementation(() => ({
-    signTransaction: jest.fn().mockResolvedValue({
-      v: '1',
-      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
-      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+    sign: jest.fn().mockResolvedValue({
+      signature: Buffer.from(
+        '9a0ec4778a533891fae6ef51386f9598d8f01cb6bdbfc7c3ff914f8f63a6d0dafcb766221cdaeb4c07776f94a1fb1ba61c8f542e35ac00d50e1be6546eef5b03',
+        'hex'
+      ),
     }),
-    getAddress: jest.fn().mockResolvedValue({
-      address: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      publicKey: 'PUBKEY',
-      chainCode: '1',
+    getAddressAndPubKey: jest.fn().mockResolvedValue({
+      bech32Address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
     }),
+    showAddress: jest.fn().mockResolvedValue({}),
   }));
 });
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
-  let provider: EvmProvider;
+  let provider: ThorProvider;
   let txInput: MsgBody;
   let message: Msg;
 
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    derivationPath = "m/44'/60'/0'/0/0";
+    provider = new ThorProvider(new ChainDataSource(THOR_MANIFEST));
+    derivationPath = "m/44'/931'/0'/0/0";
 
     txInput = {
-      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      from: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+      to: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       amount: 0.000001,
-      nonce: 0,
-      chainId: 1,
       decimals: 18,
     };
 

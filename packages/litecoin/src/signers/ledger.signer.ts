@@ -9,10 +9,9 @@ import { ChainMsg } from '../msg';
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
-    try {
-      Litecoin.address.toOutputScript(address);
+    if (new RegExp(/^[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}$/).test(address)) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
   }

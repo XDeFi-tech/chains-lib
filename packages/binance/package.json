@@ -79,7 +79,6 @@
   },
   "jest": {
     "setupFiles": [
-      "./jest-setup-file.ts"
     ],
     "preset": "ts-jest/presets/js-with-ts",
     "transform": {
