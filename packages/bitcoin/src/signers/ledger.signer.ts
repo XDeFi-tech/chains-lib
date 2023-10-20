@@ -84,8 +84,6 @@ export class LedgerSigner extends Signer.Provider {
 
       const signedTx = await app.createPaymentTransaction(data);
 
-      await transport.close();
-
       msg.sign(signedTx);
     } catch (e) {
       throw e;
