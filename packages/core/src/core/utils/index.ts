@@ -1,5 +1,7 @@
 import { NumberIsh, HexString } from '../interfaces';
 
+export { BufferWriter } from './bufferwriter';
+
 export const toHex = (n: NumberIsh): HexString => {
   if (isNaN(Number(n))) {
     throw new Error('Invalid NumberIsh value');
