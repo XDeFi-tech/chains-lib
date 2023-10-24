@@ -77,7 +77,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     };
   }
 
-  private compileMemo(memo: string) {
+  public compileMemo(memo: string) {
     return UTXOLib.script.compile([
       UTXOLib.opcodes.OP_RETURN,
       Buffer.from(memo, 'utf8'),

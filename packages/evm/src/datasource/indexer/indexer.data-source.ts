@@ -48,7 +48,7 @@ export class IndexerDataSource extends DataSource {
     this.rest = axios.create({ baseURL: this.manifest.rpcURL });
   }
 
-  async getNFTBalance(address: string) {
+  async getNFTBalance(_address: string) {
     throw new Error('Current chain do not support NFTs');
   }
 

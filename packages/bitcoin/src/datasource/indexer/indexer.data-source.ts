@@ -18,7 +18,13 @@ import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
 
-import { getBalance, getStatus, getTransactions, getFees } from './queries';
+import {
+  getBalance,
+  getStatus,
+  getTransactions,
+  getFees,
+  getNFTBalance,
+} from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -27,7 +33,7 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getNFTBalance(address: string) {
-    throw new Error('Current chain do not support NFTs');
+    return getNFTBalance(address);
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {

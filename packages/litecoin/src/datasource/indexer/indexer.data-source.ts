@@ -26,7 +26,7 @@ export class IndexerDataSource extends DataSource {
     super(manifest);
   }
 
-  async getNFTBalance(address: string) {
+  async getNFTBalance(_address: string) {
     throw new Error('Current chain do not support NFTs');
   }
 

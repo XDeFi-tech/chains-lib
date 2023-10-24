@@ -63,7 +63,7 @@ export class ChainDataSource extends DataSource {
     });
   }
 
-  async getNFTBalance(address: string) {
+  async getNFTBalance(_address: string) {
     throw new Error('Current chain do not support NFTs');
   }
 

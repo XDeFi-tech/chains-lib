@@ -7,6 +7,7 @@ import {
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
+import isEmpty from 'lodash/isEmpty';
 
 import type { BitcoinProvider } from './chain.provider';
 
@@ -17,6 +18,7 @@ export interface MsgBody {
   from: string;
   gasLimit?: NumberIsh; // ByteFee
   decimals?: number;
+  nftId?: string;
 }
 
 export class ChainMsg extends BaseMsg<MsgBody, any> {
@@ -35,7 +37,47 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
 
   async buildTx() {
     const msgData = this.toData();
-    const utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
+    let utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
+    // check is the user has ordinals to erase them from utxos
+    let ordinals: any[] = [];
+    try {
+      ordinals = await this.provider.getNFTBalance(msgData.from);
+    } catch (err) {
+      console.error(err);
+    }
+
+    // check if the user is sending an ordinal
+    let ordinalToSend = null;
+    if (msgData.nftId) {
+      const [ordinalId, index, _] = msgData.nftId.split(':');
+      const ordinalUTXOIndex = utxos.findIndex(
+        ({ hash, index: UTXOIndex }) =>
+          ordinalId === hash && UTXOIndex === Number(index)
+      );
+
+      if (ordinalUTXOIndex > -1) {
+        ordinalToSend = utxos[ordinalUTXOIndex];
+      }
+
+      if (!ordinalToSend) {
+        throw new Error('Cannot find ordinal to send');
+      }
+    }
+    if (!isEmpty(ordinals)) {
+      // remove all ordinal to make sure we dnt spend associated UTXOs
+      utxos = utxos.filter(
+        ({ hash, index: UTXOIndex }) =>
+          !ordinals.find((ordinal) => {
+            if (!ordinal?.location) return false;
+            const [ordinalId, index, _] = ordinal.location.split(':');
+            return ordinalId === hash && UTXOIndex === Number(index);
+          })
+      );
+    }
+    if (ordinalToSend) {
+      utxos.unshift(ordinalToSend);
+    }
+
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
@@ -43,14 +85,17 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
+    let valueToSend = new BigNumber(msgData.amount?.toString()) // ? - for nfts, but still required
+      .multipliedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
+      .toNumber();
+
+    if (ordinalToSend) {
+      valueToSend = ordinalToSend.value;
+    }
 
     targetOutputs.push({
       address: msgData.to,
-      value: new BigNumber(msgData.amount.toString())
-        .multipliedBy(
-          10 ** (msgData.decimals || this.provider.manifest.decimals)
-        )
-        .toNumber(),
+      value: valueToSend,
     });
 
     if (compiledMemo) {
@@ -77,7 +122,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     };
   }
 
-  private compileMemo(memo: string) {
+  public compileMemo(memo: string) {
     return UTXOLib.script.compile([
       UTXOLib.opcodes.OP_RETURN,
       Buffer.from(memo, 'utf8'),
