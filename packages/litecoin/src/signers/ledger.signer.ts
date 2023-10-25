@@ -1,10 +1,9 @@
 import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Litecoin from 'bitcoinjs-lib';
 import { CreateTransactionArg } from '@ledgerhq/hw-app-btc/lib/createTransaction';
-import { utils } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 
