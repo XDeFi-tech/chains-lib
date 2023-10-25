@@ -1,14 +1,52 @@
-import App from '@ledgerhq/hw-app-btc';
+import {
+  createTransaction,
+  CreateTransactionArg,
+} from '@ledgerhq/hw-app-btc/createTransaction';
+import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
-import { isValidAddress } from 'bchaddrjs';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
-import * as BitcoinCash from 'bitcoinjs-lib';
+import * as Bitcoin from 'bitcoinjs-lib';
+import { isValidAddress, toLegacyAddress } from 'bchaddrjs';
+import { SignP2SHTransactionArg } from '@ledgerhq/hw-app-btc/lib/signP2SHTransaction';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  network = {
+    hashGenesisBlock:
+      '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
+    port: 8333,
+    portRpc: 8332,
+    protocol: { magic: 3908297187 },
+    seedsDns: [
+      'seed.bitcoinabc.org',
+      'seed-abc.bitcoinforks.org',
+      'btccash-seeder.bitcoinunlimited.info',
+      'seed.bitprim.org',
+      'seed.deadalnix.me',
+      'seeder.criptolayer.net',
+    ],
+    versions: {
+      bip32: { private: 76066276, public: 76067358 },
+      bip44: 145,
+      private: 128,
+      public: 0,
+      scripthash: 5,
+    },
+    name: 'BitcoinCash',
+    per1: 100000000,
+    unit: 'BCH',
+    testnet: false,
+    messagePrefix: '\u0019BitcoinCash Signed Message:\n',
+    bip32: { public: 76067358, private: 76066276 },
+    pubKeyHash: 0,
+    scriptHash: 5,
+    wif: 128,
+    dustThreshold: null,
+    bech32: 'bch',
+  };
   verifyAddress(address: string): boolean {
     if (isValidAddress(address)) {
       return true;
@@ -19,58 +57,84 @@ export class LedgerSigner extends Signer.Provider {
 
   async getAddress(
     derivation: string,
-    type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
+    type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'cashaddr'
   ): Promise<string> {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
+    try {
+      const app = new BtcOld({ transport, currency: 'abc' });
 
-    const address = await app.getWalletPublicKey(derivation, { format: type });
-    transport.close();
+      const address = await app.getWalletPublicKey(derivation, {
+        format: type,
+      });
 
-    return address.bitcoinAddress;
+      return address.bitcoinAddress;
+    } catch (e) {
+      throw e;
+    } finally {
+      await transport.close();
+    }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
-    const { inputs, outputs, compiledMemo, from } = await msg.buildTx();
-    const psbt = new BitcoinCash.Psbt({
-      network: BitcoinCash.networks.bitcoin,
-    });
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-      }))
-    );
+    try {
+      const app = new BtcOld({ transport, currency: 'bch' });
+      const { inputs, outputs, from } = await msg.buildTx();
+      const psbt = new Bitcoin.Psbt({ network: this.network });
 
-    // psbt add outputs from accumulative outputs
-    outputs.forEach((output: BitcoinCash.PsbtTxOutput) => {
-      if (!output.address) {
-        //an empty address means this is the change address
-        output.address = from;
-      }
-      if (!output.script) {
-        psbt.addOutput(output);
-      } else {
-        //we need to add the compiled memo this way to
-        //avoid dust error tx when accumulating memo output with 0 value
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
+      inputs.forEach((utxo: UTXO) => {
+        psbt.addInput({
+          hash: utxo.hash,
+          index: utxo.index,
+          witnessUtxo: utxo.witnessUtxo,
+        });
+      });
+
+      outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+        if (!output.address) {
+          output.address = from;
         }
-      }
-    });
-    const result = await app.signMessage(derivation, psbt.toHex());
-    await transport.close();
 
-    const v = result['v'] + 27 + 4;
+        psbt.addOutput({
+          script: Bitcoin.address.toOutputScript(
+            toLegacyAddress(output.address),
+            this.network
+          ),
+          value: output.value,
+        });
+      });
 
-    const signature = Buffer.from(
-      v.toString(16) + result['r'] + result['s'],
-      'hex'
-    ).toString('base64');
-    msg.sign(signature);
+      const outputWriter = new utils.BufferWriter();
+
+      outputWriter.writeVarInt(psbt.txOutputs.length);
+
+      psbt.txOutputs.forEach((output) => {
+        outputWriter.writeUInt64(output.value);
+        outputWriter.writeVarSlice(output.script);
+      });
+
+      const outputScriptHex = outputWriter.buffer().toString('hex');
+
+      const data: CreateTransactionArg = {
+        inputs: inputs.map((utxo: UTXO) => [
+          app.splitTransaction(utxo.txHex),
+          utxo.index,
+          undefined,
+        ]),
+        associatedKeysets: [derivation],
+        outputScriptHex,
+        additionals: ['abc'],
+        sigHashType: 0x41,
+      };
+
+      const signedTx = await app.createPaymentTransaction(data);
+
+      msg.sign(signedTx);
+    } catch (e) {
+      throw e;
+    } finally {
+      await transport.close();
+    }
   }
 }
 
