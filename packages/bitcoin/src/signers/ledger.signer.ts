@@ -1,8 +1,10 @@
-import App from '@ledgerhq/hw-app-btc';
+import Btc from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
+import { CreateTransactionArg } from '@ledgerhq/hw-app-btc/lib/createTransaction';
+import { BufferWriter } from '@xdefi-tech/chains-core/src/core/utils';
 
 import { ChainMsg } from '../msg';
 
@@ -22,7 +24,7 @@ export class LedgerSigner extends Signer.Provider {
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
   ): Promise<string> {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
+    const app = new Btc({ transport, currency: 'bitcoin' });
 
     const address = await app.getWalletPublicKey(derivation, { format: type });
     transport.close();
@@ -32,43 +34,62 @@ export class LedgerSigner extends Signer.Provider {
 
   async sign(msg: ChainMsg, derivation: string) {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
-    const { inputs, outputs, compiledMemo, from } = await msg.buildTx();
-    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-      }))
-    );
+    try {
+      const app = new Btc({ transport, currency: 'bitcoin' });
+      const { inputs, outputs, from } = await msg.buildTx();
+      const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
 
-    // psbt add outputs from accumulative outputs
-    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
-      if (!output.address) {
-        //an empty address means this is the change address
-        output.address = from;
-      }
-      if (!output.script) {
-        psbt.addOutput(output);
-      } else {
-        //we need to add the compiled memo this way to
-        //avoid dust error tx when accumulating memo output with 0 value
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
+      psbt.addInputs(
+        inputs.map((utxo: UTXO) => {
+          return {
+            hash: utxo.hash,
+            index: utxo.index,
+            witnessUtxo: utxo.witnessUtxo,
+          };
+        })
+      );
+
+      outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+        if (!output.address) {
+          output.address = from;
         }
-      }
-    });
-    const result = await app.signMessage(derivation, psbt.toHex());
-    await transport.close();
 
-    const v = result['v'] + 27 + 4;
+        psbt.addOutput({
+          address: output.address,
+          value: output.value,
+        });
+      });
 
-    const signature = Buffer.from(
-      v.toString(16) + result['r'] + result['s'],
-      'hex'
-    ).toString('base64');
-    msg.sign(signature);
+      const outputWriter = new BufferWriter();
+
+      outputWriter.writeVarInt(psbt.txOutputs.length);
+
+      psbt.txOutputs.forEach((output) => {
+        outputWriter.writeUInt64(output.value);
+        outputWriter.writeVarSlice(output.script);
+      });
+
+      const outputScriptHex = outputWriter.buffer().toString('hex');
+
+      const data: CreateTransactionArg = {
+        inputs: inputs.map((utxo: UTXO) => [
+          app.splitTransaction(utxo.txHex, true),
+          utxo.index,
+          utxo.witnessUtxo.script.toString('hex'),
+        ]),
+        associatedKeysets: [derivation],
+        outputScriptHex,
+        additionals: ['bech32'],
+      };
+
+      const signedTx = await app.createPaymentTransaction(data);
+
+      msg.sign(signedTx);
+    } catch (e) {
+      throw e;
+    } finally {
+      await transport.close();
+    }
   }
 }
 

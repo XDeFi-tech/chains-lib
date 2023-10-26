@@ -1,73 +1,123 @@
-import App from '@ledgerhq/hw-app-btc';
+import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Dogecoin from 'bitcoinjs-lib';
+import { CreateTransactionArg } from '@ledgerhq/hw-app-btc/lib/createTransaction';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  network = {
+    hashGenesisBlock:
+      '1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691',
+    port: 22556,
+    protocol: { magic: 3233857728 },
+    seedsDns: ['seed.multidoge.org', 'seed2.multidoge.org'],
+    versions: {
+      bip32: { private: 49988504, public: 49990397 },
+      bip44: 3,
+      private: 158,
+      public: 30,
+      scripthash: 22,
+    },
+    name: 'Dogecoin',
+    unit: 'DOGE',
+    testnet: false,
+    messagePrefix: '\u0019Dogecoin Signed Message:\n',
+    bip32: { public: 49990397, private: 49988504 },
+    pubKeyHash: 30,
+    scriptHash: 22,
+    wif: 158,
+    dustThreshold: null,
+    bech32: '',
+  };
+
   verifyAddress(address: string): boolean {
-    if (address.startsWith('D') && address.length == 34) {
+    try {
+      Dogecoin.address.toOutputScript(address, this.network);
       return true;
-    } else {
+    } catch (err) {
       return false;
     }
   }
 
-  async getAddress(
-    derivation: string,
-    type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
-  ): Promise<string> {
+  async getAddress(derivation: string): Promise<string> {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
+    try {
+      const app = new BtcOld({ transport, currency: 'dogecoin' });
 
-    const address = await app.getWalletPublicKey(derivation, { format: type });
-    transport.close();
+      const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
 
-    return address.bitcoinAddress;
+      if (bitcoinAddress) {
+        return bitcoinAddress;
+      } else {
+        throw new Error('Error getting Dogecoin address');
+      }
+    } catch (e) {
+      throw e;
+    } finally {
+      await transport.close();
+    }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
     const transport = await Transport.create();
-    const app = new App({ transport, currency: 'bitcoin' });
-    const { inputs, outputs, compiledMemo, from } = await msg.buildTx();
-    const psbt = new Dogecoin.Psbt({ network: Dogecoin.networks.bitcoin });
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-      }))
-    );
+    try {
+      const app = new BtcOld({ transport, currency: 'dogecoin' });
+      const { inputs, outputs, from } = await msg.buildTx();
+      const psbt = new Dogecoin.Psbt({ network: this.network });
 
-    // psbt add outputs from accumulative outputs
-    outputs.forEach((output: Dogecoin.PsbtTxOutput) => {
-      if (!output.address) {
-        //an empty address means this is the change address
-        output.address = from;
-      }
-      if (!output.script) {
-        psbt.addOutput(output);
-      } else {
-        //we need to add the compiled memo this way to
-        //avoid dust error tx when accumulating memo output with 0 value
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
+      inputs.forEach((utxo: UTXO) => {
+        psbt.addInput({
+          hash: utxo.hash,
+          index: utxo.index,
+          witnessUtxo: utxo.witnessUtxo,
+        });
+      });
+
+      outputs.forEach((output: Dogecoin.PsbtTxOutput) => {
+        if (!output.address) {
+          output.address = from;
         }
-      }
-    });
-    const result = await app.signMessage(derivation, psbt.toHex());
-    await transport.close();
 
-    const v = result['v'] + 27 + 4;
+        psbt.addOutput({
+          script: Dogecoin.address.toOutputScript(output.address, this.network),
+          value: output.value,
+        });
+      });
 
-    const signature = Buffer.from(
-      v.toString(16) + result['r'] + result['s'],
-      'hex'
-    ).toString('base64');
-    msg.sign(signature);
+      const outputWriter = new utils.BufferWriter();
+
+      outputWriter.writeVarInt(psbt.txOutputs.length);
+
+      psbt.txOutputs.forEach((output) => {
+        outputWriter.writeUInt64(output.value);
+        outputWriter.writeVarSlice(output.script);
+      });
+
+      const outputScriptHex = outputWriter.buffer().toString('hex');
+
+      const data: CreateTransactionArg = {
+        inputs: inputs.map((utxo: UTXO) => [
+          app.splitTransaction(utxo.txHex, true),
+          utxo.index,
+          utxo.witnessUtxo.script.toString('hex'),
+        ]),
+        associatedKeysets: [derivation],
+        outputScriptHex,
+        additionals: [],
+      };
+
+      const signedTx = await app.createPaymentTransaction(data);
+
+      msg.sign(signedTx);
+    } catch (e) {
+      throw e;
+    } finally {
+      await transport.close();
+    }
   }
 }
 

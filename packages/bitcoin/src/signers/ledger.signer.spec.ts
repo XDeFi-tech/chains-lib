@@ -14,11 +14,8 @@ jest.mock('@ledgerhq/hw-transport-webhid', () => ({
 
 jest.mock('@ledgerhq/hw-app-btc', () => {
   return jest.fn().mockImplementation(() => ({
-    signMessage: jest.fn().mockResolvedValue({
-      v: 1,
-      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
-      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
-    }),
+    splitTransaction: jest.fn().mockReturnValue({}),
+    createPaymentTransaction: jest.fn().mockResolvedValue('SIGNEDTX'),
     getWalletPublicKey: jest.fn().mockResolvedValue({
       bitcoinAddress: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
       publicKey: 'PUBKEY',
@@ -62,7 +59,7 @@ describe('ledger.signer', () => {
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(message.signedTransaction).toEqual('SIGNEDTX');
   });
 
   it('should return false when verifing an invalid address', async () => {

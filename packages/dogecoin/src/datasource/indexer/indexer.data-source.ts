@@ -11,7 +11,7 @@ import {
   FeeData,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import { UTXOManifest } from '@xdefi-tech/chains-utxo';
+import type { UTXOManifest } from '@xdefi-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import { OptBlockRange } from '@xdefi-tech/chains-graphql';
