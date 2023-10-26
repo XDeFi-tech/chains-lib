@@ -20,7 +20,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix: string): Promise<string> {
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
+    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
       prefix,
     });
     const [{ address }] = await wallet.getAccounts();

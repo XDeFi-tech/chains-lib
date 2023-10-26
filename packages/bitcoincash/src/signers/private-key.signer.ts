@@ -22,18 +22,12 @@ export class PrivateKeySigner extends Signer.Provider {
     return this.key;
   }
 
-  async getAddress(
-    _derivation: string,
-    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
-  ): Promise<string> {
-    const network = coininfo.dogecoin.main.toBitcoinJS();
+  async getAddress(): Promise<string> {
+    const network = coininfo.bitcoincash.main.toBitcoinJS();
     const pk = BitcoinCash.ECPair.fromWIF(this.key, network);
-    const { address } = BitcoinCash.payments[type]({
-      pubkey: pk.publicKey,
-      network,
-    });
+    const address = pk.getAddress();
 
-    if (!address) throw new Error('BTC address is undefined');
+    if (!address) throw new Error('BCH address is undefined');
 
     return address;
   }
