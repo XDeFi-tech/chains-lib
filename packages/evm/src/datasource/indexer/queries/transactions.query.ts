@@ -101,6 +101,9 @@ export const getTransactions = async (
     case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
+    case EVMChains.cantoevm:
+      indexerChain = 'cantoEVM';
+      break;
   }
   const response = await gqlClient.query({
     query: GET_TRANSACTION_WITH_PAGINATION(indexerChain),

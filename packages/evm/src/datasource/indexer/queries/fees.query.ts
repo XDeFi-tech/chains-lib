@@ -61,6 +61,10 @@ export const getFees = async (chain: string) => {
     case EVMChains.aurora:
       query = DEFAULT_GAS_FEES(indexerChain);
       break;
+    case EVMChains.cantoevm:
+      indexerChain = 'cantoEVM';
+      query = DEFAULT_GAS_FEES(indexerChain);
+      break;
   }
 
   if (!query) {

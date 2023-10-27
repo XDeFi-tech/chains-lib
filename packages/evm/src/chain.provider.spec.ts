@@ -27,8 +27,6 @@ describe('chain.provider', () => {
   it('createMsg(): should create message with data', () => {
     const msg = evmProvider.createMsg({});
 
-    console.log('msg', msg);
-
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 

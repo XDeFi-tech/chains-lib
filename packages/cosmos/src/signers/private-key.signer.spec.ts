@@ -1,5 +1,6 @@
-import { SeedPhraseSigner } from './seed-phrase.signer';
 import { ChainMsg } from '../msg';
+
+import { SeedPhraseSigner } from './seed-phrase.signer';
 
 describe('cosmos private-key.signer', () => {
   const MOCK = {

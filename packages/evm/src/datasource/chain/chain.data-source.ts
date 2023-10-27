@@ -63,7 +63,10 @@ export class ChainDataSource extends DataSource {
         ethers.utils.hexZeroPad(address, 32),
       ],
     });
-    const chain = capitalize(this.manifest.chain) as AddressChain;
+    let chain = capitalize(this.manifest.chain) as AddressChain;
+    if (this.manifest.chain === EVMChains.cantoevm) {
+      chain = 'CantoEVM' as AddressChain;
+    }
     const uniqAddresses = uniqBy(
       lodashFilter(logs, (log) => log.topics.length === 3),
       'address'
