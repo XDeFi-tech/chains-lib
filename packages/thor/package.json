@@ -71,7 +71,6 @@
     "lint:fix": "eslint . --fix",
     "clean": "rimraf dist .turbo node_modules"
   },
-  "type": "commonjs",
   "jest": {
     "setupFiles": [],
     "preset": "ts-jest/presets/js-with-ts",
@@ -85,7 +84,6 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ],
-    "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
     }
