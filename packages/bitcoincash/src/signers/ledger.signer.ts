@@ -1,14 +1,10 @@
-import {
-  createTransaction,
-  CreateTransactionArg,
-} from '@ledgerhq/hw-app-btc/createTransaction';
+import { CreateTransactionArg } from '@ledgerhq/hw-app-btc/createTransaction';
 import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 import { isValidAddress, toLegacyAddress } from 'bchaddrjs';
-import { SignP2SHTransactionArg } from '@ledgerhq/hw-app-btc/lib/signP2SHTransaction';
 
 import { ChainMsg } from '../msg';
 

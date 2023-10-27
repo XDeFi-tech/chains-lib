@@ -27,5 +27,7 @@ describe('bbc private-key.signer', () => {
     );
   });
 
-  it('should sign a ChainMsg with the private key', async () => {});
+  it('should sign a ChainMsg with the private key', async () => {
+    // create a mock ChainMsg
+  });
 });

@@ -1,5 +1,6 @@
-import { PrivateKeySigner } from './private-key.signer';
 import { ChainMsg } from '../msg';
+
+import { PrivateKeySigner } from './private-key.signer';
 
 describe('evm private-key.signer', () => {
   const MOCK = {

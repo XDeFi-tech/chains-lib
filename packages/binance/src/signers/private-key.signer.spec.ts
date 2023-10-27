@@ -7,7 +7,7 @@ describe('bbc private-key.signer', () => {
     address: '',
     signature: '',
   };
-  const signer = new PrivateKeySigner();
+  const signer = new PrivateKeySigner(MOCK.privateKey);
 
   it('should return true for a valid address', () => {
     expect(signer.verifyAddress(MOCK.address)).toBe(true);
@@ -28,5 +28,7 @@ describe('bbc private-key.signer', () => {
     );
   });
 
-  it('should sign a ChainMsg with the private key', async () => {});
+  it('should sign a ChainMsg with the private key', async () => {
+    // create a mock ChainMsg
+  });
 });

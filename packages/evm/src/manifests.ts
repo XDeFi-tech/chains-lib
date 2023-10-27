@@ -8,6 +8,8 @@ export enum EVMChains {
   fantom = 'fantom',
   arbitrum = 'arbitrum',
   aurora = 'aurora',
+  cantoevm = 'cantoevm',
+  optimism = 'optimism',
 }
 
 export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
@@ -109,6 +111,36 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://aurorascan.dev',
     chainId: '1313161554',
     chain: 'aurora',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+  },
+  [EVMChains.cantoevm]: {
+    name: 'Canto EVM',
+    description: '',
+    rpcURL: 'https://canto-rpc.xdefiservices.com',
+    chainSymbol: 'CANTO',
+    blockExplorerURL: 'https://cantoscan.com',
+    chainId: '7700',
+    chain: 'cantoevm',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+  },
+  [EVMChains.optimism]: {
+    name: 'Optimism',
+    description: '',
+    rpcURL: 'https://optimistic-scan.xdefiservices.com',
+    chainSymbol: 'ETH',
+    blockExplorerURL: 'https://optimistic.etherscan.io',
+    chainId: '10',
+    chain: 'optimism',
     decimals: 18,
     feeGasStep: {
       high: 1.5,

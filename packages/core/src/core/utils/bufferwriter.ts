@@ -1,4 +1,4 @@
-import varuint from 'varuint-bitcoin';
+import * as varuint from 'varuint-bitcoin';
 
 export function unsafeTo64bitLE(n: number): Buffer {
   // we want to represent the input as a 8-bytes array

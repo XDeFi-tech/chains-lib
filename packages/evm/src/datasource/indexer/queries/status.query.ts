@@ -19,6 +19,9 @@ export const getStatus = async (chain: string) => {
     case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
+    case EVMChains.cantoevm:
+      indexerChain = 'cantoEVM';
+      break;
   }
   const response = await gqlClient.query({
     query: GET_STATUS(indexerChain),

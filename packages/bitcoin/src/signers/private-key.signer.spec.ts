@@ -1,5 +1,6 @@
-import { PrivateKeySigner } from './private-key.signer';
 import { ChainMsg } from '../msg';
+
+import { PrivateKeySigner } from './private-key.signer';
 
 describe('btc private-key.signer', () => {
   const MOCK = {
