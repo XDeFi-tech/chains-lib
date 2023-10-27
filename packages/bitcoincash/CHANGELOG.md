@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 1.0.7
+
+### Patch Changes
+
+- 5b6cb9b: Added Ledger signer. Added testing coverage for signers
+- Updated dependencies [5b6cb9b]
+  - @xdefi-tech/chains-core@1.1.11
+  - @xdefi-tech/chains-utxo@1.0.4
+
 ## 1.0.6
 
 ### Patch Changes

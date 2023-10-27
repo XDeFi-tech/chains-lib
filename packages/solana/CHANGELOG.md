@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.11
+
+### Patch Changes
+
+- 5b6cb9b: Added Ledger signer. Added testing coverage for signers
+- Updated dependencies [5b6cb9b]
+  - @xdefi-tech/chains-core@1.1.11
+
 ## 1.1.10
 
 ### Patch Changes

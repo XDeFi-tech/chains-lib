@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.15
+
+### Patch Changes
+
+- 5b6cb9b: Added Ledger signer. Added testing coverage for signers. Added canto EVM chain and optimism chain support
+- Updated dependencies [5b6cb9b]
+  - @xdefi-tech/chains-core@1.1.11
+
 ## 1.1.14
 
 ### Patch Changes
