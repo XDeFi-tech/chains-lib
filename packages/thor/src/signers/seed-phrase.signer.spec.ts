@@ -2,7 +2,7 @@ import { Msg } from '@xdefi-tech/chains-core';
 
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
-import { THOR_MANIFEST, ThorManifest } from '../manifests';
+import { THOR_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';

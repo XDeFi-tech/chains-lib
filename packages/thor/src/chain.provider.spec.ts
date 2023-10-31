@@ -1,8 +1,9 @@
+import { Response } from '@xdefi-tech/chains-core';
+
 import { ChainMsg } from './msg';
 import { ThorProvider } from './chain.provider';
 import { ChainDataSource } from './datasource';
 import { THOR_MANIFEST } from './manifests';
-import { Response } from '@xdefi-tech/chains-core';
 
 describe('chain.provider', () => {
   let provider: ThorProvider;
