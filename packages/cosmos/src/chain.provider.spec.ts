@@ -1,8 +1,7 @@
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
-
-import { LitecoinProvider } from './chain.provider';
+import { ChainMsg } from './msg';
+import { CosmosProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
-import { LITECOIN_MANIFEST } from './manifests';
+import { COSMOS_MANIFESTS } from './manifests';
 
 jest.mock('./datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
@@ -11,40 +10,30 @@ jest.mock('./datasource/indexer/queries/balances.query', () => ({
 }));
 
 describe('chain.provider', () => {
-  let provider: LitecoinProvider;
+  let provider: CosmosProvider;
 
   beforeEach(() => {
-    provider = new LitecoinProvider(new IndexerDataSource(LITECOIN_MANIFEST), {
-      apiKey: process.env.BLOCKCHAIR_API_KEY,
-    });
+    provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.cosmos)
+    );
   });
 
   it('createMsg(): should create message with data', () => {
     const msg = provider.createMsg({
-      to: 'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY',
-      from: 'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY',
+      to: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
+      from: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
       amount: 0.000001,
     });
 
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw an error when broadcasting an unsigned tx', async () => {
-    const msg = provider.createMsg({
-      to: 'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY',
-      from: 'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY',
-      amount: 0.000001,
-    });
-
-    expect(provider.broadcast([msg])).rejects.toThrow();
-  });
-
   it('should get a transaction from the blockchain', async () => {
     const txData = await provider.getTransaction(
-      'bac84778220d7c2722acaf15bbc6c330f0d6c183a9b3306bd6a658ef0d2df4a8'
+      '0269644F832384D033D2223226A5FC25BD17A3646EE2BEF5C1F9009FD19E66B9'
     );
     expect(txData?.hash).toEqual(
-      'bac84778220d7c2722acaf15bbc6c330f0d6c183a9b3306bd6a658ef0d2df4a8'
+      '0269644F832384D033D2223226A5FC25BD17A3646EE2BEF5C1F9009FD19E66B9'
     );
   });
 
@@ -58,7 +47,7 @@ describe('chain.provider', () => {
 
   it('should get a balance', async () => {
     const balance = await provider.getBalance(
-      'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY'
+      'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4'
     );
 
     const balanceData = await balance.getData();

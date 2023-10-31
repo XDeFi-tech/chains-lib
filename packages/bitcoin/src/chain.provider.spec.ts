@@ -1,22 +1,73 @@
-import { ChainMsg } from './msg';
-import { BtcProvider } from './chain.provider';
+import { ChainMsg } from '@xdefi-tech/chains-utxo';
+
+import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
 
+jest.mock('./datasource/indexer/queries/balances.query', () => ({
+  getBalance: () => {
+    return [];
+  },
+}));
+
 describe('chain.provider', () => {
-  let btcProvider: BtcProvider;
+  let provider: BitcoinProvider;
 
   beforeEach(() => {
-    btcProvider = new BtcProvider(new IndexerDataSource(BITCOIN_MANIFEST));
+    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
   });
 
   it('createMsg(): should create message with data', () => {
-    const msg = btcProvider.createMsg({
-      amount: 1,
-      to: 'bc1q7cyrfmck2ffu2ud3rn5l5a8yv6f0chkp0zpemf',
-      from: '39ACoGCp4riBaXQ5mfHMF4mi1Ztia2SZxQ',
+    const msg = provider.createMsg({
+      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      amount: 0.000001,
     });
 
     expect(msg).toBeInstanceOf(ChainMsg);
+  });
+
+  it('should throw an error when broadcasting an unsigned tx', async () => {
+    const msg = provider.createMsg({
+      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      amount: 0.000001,
+    });
+
+    expect(provider.broadcast([msg])).rejects.toThrow();
+  });
+
+  it('should get a transaction from the blockchain', async () => {
+    const txData = await provider.getTransaction(
+      'e8c12eae2a7f9a2421f991fab4a617c16fd261d0c67b497260a97895a811b81b'
+    );
+    expect(txData?.hash).toEqual(
+      'e8c12eae2a7f9a2421f991fab4a617c16fd261d0c67b497260a97895a811b81b'
+    );
+  });
+
+  it('should get fee options', async () => {
+    const feeOptions = await provider.gasFeeOptions();
+
+    expect(feeOptions?.low).toBeTruthy();
+    expect(feeOptions?.medium).toBeTruthy();
+    expect(feeOptions?.high).toBeTruthy();
+  });
+
+  it('should get a balance', async () => {
+    const balance = await provider.getBalance(
+      'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz'
+    );
+
+    const balanceData = await balance.getData();
+    expect(balanceData.length).toEqual(0);
+  });
+
+  it('should throw for a non-existant transaction on the blockchain', async () => {
+    expect(
+      provider.getTransaction(
+        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+      )
+    ).rejects.toThrow();
   });
 });
