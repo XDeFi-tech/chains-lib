@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.12
+
+### Patch Changes
+
+- 3b7b00d: Add test coverage
+- 3b7b00d: Add NFT Support
+- Updated dependencies [3b7b00d]
+  - @xdefi-tech/chains-core@1.1.12
+
 ## 1.1.11
 
 ### Patch Changes

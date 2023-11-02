@@ -1,5 +1,16 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 1.0.8
+
+### Patch Changes
+
+- 3b7b00d: Add test coverage
+- 3b7b00d: Add NFT Support
+- Updated dependencies [3b7b00d]
+- Updated dependencies [3b7b00d]
+  - @xdefi-tech/chains-utxo@1.0.5
+  - @xdefi-tech/chains-core@1.1.12
+
 ## 1.0.7
 
 ### Patch Changes

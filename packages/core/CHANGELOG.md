@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.12
+
+### Patch Changes
+
+- 3b7b00d: Add NFT Support
+
 ## 1.1.11
 
 ### Patch Changes

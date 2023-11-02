@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.0.18
+
+### Patch Changes
+
+- 3b7b00d: Add test coverage
+- 3b7b00d: Add NFT Support
+- Updated dependencies [3b7b00d]
+  - @xdefi-tech/chains-core@1.1.12
+
 ## 1.0.17
 
 ### Patch Changes

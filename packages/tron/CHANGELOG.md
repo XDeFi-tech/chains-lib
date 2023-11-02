@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.5
+
+### Patch Changes
+
+- 3b7b00d: Add test coverage
+- 3b7b00d: Add NFT Support
+- Updated dependencies [3b7b00d]
+  - @xdefi-tech/chains-core@1.1.12
+
 ## 1.1.4
 
 ### Patch Changes
