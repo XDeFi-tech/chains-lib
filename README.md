@@ -20,8 +20,18 @@ This library currently supports the following blockchain networks:
 - Bitcoin Cash
 - Litecoin
 - Dogecoin
-- EVM-Compatible Chains: Ethereum, Binance Smart Chain (BSC), Polygon, etc.
-- Cosmos and IBC-Compatible Chains: Juno, Osmosis, etc.
+- Ethereum
+- BNB Smart Chain
+- Avalanche 
+- Polygon
+- Optimism 
+- Arbitrum
+- Fantom
+- Other EVM-compatible chains
+- Cosmos
+- Osmosis
+- Juno
+- Other IBC-Compatible Chains
 - THORChain
 - BNB Beacon Chain
 - Solana
