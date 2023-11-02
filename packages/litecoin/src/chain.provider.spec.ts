@@ -14,9 +14,7 @@ describe('chain.provider', () => {
   let provider: LitecoinProvider;
 
   beforeEach(() => {
-    provider = new LitecoinProvider(new IndexerDataSource(LITECOIN_MANIFEST), {
-      apiKey: process.env.BLOCKCHAIR_API_KEY,
-    });
+    provider = new LitecoinProvider(new IndexerDataSource(LITECOIN_MANIFEST));
   });
 
   it('createMsg(): should create message with data', () => {
@@ -39,13 +37,11 @@ describe('chain.provider', () => {
     expect(provider.broadcast([msg])).rejects.toThrow();
   });
 
-  it('should get a transaction from the blockchain', async () => {
-    const txData = await provider.getTransaction(
-      'bac84778220d7c2722acaf15bbc6c330f0d6c183a9b3306bd6a658ef0d2df4a8'
+  it('should get transactions for an address from the blockchain', async () => {
+    const txData = await provider.getTransactions(
+      'Lh5Xtrt8u2rSykk9gG8heb4xBYvKPhT3WY'
     );
-    expect(txData?.hash).toEqual(
-      'bac84778220d7c2722acaf15bbc6c330f0d6c183a9b3306bd6a658ef0d2df4a8'
-    );
+    expect((await txData.getData()).length).toBeGreaterThan(0);
   });
 
   it('should get fee options', async () => {

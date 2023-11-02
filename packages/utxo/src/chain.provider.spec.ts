@@ -1,2 +1,1 @@
-describe('chain.provider', () => {
-});
+export {};

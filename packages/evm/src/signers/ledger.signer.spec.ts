@@ -6,6 +6,7 @@ import { EVM_MANIFESTS } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
+
 jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   create: jest.fn().mockResolvedValue({
     close: jest.fn().mockImplementation(),

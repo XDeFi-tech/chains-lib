@@ -3,7 +3,8 @@
   "compilerOptions": {
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
-    "outDir": "./dist"
+    "outDir": "./dist",
   },
   "allowJs": true,
+  "include": ["./src/custom.d.ts", "./src/**/*"],
 }

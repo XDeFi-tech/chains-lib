@@ -2,7 +2,6 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 

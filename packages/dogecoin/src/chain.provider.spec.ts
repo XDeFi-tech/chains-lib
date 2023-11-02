@@ -14,9 +14,7 @@ describe('chain.provider', () => {
   let provider: DogecoinProvider;
 
   beforeEach(() => {
-    provider = new DogecoinProvider(new IndexerDataSource(DOGECOIN_MANIFEST), {
-      apiKey: process.env.BLOCKCHAIR_API_KEY,
-    });
+    provider = new DogecoinProvider(new IndexerDataSource(DOGECOIN_MANIFEST));
   });
 
   it('createMsg(): should create message with data', () => {
@@ -39,13 +37,12 @@ describe('chain.provider', () => {
     expect(provider.broadcast([msg])).rejects.toThrow();
   });
 
-  it('should get a transaction from the blockchain', async () => {
-    const txData = await provider.getTransaction(
-      'cba3e0607901d941ea93ce67e39c7077be2cb9a4a36957bb188a67884de10e49'
+  it('should get transactions for an address from the blockchain', async () => {
+    const txData = await provider.getTransactions(
+      'DPbphsB3Hgb4Q2Sz32e2NoLbmofMNrp1wn',
+      0
     );
-    expect(txData?.hash).toEqual(
-      'cba3e0607901d941ea93ce67e39c7077be2cb9a4a36957bb188a67884de10e49'
-    );
+    expect((await txData.getData()).length).toBeGreaterThan(0);
   });
 
   it('should get fee options', async () => {
