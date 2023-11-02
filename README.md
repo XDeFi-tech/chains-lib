@@ -22,9 +22,9 @@ This library currently supports the following blockchain networks:
 - Dogecoin
 - Ethereum
 - BNB Smart Chain
-- Avalanche 
+- Avalanche
 - Polygon
-- Optimism 
+- Optimism
 - Arbitrum
 - Fantom
 - Other EVM-compatible chains
