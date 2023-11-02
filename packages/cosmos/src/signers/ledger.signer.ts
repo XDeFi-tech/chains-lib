@@ -8,6 +8,7 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
 
 import { ChainMsg } from '../msg';
+import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
@@ -65,7 +66,8 @@ export class LedgerSigner extends Signer.Provider {
 
       const client = await SigningStargateClient.createWithSigner(
         tendermintClient,
-        app
+        app,
+        STARGATE_CLIENT_OPTIONS
       );
 
       /* eslint-enable */
@@ -73,16 +75,9 @@ export class LedgerSigner extends Signer.Provider {
       // @ts-ignore
       const txData = await msg.buildTx();
       const [{ address: senderAddress }] = await app.getAccounts();
-
-      const msgs = [
-        {
-          typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-          value: txData.msgs,
-        },
-      ];
       const signedTx = await client.sign(
         senderAddress,
-        msgs,
+        txData.msgs,
         txData.fee,
         txData.memo
       );

@@ -3,7 +3,7 @@ import { UTXOManifest } from '@xdefi-tech/chains-utxo';
 export const BITCOIN_MANIFEST: UTXOManifest = {
   name: 'Bitcoin',
   description: '',
-  rpcURL: 'https://blockstream.info',
+  rpcURL: 'https://btc-haskoin.xdefiservices.com',
   chainSymbol: 'BTC',
   blockExplorerURL: 'https://blockchair.com/bitcoin',
   dataProviderType: 'haskoin',

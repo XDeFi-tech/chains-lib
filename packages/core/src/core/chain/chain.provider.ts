@@ -223,6 +223,8 @@ export abstract class Provider {
     return providerFeatures && features.every((feature) => providerFeatures.includes(feature));
   }
 
+  abstract getNFTBalance(address: string): Promise<any>;
+
   /**
    * Returns the manifest object for the chain
    *

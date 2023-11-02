@@ -17,12 +17,16 @@ import { Observable } from 'rxjs';
 
 import { ChainMsg } from '../../msg';
 
-import { getBalance, getTransactions, getFees } from './queries';
+import { getBalance, getTransactions, getFees, getNFTBalance } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
   constructor(manifest: UTXOManifest) {
     super(manifest);
+  }
+
+  async getNFTBalance(address: string) {
+    return getNFTBalance(address);
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {

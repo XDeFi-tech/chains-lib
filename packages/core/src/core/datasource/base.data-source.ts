@@ -40,6 +40,8 @@ export abstract class DataSource {
     this.manifest = manifest;
   }
 
+  abstract getNFTBalance(address: string): Promise<any>;
+
   abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
 
   abstract subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>>;

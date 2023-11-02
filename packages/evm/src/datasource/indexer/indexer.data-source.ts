@@ -33,7 +33,13 @@ import {
 import { RestEstimateGasRequest } from '../../types';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
-import { getBalance, getFees, getStatus, getTransactions } from './queries';
+import {
+  getBalance,
+  getFees,
+  getStatus,
+  getTransactions,
+  getNFTBalance,
+} from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -46,6 +52,10 @@ export class IndexerDataSource extends DataSource {
       this.manifest.rpcURL
     );
     this.rest = axios.create({ baseURL: this.manifest.rpcURL });
+  }
+
+  async getNFTBalance(address: string) {
+    return getNFTBalance(this.manifest.chain, address);
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {

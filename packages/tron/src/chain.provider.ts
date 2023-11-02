@@ -44,6 +44,10 @@ export class TronProvider extends Chain.Provider {
     throw new Error('Method not implemented.');
   }
 
+  async getNFTBalance(address: string) {
+    return this.dataSource.getNFTBalance(address);
+  }
+
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
     return new Response(
       () => this.dataSource.getBalance({ address }),

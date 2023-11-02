@@ -38,6 +38,7 @@ export class PrivateKeySigner extends Signer.Provider {
   async sign(message: ChainMsg) {
     const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+    psbt.setMaximumFeeRate(2_500_000);
     psbt.addInputs(
       inputs.map((utxo: UTXO) => ({
         hash: utxo.hash,

@@ -19,6 +19,10 @@ export interface MsgBody {
   gasLimit?: NumberIsh;
   gasPrice?: NumberIsh;
   mode?: string;
+  typeUrl?: string;
+  contractAddress?: string;
+  nftId?: string;
+  msgs: any[];
 }
 
 export interface TxData {
@@ -30,6 +34,10 @@ export interface TxData {
   accountNumber?: number;
   sequence?: number;
   denom: string;
+  mode?: string;
+  typeUrl: string;
+  contractAddress?: string;
+  nftId?: string;
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
@@ -44,21 +52,65 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     super(data, provider);
   }
 
-  async buildTx() {
-    const msgData = this.toData();
-    const value = BigNumber(msgData.amount)
+  private getValue() {
+    return BigNumber(this.toData().amount || 0)
       .multipliedBy(10 ** this.provider.manifest.decimals)
       .toString();
-    const msgToSend = {
-      fromAddress: msgData.from,
-      toAddress: msgData.to,
-      amount: [
+  }
+
+  private getMsgToSend() {
+    const msgData = this.toData();
+    let msgs;
+    let typeUrl = msgData.typeUrl;
+
+    if (msgData.contractAddress && msgData.nftId) {
+      // sending nft
+      typeUrl = msgData.typeUrl || '/cosmwasm.wasm.v1.MsgExecuteContract';
+      msgs = [
         {
-          amount: value,
-          denom: msgData.denom || this.provider.manifest.denom,
+          typeUrl: typeUrl,
+          value: {
+            sender: msgData.from,
+            contract: msgData.contractAddress,
+            funds: [],
+            msg: {
+              transfer_nft: {
+                recipient: msgData.to,
+                token_id: msgData.nftId,
+              },
+            },
+          },
         },
-      ],
+      ];
+    } else {
+      // sending native currency
+      typeUrl = msgData.typeUrl || '/cosmos.bank.v1beta1.MsgSend';
+      msgs = [
+        {
+          typeUrl: typeUrl,
+          value: {
+            fromAddress: msgData.from,
+            toAddress: msgData.to,
+            amount: [
+              {
+                amount: this.getValue(),
+                denom: msgData.denom || this.provider.manifest.denom,
+              },
+            ],
+          },
+        },
+      ];
+    }
+
+    return {
+      msgs,
+      typeUrl,
     };
+  }
+
+  async buildTx() {
+    const msgData = this.toData();
+    const { typeUrl, msgs } = this.getMsgToSend();
     const fee = {
       amount: [
         {
@@ -73,7 +125,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const acc = await this.provider.getAccount(msgData.from);
 
     return {
-      msgs: msgToSend,
+      msgs: msgData.msgs || msgs,
       ...(msgData.memo && { memo: msgData.memo }),
       fee,
       ...(acc && {
@@ -83,7 +135,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       to: msgData.to,
       from: msgData.from,
       denom: msgData.denom || this.provider.manifest.denom,
-      value,
+      value: this.getValue(),
+      typeUrl,
+      contractAddress: msgData.contractAddress,
+      nftId: msgData.nftId,
     };
   }
 

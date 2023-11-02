@@ -26,6 +26,10 @@ export class IndexerDataSource extends DataSource {
     super(manifest);
   }
 
+  async getNFTBalance(_address: string) {
+    throw new Error('Current chain do not support NFTs');
+  }
+
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
     const {

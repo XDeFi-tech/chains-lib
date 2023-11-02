@@ -35,6 +35,15 @@ export class FallbackDataSource extends DataSource {
     return this.providers[this.currentProviderIndex];
   }
 
+  async getNFTBalance(address: string) {
+    try {
+      return await this.getProvider().getNFTBalance(address);
+    } catch (err) {
+      this.attempts++;
+      throw err;
+    }
+  }
+
   async getBalance(filter: BalanceFilter) {
     try {
       return await this.getProvider().getBalance(filter);

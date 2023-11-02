@@ -6,6 +6,7 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
+import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
@@ -40,17 +41,12 @@ export class SeedPhraseSigner extends Signer.Provider {
     const [{ address: senderAddress }] = await wallet.getAccounts();
     const client = await SigningStargateClient.createWithSigner(
       tendermintClient,
-      wallet
+      wallet,
+      STARGATE_CLIENT_OPTIONS
     );
-    const msgs = [
-      {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: txData.msgs,
-      },
-    ];
     const signedTx = await client.sign(
       senderAddress,
-      msgs,
+      txData.msgs,
       txData.fee,
       txData.memo
     );

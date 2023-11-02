@@ -63,6 +63,10 @@ export class ChainDataSource extends DataSource {
     });
   }
 
+  async getNFTBalance(_address: string) {
+    throw new Error('Current chain do not support NFTs');
+  }
+
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
     const client = LcdClient.withExtensions(
