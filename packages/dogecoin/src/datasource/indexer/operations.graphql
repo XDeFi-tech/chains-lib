@@ -31,22 +31,18 @@ query GetDogecoinFees {
   }
 }
 
-query GetDogecoinStatus {
-  dogecoin {
-    status {
-      lastBlock
-    }
-  }
-}
 
-query GetDogecoinTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
+query GetDogecoinTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
   dogecoin {
-    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
-      hash
+    transactions(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+      balanceChange {
+        value
+      }
       blockNumber
-      blockIndex
-      status
-      timestamp
+      fee {
+        value
+      }
+      hash
       inputs {
         address
         amount {
@@ -59,12 +55,8 @@ query GetDogecoinTransactions($address: String!, $pageNumber: Int!, $pageSize: I
         }
         address
       }
-      fee {
-        value
-      }
-      balanceChange {
-        value
-      }
+      timestamp
+      status
     }
   }
 }

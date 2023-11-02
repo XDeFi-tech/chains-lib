@@ -14,11 +14,10 @@ import {
 import type { UTXOManifest } from '@xdefi-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
-import { OptBlockRange } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
 
-import { getBalance, getStatus, getTransactions, getFees } from './queries';
+import { getBalance, getTransactions, getFees } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -60,34 +59,9 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async getBlockRange(
-    afterBlock: TransactionsFilter['afterBlock']
-  ): Promise<OptBlockRange> {
-    if (afterBlock === undefined || afterBlock === null) return {};
-    const status = await getStatus();
-
-    return {
-      from: parseInt(`${afterBlock}`),
-      to: status.lastBlock,
-    };
-  }
-
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { address, afterBlock } = filter;
-    let blockRange: OptBlockRange = {
-      from: null,
-      to: null,
-    };
-
-    if (afterBlock) {
-      blockRange = await this.getBlockRange(afterBlock);
-    }
-
-    const transactions = await getTransactions(
-      this.manifest.chain,
-      address,
-      blockRange
-    );
+    const { address } = filter;
+    const transactions = await getTransactions(this.manifest.chain, address);
 
     return transactions.map((transaction) => Transaction.fromData(transaction));
   }
