@@ -1,32 +1,61 @@
-import { PrivateKeySigner } from './private-key.signer';
-import { ChainMsg } from '../msg';
+import { Msg } from '@xdefi-tech/chains-core';
 
-describe('bbc private-key.signer', () => {
-  const MOCK = {
-    privateKey: '',
-    address: '',
-    signature: '',
-  };
-  const signer = new PrivateKeySigner();
+import { BinanceProvider } from '../chain.provider';
+import { IndexerDataSource } from '../datasource';
+import { BINANCE_MANIFEST } from '../manifests';
+import { ChainMsg, MsgBody } from '../msg';
 
-  it('should return true for a valid address', () => {
-    expect(signer.verifyAddress(MOCK.address)).toBe(true);
+import PrivateKeySigner from './private-key.signer';
+
+jest.mock('../datasource/indexer/queries/fees.query', () => ({
+  getFees: jest.fn().mockResolvedValue({
+    data: { solana: { fee: '0' } },
+  }),
+}));
+
+describe('private-key.signer', () => {
+  let privateKey: string;
+  let signer: PrivateKeySigner;
+  let provider: BinanceProvider;
+  let txInput: MsgBody;
+  let message: Msg;
+
+  beforeEach(() => {
+    privateKey =
+      '0c72be62d9433a853a7bdbf0455a69ded80669f7a7e9ce05d12e02adf353cf51';
+    signer = new PrivateKeySigner(privateKey);
+
+    provider = new BinanceProvider(new IndexerDataSource(BINANCE_MANIFEST));
+
+    txInput = {
+      from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+      to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+      amount: 0.000001,
+      denom: 'bnb',
+    };
+
+    message = provider.createMsg(txInput);
   });
 
-  it('should return false for a valid address', () => {
-    expect(signer.verifyAddress('invalid-address')).toBe(true);
+  it('should get an address from a private key', async () => {
+    expect(await signer.getAddress()).toBe(txInput.from);
   });
 
-  it('should return the correct address for a valid private key', async () => {
-    const address = await signer.getAddress(MOCK.privateKey);
-    expect(address).toBe(address);
+  it('should sign a transaction using a private key', async () => {
+    await signer.sign(message as ChainMsg);
+
+    expect(message.signedTransaction.toString('hex')).toBeTruthy();
   });
 
-  it('should throw an error for an invalid private key', async () => {
-    await expect(signer.getAddress('invalid-private-key')).rejects.toThrow(
-      'Invalid address'
-    );
+  it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
   });
 
-  it('should sign a ChainMsg with the private key', async () => {});
+  it('should validate an address', async () => {
+    expect(signer.verifyAddress(txInput.from)).toBe(true);
+  });
+
+  it('should get a private key', async () => {
+    expect(await signer.getPrivateKey('')).toEqual(privateKey);
+  });
 });

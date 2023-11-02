@@ -48,14 +48,6 @@ export type Scalars = {
    * subseconds. E.g. "2022-01-12T07:30:19.12345".
    */
   LocalDateTime: any;
-  /**
-   * ISO 8601 combined date and time without timezone.
-   *
-   * # Examples
-   *
-   * * `2015-07-01T08:59:60.123`,
-   */
-  NaiveDateTime: any;
 };
 
 export type Apr = {
@@ -220,12 +212,24 @@ export type AddressRouteCheckTypeV2 = {
   isValid: Scalars['Boolean'];
 };
 
+export type AddressRouteCheckTypeV3 = {
+  __typename?: 'AddressRouteCheckTypeV3';
+  address: Scalars['String'];
+  chain: Scalars['String'];
+  isValid: Scalars['Boolean'];
+};
+
 export type AddressRouteInputType = {
   address: Scalars['String'];
   chain: Scalars['String'];
 };
 
 export type AddressRouteInputTypeV2 = {
+  address: Scalars['String'];
+  chain: Scalars['String'];
+};
+
+export type AddressRouteInputTypeV3 = {
   address: Scalars['String'];
   chain: Scalars['String'];
 };
@@ -242,10 +246,27 @@ export type AddressRouteTypeV2 = {
   chain: Scalars['String'];
 };
 
+export type AddressRouteTypeV3 = {
+  __typename?: 'AddressRouteTypeV3';
+  address: Scalars['String'];
+  chain: Scalars['String'];
+};
+
 export type AddressType = {
   __typename?: 'AddressType';
   address?: Maybe<Scalars['String']>;
   chain: ChainType;
+};
+
+export type AllAssetsFilter = {
+  assetTypes?: InputMaybe<Array<AssetInternalType>>;
+  ids?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type AllAssetsResponse = {
+  __typename?: 'AllAssetsResponse';
+  page: AssetAllAssetsTypeConnection;
+  pageData?: Maybe<PageDataType>;
 };
 
 export type Amount = {
@@ -319,6 +340,51 @@ export type Asset = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type AssetAllAssetsType = AssetBaseType & {
+  __typename?: 'AssetAllAssetsType';
+  /** Only for "CRYPTOCURRENCY" type */
+  chain?: Maybe<Scalars['String']>;
+  /** For "TOKEN" and "LP_TOKEN" types */
+  contracts?: Maybe<Array<AssetTokenContractType>>;
+  /** Additional info about asset: description, social and tech links, etc. */
+  externalData: Scalars['JSON'];
+  /** Icon URL */
+  icon?: Maybe<Scalars['String']>;
+  /** Unique identifier in the database */
+  id: Scalars['ID'];
+  /** Market capitalization is total value of a publicly traded company's outstanding common shares owned by stockholders */
+  marketCap?: Maybe<Scalars['Float']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  priceHistory: PriceHistoryType;
+  /** Only for "CRYPTOCURRENCY" type */
+  scalingFactor?: Maybe<Scalars['Float']>;
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+  type: AssetInternalType;
+};
+
+export type AssetAllAssetsTypeConnection = {
+  __typename?: 'AssetAllAssetsTypeConnection';
+  edges?: Maybe<Array<AssetAllAssetsTypeEdge>>;
+  pageInfo?: Maybe<AssetAllAssetsTypePageInfo>;
+};
+
+export type AssetAllAssetsTypeEdge = {
+  __typename?: 'AssetAllAssetsTypeEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<AssetAllAssetsType>;
+};
+
+export type AssetAllAssetsTypePageInfo = {
+  __typename?: 'AssetAllAssetsTypePageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
 /** Currency price */
 export type AssetAmountType = {
   __typename?: 'AssetAmountType';
@@ -364,6 +430,7 @@ export type AssetBaseType = {
   price?: Maybe<AssetAmountType>;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
+  type: AssetInternalType;
 };
 
 export type AssetCompositeTokenType = AssetBaseType & {
@@ -384,6 +451,7 @@ export type AssetCompositeTokenType = AssetBaseType & {
   scalingFactor?: Maybe<Scalars['Float']>;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
+  type: AssetInternalType;
 };
 
 export type AssetCompositeTokenTypeConnection = {
@@ -425,6 +493,7 @@ export type AssetCryptoCurrencyType = AssetBaseType & {
   scalingFactor?: Maybe<Scalars['Float']>;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
+  type: AssetInternalType;
 };
 
 export type AssetCryptoCurrencyTypeConnection = {
@@ -538,6 +607,7 @@ export type AssetTokenType = AssetBaseType & {
   priceHistory: PriceHistoryType;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
+  type: AssetInternalType;
 };
 
 export type AssetTokenTypeConnection = {
@@ -578,6 +648,8 @@ export type AssetTransferV2 = {
 
 export type AssetType = {
   __typename?: 'AssetType';
+  /** All assets including tokens, lpTokens and cryptoCurrencies */
+  allAssets?: Maybe<AllAssetsResponse>;
   /** Scaling factor for market cap */
   compositeTokens?: Maybe<CompositeTokenResponse>;
   /** Crypto assets */
@@ -596,6 +668,13 @@ export type AssetType = {
   popular?: Maybe<Array<TrendingTokensType>>;
   /** Scaling factor for market cap */
   tokens?: Maybe<TokenResponse>;
+};
+
+export type AssetTypeAllAssetsArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<AllAssetsFilter>;
+  page: ConnectionArgs;
 };
 
 export type AssetTypeCompositeTokensArgs = {
@@ -830,13 +909,13 @@ export type BitcoinChain = {
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoinChainBalancesArgs = {
@@ -866,8 +945,6 @@ export type BitcoinChainLegacyNfTsArgs = {
 
 export type BitcoinChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -883,12 +960,12 @@ export type BitcoinChainTestNet = {
   broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoinChainTestNetBalancesArgs = {
@@ -914,8 +991,6 @@ export type BitcoinChainTestNetGetTransactionByHashArgs = {
 
 export type BitcoinChainTestNetTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -932,12 +1007,12 @@ export type BitcoincashChain = {
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoincashChainBalancesArgs = {
@@ -963,8 +1038,6 @@ export type BitcoincashChainGetTransactionByHashArgs = {
 
 export type BitcoincashChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -980,12 +1053,12 @@ export type BitcoincashChainTestNet = {
   broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoincashChainTestNetBalancesArgs = {
@@ -1011,8 +1084,6 @@ export type BitcoincashChainTestNetGetTransactionByHashArgs = {
 
 export type BitcoincashChainTestNetTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -1023,6 +1094,11 @@ export type BitcoincashChainTestNetUnspentTxOutputsArgs = {
 };
 
 export type BridgeTokenInput = {
+  address: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type BridgeTokenInputV3 = {
   address: Scalars['String'];
   name: Scalars['String'];
 };
@@ -1039,13 +1115,37 @@ export type CantoChain = {
 };
 
 export type CantoEvm = {
-  __typename?: 'CantoEvm';
+  __typename?: 'CantoEVM';
+  balances: Array<Balance>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
+  nfts: Array<NfTv2>;
+  status: Status;
+  transactions: EvmTransactionV2Connection;
+  version: Array<Version>;
+};
+
+export type CantoEvmBalancesArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type CantoEvmLegacyNfTsArgs = {
   address: Scalars['String'];
+};
+
+export type CantoEvmNftsArgs = {
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+};
+
+export type CantoEvmTransactionsArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  blockRange?: InputMaybe<OptBlockRange>;
+  dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export enum Chain {
@@ -1084,6 +1184,24 @@ export type ClaimStatus = {
   dateModification?: Maybe<Scalars['DateTime']>;
   status: Scalars['String'];
 };
+
+export type ClaimStatusV3 = {
+  __typename?: 'ClaimStatusV3';
+  amountUsd: Scalars['Float'];
+  bonus: Scalars['Float'];
+  claimId: Scalars['String'];
+  dateModification?: Maybe<Scalars['DateTime']>;
+  status: Scalars['String'];
+};
+
+export enum ClassifierChainType {
+  Arbitrum = 'Arbitrum',
+  Avalanche = 'Avalanche',
+  BinanceSmartChain = 'BinanceSmartChain',
+  Ethereum = 'Ethereum',
+  Fantom = 'Fantom',
+  Polygon = 'Polygon',
+}
 
 export type CompositeTokenFilter = {
   chains?: InputMaybe<Array<AddressChain>>;
@@ -1162,55 +1280,20 @@ export type CosmosBasedChainBalancesArgs = {
 export type CosmosBasedChainTransactionsArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
-  blockRange?: OptBlockRange;
-  first?: Scalars['Int'];
+  blockRange?: InputMaybe<OptBlockRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type CosmosBasedChainV2 = {
   __typename?: 'CosmosBasedChainV2';
-  balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
-  status: Status;
-  transactions: CosmosLikeTransactionConnection;
-  version: Array<Version>;
-};
-
-export type CosmosBasedChainV2BalancesArgs = {
-  address: Scalars['String'];
-};
-
-export type CosmosBasedChainV2TransactionsArgs = {
-  address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
-  pagination?: CursorPagination;
 };
 
 export type CosmosBasedChainWithNft = {
   __typename?: 'CosmosBasedChainWithNft';
-  balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
-  nfts: Array<NfTv2>;
-  status: Status;
-  transactions: CosmosLikeTransactionConnection;
-  version: Array<Version>;
-};
-
-export type CosmosBasedChainWithNftBalancesArgs = {
-  address: Scalars['String'];
-};
-
-export type CosmosBasedChainWithNftNftsArgs = {
-  address: Scalars['String'];
-};
-
-export type CosmosBasedChainWithNftTransactionsArgs = {
-  address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
-  pagination?: CursorPagination;
 };
 
 export type CosmosFee = {
@@ -1227,7 +1310,7 @@ export type CosmosLikeTransaction = {
   hash: Scalars['String'];
   signers: Array<Scalars['String']>;
   status: Scalars['String'];
-  timestamp: Scalars['NaiveDateTime'];
+  timestamp: Scalars['DateTime'];
   transfers: Array<AssetTransfer>;
 };
 
@@ -1257,6 +1340,15 @@ export type CreateReferrer = {
   signedMessage: Scalars['String'];
 };
 
+export type CreateReferrerV3 = {
+  /** On chain wallet address of the referrer. Must be unique */
+  address: Scalars['String'];
+  /** Unique name of the Referrer */
+  name: Scalars['String'];
+  /** Signed by the address to verify ownership. Must be {address}:{name} and signed by the address */
+  signedMessage: Scalars['String'];
+};
+
 export enum CreditOutcome {
   CONSUMED = 'CONSUMED',
   INSUFFICIENT = 'INSUFFICIENT',
@@ -1269,12 +1361,36 @@ export type Credits = {
 
 export type CronosEvm = {
   __typename?: 'CronosEVM';
+  balances: Array<Balance>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
+  nfts: Array<NfTv2>;
+  status: Status;
+  transactions: EvmTransactionV2Connection;
+  version: Array<Version>;
+};
+
+export type CronosEvmBalancesArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type CronosEvmLegacyNfTsArgs = {
   address: Scalars['String'];
+};
+
+export type CronosEvmNftsArgs = {
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+};
+
+export type CronosEvmTransactionsArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  blockRange?: InputMaybe<OptBlockRange>;
+  dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type CryptoAsset = {
@@ -1294,6 +1410,7 @@ export type CryptoAsset = {
   price?: Maybe<AssetAmountType>;
   /** The symbol that identifies token */
   symbol?: Maybe<Scalars['String']>;
+  type?: Maybe<AssetInternalType>;
 };
 
 export type CryptoAssetArgs = {
@@ -1325,6 +1442,17 @@ export type CryptoAssetInputV2 = {
   image?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   price?: InputMaybe<PriceInputV2>;
+  symbol?: InputMaybe<Scalars['String']>;
+};
+
+export type CryptoAssetInputV3 = {
+  chain?: InputMaybe<Scalars['String']>;
+  contract?: InputMaybe<Scalars['String']>;
+  decimals?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  image?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  price?: InputMaybe<PriceInputV3>;
   symbol?: InputMaybe<Scalars['String']>;
 };
 
@@ -1427,12 +1555,12 @@ export type DogeChain = {
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type DogeChainBalancesArgs = {
@@ -1458,8 +1586,6 @@ export type DogeChainGetTransactionByHashArgs = {
 
 export type DogeChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -1658,7 +1784,8 @@ export type FiatCurrencyType = {
 export enum FiatGranularity {
   DAY = 'DAY',
   FIVE_MINUTE = 'FIVE_MINUTE',
-  HOUR = 'HOUR',
+  THIRTY_MINUTES = 'THIRTY_MINUTES',
+  TWO_HOURS = 'TWO_HOURS',
 }
 
 export type FilterArgs = {
@@ -1731,8 +1858,8 @@ export type JunoChainNftsArgs = {
 export type JunoChainTransactionsArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
-  blockRange?: OptBlockRange;
-  first?: Scalars['Int'];
+  blockRange?: InputMaybe<OptBlockRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type LastBlock = {
@@ -1743,6 +1870,34 @@ export type LastBlock = {
   prevHash: Scalars['String'];
   time: Scalars['DateTime'];
   txCount: Scalars['Int'];
+};
+
+export type Leaderboard = {
+  __typename?: 'Leaderboard';
+  /** CCTP leaderboard details */
+  cctp?: Maybe<Array<LeaderboardEntry>>;
+};
+
+export type LeaderboardEntry = {
+  __typename?: 'LeaderboardEntry';
+  /** EVM address of the user */
+  evmAddress: Scalars['String'];
+  /** Volume that was swapped by the address */
+  volumeUsd: Scalars['Decimal'];
+};
+
+export type LeaderboardEntryV3 = {
+  __typename?: 'LeaderboardEntryV3';
+  /** EVM address of the user */
+  evmAddress: Scalars['String'];
+  /** Volume that was swapped by the address */
+  volumeUsd: Scalars['Decimal'];
+};
+
+export type LeaderboardV3 = {
+  __typename?: 'LeaderboardV3';
+  /** CCTP leaderboard details */
+  cctpV3?: Maybe<Array<LeaderboardEntryV3>>;
 };
 
 export type LidoSignedEthTx = {
@@ -1789,12 +1944,12 @@ export type LitecoinChain = {
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type LitecoinChainBalancesArgs = {
@@ -1820,8 +1975,6 @@ export type LitecoinChainGetTransactionByHashArgs = {
 
 export type LitecoinChainTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -1837,12 +1990,12 @@ export type LitecoinChainTestNet = {
   broadcastTransaction: Scalars['String'];
   dailyBalances: DailyBalances;
   decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV2;
+  getTransactionByHash: UtxoTransactionByHashV4;
   isTestNet: Scalars['Boolean'];
   name: Scalars['String'];
-  status: Status;
-  transactions: Array<UtxoTransaction>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  status: Statusv2;
+  transactions: Array<UtxoTransactionV2>;
+  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
 };
 
 export type LitecoinChainTestNetBalancesArgs = {
@@ -1868,8 +2021,6 @@ export type LitecoinChainTestNetGetTransactionByHashArgs = {
 
 export type LitecoinChainTestNetTransactionsArgs = {
   address: Scalars['String'];
-  blockRange?: OptBlockRange;
-  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -1950,9 +2101,12 @@ export type Mutation = {
   addUserAddress: User;
   anonymousLogin: Auth;
   claimFees?: Maybe<ClaimStatus>;
+  claimFeesV3?: Maybe<ClaimStatusV3>;
   consumeCreditsForUser: CreditOutcome;
   /** Publicly exposed Create a referrer */
   createReferrer?: Maybe<Referrer>;
+  /** Publicly exposed Create a referrer */
+  createReferrerV3?: Maybe<ReferrerV3>;
   createUser: Auth;
   /**
    * The difference between these two credit consumption methods is that first checks and tries
@@ -1974,12 +2128,16 @@ export type Mutation = {
   loginWithSignature: Auth;
   refreshAccessToken: Auth;
   transactionHashV2: Scalars['String'];
+  transactionHashV3: Scalars['String'];
   transactions: Array<RouteTransactionType>;
   transactionsV2: PostRouteTypeV2;
+  transactionsV3: PostRouteTypeV3;
   transactonHash: Scalars['String'];
   updateUserSettings: User;
   /** Create or update a referrer. If id is provided, the referrer will be updated.Otherwise, a new referrer will be created. Sig controlled by an admin */
   upsertReferrer?: Maybe<Referrer>;
+  /** Create or update a referrer. If id is provided, the referrer will be updated.Otherwise, a new referrer will be created. Sig controlled by an admin */
+  upsertReferrerV3?: Maybe<ReferrerV3>;
 };
 
 export type MutationAddCommentArgs = {
@@ -2006,6 +2164,10 @@ export type MutationConsumeCreditsForUserArgs = {
 
 export type MutationCreateReferrerArgs = {
   referrer: CreateReferrer;
+};
+
+export type MutationCreateReferrerV3Args = {
+  referrer: CreateReferrerV3;
 };
 
 export type MutationCreateUserArgs = {
@@ -2039,12 +2201,22 @@ export type MutationTransactionHashV2Args = {
   transactionHash: Scalars['String'];
 };
 
+export type MutationTransactionHashV3Args = {
+  routeId: Scalars['String'];
+  tradeId: Scalars['String'];
+  transactionHash: Scalars['String'];
+};
+
 export type MutationTransactionsArgs = {
   routeData: RouteTransactionInputType;
 };
 
 export type MutationTransactionsV2Args = {
   routeData: RouteInputTypeV2;
+};
+
+export type MutationTransactionsV3Args = {
+  routeData: RouteInputTypeV3;
 };
 
 export type MutationTransactonHashArgs = {
@@ -2058,6 +2230,13 @@ export type MutationUpdateUserSettingsArgs = {
 };
 
 export type MutationUpsertReferrerArgs = {
+  address: Scalars['String'];
+  feeTier: Scalars['String'];
+  id?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
+export type MutationUpsertReferrerV3Args = {
   address: Scalars['String'];
   feeTier: Scalars['String'];
   id?: InputMaybe<Scalars['String']>;
@@ -2110,6 +2289,7 @@ export type NfTv3 = {
   contractType?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  isNftSpam: Scalars['Boolean'];
   lastSale?: Maybe<NftLastSale>;
   location?: Maybe<Scalars['String']>;
   media: Array<MediaV2>;
@@ -2122,7 +2302,6 @@ export type NfTv3 = {
 export type NearChain = {
   __typename?: 'NearChain';
   balances: Array<Balance>;
-  dailyBalances: Array<DailyBalances>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -2133,11 +2312,6 @@ export type NearChain = {
 
 export type NearChainBalancesArgs = {
   address: Scalars['String'];
-};
-
-export type NearChainDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: InputMaybe<OptDateRange>;
 };
 
 export type NearChainNftsArgs = {
@@ -2226,12 +2400,36 @@ export type OptDateSelector = {
 
 export type Optimism = {
   __typename?: 'Optimism';
+  balances: Array<Balance>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
+  nfts: Array<NfTv2>;
+  status: Status;
+  transactions: EvmTransactionV2Connection;
+  version: Array<Version>;
+};
+
+export type OptimismBalancesArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type OptimismLegacyNfTsArgs = {
   address: Scalars['String'];
+};
+
+export type OptimismNftsArgs = {
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+};
+
+export type OptimismTransactionsArgs = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  blockRange?: InputMaybe<OptBlockRange>;
+  dateRange?: InputMaybe<OptDateRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Output = {
@@ -2415,22 +2613,38 @@ export type PostRouteTypeV2 = {
   routeId: Scalars['String'];
 };
 
+export type PostRouteTypeV3 = {
+  __typename?: 'PostRouteTypeV3';
+  routeId: Scalars['String'];
+};
+
 /** Prices history contains history information for each asset: its price, market caps and total volumes. All those metrics provided for different time frames: day, week, month and year. */
 export type PriceHistoryType = {
   __typename?: 'PriceHistoryType';
   /** History metrics of asset for last day */
-  day: TimeFrameItem;
+  day?: Maybe<TimeFrameItem>;
   /** History metrics of asset for last month */
-  month: TimeFrameItem;
+  month?: Maybe<TimeFrameItem>;
   /** History metrics of asset for last week */
-  week: TimeFrameItem;
+  week?: Maybe<TimeFrameItem>;
   /** History metrics of asset for last year */
-  year: TimeFrameItem;
+  year?: Maybe<TimeFrameItem>;
 };
 
 export type PriceInputV2 = {
   amount?: Scalars['String'];
   scalingFactor?: Scalars['Int'];
+};
+
+export type PriceInputV3 = {
+  amount?: Scalars['String'];
+  scalingFactor?: Scalars['Int'];
+};
+
+export type ProviderHealth = {
+  __typename?: 'ProviderHealth';
+  error?: Maybe<Scalars['String']>;
+  isFine: Scalars['Boolean'];
 };
 
 export type ProviderInputType = {
@@ -2447,6 +2661,13 @@ export type ProviderInputTypeV2 = {
   time?: InputMaybe<Scalars['String']>;
 };
 
+export type ProviderInputTypeV3 = {
+  icon?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+  time?: InputMaybe<Scalars['String']>;
+};
+
 export type ProviderType = {
   __typename?: 'ProviderType';
   icon?: Maybe<Scalars['String']>;
@@ -2457,6 +2678,14 @@ export type ProviderType = {
 
 export type ProviderTypeV2 = {
   __typename?: 'ProviderTypeV2';
+  icon: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  time: Scalars['String'];
+};
+
+export type ProviderTypeV3 = {
+  __typename?: 'ProviderTypeV3';
   icon: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
@@ -2500,15 +2729,16 @@ export type Query = {
   decodeTransaction?: Maybe<DecodedTransaction>;
   dogecoin: DogeChain;
   ethereum: Ethereum;
+  /** @deprecated Passing a dictionary object is better than a JSON. Use explainTransactionV2. */
   explainTransaction?: Maybe<ExplainedTransaction>;
+  explainTransactionV2?: Maybe<ExplainedTransaction>;
   fantom: Fantom;
   /** Fetch list of fiat currencies */
   fiatCurrencies: Array<FiatCurrencyType>;
   gnosis: Gnosis;
   injective: CosmosBasedChain;
   investing: InvestingType;
-  juno?: Maybe<JunoChain>;
-  junoV2: CosmosBasedChainWithNft;
+  juno: JunoChain;
   kava: CosmosBasedChain;
   kujira: CosmosBasedChain;
   litecoin: LitecoinChain;
@@ -2518,18 +2748,17 @@ export type Query = {
   near: NearChain;
   optimism: Optimism;
   osmosis: CosmosBasedChain;
-  osmosisV2: CosmosBasedChainV2;
   polygon: Polygon;
   portfolio: Array<ChainPortfolio>;
   quasar: CosmosBasedChain;
   reputation: Reputation;
   routing: RoutingType;
   routingV2?: Maybe<RoutingTypeV2>;
+  routingV3?: Maybe<RoutingTypeV3>;
   sei: CosmosBalanceChain;
   solana: SolanaChain;
   staking: StakingService;
-  stargaze?: Maybe<StargazeChain>;
-  stargazeV2: CosmosBasedChainWithNft;
+  stargaze: StargazeChain;
   stride: CosmosBasedChain;
   /** Terra2 */
   terra: TerraChain;
@@ -2539,11 +2768,14 @@ export type Query = {
   /** Fetch list of all available tokens */
   tokens: Array<TokenType>;
   trackWalletConnect?: Maybe<Wallet>;
+  trackWalletConnectV3?: Maybe<WalletV3>;
   tron: Tron;
   user: User;
   version: Scalars['String'];
   /** Fetch wallet information */
   walletInfo: WalletInfo;
+  /** Fetch wallet information */
+  walletInfoV3: WalletInfoV3;
 };
 
 export type QueryChainsArgs = {
@@ -2574,6 +2806,10 @@ export type QueryDecodeTransactionArgs = {
 export type QueryExplainTransactionArgs = {
   chain: Scalars['String'];
   payload: Scalars['String'];
+};
+
+export type QueryExplainTransactionV2Args = {
+  payload: TransactionPayload;
 };
 
 export type QueryFiatCurrenciesArgs = {
@@ -2608,12 +2844,26 @@ export type QueryTrackWalletConnectArgs = {
   walletProvider: Scalars['String'];
 };
 
+export type QueryTrackWalletConnectV3Args = {
+  walletAddress: Scalars['String'];
+  walletProvider: Scalars['String'];
+};
+
 export type QueryWalletInfoArgs = {
+  address: Scalars['String'];
+};
+
+export type QueryWalletInfoV3Args = {
   address: Scalars['String'];
 };
 
 export type ReferralBonus = {
   __typename?: 'ReferralBonus';
+  bonus?: Maybe<Scalars['Decimal']>;
+};
+
+export type ReferralBonusV3 = {
+  __typename?: 'ReferralBonusV3';
   bonus?: Maybe<Scalars['Decimal']>;
 };
 
@@ -2633,7 +2883,28 @@ export type ReferralFeeSummary = {
   userType: Scalars['String'];
 };
 
+export type ReferralFeeSummaryV3 = {
+  __typename?: 'ReferralFeeSummaryV3';
+  bonusArbEarned: Scalars['Decimal'];
+  claimHistory: Array<ClaimStatusV3>;
+  claimableFees: Scalars['Decimal'];
+  feeTier: Scalars['Decimal'];
+  last7dFees: Scalars['Decimal'];
+  last30dFees: Scalars['Decimal'];
+  lifetimeFees: Scalars['Decimal'];
+  referrerId: Scalars['String'];
+  totalAssociatedAddresses: Scalars['Int'];
+  totalReferralVolume: Scalars['Decimal'];
+  url: Scalars['String'];
+  userType: Scalars['String'];
+};
+
 export type ReferralInputType = {
+  link?: InputMaybe<Scalars['String']>;
+  medium?: InputMaybe<Scalars['String']>;
+};
+
+export type ReferralInputTypeV3 = {
   link?: InputMaybe<Scalars['String']>;
   medium?: InputMaybe<Scalars['String']>;
 };
@@ -2644,8 +2915,26 @@ export type ReferralType = {
   medium?: Maybe<Scalars['String']>;
 };
 
+export type ReferralTypeV3 = {
+  __typename?: 'ReferralTypeV3';
+  link?: Maybe<Scalars['String']>;
+  medium?: Maybe<Scalars['String']>;
+};
+
 export type Referrer = {
   __typename?: 'Referrer';
+  /** On chain wallet address of the referrer. Must be unique */
+  address: Scalars['String'];
+  /** Fee tier of the referrer. Must be between [0, 1] */
+  feeTier: Scalars['String'];
+  id: Scalars['String'];
+  link?: Maybe<Scalars['String']>;
+  /** Name of the Referrer. Must be unique */
+  name: Scalars['String'];
+};
+
+export type ReferrerV3 = {
+  __typename?: 'ReferrerV3';
   /** On chain wallet address of the referrer. Must be unique */
   address: Scalars['String'];
   /** Fee tier of the referrer. Must be between [0, 1] */
@@ -2672,8 +2961,32 @@ export type ReferrerWithFees = {
   name: Scalars['String'];
 };
 
+export type ReferrerWithFeesV3 = {
+  __typename?: 'ReferrerWithFeesV3';
+  /** On chain wallet address of the referrer. Must be unique */
+  address: Scalars['String'];
+  /** Fees that the referrer already claimed from XDEFI */
+  collectedFees?: Maybe<Scalars['Decimal']>;
+  /** Fee tier of the referrer. Must be between [0, 1] */
+  feeTier: Scalars['String'];
+  /** Total fees generated by the referrer for XDEFI */
+  generatedFees?: Maybe<Scalars['Decimal']>;
+  id: Scalars['String'];
+  link?: Maybe<Scalars['String']>;
+  /** Name of the Referrer. Must be unique */
+  name: Scalars['String'];
+};
+
 export type RefuelInfoType = {
   __typename?: 'RefuelInfoType';
+  destChain: Scalars['String'];
+  maxAmount: Scalars['Decimal'];
+  minAmount: Scalars['Decimal'];
+  srcChain: Scalars['String'];
+};
+
+export type RefuelInfoTypeV3 = {
+  __typename?: 'RefuelInfoTypeV3';
   destChain: Scalars['String'];
   maxAmount: Scalars['Decimal'];
   minAmount: Scalars['Decimal'];
@@ -2704,11 +3017,24 @@ export type RewardInputType = {
   asset: RoutingTokenInputTypeV2;
 };
 
+export type RewardInputTypeV3 = {
+  amount?: Scalars['Decimal'];
+  amountUsd?: Scalars['Decimal'];
+  asset: RoutingTokenInputTypeV3;
+};
+
 export type RewardType = {
   __typename?: 'RewardType';
   amount: Scalars['Decimal'];
   amountUsd: Scalars['Decimal'];
   asset: RoutingTokenTypeV2;
+};
+
+export type RewardTypeV3 = {
+  __typename?: 'RewardTypeV3';
+  amount: Scalars['Decimal'];
+  amountUsd: Scalars['Decimal'];
+  asset: RoutingTokenTypeV3;
 };
 
 export type RouteInputTypeV2 = {
@@ -2724,6 +3050,21 @@ export type RouteInputTypeV2 = {
   priceRateText: Scalars['String'];
   slippage: Scalars['Decimal'];
   tradesRoute: Array<TradeRouteInputTypeV2>;
+};
+
+export type RouteInputTypeV3 = {
+  addresses: Array<AddressRouteInputTypeV3>;
+  amountIn: Scalars['Decimal'];
+  approvalInfiniteFlag?: InputMaybe<Scalars['Boolean']>;
+  destAddress: Scalars['String'];
+  errorBuildingRoute?: InputMaybe<Scalars['String']>;
+  gasPrices?: InputMaybe<Scalars['JSON']>;
+  isOptIn?: InputMaybe<Scalars['Boolean']>;
+  priceImpact: Scalars['String'];
+  priceRate: Scalars['Decimal'];
+  priceRateText: Scalars['String'];
+  slippage: Scalars['Decimal'];
+  tradesRoute: Array<TradeRouteInputTypeV3>;
 };
 
 export type RouteTradeInputType = {
@@ -2769,6 +3110,22 @@ export type RouteTradeTypeV2 = {
   tradeType: Scalars['String'];
 };
 
+export type RouteTradeTypeV3 = {
+  __typename?: 'RouteTradeTypeV3';
+  amountIn: Scalars['Decimal'];
+  amountOut: Scalars['Decimal'];
+  assetIn: RoutingTokenTypeV3;
+  assetOut: RoutingTokenTypeV3;
+  fee: RoutingFeeTypeV3;
+  minAmountReceived: Scalars['Decimal'];
+  priceRateUsdAssetIn: Scalars['Decimal'];
+  priceRateUsdAssetOut: Scalars['Decimal'];
+  provider: ProviderTypeV3;
+  referral?: Maybe<ReferralTypeV3>;
+  reward?: Maybe<RewardTypeV3>;
+  tradeType: Scalars['String'];
+};
+
 export type RouteTransactionInputType = {
   addresses: Array<AddressRouteInputType>;
   amountIn?: InputMaybe<Scalars['Float']>;
@@ -2795,6 +3152,12 @@ export type RouteTransactionStatusV2 = {
   txHash?: Maybe<Scalars['String']>;
 };
 
+export type RouteTransactionStatusV3 = {
+  __typename?: 'RouteTransactionStatusV3';
+  status?: Maybe<Scalars['String']>;
+  txHash?: Maybe<Scalars['String']>;
+};
+
 export type RouteTransactionTradeType = {
   __typename?: 'RouteTransactionTradeType';
   routeId: Scalars['String'];
@@ -2807,8 +3170,18 @@ export type RouteTransactionTradeTypeV2 = {
   __typename?: 'RouteTransactionTradeTypeV2';
   routeId: Scalars['String'];
   status: RouteTransactionStatusV2;
+  tradeId: Scalars['String'];
   tradeRoute: RouteTradeTypeV2;
   transaction?: Maybe<RouteTransactionTypeV2>;
+};
+
+export type RouteTransactionTradeTypeV3 = {
+  __typename?: 'RouteTransactionTradeTypeV3';
+  routeId: Scalars['String'];
+  status: RouteTransactionStatusV3;
+  tradeId: Scalars['String'];
+  tradeRoute: RouteTradeTypeV3;
+  transaction?: Maybe<RouteTransactionTypeV3>;
 };
 
 export type RouteTransactionType = {
@@ -2829,6 +3202,25 @@ export type RouteTransactionType = {
 
 export type RouteTransactionTypeV2 = {
   __typename?: 'RouteTransactionTypeV2';
+  actions?: Maybe<Scalars['JSON']>;
+  amount: Scalars['Decimal'];
+  chain: Scalars['String'];
+  data?: Maybe<Scalars['String']>;
+  feeRate: Scalars['String'];
+  gasLimit?: Maybe<Scalars['String']>;
+  gasPrice?: Maybe<Scalars['String']>;
+  memo?: Maybe<Scalars['String']>;
+  receiverId?: Maybe<Scalars['String']>;
+  recipient?: Maybe<Scalars['String']>;
+  routeId?: Maybe<Scalars['String']>;
+  signerId?: Maybe<Scalars['String']>;
+  tradeId: Scalars['String'];
+  txType: Scalars['String'];
+  unsignedStdTx?: Maybe<Scalars['String']>;
+};
+
+export type RouteTransactionTypeV3 = {
+  __typename?: 'RouteTransactionTypeV3';
   actions?: Maybe<Scalars['JSON']>;
   amount: Scalars['Decimal'];
   chain: Scalars['String'];
@@ -2877,6 +3269,22 @@ export type RouteTypeV2 = {
   tradesRoute: Array<RouteTradeTypeV2>;
 };
 
+export type RouteTypeV3 = {
+  __typename?: 'RouteTypeV3';
+  addresses: Array<AddressRouteTypeV3>;
+  amountIn: Scalars['Decimal'];
+  approvalInfiniteFlag?: Maybe<Scalars['Boolean']>;
+  destAddress: Scalars['String'];
+  errorBuildingRoute?: Maybe<Scalars['String']>;
+  gasPrices?: Maybe<Scalars['JSON']>;
+  isOptIn?: Maybe<Scalars['Boolean']>;
+  priceImpact: Scalars['String'];
+  priceRate: Scalars['Decimal'];
+  priceRateText: Scalars['String'];
+  slippage: Scalars['Decimal'];
+  tradesRoute: Array<RouteTradeTypeV3>;
+};
+
 export type RoutingChainType = {
   __typename?: 'RoutingChainType';
   name: Scalars['String'];
@@ -2894,7 +3302,24 @@ export type RoutingChainTypeV2 = {
   tokens: Array<Maybe<RoutingTokenTypeV2>>;
 };
 
+export type RoutingChainTypeV3 = {
+  __typename?: 'RoutingChainTypeV3';
+  name: Scalars['String'];
+  tokens: Array<Maybe<RoutingTokenTypeV3>>;
+};
+
 export type RoutingFeeInputTypeV2 = {
+  feeRateTransaction: Scalars['Decimal'];
+  inboundFeeAsset: Scalars['Decimal'];
+  inboundFeeDollar: Scalars['Decimal'];
+  networkFeeAsset: Scalars['Decimal'];
+  networkFeeDollar: Scalars['Decimal'];
+  swapFee: Scalars['Decimal'];
+  xdefiSwapFee?: Scalars['Decimal'];
+  xdefiSwapFeeDollar?: Scalars['Decimal'];
+};
+
+export type RoutingFeeInputTypeV3 = {
   feeRateTransaction: Scalars['Decimal'];
   inboundFeeAsset: Scalars['Decimal'];
   inboundFeeDollar: Scalars['Decimal'];
@@ -2927,6 +3352,18 @@ export type RoutingFeeTypeV2 = {
   xdefiSwapFeeDollar?: Maybe<Scalars['Decimal']>;
 };
 
+export type RoutingFeeTypeV3 = {
+  __typename?: 'RoutingFeeTypeV3';
+  feeRateTransaction: Scalars['Decimal'];
+  inboundFeeAsset: Scalars['Decimal'];
+  inboundFeeDollar: Scalars['Decimal'];
+  networkFeeAsset: Scalars['Decimal'];
+  networkFeeDollar: Scalars['Decimal'];
+  swapFee: Scalars['Decimal'];
+  xdefiSwapFee?: Maybe<Scalars['Decimal']>;
+  xdefiSwapFeeDollar?: Maybe<Scalars['Decimal']>;
+};
+
 export type RoutingTokenInputType = {
   asset?: InputMaybe<CryptoAssetInput>;
   id: Scalars['ID'];
@@ -2935,6 +3372,12 @@ export type RoutingTokenInputType = {
 
 export type RoutingTokenInputTypeV2 = {
   asset?: InputMaybe<CryptoAssetInputV2>;
+  id: Scalars['String'];
+  listProviders?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type RoutingTokenInputTypeV3 = {
+  asset?: InputMaybe<CryptoAssetInputV3>;
   id: Scalars['String'];
   listProviders?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -2948,6 +3391,13 @@ export type RoutingTokenType = {
 
 export type RoutingTokenTypeV2 = {
   __typename?: 'RoutingTokenTypeV2';
+  asset: CryptoAsset;
+  id: Scalars['String'];
+  listProviders: Array<Scalars['String']>;
+};
+
+export type RoutingTokenTypeV3 = {
+  __typename?: 'RoutingTokenTypeV3';
   asset: CryptoAsset;
   id: Scalars['String'];
   listProviders: Array<Scalars['String']>;
@@ -2998,6 +3448,7 @@ export type RoutingTypeV2 = {
   chainsV2: Array<RoutingChainTypeV2>;
   dailyVolume?: Maybe<Array<VolumeHistory>>;
   getArbGauge: ReferralBonus;
+  leaderboard: Leaderboard;
   referrerSummary: ReferralFeeSummary;
   refuel: RouteTypeV2;
   refuelInfo: RefuelInfoType;
@@ -3066,6 +3517,87 @@ export type RoutingTypeV2TradeV2Args = {
 };
 
 export type RoutingTypeV2TradesV2Args = {
+  routeId: Scalars['String'];
+};
+
+export type RoutingTypeV3 = {
+  __typename?: 'RoutingTypeV3';
+  addressCheckV3: AddressRouteCheckTypeV3;
+  allReferrersV3?: Maybe<Array<ReferrerWithFeesV3>>;
+  bridgeableTokensV3: Array<RoutingTokenTypeV3>;
+  chainV3: RoutingChainTypeV3;
+  chainsV3: Array<RoutingChainTypeV3>;
+  dailyVolumeV3?: Maybe<Array<VolumeHistoryV3>>;
+  getArbGaugeV3: ReferralBonusV3;
+  leaderboardV3: LeaderboardV3;
+  referrerSummaryV3: ReferralFeeSummaryV3;
+  refuelInfoV3: RefuelInfoTypeV3;
+  refuelV3: RouteTypeV3;
+  routeV3: RouteTypeV3;
+  tokenV3: RoutingTokenTypeV3;
+  tokensV3: Array<RoutingTokenTypeV3>;
+  tradeV3: RouteTransactionTradeTypeV3;
+  tradesV3: Array<RouteTransactionTradeTypeV3>;
+};
+
+export type RoutingTypeV3AddressCheckV3Args = {
+  address: AddressRouteInputTypeV3;
+};
+
+export type RoutingTypeV3BridgeableTokensV3Args = {
+  bridgeToken?: InputMaybe<BridgeTokenInputV3>;
+  tokenId?: InputMaybe<Scalars['String']>;
+};
+
+export type RoutingTypeV3ChainV3Args = {
+  name: Scalars['String'];
+};
+
+export type RoutingTypeV3DailyVolumeV3Args = {
+  startDate?: Scalars['String'];
+};
+
+export type RoutingTypeV3RefuelInfoV3Args = {
+  destChain: Scalars['String'];
+  srcChain: Scalars['String'];
+};
+
+export type RoutingTypeV3RefuelV3Args = {
+  addresses: Array<AddressRouteInputTypeV3>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destToken: Scalars['String'];
+  referral?: InputMaybe<ReferralInputTypeV3>;
+  srcToken: Scalars['String'];
+};
+
+export type RoutingTypeV3RouteV3Args = {
+  addresses: Array<AddressRouteInputTypeV3>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destToken: Scalars['String'];
+  infiniteApproval?: InputMaybe<Scalars['Boolean']>;
+  isLedgerLive?: InputMaybe<Scalars['Boolean']>;
+  isOptedIn?: InputMaybe<Scalars['Boolean']>;
+  referral?: InputMaybe<ReferralInputTypeV3>;
+  slippage: Scalars['String'];
+  srcToken: Scalars['String'];
+};
+
+export type RoutingTypeV3TokenV3Args = {
+  id: Scalars['String'];
+};
+
+export type RoutingTypeV3TokensV3Args = {
+  names?: InputMaybe<Array<Scalars['String']>>;
+  tokenIds?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type RoutingTypeV3TradeV3Args = {
+  tradeId: Scalars['String'];
+};
+
+export type RoutingTypeV3TradesV3Args = {
   routeId: Scalars['String'];
 };
 
@@ -3222,13 +3754,19 @@ export type StargazeChainNftsArgs = {
 export type StargazeChainTransactionsArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
-  blockRange?: OptBlockRange;
-  first?: Scalars['Int'];
+  blockRange?: InputMaybe<OptBlockRange>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Status = {
   __typename?: 'Status';
   lastBlock: Scalars['Int'];
+};
+
+export type Statusv2 = {
+  __typename?: 'Statusv2';
+  blockbookHealth: ProviderHealth;
+  blockchairHealth: ProviderHealth;
 };
 
 export type StrideStakingInput = {
@@ -3415,12 +3953,36 @@ export type TradeRouteInputTypeV2 = {
   tradeType: Scalars['String'];
 };
 
+export type TradeRouteInputTypeV3 = {
+  amountIn: Scalars['Decimal'];
+  amountOut: Scalars['Decimal'];
+  assetIn: RoutingTokenInputTypeV3;
+  assetOut: RoutingTokenInputTypeV3;
+  fee: RoutingFeeInputTypeV3;
+  minAmountReceived: Scalars['Decimal'];
+  priceRateUsdAssetIn: Scalars['Decimal'];
+  priceRateUsdAssetOut: Scalars['Decimal'];
+  provider: ProviderInputTypeV3;
+  referral?: InputMaybe<ReferralInputTypeV3>;
+  reward?: InputMaybe<RewardInputTypeV3>;
+  tradeType: Scalars['String'];
+};
+
 export type TransactionCallArg = {
   __typename?: 'TransactionCallArg';
   name: Scalars['String'];
   standardisedName: Scalars['String'];
   type: Scalars['String'];
   value: Scalars['String'];
+};
+
+/** Transaction object with necessary fields for simulation and classification. */
+export type TransactionPayload = {
+  chain?: InputMaybe<ClassifierChainType>;
+  data: Scalars['String'];
+  fromAddress: Scalars['String'];
+  to: Scalars['String'];
+  value?: InputMaybe<Scalars['Int']>;
 };
 
 export enum TransactionType {
@@ -3495,26 +4057,8 @@ export type UtxoScriptSig = {
   hex: Scalars['String'];
 };
 
-export type UtxoTransaction = {
-  __typename?: 'UTXOTransaction';
-  balanceChange?: Maybe<Amount>;
-  blockIndex?: Maybe<Scalars['Int']>;
-  blockNumber?: Maybe<Scalars['Int']>;
-  fee?: Maybe<Amount>;
-  hash: Scalars['String'];
-  inputs?: Maybe<Array<Input>>;
-  outputs?: Maybe<Array<Output>>;
-  status?: Maybe<Scalars['String']>;
-  timestamp?: Maybe<Scalars['DateTime']>;
-};
-
-export type UtxoTransactionByHashV2 = {
-  __typename?: 'UTXOTransactionByHashV2';
-  /**
-   * (numeric, optional) the index of the transaction in the transactions list of the
-   * block in which this tx is mined.
-   */
-  blockIndex?: Maybe<Scalars['Int']>;
+export type UtxoTransactionByHashV4 = {
+  __typename?: 'UTXOTransactionByHashV4';
   /** (numeric, optional) the block number in which this transaction is mined. */
   blockNumber?: Maybe<Scalars['Int']>;
   /** (string, optional) the block hash */
@@ -3552,8 +4096,18 @@ export type UtxoTransactionByHashV2 = {
   vout: Array<UtxoVout>;
   /** (numeric) The virtual transaction size (differs from size for witness transactions) */
   vsize?: Maybe<Scalars['Int']>;
-  /** (numeric) The transaction's weight (between vsize*4-3 and vsize*4) */
-  weight?: Maybe<Scalars['Int']>;
+};
+
+export type UtxoTransactionV2 = {
+  __typename?: 'UTXOTransactionV2';
+  balanceChange?: Maybe<Amount>;
+  blockNumber?: Maybe<Scalars['Int']>;
+  fee?: Maybe<Amount>;
+  hash: Scalars['String'];
+  inputs?: Maybe<Array<Input>>;
+  outputs?: Maybe<Array<Output>>;
+  status?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['DateTime']>;
 };
 
 export type UtxoVinV2 = {
@@ -3582,17 +4136,13 @@ export type UtxoVout = {
   value: Scalars['Float'];
 };
 
-export type UnspentTransactionOutputV4 = {
-  __typename?: 'UnspentTransactionOutputV4';
+export type UnspentTransactionOutputV5 = {
+  __typename?: 'UnspentTransactionOutputV5';
   address?: Maybe<Scalars['String']>;
-  iTxHash?: Maybe<Scalars['String']>;
-  iTxIndex?: Maybe<Scalars['Int']>;
   isCoinbase?: Maybe<Scalars['Boolean']>;
-  isSpent: Scalars['Boolean'];
   oIndex: Scalars['Int'];
   oTxHash: Scalars['String'];
   oTxHex?: Maybe<Scalars['String']>;
-  oTxTime?: Maybe<Scalars['DateTime']>;
   scriptHex?: Maybe<Scalars['String']>;
   value: Amount;
 };
@@ -3629,6 +4179,12 @@ export type VolumeHistory = {
   volume: Scalars['String'];
 };
 
+export type VolumeHistoryV3 = {
+  __typename?: 'VolumeHistoryV3';
+  date: Scalars['String'];
+  volume: Scalars['String'];
+};
+
 export type Wallet = {
   __typename?: 'Wallet';
   name: Scalars['String'];
@@ -3642,6 +4198,21 @@ export type WalletInfo = {
   isAdmin: Scalars['Boolean'];
   /** If set to true, wallet is part of the referral program */
   isReferrer: Scalars['Boolean'];
+};
+
+export type WalletInfoV3 = {
+  __typename?: 'WalletInfoV3';
+  /** EVM address of the wallet. */
+  address: Scalars['String'];
+  /** If set to true, wallet is the boss */
+  isAdmin: Scalars['Boolean'];
+  /** If set to true, wallet is part of the referral program */
+  isReferrer: Scalars['Boolean'];
+};
+
+export type WalletV3 = {
+  __typename?: 'WalletV3';
+  name: Scalars['String'];
 };
 
 export type GetBinanceBalancesQueryVariables = Exact<{
@@ -3795,22 +4366,10 @@ export type GetBitcoinFeesQuery = {
   };
 };
 
-export type GetBitcoinStatusQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetBitcoinStatusQuery = {
-  __typename?: 'Query';
-  bitcoin: {
-    __typename?: 'BitcoinChain';
-    status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
 export type GetBitcoinTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
-  pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
-  dateRange: OptDateRange;
-  blockRange: OptBlockRange;
+  pageNumber: Scalars['Int'];
 }>;
 
 export type GetBitcoinTransactionsQuery = {
@@ -3818,12 +4377,13 @@ export type GetBitcoinTransactionsQuery = {
   bitcoin: {
     __typename?: 'BitcoinChain';
     transactions: Array<{
-      __typename?: 'UTXOTransaction';
-      hash: string;
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
-      blockIndex?: number | null;
-      status?: string | null;
+      hash: string;
       timestamp?: any | null;
+      status?: string | null;
+      balanceChange?: { __typename?: 'Amount'; value: string } | null;
+      fee?: { __typename?: 'Amount'; value: string } | null;
       inputs?: Array<{
         __typename?: 'Input';
         address: string;
@@ -3834,8 +4394,6 @@ export type GetBitcoinTransactionsQuery = {
         address: string;
         amount: { __typename?: 'Amount'; value: string };
       }> | null;
-      fee?: { __typename?: 'Amount'; value: string } | null;
-      balanceChange?: { __typename?: 'Amount'; value: string } | null;
     }>;
   };
 };
@@ -3882,24 +4440,10 @@ export type GetBitcoinCashFeesQuery = {
   };
 };
 
-export type GetBitcoinCashStatusQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type GetBitcoinCashStatusQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
 export type GetBitcoinCashTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
-  pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
-  dateRange: OptDateRange;
-  blockRange: OptBlockRange;
+  pageNumber: Scalars['Int'];
 }>;
 
 export type GetBitcoinCashTransactionsQuery = {
@@ -3907,12 +4451,13 @@ export type GetBitcoinCashTransactionsQuery = {
   bitcoincash: {
     __typename?: 'BitcoincashChain';
     transactions: Array<{
-      __typename?: 'UTXOTransaction';
-      hash: string;
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
-      blockIndex?: number | null;
-      status?: string | null;
+      hash: string;
       timestamp?: any | null;
+      status?: string | null;
+      balanceChange?: { __typename?: 'Amount'; value: string } | null;
+      fee?: { __typename?: 'Amount'; value: string } | null;
       inputs?: Array<{
         __typename?: 'Input';
         address: string;
@@ -3923,8 +4468,6 @@ export type GetBitcoinCashTransactionsQuery = {
         address: string;
         amount: { __typename?: 'Amount'; value: string };
       }> | null;
-      fee?: { __typename?: 'Amount'; value: string } | null;
-      balanceChange?: { __typename?: 'Amount'; value: string } | null;
     }>;
   };
 };
@@ -5245,7 +5788,7 @@ export type JunoBalanceQueryVariables = Exact<{
 
 export type JunoBalanceQuery = {
   __typename?: 'Query';
-  juno?: {
+  juno: {
     __typename?: 'JunoChain';
     balances: Array<{
       __typename?: 'Balance';
@@ -5267,7 +5810,7 @@ export type JunoBalanceQuery = {
         } | null;
       };
     }>;
-  } | null;
+  };
 };
 
 export type GetJunoTransactionsQueryVariables = Exact<{
@@ -5279,7 +5822,7 @@ export type GetJunoTransactionsQueryVariables = Exact<{
 
 export type GetJunoTransactionsQuery = {
   __typename?: 'Query';
-  juno?: {
+  juno: {
     __typename?: 'JunoChain';
     transactions: {
       __typename?: 'CosmosLikeTransactionConnection';
@@ -5338,14 +5881,14 @@ export type GetJunoTransactionsQuery = {
         };
       }>;
     };
-  } | null;
+  };
 };
 
 export type GetJunoFeesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetJunoFeesQuery = {
   __typename?: 'Query';
-  juno?: {
+  juno: {
     __typename?: 'JunoChain';
     fee?: {
       __typename?: 'DefaultGasFee';
@@ -5353,17 +5896,17 @@ export type GetJunoFeesQuery = {
       low?: number | null;
       medium?: number | null;
     } | null;
-  } | null;
+  };
 };
 
 export type GetJunoStatusQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetJunoStatusQuery = {
   __typename?: 'Query';
-  juno?: {
+  juno: {
     __typename?: 'JunoChain';
     status: { __typename?: 'Status'; lastBlock: number };
-  } | null;
+  };
 };
 
 export type StargazeBalanceQueryVariables = Exact<{
@@ -5372,7 +5915,7 @@ export type StargazeBalanceQueryVariables = Exact<{
 
 export type StargazeBalanceQuery = {
   __typename?: 'Query';
-  stargaze?: {
+  stargaze: {
     __typename?: 'StargazeChain';
     balances: Array<{
       __typename?: 'Balance';
@@ -5394,7 +5937,7 @@ export type StargazeBalanceQuery = {
         } | null;
       };
     }>;
-  } | null;
+  };
 };
 
 export type GetStargazeTransactionsQueryVariables = Exact<{
@@ -5406,7 +5949,7 @@ export type GetStargazeTransactionsQueryVariables = Exact<{
 
 export type GetStargazeTransactionsQuery = {
   __typename?: 'Query';
-  stargaze?: {
+  stargaze: {
     __typename?: 'StargazeChain';
     transactions: {
       __typename?: 'CosmosLikeTransactionConnection';
@@ -5465,14 +6008,14 @@ export type GetStargazeTransactionsQuery = {
         };
       }>;
     };
-  } | null;
+  };
 };
 
 export type GetStargazeFeesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetStargazeFeesQuery = {
   __typename?: 'Query';
-  stargaze?: {
+  stargaze: {
     __typename?: 'StargazeChain';
     fee?: {
       __typename?: 'DefaultGasFee';
@@ -5480,17 +6023,17 @@ export type GetStargazeFeesQuery = {
       low?: number | null;
       medium?: number | null;
     } | null;
-  } | null;
+  };
 };
 
 export type GetStargazeStatusQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetStargazeStatusQuery = {
   __typename?: 'Query';
-  stargaze?: {
+  stargaze: {
     __typename?: 'StargazeChain';
     status: { __typename?: 'Status'; lastBlock: number };
-  } | null;
+  };
 };
 
 export type DogecoinBalanceQueryVariables = Exact<{
@@ -5535,22 +6078,10 @@ export type GetDogecoinFeesQuery = {
   };
 };
 
-export type GetDogecoinStatusQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetDogecoinStatusQuery = {
-  __typename?: 'Query';
-  dogecoin: {
-    __typename?: 'DogeChain';
-    status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
 export type GetDogecoinTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
-  pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
-  dateRange: OptDateRange;
-  blockRange: OptBlockRange;
+  pageNumber: Scalars['Int'];
 }>;
 
 export type GetDogecoinTransactionsQuery = {
@@ -5558,12 +6089,13 @@ export type GetDogecoinTransactionsQuery = {
   dogecoin: {
     __typename?: 'DogeChain';
     transactions: Array<{
-      __typename?: 'UTXOTransaction';
-      hash: string;
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
-      blockIndex?: number | null;
-      status?: string | null;
+      hash: string;
       timestamp?: any | null;
+      status?: string | null;
+      balanceChange?: { __typename?: 'Amount'; value: string } | null;
+      fee?: { __typename?: 'Amount'; value: string } | null;
       inputs?: Array<{
         __typename?: 'Input';
         address: string;
@@ -5574,8 +6106,6 @@ export type GetDogecoinTransactionsQuery = {
         address: string;
         amount: { __typename?: 'Amount'; value: string };
       }> | null;
-      fee?: { __typename?: 'Amount'; value: string } | null;
-      balanceChange?: { __typename?: 'Amount'; value: string } | null;
     }>;
   };
 };
@@ -5678,22 +6208,10 @@ export type GetLitecoinFeesQuery = {
   };
 };
 
-export type GetLitecoinStatusQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetLitecoinStatusQuery = {
-  __typename?: 'Query';
-  litecoin: {
-    __typename?: 'LitecoinChain';
-    status: { __typename?: 'Status'; lastBlock: number };
-  };
-};
-
 export type GetLitecoinTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
-  pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
-  dateRange: OptDateRange;
-  blockRange: OptBlockRange;
+  pageNumber: Scalars['Int'];
 }>;
 
 export type GetLitecoinTransactionsQuery = {
@@ -5701,12 +6219,13 @@ export type GetLitecoinTransactionsQuery = {
   litecoin: {
     __typename?: 'LitecoinChain';
     transactions: Array<{
-      __typename?: 'UTXOTransaction';
-      hash: string;
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
-      blockIndex?: number | null;
-      status?: string | null;
+      hash: string;
       timestamp?: any | null;
+      status?: string | null;
+      balanceChange?: { __typename?: 'Amount'; value: string } | null;
+      fee?: { __typename?: 'Amount'; value: string } | null;
       inputs?: Array<{
         __typename?: 'Input';
         address: string;
@@ -5717,8 +6236,6 @@ export type GetLitecoinTransactionsQuery = {
         address: string;
         amount: { __typename?: 'Amount'; value: string };
       }> | null;
-      fee?: { __typename?: 'Amount'; value: string } | null;
-      balanceChange?: { __typename?: 'Amount'; value: string } | null;
     }>;
   };
 };
@@ -6514,46 +7031,6 @@ export const GetBitcoinFeesDocument = {
     },
   ],
 } as unknown as DocumentNode<GetBitcoinFeesQuery, GetBitcoinFeesQueryVariables>;
-export const GetBitcoinStatusDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetBitcoinStatus' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoin' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'status' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'lastBlock' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetBitcoinStatusQuery,
-  GetBitcoinStatusQueryVariables
->;
 export const GetBitcoinTransactionsDocument = {
   kind: 'Document',
   definitions: [
@@ -6580,17 +7057,6 @@ export const GetBitcoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pageNumber' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
             name: { kind: 'Name', value: 'pageSize' },
           },
           type: {
@@ -6602,28 +7068,11 @@ export const GetBitcoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'dateRange' },
+            name: { kind: 'Name', value: 'pageNumber' },
           },
           type: {
             kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptDateRange' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'blockRange' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptBlockRange' },
-            },
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
           },
         },
       ],
@@ -6650,14 +7099,6 @@ export const GetBitcoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageNumber' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageNumber' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
                       name: { kind: 'Name', value: 'pageSize' },
                       value: {
                         kind: 'Variable',
@@ -6666,41 +7107,47 @@ export const GetBitcoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'dateRange' },
+                      name: { kind: 'Name', value: 'pageNumber' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'dateRange' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'blockRange' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'blockRange' },
+                        name: { kind: 'Name', value: 'pageNumber' },
                       },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'balanceChange' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'blockNumber' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'blockIndex' },
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
                       },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'status' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'timestamp' },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'inputs' },
@@ -6755,29 +7202,11 @@ export const GetBitcoinTransactionsDocument = {
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'fee' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'timestamp' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'balanceChange' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'status' },
                       },
                     ],
                   },
@@ -6964,46 +7393,6 @@ export const GetBitcoinCashFeesDocument = {
   GetBitcoinCashFeesQuery,
   GetBitcoinCashFeesQueryVariables
 >;
-export const GetBitcoinCashStatusDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetBitcoinCashStatus' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'status' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'lastBlock' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetBitcoinCashStatusQuery,
-  GetBitcoinCashStatusQueryVariables
->;
 export const GetBitcoinCashTransactionsDocument = {
   kind: 'Document',
   definitions: [
@@ -7030,17 +7419,6 @@ export const GetBitcoinCashTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pageNumber' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
             name: { kind: 'Name', value: 'pageSize' },
           },
           type: {
@@ -7052,28 +7430,11 @@ export const GetBitcoinCashTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'dateRange' },
+            name: { kind: 'Name', value: 'pageNumber' },
           },
           type: {
             kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptDateRange' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'blockRange' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptBlockRange' },
-            },
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
           },
         },
       ],
@@ -7100,14 +7461,6 @@ export const GetBitcoinCashTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageNumber' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageNumber' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
                       name: { kind: 'Name', value: 'pageSize' },
                       value: {
                         kind: 'Variable',
@@ -7116,41 +7469,47 @@ export const GetBitcoinCashTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'dateRange' },
+                      name: { kind: 'Name', value: 'pageNumber' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'dateRange' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'blockRange' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'blockRange' },
+                        name: { kind: 'Name', value: 'pageNumber' },
                       },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'balanceChange' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'blockNumber' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'blockIndex' },
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
                       },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'status' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'timestamp' },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'inputs' },
@@ -7205,29 +7564,11 @@ export const GetBitcoinCashTransactionsDocument = {
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'fee' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'timestamp' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'balanceChange' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'status' },
                       },
                     ],
                   },
@@ -14996,46 +15337,6 @@ export const GetDogecoinFeesDocument = {
   GetDogecoinFeesQuery,
   GetDogecoinFeesQueryVariables
 >;
-export const GetDogecoinStatusDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetDogecoinStatus' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'dogecoin' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'status' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'lastBlock' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetDogecoinStatusQuery,
-  GetDogecoinStatusQueryVariables
->;
 export const GetDogecoinTransactionsDocument = {
   kind: 'Document',
   definitions: [
@@ -15062,17 +15363,6 @@ export const GetDogecoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pageNumber' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
             name: { kind: 'Name', value: 'pageSize' },
           },
           type: {
@@ -15084,28 +15374,11 @@ export const GetDogecoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'dateRange' },
+            name: { kind: 'Name', value: 'pageNumber' },
           },
           type: {
             kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptDateRange' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'blockRange' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptBlockRange' },
-            },
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
           },
         },
       ],
@@ -15132,14 +15405,6 @@ export const GetDogecoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageNumber' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageNumber' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
                       name: { kind: 'Name', value: 'pageSize' },
                       value: {
                         kind: 'Variable',
@@ -15148,41 +15413,47 @@ export const GetDogecoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'dateRange' },
+                      name: { kind: 'Name', value: 'pageNumber' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'dateRange' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'blockRange' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'blockRange' },
+                        name: { kind: 'Name', value: 'pageNumber' },
                       },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'balanceChange' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'blockNumber' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'blockIndex' },
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
                       },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'status' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'timestamp' },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'inputs' },
@@ -15237,29 +15508,11 @@ export const GetDogecoinTransactionsDocument = {
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'fee' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'timestamp' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'balanceChange' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'status' },
                       },
                     ],
                   },
@@ -15670,46 +15923,6 @@ export const GetLitecoinFeesDocument = {
   GetLitecoinFeesQuery,
   GetLitecoinFeesQueryVariables
 >;
-export const GetLitecoinStatusDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetLitecoinStatus' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'litecoin' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'status' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'lastBlock' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetLitecoinStatusQuery,
-  GetLitecoinStatusQueryVariables
->;
 export const GetLitecoinTransactionsDocument = {
   kind: 'Document',
   definitions: [
@@ -15736,17 +15949,6 @@ export const GetLitecoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pageNumber' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
             name: { kind: 'Name', value: 'pageSize' },
           },
           type: {
@@ -15758,28 +15960,11 @@ export const GetLitecoinTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'dateRange' },
+            name: { kind: 'Name', value: 'pageNumber' },
           },
           type: {
             kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptDateRange' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'blockRange' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'OptBlockRange' },
-            },
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
           },
         },
       ],
@@ -15806,14 +15991,6 @@ export const GetLitecoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageNumber' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageNumber' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
                       name: { kind: 'Name', value: 'pageSize' },
                       value: {
                         kind: 'Variable',
@@ -15822,41 +15999,47 @@ export const GetLitecoinTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'dateRange' },
+                      name: { kind: 'Name', value: 'pageNumber' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'dateRange' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'blockRange' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'blockRange' },
+                        name: { kind: 'Name', value: 'pageNumber' },
                       },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'balanceChange' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'blockNumber' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'blockIndex' },
+                        name: { kind: 'Name', value: 'fee' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
                       },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'status' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'timestamp' },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'inputs' },
@@ -15911,29 +16094,11 @@ export const GetLitecoinTransactionsDocument = {
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'fee' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'timestamp' },
                       },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'balanceChange' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'status' },
                       },
                     ],
                   },

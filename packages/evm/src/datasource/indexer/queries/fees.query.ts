@@ -46,6 +46,7 @@ export const getFees = async (chain: string) => {
     case EVMChains.ethereum:
     case EVMChains.polygon:
     case EVMChains.avalanche:
+    case EVMChains.optimism:
       query = EIP1559_GAS_FEES(indexerChain);
       break;
     case EVMChains.smartchain:
@@ -59,6 +60,10 @@ export const getFees = async (chain: string) => {
       query = DEFAULT_GAS_FEES(indexerChain);
       break;
     case EVMChains.aurora:
+      query = DEFAULT_GAS_FEES(indexerChain);
+      break;
+    case EVMChains.cantoevm:
+      indexerChain = 'cantoEVM';
       query = DEFAULT_GAS_FEES(indexerChain);
       break;
   }

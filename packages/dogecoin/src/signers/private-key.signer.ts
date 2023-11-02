@@ -10,7 +10,10 @@ import { ChainMsg } from '../msg';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Dogecoin.address.toOutputScript(address);
+      Dogecoin.address.toOutputScript(
+        address,
+        coininfo.dogecoin.main.toBitcoinJS()
+      );
       return true;
     } catch (err) {
       return false;
@@ -26,7 +29,7 @@ export class PrivateKeySigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = Dogecoin.ECPair.fromWIF(this.key, network);
+    const pk = Dogecoin.ECPair.fromWIF(this.key);
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -62,7 +65,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key, network));
+    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

@@ -9,17 +9,14 @@ import TrezorConnect, {
   SignTransaction,
   Manifest,
 } from '@trezor/connect-web';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-
-import { ChainMsg } from '../msg';
+import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
   verifyAddress(address: string): boolean {
-    try {
-      Litecoin.address.toOutputScript(address);
+    if (new RegExp(/^[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}$/).test(address)) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
   }

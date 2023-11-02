@@ -27,38 +27,54 @@ describe('chain.provider', () => {
   it('createMsg(): should create message with data', () => {
     const msg = evmProvider.createMsg({});
 
-    console.log('msg', msg);
-
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  // it("getAddress(): should throw an error if derivation path is invalid", async () => {
-  //     const signer = new EvmProvider();
-  //     await expect(signer.getAddress("0/0/0/0/0")).rejects.toEqual("Error");
-  // });
-  //
-  // it("getAddress(): should return address", async () => {
-  //     const signer = new EvmProvider();
-  //     await expect(signer.getAddress("44'/60'/0'/0/0")).resolves.toEqual(
-  //         ADDRESS_MOCK.address
-  //     );
-  // });
-  //
-  // it("sign(): show throw an error if msg is invalid", async () => {
-  //     const signer = new EvmProvider();
-  //     await expect(
-  //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
-  //     ).rejects.toEqual("Error");
-  // });
-  //
-  // it("sign(): show return signature", async () => {
-  //     const signer = new EvmProvider();
-  //     await expect(
-  //         signer.sign("44'/60'/0'/0/0", ChainMsg.fromData({}))
-  //     ).resolves.toEqual({
-  //         v: 1,
-  //         r: "0x2",
-  //         s: "0x3",
-  //     });
-  // });
+  it('should throw an error when broadcasting an unsigned tx', async () => {
+    const msg = evmProvider.createMsg({});
+
+    expect(evmProvider.broadcast([msg])).rejects.toThrow();
+  });
+
+  it('should get a transaction from the blockchain', async () => {
+    const txData = await evmProvider.getTransaction(
+      '0x7f8650389da94aac5c70080982e027653741ec520612dbc8a111f4d2b3645b68'
+    );
+    expect(txData?.hash).toEqual(
+      '0x7f8650389da94aac5c70080982e027653741ec520612dbc8a111f4d2b3645b68'
+    );
+  });
+
+  it('should get an address nonce', async () => {
+    const nonce = await evmProvider.getNonce(
+      '0x0000000000000000000000000000000000000000'
+    );
+    expect(nonce).toEqual(0);
+  });
+
+  it('should get fee options', async () => {
+    const feeOptions = await evmProvider.gasFeeOptions();
+
+    expect(feeOptions?.low).toBeTruthy();
+    expect(feeOptions?.medium).toBeTruthy();
+    expect(feeOptions?.high).toBeTruthy();
+  });
+
+  it('should get a balance', async () => {
+    const balance = await evmProvider.getBalance(
+      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACC'
+    );
+
+    const balanceData = await balance.getData();
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0].amount.toString()).toEqual('0');
+    expect(balanceData[0].asset.name).toEqual('Ethereum');
+  });
+
+  it('should get null for a non-existant transaction on the blockchain', async () => {
+    const txData = await evmProvider.getTransaction(
+      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    );
+    expect(txData).toEqual(null);
+  });
 });

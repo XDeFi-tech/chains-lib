@@ -71,7 +71,7 @@ export class SeedPhraseSigner extends Signer.Provider {
     /* eslint-enable */
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const tx = new Transaction.default({
+    const tx = new Transaction({
       accountNumber: txData.accountNumber,
       chainId: txData.chainId,
       memo: txData.memo || '',

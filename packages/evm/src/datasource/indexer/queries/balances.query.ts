@@ -37,6 +37,9 @@ export const getBalance = async (chain: EVMChains, address: string) => {
     case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
       break;
+    case EVMChains.cantoevm:
+      indexerChain = 'cantoEVM';
+      break;
   }
   const response = await gqlClient.query({
     query: GET_BALANCE(indexerChain),

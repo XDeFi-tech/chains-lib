@@ -31,22 +31,17 @@ query GetBitcoinCashFees {
   }
 }
 
-query GetBitcoinCashStatus {
+query GetBitcoinCashTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
   bitcoincash {
-    status {
-      lastBlock
-    }
-  }
-}
-
-query GetBitcoinCashTransactions($address: String!, $pageNumber: Int!, $pageSize: Int!, $dateRange: OptDateRange!, $blockRange: OptBlockRange!) {
-  bitcoincash {
-    transactions(address: $address, pageNumber: $pageNumber, pageSize: $pageSize, dateRange: $dateRange, blockRange: $blockRange) {
-      hash
+    transactions(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+      balanceChange {
+        value
+      }
       blockNumber
-      blockIndex
-      status
-      timestamp
+      fee {
+        value
+      }
+      hash
       inputs {
         address
         amount {
@@ -59,12 +54,8 @@ query GetBitcoinCashTransactions($address: String!, $pageNumber: Int!, $pageSize
         }
         address
       }
-      fee {
-        value
-      }
-      balanceChange {
-        value
-      }
+      timestamp
+      status
     }
   }
 }

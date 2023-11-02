@@ -9,7 +9,9 @@
         "dist/**"
       ]
     },
-    "test": {},
+    "test": {
+      "env": ["BLOCKCHAIR_API_KEY"]
+    },
     "test:watch": {
       "cache": false
     },

@@ -5,9 +5,7 @@ import {
   IsTrezorInitialized,
 } from '@xdefi-tech/chains-core';
 import TrezorConnect, { Params, SignTransaction } from '@trezor/connect-web';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-
-import { ChainMsg } from '../msg';
+import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {

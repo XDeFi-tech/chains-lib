@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.4
+
+### Patch Changes
+
+- 5b6cb9b: Added Ledger signer. Added testing coverage for signers
+- Updated dependencies [5b6cb9b]
+  - @xdefi-tech/chains-core@1.1.11
+
 ## 1.1.3
 
 ### Patch Changes

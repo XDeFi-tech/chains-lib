@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-utxo",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -62,9 +62,6 @@
     "target": "ES6"
   },
   "jest": {
-    "setupFiles": [
-      "./jest-setup-file.ts"
-    ],
     "preset": "ts-jest/presets/js-with-ts",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

@@ -1,37 +1,60 @@
-import { PrivateKeySigner } from './private-key.signer';
-import { ChainMsg } from '../msg';
+import { Msg } from '@xdefi-tech/chains-core';
 
-describe('solana private-key.signer', () => {
-  const MOCK = {
-    privateKey:
-      '18848234ce262a102df88bbed03bc387395d4bb42b3e500139516a100e82d2526a3b5fac8fdf5f2a0637c76a99fc36a64ca741c29d1d66b072f7607854cf89d2',
-    address: '89gj8ZxSsWucJWPSdfs4ciCr6uDzC3U5QuSdHumbTeNm',
-    signature: '',
-  };
-  const signer = new PrivateKeySigner();
+import { SolanaProvider } from '../chain.provider';
+import { IndexerDataSource } from '../datasource';
+import { SOLANA_MANIFEST } from '../manifests';
+import { ChainMsg, MsgBody } from '../msg';
 
-  it('should return true for a valid address', () => {
-    expect(signer.verifyAddress(MOCK.address)).toBe(true);
+import PrivateKeySigner from './private-key.signer';
+
+jest.mock('../datasource/indexer/queries/fees.query', () => ({
+  getFees: jest.fn().mockResolvedValue({
+    data: { solana: { fee: '0' } },
+  }),
+}));
+
+describe('private-key.signer', () => {
+  let privateKey: string;
+  let signer: PrivateKeySigner;
+  let provider: SolanaProvider;
+  let txInput: MsgBody;
+  let message: Msg;
+
+  beforeEach(() => {
+    privateKey =
+      '22d58eee867e660f58cd4e6699eaeb058a613c5fb1c738e6de5fe02d7839eafba3c563b0519a293f7323680e09a6a3b4bb9a451ed3eaaf7067cc38505563f3c6';
+    signer = new PrivateKeySigner(privateKey);
+
+    provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
+
+    txInput = {
+      from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+      to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+      amount: 0.000001,
+    };
+
+    message = provider.createMsg(txInput);
   });
 
-  it('should return false for a valid address', () => {
-    expect(signer.verifyAddress('invalid-address')).toBe(true);
+  it('should get an address from a private key', async () => {
+    expect(await signer.getAddress('')).toBe(txInput.from);
   });
 
-  it('should return the correct address for a valid private key', async () => {
-    const address = await signer.getAddress(MOCK.privateKey);
-    expect(address).toBe(address);
+  it('should sign a transaction using a private key', async () => {
+    await signer.sign(message as ChainMsg);
+
+    expect(message.signedTransaction.toString('hex')).toBeTruthy();
   });
 
-  it('should throw an error for an invalid private key', async () => {
-    await expect(signer.getAddress('invalid-private-key')).rejects.toThrow(
-      'Invalid address'
-    );
+  it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
   });
 
-  it('should sign a ChainMsg with the private key', async () => {
-    const msg = new ChainMsg({});
-    const signature = await signer.sign(MOCK.privateKey, msg);
-    expect(signature).toBe(MOCK.signature);
+  it('should validate an address', async () => {
+    expect(signer.verifyAddress(txInput.from)).toBe(true);
+  });
+
+  it('should get a private key', async () => {
+    expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });
 });

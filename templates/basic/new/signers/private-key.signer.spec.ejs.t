@@ -2,8 +2,9 @@
 to: packages/<%= name.toLowerCase() %>/src/signers/private-key.signer.spec.ts
 ---
 
-import { PrivateKeySigner } from './private-key.signer';
 import { ChainMsg } from '../msg';
+
+import { PrivateKeySigner } from './private-key.signer';
 
 describe('<%= name.toLowerCase() %> private-key.signer', () => {
     const MOCK = {

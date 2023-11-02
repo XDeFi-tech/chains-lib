@@ -40,6 +40,7 @@ export class LedgerSigner extends Signer.Provider {
         derivation,
         tx.serializeMessage()
       );
+
       const addressBuffer = await app.getAddress(derivation);
       tx.addSignature(new PublicKey(addressBuffer.address), signedTx.signature);
 
