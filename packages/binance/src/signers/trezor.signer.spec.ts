@@ -1,10 +1,4 @@
-import {
-  SignedTransaction,
-  GetAddress,
-  Params,
-  Success,
-  PROTO,
-} from '@trezor/connect-web';
+import { GetAddress, Params, Success, PROTO } from '@trezor/connect-web';
 
 import { ChainMsg, MsgBody } from '../msg';
 import { BinanceProvider } from '../chain.provider';

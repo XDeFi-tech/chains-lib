@@ -16,7 +16,6 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
 describe('private-key.signer', () => {
   let privateKey: string;
   let signer: PrivateKeySigner;
-  let derivationPath: string;
   let provider: BitcoinCashProvider;
   let txInput: MsgBody;
   let message: Msg;
@@ -28,7 +27,6 @@ describe('private-key.signer', () => {
     provider = new BitcoinCashProvider(
       new IndexerDataSource(BITCOINCASH_MANIFEST)
     );
-    derivationPath = "m/44'/145'/0'/0/0";
 
     txInput = {
       from: '12NNZQp2sWJ4r31XjfR3z56suZxp3gHDnJ',
