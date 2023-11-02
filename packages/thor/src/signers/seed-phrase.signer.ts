@@ -5,6 +5,11 @@ import * as bip39 from 'bip39';
 import { BIP32Factory, BIP32API } from 'bip32';
 import * as ecc from 'tiny-secp256k1';
 import Long from 'long';
+import { Secp256k1HdWallet } from '@cosmjs/launchpad';
+import {
+  stringToPath,
+  HdPath,
+} from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 
 import { ChainMsg } from '../msg';
 
@@ -12,8 +17,8 @@ import { ChainMsg } from '../msg';
 export class SeedPhraseSigner extends Signer.Provider {
   private bip32?: BIP32API;
 
-  constructor() {
-    super();
+  constructor(mnemonic: string) {
+    super(mnemonic);
     this.initBip32().then((secp256k1) => {
       this.bip32 = BIP32Factory(secp256k1);
     });
@@ -68,13 +73,18 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
 
     return new cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey({
-      key: new Uint8Array([]),
+      key: child.privateKey,
     });
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const privKey = await this.getCosmosPrivateKey(derivation);
-    return cosmosclient.AccAddress.fromPublicKey(privKey.pubKey()).toString();
+    const path: readonly HdPath[] = [stringToPath(derivation)];
+    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
+      hdPaths: path,
+      prefix: 'thor',
+    });
+    const [{ address }] = await wallet.getAccounts();
+    return address;
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {

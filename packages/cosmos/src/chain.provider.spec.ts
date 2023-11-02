@@ -1,8 +1,7 @@
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
-
-import { BitcoinCashProvider } from './chain.provider';
+import { ChainMsg } from './msg';
+import { CosmosProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
-import { BITCOINCASH_MANIFEST } from './manifests';
+import { COSMOS_MANIFESTS } from './manifests';
 
 jest.mock('./datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
@@ -11,40 +10,30 @@ jest.mock('./datasource/indexer/queries/balances.query', () => ({
 }));
 
 describe('chain.provider', () => {
-  let provider: BitcoinCashProvider;
+  let provider: CosmosProvider;
 
   beforeEach(() => {
-    provider = new BitcoinCashProvider(
-      new IndexerDataSource(BITCOINCASH_MANIFEST)
+    provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.cosmos)
     );
   });
 
   it('createMsg(): should create message with data', () => {
     const msg = provider.createMsg({
-      to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
-      from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      to: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
+      from: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
       amount: 0.000001,
     });
 
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw an error when broadcasting an unsigned tx', async () => {
-    const msg = provider.createMsg({
-      to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
-      from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
-      amount: 0.000001,
-    });
-
-    expect(provider.broadcast([msg])).rejects.toThrow();
-  });
-
   it('should get a transaction from the blockchain', async () => {
     const txData = await provider.getTransaction(
-      'eceb6281ac75c6306c2766f15fea47ab4a7cfbc8e865d5f75a0c4b8f8256fe59'
+      '0269644F832384D033D2223226A5FC25BD17A3646EE2BEF5C1F9009FD19E66B9'
     );
     expect(txData?.hash).toEqual(
-      'eceb6281ac75c6306c2766f15fea47ab4a7cfbc8e865d5f75a0c4b8f8256fe59'
+      '0269644F832384D033D2223226A5FC25BD17A3646EE2BEF5C1F9009FD19E66B9'
     );
   });
 
@@ -58,7 +47,7 @@ describe('chain.provider', () => {
 
   it('should get a balance', async () => {
     const balance = await provider.getBalance(
-      'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
+      'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4'
     );
 
     const balanceData = await balance.getData();

@@ -2,7 +2,6 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 
@@ -20,7 +19,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix: string): Promise<string> {
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
+    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
       prefix,
     });
     const [{ address }] = await wallet.getAccounts();

@@ -16,14 +16,14 @@ jest.mock('@binance-chain/javascript-sdk/lib/ledger/ledger-app', () => {
   return jest.fn().mockImplementation(() => ({
     sign: jest.fn().mockResolvedValue({
       signature: Buffer.from(
-        '9a0ec4778a533891fae6ef51386f9598d8f01cb6bdbfc7c3ff914f8f63a6d0dafcb766221cdaeb4c07776f94a1fb1ba61c8f542e35ac00d50e1be6546eef5b03',
+        '04746c1a7b821f3e34d1936b515de9b6d96a01ac868f0159163275005f7872d97f2ad44dbad5c539f0d6e2a942fa238b0f1c58ec8b9263e6e8f5d74102ed9a7c19',
         'hex'
       ),
     }),
     getPublicKey: jest.fn().mockResolvedValue({
       pk: Buffer.from(
-        // bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy
-        '04ac5075afd72637cbf5913994b51f4aa508a31cd96f8580d50c29a4bc585f6174c628640d13e54ab41b911f2b1cc61fbd2e40bbb8e543c8d01ea84e7e6a484418',
+        // bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k
+        '04746c1a7b821f3e34d1936b515de9b6d96a01ac868f0159163275005f7872d97f2ad44dbad5c539f0d6e2a942fa238b0f1c58ec8b9263e6e8f5d74102ed9a7c19',
         'hex'
       ),
     }),
@@ -45,8 +45,8 @@ describe('ledger.signer', () => {
     derivationPath = "m/44'/714'/0'/0/0";
 
     txInput = {
-      from: 'bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy',
-      to: 'bnb1f7n56etujwkmywda9k62t0ecky6twwvn0l7awy',
+      from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+      to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
       amount: 0.000001,
       denom: 'bnb',
     };

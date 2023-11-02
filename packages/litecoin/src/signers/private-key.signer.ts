@@ -10,7 +10,10 @@ import { ChainMsg } from '../msg';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Litecoin.address.toOutputScript(address);
+      Litecoin.address.toOutputScript(
+        address,
+        coininfo.litecoin.main.toBitcoinJS()
+      );
       return true;
     } catch (err) {
       return false;
@@ -26,7 +29,7 @@ export class PrivateKeySigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const pk = Litecoin.ECPair.fromWIF(this.key, network);
+    const pk = Litecoin.ECPair.fromWIF(this.key);
     const { address } = Litecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -61,7 +64,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key, network));
+    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

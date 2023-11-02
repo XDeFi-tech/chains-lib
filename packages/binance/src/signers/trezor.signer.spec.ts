@@ -1,38 +1,31 @@
-import { Msg } from '@xdefi-tech/chains-core';
-import {
-  EthereumSignedTx,
-  GetAddress,
-  Params,
-  Success,
-} from '@trezor/connect-web';
+import { GetAddress, Params, Success, PROTO } from '@trezor/connect-web';
 
-import { EvmProvider } from '../chain.provider';
-import { IndexerDataSource } from '../datasource';
-import { EVM_MANIFESTS } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
+import { BinanceProvider } from '../chain.provider';
+import { IndexerDataSource } from '../datasource';
+import { BINANCE_MANIFEST } from '../manifests';
 
 import TrezorSigner from './trezor.signer';
 jest.mock('@trezor/connect-web', () => ({
   init: jest.fn().mockImplementation(),
-  ethereumSignTransaction: jest.fn().mockImplementation(() => {
-    const txResponse: Success<EthereumSignedTx> = {
+  binanceSignTransaction: jest.fn().mockImplementation(() => {
+    const txResponse: Success<PROTO.BinanceSignedTx> = {
       success: true,
       payload: {
-        v: '1',
-        r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
-        s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+        signature: 'SIGNED',
+        public_key: 'PUBKEY',
       },
     };
 
     return txResponse;
   }),
-  ethereumGetAddress: jest
+  binanceGetAddress: jest
     .fn()
     .mockImplementation((params: Params<GetAddress>) => {
       const addressResponse: Success<GetAddress> = {
         success: true,
         payload: {
-          address: '0x62e4f988d231E16c9A666DD9220865934a347900',
+          address: 'bnb1l2zmxlheuk2u0wfy3l6czskp0z5sa4qklgdfzm',
           path: params.path,
         },
       };
@@ -41,26 +34,32 @@ jest.mock('@trezor/connect-web', () => ({
     }),
 }));
 
+jest.mock('../datasource/indexer/queries/balances.query', () => ({
+  getBalance: () => {
+    return [];
+  },
+}));
+
 describe('trezor.signer', () => {
   let signer: TrezorSigner;
   let derivationPath: string;
-  let provider: EvmProvider;
+  let provider: BinanceProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     signer = new TrezorSigner();
 
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    derivationPath = "m/44'/60'/0'/0/0";
+    const dataSource = new IndexerDataSource(BINANCE_MANIFEST);
+
+    provider = new BinanceProvider(dataSource);
+    derivationPath = "m/84'/0'/0'/0/0";
 
     txInput = {
-      from: '0x62e4f988d231E16c9A666DD9220865934a347900',
-      to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+      from: 'bnb1l2zmxlheuk2u0wfy3l6czskp0z5sa4qklgdfzm',
+      to: 'bnb1l2zmxlheuk2u0wfy3l6czskp0z5sa4qklgdfzm',
       amount: 0.000001,
-      nonce: 0,
-      chainId: 1,
-      decimals: 18,
+      denom: 'bnb',
     };
 
     message = provider.createMsg(txInput);
@@ -87,11 +86,11 @@ describe('trezor.signer', () => {
   it('should sign a transaction using a trezor device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(message.signedTransaction).toEqual('SIGNED');
   });
 
   it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
+    expect(signer.verifyAddress('btc123')).toBe(false);
   });
 
   it('should validate an address', async () => {

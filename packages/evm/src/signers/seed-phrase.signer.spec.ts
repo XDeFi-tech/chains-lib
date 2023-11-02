@@ -5,19 +5,22 @@ import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
-import PrivateKeySigner from './private-key.signer';
+import SeedPhraseSigner from './seed-phrase.signer';
 
-describe('private-key.signer', () => {
-  let privateKey: string;
-  let signer: PrivateKeySigner;
+describe('seed-phrase.signer', () => {
+  let mnemonic: string;
+  let signer: SeedPhraseSigner;
   let provider: EvmProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let derivation: string;
 
   beforeEach(() => {
-    privateKey =
-      'd2a6956c6db5563b9755303795cc7e15be20e04c08b1fc8644f197e13190cbad';
-    signer = new PrivateKeySigner(privateKey);
+    mnemonic =
+      'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
+    signer = new SeedPhraseSigner(mnemonic);
+
+    derivation = "m/44'/60'/0'/0/0";
 
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
 
@@ -34,11 +37,11 @@ describe('private-key.signer', () => {
   });
 
   it('should get an address from the private key', async () => {
-    expect(await signer.getAddress()).toBe(txInput.from);
+    expect(await signer.getAddress(derivation)).toBe(txInput.from);
   });
 
   it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg);
+    await signer.sign(message as ChainMsg, derivation);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -52,6 +55,8 @@ describe('private-key.signer', () => {
   });
 
   it('should get a private key', async () => {
-    expect(await signer.getPrivateKey()).toEqual(privateKey);
+    expect(await signer.getPrivateKey(derivation)).toEqual(
+      'd2a6956c6db5563b9755303795cc7e15be20e04c08b1fc8644f197e13190cbad'
+    );
   });
 });

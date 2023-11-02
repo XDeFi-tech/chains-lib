@@ -7,8 +7,8 @@ import { ChainMsg } from '../msg';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      new PublicKey(address);
-      return true;
+      const publicKey = new PublicKey(address);
+      return publicKey.toBase58() === address;
     } catch (error) {
       return false;
     }
@@ -19,9 +19,6 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async getAddress(_derivation: string): Promise<string> {
-    if (!this.verifyAddress(this.key)) {
-      throw new Error('Invalid address');
-    }
     const keypair = Keypair.fromSecretKey(Buffer.from(this.key, 'hex'));
     return keypair.publicKey.toBase58();
   }
