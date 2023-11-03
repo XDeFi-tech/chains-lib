@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.9
+
+### Patch Changes
+
+- 93d8633: Update UTXO getTransaction queries
+
 ## 1.1.8
 
 ### Patch Changes
