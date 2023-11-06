@@ -3,6 +3,7 @@ import {
   GasFeeSpeed,
   Msg as BasMsg,
   MsgData,
+  MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import { StdTx } from '@cosmjs/amino';
@@ -48,8 +49,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     return this.data;
   }
 
-  constructor(data: MsgData, provider: CosmosProvider) {
-    super(data, provider);
+  constructor(data: MsgData, provider: CosmosProvider, encoding: MsgEncoding) {
+    super(data, provider, encoding);
   }
 
   private getValue() {

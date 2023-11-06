@@ -2,6 +2,7 @@ import {
   FeeEstimation,
   GasFeeSpeed,
   Msg as BasMsg,
+  MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
@@ -36,8 +37,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
   declare provider: BinanceProvider;
 
-  constructor(data: MsgBody, provider: BinanceProvider) {
-    super(data, provider);
+  constructor(data: MsgBody, provider: BinanceProvider, encoding: MsgEncoding) {
+    super(data, provider, encoding);
   }
 
   public toData() {

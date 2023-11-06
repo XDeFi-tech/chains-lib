@@ -2,6 +2,7 @@ import {
   FeeEstimation,
   GasFeeSpeed,
   Msg as BaseMsg,
+  MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
@@ -26,9 +27,10 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
 
   constructor(
     public readonly data: MsgBody,
-    public readonly provider: DogecoinProvider
+    public readonly provider: DogecoinProvider,
+    public readonly encoding: MsgEncoding
   ) {
-    super(data, provider);
+    super(data, provider, encoding);
   }
 
   public toData() {

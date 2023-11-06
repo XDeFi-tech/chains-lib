@@ -1,5 +1,5 @@
 import Solana from '@ledgerhq/hw-app-solana';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction as SolanaTransaction } from '@solana/web3.js';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
@@ -36,15 +36,19 @@ export class LedgerSigner extends Signer.Provider {
     try {
       const app = new Solana(transport);
       const { tx } = await msg.buildTx();
+      const transaction = tx as SolanaTransaction;
       const signedTx = await app.signTransaction(
         derivation,
-        tx.serializeMessage()
+        transaction.serializeMessage()
       );
 
       const addressBuffer = await app.getAddress(derivation);
-      tx.addSignature(new PublicKey(addressBuffer.address), signedTx.signature);
+      transaction.addSignature(
+        new PublicKey(addressBuffer.address),
+        signedTx.signature
+      );
 
-      msg.sign(tx.serialize());
+      msg.sign(transaction.serialize());
     } finally {
       transport.close();
     }

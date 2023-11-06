@@ -7,6 +7,7 @@ import {
   FeeData,
   FeeOptions,
   GasFeeSpeed,
+  MsgEncoding,
   Response,
   Transaction,
   TransactionData,
@@ -33,8 +34,11 @@ export class ThorProvider extends Chain.Provider {
     this.rest = axios.create({ baseURL: this.manifest.rpcURL });
   }
 
-  createMsg(data: MsgBody): ChainMsg {
-    return new ChainMsg(data, this);
+  createMsg(
+    data: MsgBody,
+    encoding: MsgEncoding = MsgEncoding.object
+  ): ChainMsg {
+    return new ChainMsg(data, this, encoding);
   }
 
   async getAccount(address: string): Promise<AccountInfo | null> {

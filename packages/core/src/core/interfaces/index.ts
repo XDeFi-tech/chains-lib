@@ -8,3 +8,9 @@ export interface FeeData {
   maxFeePerGas?: NumberIsh;
   maxPriorityFeePerGas?: NumberIsh;
 }
+
+export enum MsgEncoding {
+  buffer = 'buffer',
+  object = 'object',
+  base64 = 'base64',
+}

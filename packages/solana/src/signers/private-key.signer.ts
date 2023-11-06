@@ -1,5 +1,10 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import {
+  Keypair,
+  PublicKey,
+  Transaction as SolanaTransaction,
+  VersionedTransaction,
+} from '@solana/web3.js';
 
 import { ChainMsg } from '../msg';
 
@@ -24,8 +29,21 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async sign(msg: ChainMsg): Promise<void> {
-    const { tx } = await msg.buildTx();
-    tx.sign(Keypair.fromSecretKey(Buffer.from(this.key, 'hex')));
+    const { tx, encoding } = await msg.buildTx();
+    const account = Keypair.fromSecretKey(Buffer.from(this.key, 'hex'));
+    switch (encoding) {
+      case MsgEncoding.object:
+        const transaction = tx as SolanaTransaction;
+        transaction.sign(account);
+        break;
+      case MsgEncoding.base64:
+        const versionedTransaction = tx as VersionedTransaction;
+        versionedTransaction.sign([account]);
+        break;
+      default:
+        throw new Error('Invalid encoding for solana transaction');
+    }
+
     msg.sign(tx.serialize());
   }
 }

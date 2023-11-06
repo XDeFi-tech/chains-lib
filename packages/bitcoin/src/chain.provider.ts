@@ -1,4 +1,9 @@
-import { Chain, ChainDecorator, Transaction } from '@xdefi-tech/chains-core';
+import {
+  Chain,
+  ChainDecorator,
+  MsgEncoding,
+  Transaction,
+} from '@xdefi-tech/chains-core';
 import { UtxoProvider } from '@xdefi-tech/chains-utxo';
 
 import { IndexerDataSource } from './datasource';
@@ -16,8 +21,11 @@ export class BitcoinProvider extends UtxoProvider {
     };
   }
 
-  createMsg(data: MsgBody): ChainMsg {
-    return new ChainMsg(data, this);
+  createMsg(
+    data: MsgBody,
+    encoding: MsgEncoding = MsgEncoding.object
+  ): ChainMsg {
+    return new ChainMsg(data, this, encoding);
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
