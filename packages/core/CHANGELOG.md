@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.13
+
+### Patch Changes
+
+- 64ca641: Add option to create message from object, buffer or base64
+
 ## 1.1.12
 
 ### Patch Changes

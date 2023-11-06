@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.6
+
+### Patch Changes
+
+- 64ca641: Add option to create message from object, buffer or base64
+- Updated dependencies [64ca641]
+  - @xdefi-tech/chains-core@1.1.13
+
 ## 1.1.5
 
 ### Patch Changes

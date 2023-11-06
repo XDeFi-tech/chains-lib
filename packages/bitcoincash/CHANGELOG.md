@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 1.0.9
+
+### Patch Changes
+
+- 64ca641: Add option to create message from object, buffer or base64
+- Updated dependencies [64ca641]
+  - @xdefi-tech/chains-core@1.1.13
+  - @xdefi-tech/chains-utxo@1.0.6
+
 ## 1.0.8
 
 ### Patch Changes

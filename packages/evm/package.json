@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-evm",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
