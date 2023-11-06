@@ -3,6 +3,7 @@ import {
   GasFeeSpeed,
   HexString,
   Msg as BasMsg,
+  MsgEncoding,
   NumberIsh,
   utils,
 } from '@xdefi-tech/chains-core';
@@ -66,8 +67,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
   declare provider: EvmProvider;
 
-  constructor(data: MsgBody, provider: EvmProvider) {
-    super(data, provider);
+  constructor(data: MsgBody, provider: EvmProvider, encoding: MsgEncoding) {
+    super(data, provider, encoding);
   }
 
   async getDataFromContract() {

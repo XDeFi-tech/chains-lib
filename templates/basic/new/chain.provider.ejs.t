@@ -14,6 +14,7 @@ import {
     Response,
     Transaction,
     Balance,
+    MsgEncoding,
 } from '@xdefi-tech/chains-core';
 import { ChainMsg } from './msg';
 
@@ -32,8 +33,8 @@ export class <%= Name %>Provider extends Chain.Provider {
         // this.rpcProvider = ;
     }
 
-    createMsg(data: MsgData): Msg {
-        return new ChainMsg(data);
+    createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+        return new ChainMsg(data, this, encoding);
     }
 
     async getTransactions(address: string, afterBlock?: number | string): Promise<Response<Transaction[], Transaction>> {

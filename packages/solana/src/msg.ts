@@ -2,6 +2,7 @@ import {
   FeeEstimation,
   GasFeeSpeed,
   Msg as BasMsg,
+  MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
@@ -11,6 +12,7 @@ import {
   Transaction as SolanaTransaction,
   TransactionInstruction,
   LAMPORTS_PER_SOL,
+  VersionedTransaction,
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -30,28 +32,30 @@ export interface MsgBody {
   decimals?: number;
   contractAddress?: string;
   memo?: string;
+  data?: string; // for swaps when encoded is base64
 }
 
 export interface TxBody {
-  tx: SolanaTransaction;
+  tx: SolanaTransaction | VersionedTransaction;
   value: number; // in lamports
   to: string;
   from: string;
   gasPrice: number;
   decimals: number;
-  programId: PublicKey;
+  programId?: PublicKey;
   contractAddress?: string;
   toTokenAddress?: string;
   fromTokenAddress?: string;
   memo?: string;
+  encoding?: MsgEncoding;
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   declare signedTransaction: Buffer;
   declare provider: SolanaProvider;
 
-  constructor(data: MsgBody, provider: SolanaProvider) {
-    super(data, provider);
+  constructor(data: MsgBody, provider: SolanaProvider, encoding: MsgEncoding) {
+    super(data, provider, encoding);
   }
 
   public toData() {
@@ -63,6 +67,23 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     let decimals = msgData.decimals || 9; // 9 - lamports in SOL
     let gasPrice = msgData.gasPrice;
     let programId;
+
+    if (this.encoding === MsgEncoding.base64) {
+      const versionedTransaction = VersionedTransaction.deserialize(
+        Buffer.from(msgData.data, 'base64')
+      );
+
+      return {
+        tx: versionedTransaction,
+        value: 0,
+        to: msgData.to,
+        from: msgData.from,
+        gasPrice: 0,
+        decimals: msgData.decimals || this.provider.manifest.decimals,
+        encoding: this.encoding,
+      };
+    }
+
     const senderPublicKey = new PublicKey(msgData.from);
     const recipientPublicKey = new PublicKey(msgData.to);
     let value;
@@ -155,6 +176,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       memoProgramId: new PublicKey(
         'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
       ),
+      encoding: this.encoding,
       ...contractInfo,
     };
   }

@@ -1,5 +1,5 @@
 import { Provider } from 'core/chain';
-import { GasFeeSpeed } from 'core';
+import { GasFeeSpeed, MsgEncoding } from 'core';
 
 /**
  * Abstract message class which allows to create chain specific message
@@ -15,7 +15,11 @@ export interface FeeEstimation {
 export abstract class Msg<OutData extends object = object, TxData extends object = object> {
   public abstract signedTransaction: any;
 
-  constructor(public readonly data: MsgData, public readonly provider?: Provider) {}
+  constructor(
+    public readonly data: MsgData,
+    public readonly provider?: Provider,
+    public readonly encoding: MsgEncoding = MsgEncoding.object
+  ) {}
 
   public abstract getFee(speed?: GasFeeSpeed): Promise<FeeEstimation>;
 

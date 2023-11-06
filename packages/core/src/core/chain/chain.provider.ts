@@ -7,9 +7,8 @@ import { Transaction, TransactionData } from 'core/transaction';
 import { ChainFeatures, Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { FeeOptions, GasFeeSpeed } from 'core/fee';
-import { Balance, DataSource, Response } from 'core';
+import { Balance, DataSource, MsgEncoding, Response, FeeData } from 'core';
 import { forEach } from 'lodash';
-import { FeeData } from 'core/interfaces';
 
 export interface IOptions {
   signers?: typeof SignerProvider[];
@@ -112,9 +111,10 @@ export abstract class Provider {
    * Creates a new instance of a message.
    *
    * @param data The data object that represents the message.
+   * @param encoding Type for parsing and building transacrion
    * @returns A new instance of a message.
    */
-  abstract createMsg(data: MsgData): Msg;
+  abstract createMsg(data: MsgData, encoding: MsgEncoding): Msg;
 
   /**
    * Retrieves the current gas fee options for the chain, including base and priority fees per gas for EIP-1559 chains.

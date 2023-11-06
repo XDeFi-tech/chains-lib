@@ -9,6 +9,7 @@ import {
   GasFeeSpeed,
   Msg,
   MsgData,
+  MsgEncoding,
   Response,
   Transaction,
   TransactionData,
@@ -33,8 +34,8 @@ export class SolanaProvider extends Chain.Provider {
     this.rpcProvider = new Connection(this.manifest.rpcURL);
   }
 
-  createMsg(data: MsgData): Msg {
-    return new ChainMsg(data, this);
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+    return new ChainMsg(data, this, encoding);
   }
 
   async getTransactions(

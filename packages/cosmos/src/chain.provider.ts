@@ -9,6 +9,7 @@ import {
   GasFeeSpeed,
   Msg,
   MsgData,
+  MsgEncoding,
   Response,
   Transaction,
   TransactionData,
@@ -52,8 +53,8 @@ export class CosmosProvider extends Chain.Provider {
     });
   }
 
-  createMsg(data: MsgData): Msg {
-    return new ChainMsg(data, this);
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+    return new ChainMsg(data, this, encoding);
   }
 
   async getTransactions(

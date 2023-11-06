@@ -6,6 +6,7 @@ import {
   FeeData,
   FeeOptions,
   GasFeeSpeed,
+  MsgEncoding,
   Response,
   Transaction,
   TransactionData,
@@ -54,8 +55,11 @@ export class UtxoProvider extends Chain.Provider {
     }
   }
 
-  createMsg(data: MsgBody): ChainMsg {
-    return new ChainMsg(data, this);
+  createMsg(
+    data: MsgBody,
+    encoding: MsgEncoding = MsgEncoding.object
+  ): ChainMsg {
+    return new ChainMsg(data, this, encoding);
   }
 
   async getTransactions(
