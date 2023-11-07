@@ -15,6 +15,9 @@
     "test:watch": {
       "cache": false
     },
+    "coverage": {
+      "dependsOn": ["^build"]
+    },
     "compile": {
       "cache": false,
       "outputs": []

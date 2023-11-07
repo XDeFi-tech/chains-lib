@@ -64,6 +64,7 @@
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -76,6 +77,7 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
+    "testURL": "https://rpc-proxy.xdefi.services/",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
     },

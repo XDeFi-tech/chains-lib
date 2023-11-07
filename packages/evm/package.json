@@ -60,6 +60,7 @@
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch"
   },
