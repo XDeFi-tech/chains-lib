@@ -38,10 +38,11 @@
     "@xdefi-tech/chains-core": "*",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
-    "tronweb": "^5.1.0",
+    "tronweb": "^5.3.1",
     "ts-node": "^10.7.0"
   },
   "scripts": {
@@ -73,9 +74,7 @@
     "target": "ES6"
   },
   "jest": {
-    "setupFiles": [
-      "./jest-setup-file.ts"
-    ],
+    "setupFiles": [],
     "preset": "ts-jest",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

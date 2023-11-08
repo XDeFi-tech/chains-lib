@@ -49,7 +49,7 @@ export class IndexerDataSource extends DataSource {
     _msgs: ChainMsg[],
     _speed: GasFeeSpeed
   ): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+    return [];
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {

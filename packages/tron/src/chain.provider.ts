@@ -14,6 +14,8 @@ import {
   TransactionData,
   MsgEncoding,
 } from '@xdefi-tech/chains-core';
+import { some } from 'lodash';
+import TronWeb from 'tronweb';
 
 import { ChainMsg } from './msg';
 
@@ -22,9 +24,13 @@ import { ChainMsg } from './msg';
   providerType: 'Tron',
 })
 export class TronProvider extends Chain.Provider {
+  declare rpcProvider: any;
+
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    // this.rpcProvider = ;
+    this.rpcProvider = new TronWeb({
+      fullHost: dataSource.manifest.rpcURL,
+    }).trx;
   }
 
   createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
@@ -42,7 +48,7 @@ export class TronProvider extends Chain.Provider {
   }
 
   async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+    return [];
   }
 
   async getNFTBalance(address: string) {
@@ -64,8 +70,21 @@ export class TronProvider extends Chain.Provider {
     throw new Error("Tron chain doesn't use nonce");
   }
 
-  async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.');
+  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+    if (some(msgs, (msg) => !msg.hasSignature)) {
+      throw new Error('Some message do not have signature, sign it first');
+    }
+
+    const transactions = [];
+
+    for (const msg of msgs) {
+      const tx = await this.rpcProvider.sendRawTransaction(
+        msg.signedTransaction
+      );
+      transactions.push(Transaction.fromData(tx));
+    }
+
+    return transactions;
   }
 
   async getTransaction(_txHash: string): Promise<TransactionData | null> {
