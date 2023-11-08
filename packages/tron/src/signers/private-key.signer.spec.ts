@@ -18,7 +18,7 @@ describe('tron private-key.signer', () => {
     expect(signer.verifyAddress(MOCK.address)).toBe(true);
   });
 
-  it('should return false for a valid address', () => {
+  it('should return false for an invalid address', () => {
     expect(signer.verifyAddress('invalid-address')).toBe(false);
   });
 
