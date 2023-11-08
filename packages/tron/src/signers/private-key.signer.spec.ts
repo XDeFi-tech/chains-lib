@@ -24,7 +24,7 @@ describe('tron private-key.signer', () => {
 
   it('should return the correct address for a valid private key', async () => {
     const address = await signer.getAddress(null);
-    expect(address).toBe(address);
+    expect(address).toBe(MOCK.address);
   });
 
   it('should throw an error for an invalid private key', async () => {
