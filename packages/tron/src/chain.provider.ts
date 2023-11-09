@@ -12,7 +12,7 @@ import {
   Balance,
   FeeData,
   TransactionData,
-  MsgEncoding,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { some } from 'lodash';
 import TronWeb from 'tronweb';
@@ -30,11 +30,11 @@ export class TronProvider extends Chain.Provider {
     super(dataSource, options);
     this.rpcProvider = new TronWeb({
       fullHost: dataSource.manifest.rpcURL,
-    }).trx;
+    });
   }
 
-  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
-    return new ChainMsg(data, this, encoding);
+  createMsg(data: MsgData): Msg {
+    return new ChainMsg(data);
   }
 
   async getTransactions(
@@ -49,10 +49,6 @@ export class TronProvider extends Chain.Provider {
 
   async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
     return [];
-  }
-
-  async getNFTBalance(address: string) {
-    return this.dataSource.getNFTBalance(address);
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
@@ -78,7 +74,7 @@ export class TronProvider extends Chain.Provider {
     const transactions = [];
 
     for (const msg of msgs) {
-      const tx = await this.rpcProvider.sendRawTransaction(
+      const tx = await this.rpcProvider.trx.sendRawTransaction(
         msg.signedTransaction
       );
       transactions.push(Transaction.fromData(tx));
@@ -87,7 +83,33 @@ export class TronProvider extends Chain.Provider {
     return transactions;
   }
 
-  async getTransaction(_txHash: string): Promise<TransactionData | null> {
-    throw new Error('Method not implemented.');
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await this.rpcProvider.trx.getTransaction(txHash);
+    if (!tx) {
+      return null;
+    }
+
+    const result: TransactionData = {
+      hash: tx.txID,
+      from: '',
+      to: '',
+      status: tx.blockNumber
+        ? TransactionStatus.success
+        : TransactionStatus.pending,
+    };
+
+    if (
+      tx.raw_data.contract.length > 0 &&
+      tx.raw_data.contract[0].type === 'TransferContract'
+    ) {
+      const transferData = tx.raw_data.contract[0].parameter.value;
+
+      result.to = this.rpcProvider.address.fromHex(transferData.to_address);
+      result.from = this.rpcProvider.address.fromHex(
+        transferData.owner_address
+      );
+    }
+
+    return result;
   }
 }

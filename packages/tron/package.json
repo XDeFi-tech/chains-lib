@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@xdefi-tech/chains-core": "*",
+    "axios": "^1.6.1",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
     "lodash": "^4.17.21",
@@ -78,6 +79,9 @@
     "preset": "ts-jest",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
     },
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
