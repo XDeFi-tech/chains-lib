@@ -59,5 +59,4 @@ describe('chain.provider', () => {
     expect(balanceData[0].amount.toNumber()).toBeGreaterThanOrEqual(0);
     expect(balanceData[0].asset.name).toEqual('Tron');
   });
-
 });

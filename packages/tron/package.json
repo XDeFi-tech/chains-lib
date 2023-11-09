@@ -54,7 +54,8 @@
     "lint": "eslint .",
     "test": "jest",
     "lint:fix": "eslint . --fix",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage"
   },
   "type": "commonjs",
   "tsup": {
