@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.14
+
+### Patch Changes
+
+- a357964: Disable preflight option on broadcast
+
 ## 1.1.13
 
 ### Patch Changes
