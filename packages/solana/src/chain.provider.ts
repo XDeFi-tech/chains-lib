@@ -82,7 +82,11 @@ export class SolanaProvider extends Chain.Provider {
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
       const hash = await this.rpcProvider.sendRawTransaction(
-        msg.signedTransaction
+        msg.signedTransaction,
+        {
+          skipPreflight: true,
+          maxRetries: 2,
+        }
       );
       transactions.push(Transaction.fromData({ hash }));
     }
