@@ -17,11 +17,13 @@ import TronWeb from 'tronweb';
 import axios from 'axios';
 
 import { ChainMsg } from '../../msg';
+import type { TronManifest } from '../../manifests';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
   declare rpcProvider: any;
-  constructor(manifest: Chain.Manifest) {
+  declare manifest: TronManifest;
+  constructor(manifest: TronManifest) {
     super(manifest);
     this.rpcProvider = new TronWeb({
       fullHost: manifest.rpcURL,
@@ -59,7 +61,7 @@ export class ChainDataSource extends DataSource {
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
     const response = await axios.get(
-      `https://api.trongrid.io/v1/accounts/${address}/transactions`
+      `${this.manifest.dataProviderURL}/v1/accounts/${address}/transactions`
     );
 
     return response.data.data.map((transaction: any) =>
