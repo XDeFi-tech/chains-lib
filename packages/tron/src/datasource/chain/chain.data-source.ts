@@ -5,7 +5,6 @@ import {
   GasFeeSpeed,
   Transaction,
   Injectable,
-  Chain,
   TransactionsFilter,
   BalanceFilter,
   Balance,
@@ -55,6 +54,10 @@ export class ChainDataSource extends DataSource {
   async subscribeBalance(
     _filter: BalanceFilter
   ): Promise<Observable<Balance[]>> {
+    throw new Error('Method not implemented.');
+  }
+
+  async getNFTBalance(_address: string) {
     throw new Error('Method not implemented.');
   }
 

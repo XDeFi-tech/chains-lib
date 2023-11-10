@@ -58,6 +58,10 @@ export class TronProvider extends Chain.Provider {
     );
   }
 
+  async getNFTBalance(_address: string) {
+    throw new Error('Method not implemented.');
+  }
+
   async gasFeeOptions(): Promise<FeeOptions | null> {
     throw new Error('Method not implemented.');
   }
