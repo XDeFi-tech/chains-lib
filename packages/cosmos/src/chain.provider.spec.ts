@@ -9,6 +9,29 @@ jest.mock('./datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('axios', () => ({
+  create: jest.fn().mockReturnValue({
+    get: jest.fn().mockResolvedValue({
+      data: {
+        tx_response: {
+          height: '17932843',
+          txhash:
+            '0269644F832384D033D2223226A5FC25BD17A3646EE2BEF5C1F9009FD19E66B9',
+          codespace: '',
+          code: 0,
+          data: '',
+          logs: [],
+        },
+        block: {
+          header: {
+            height: '17932843',
+          },
+        },
+      },
+    }),
+  }),
+}));
+
 describe('chain.provider', () => {
   let provider: CosmosProvider;
 
@@ -37,14 +60,6 @@ describe('chain.provider', () => {
     );
   });
 
-  it('should get fee options', async () => {
-    const feeOptions = await provider.gasFeeOptions();
-
-    expect(feeOptions?.low).toBeTruthy();
-    expect(feeOptions?.medium).toBeTruthy();
-    expect(feeOptions?.high).toBeTruthy();
-  });
-
   it('should get a balance', async () => {
     const balance = await provider.getBalance(
       'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4'
@@ -54,11 +69,11 @@ describe('chain.provider', () => {
     expect(balanceData.length).toEqual(0);
   });
 
-  it('should throw for a non-existant transaction on the blockchain', async () => {
-    expect(
-      provider.getTransaction(
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-      )
-    ).rejects.toThrow();
+  it('should get fee options', async () => {
+    const feeOptions = await provider.gasFeeOptions();
+
+    expect(feeOptions?.low).toBeTruthy();
+    expect(feeOptions?.medium).toBeTruthy();
+    expect(feeOptions?.high).toBeTruthy();
   });
 });

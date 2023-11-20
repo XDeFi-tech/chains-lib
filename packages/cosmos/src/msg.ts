@@ -23,7 +23,7 @@ export interface MsgBody {
   typeUrl?: string;
   contractAddress?: string;
   nftId?: string;
-  msgs: any[];
+  msgs?: any[];
 }
 
 export interface TxData {
