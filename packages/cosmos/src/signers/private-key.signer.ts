@@ -1,14 +1,15 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { Secp256k1HdWallet } from '@cosmjs/launchpad';
+import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { fromHex } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
-@SignerDecorator(Signer.SignerType.SEED_PHRASE)
-export class SeedPhraseSigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string, prefix: string): boolean {
     try {
       const result = bech32.decode(address);
@@ -18,10 +19,15 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation?: string) {
+    return this.key;
+  }
+
   async getAddress(derivation: string, prefix: string): Promise<string> {
-    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-      prefix,
-    });
+    const wallet = await DirectSecp256k1Wallet.fromKey(
+      fromHex(this.key),
+      prefix
+    );
     const [{ address }] = await wallet.getAccounts();
     if (!this.verifyAddress(address, prefix)) {
       throw new Error('Invalid address');
@@ -31,9 +37,10 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async sign(msg: ChainMsg): Promise<void> {
     const txData = await msg.buildTx();
-    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-      prefix: msg.provider.manifest.prefix,
-    });
+    const wallet = await DirectSecp256k1Wallet.fromKey(
+      fromHex(this.key),
+      msg.provider.manifest.prefix
+    );
     const [{ address: senderAddress }] = await wallet.getAccounts();
     const client = await SigningStargateClient.connectWithSigner(
       msg.provider.manifest.rpcURL,
@@ -52,4 +59,4 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 }
 
-export default SeedPhraseSigner;
+export default PrivateKeySigner;
