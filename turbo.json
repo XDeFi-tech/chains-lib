@@ -16,7 +16,6 @@
       "cache": false
     },
     "coverage": {
-      "dependsOn": ["^build"]
     },
     "compile": {
       "cache": false,

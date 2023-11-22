@@ -1,5 +1,4 @@
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
-
+import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
