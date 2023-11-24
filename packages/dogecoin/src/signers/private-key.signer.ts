@@ -65,7 +65,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key));
+    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

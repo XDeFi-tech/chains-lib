@@ -64,7 +64,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key));
+    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());
