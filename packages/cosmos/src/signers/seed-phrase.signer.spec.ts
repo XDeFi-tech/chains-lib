@@ -29,20 +29,29 @@ jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
   };
 });
 
+type CosmosHdPathTypes = {
+  cosmos: string;
+  ethermint: string;
+};
+
 describe('seed-phrase.signer', () => {
   let mnemonic: string;
   let signer: SeedPhraseSigner;
   let provider: CosmosProvider;
   let txInput: MsgBody;
   let message: Msg;
-  let derivation: string;
+  let derivations: CosmosHdPathTypes;
 
   beforeEach(() => {
+    jest.setTimeout(15 * 1000);
     mnemonic =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
     signer = new SeedPhraseSigner(mnemonic);
 
-    derivation = "m/44'/118'/0'/0/0";
+    derivations = {
+      cosmos: "m/44'/118'/0'/0/0",
+      ethermint: "m/44'/60'/0'/0/0",
+    };
 
     provider = new CosmosProvider(
       new IndexerDataSource(COSMOS_MANIFESTS.cosmos)
@@ -52,13 +61,22 @@ describe('seed-phrase.signer', () => {
       from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       amount: '0.000001',
+      msgs: [],
     };
 
     message = provider.createMsg(txInput);
   });
 
   it('should get an address from a seed phrase', async () => {
-    expect(await signer.getAddress(derivation, 'cosmos')).toBe(txInput.from);
+    expect(await signer.getAddress(derivations.cosmos, 'cosmos')).toBe(
+      txInput.from
+    );
+  });
+
+  it('should get an ethermint address from a seed phrase', async () => {
+    expect(await signer.getAddress(derivations.ethermint)).toBe(
+      '0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d'
+    );
   });
 
   it('should sign a transaction using a seed phrase', async () => {
@@ -71,7 +89,15 @@ describe('seed-phrase.signer', () => {
     expect(signer.verifyAddress('0xDEADBEEF', 'cosmos')).toBe(false);
   });
 
+  it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
   it('should validate an address', async () => {
     expect(signer.verifyAddress(txInput.from, 'cosmos')).toBe(true);
+    expect(signer.verifyAddress(txInput.from)).toBe(true);
+    expect(
+      signer.verifyAddress('0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d')
+    ).toBe(true);
   });
 });

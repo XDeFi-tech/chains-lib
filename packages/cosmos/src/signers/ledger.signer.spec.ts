@@ -70,6 +70,7 @@ describe('ledger.signer', () => {
       from: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
       to: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
       amount: '0.000001',
+      msgs: [],
     };
 
     message = provider.createMsg(txInput);
