@@ -31,6 +31,7 @@ jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
 
 type CosmosHdPathTypes = {
   cosmos: string;
+  terra: string;
   ethermint: string;
 };
 
@@ -50,6 +51,7 @@ describe('seed-phrase.signer', () => {
 
     derivations = {
       cosmos: "m/44'/118'/0'/0/0",
+      terra: "m/44'/330'/0'/0/0",
       ethermint: "m/44'/60'/0'/0/0",
     };
 
@@ -79,6 +81,12 @@ describe('seed-phrase.signer', () => {
     );
   });
 
+  it('should get a terra address from a seed phrase', async () => {
+    expect(await signer.getAddress(derivations.terra)).toBe(
+      'terra1elsr769k4kcgap5kgy9fcetzrwdw05qr85gqra'
+    );
+  });
+
   it('should sign a transaction using a seed phrase', async () => {
     await signer.sign(message as ChainMsg);
 
@@ -98,6 +106,9 @@ describe('seed-phrase.signer', () => {
     expect(signer.verifyAddress(txInput.from)).toBe(true);
     expect(
       signer.verifyAddress('0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d')
+    ).toBe(true);
+    expect(
+      signer.verifyAddress('terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8')
     ).toBe(true);
   });
 });

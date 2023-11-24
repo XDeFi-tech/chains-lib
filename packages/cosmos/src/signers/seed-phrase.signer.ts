@@ -11,6 +11,7 @@ import {
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { toHex } from '@cosmjs/encoding';
 import { getAddress } from 'ethers/lib/utils';
+import { MnemonicKey, AccAddress } from '@terra-money/feather.js';
 
 import { ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -22,6 +23,8 @@ export class SeedPhraseSigner extends Signer.Provider {
       if (address.substring(0, 2) === '0x') {
         getAddress(address);
         return true;
+      } else if (address.substring(0, 5) === 'terra') {
+        return AccAddress.validate(address);
       } else {
         const result = bech32.decode(address);
         return (
@@ -47,6 +50,18 @@ export class SeedPhraseSigner extends Signer.Provider {
       const lastTwentyBytes = toHex(hash.slice(-20));
 
       return getAddress('0x' + lastTwentyBytes);
+    } else if (
+      pathToString(hdPath).split('/')[2] == "330'" ||
+      prefix === 'terra'
+    ) {
+      const wallet = new MnemonicKey({
+        mnemonic: this._key,
+        coinType: 330, // optional, default
+        account: parseInt(pathToString(hdPath).split('/')[3]), // optional, default
+        index: parseInt(pathToString(hdPath).split('/')[4]), // optional, default
+      });
+
+      return wallet.accAddress('terra');
     } else {
       if (!prefix) {
         prefix = 'cosmos';
