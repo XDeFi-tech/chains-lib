@@ -68,5 +68,4 @@ describe('chain.provider', () => {
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(0);
   });
-
 });

@@ -48,7 +48,7 @@ export class TronProvider extends Chain.Provider {
   }
 
   async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    return [];
+    throw new Error('Method not implemented.');
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {

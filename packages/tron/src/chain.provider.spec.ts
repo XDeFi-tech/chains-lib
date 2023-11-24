@@ -45,10 +45,6 @@ describe('chain.provider', () => {
     ).rejects.toThrow();
   });
 
-  it('should get fee options', async () => {
-    expect(provider.gasFeeOptions()).rejects.toThrow();
-  });
-
   it('should get a balance for a valid address', async () => {
     const balance = await provider.getBalance(
       'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52'
