@@ -253,6 +253,8 @@ export class ChainDataSource extends DataSource {
   async getAccount(address: string): Promise<null | Account> {
     const client = await Tendermint34Client.connect(this.manifest.rpcURL);
     const authExtension = setupAuthExtension(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       QueryClient.withExtensions(client)
     );
     let acc = null;
