@@ -105,7 +105,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       msg.sign(rawTx);
       return;
     } else if (chainType === CosmosChainType.Terra) {
-      const clientOptions: any = {};
+      const clientOptions: Record<string, any> = {};
       clientOptions[msg.provider.manifest.chainId] = {
         chainID: msg.provider.manifest.chainId,
         lcd: msg.provider.manifest.lcdURL,
@@ -117,7 +117,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       };
       const lcdClient = new LCDClient(clientOptions);
       const hdPath = stringToPath(derivation);
-      const wallet = lcdClient.wallet(
+      const terraWallet = lcdClient.wallet(
         new MnemonicKey({
           mnemonic: this._key,
           coinType: 330, // optional, default
@@ -126,7 +126,7 @@ export class SeedPhraseSigner extends Signer.Provider {
         })
       );
 
-      const tx = await wallet.createAndSignTx({
+      const tx = await terraWallet.createAndSignTx({
         msgs: [txData.msgs],
         chainID: msg.provider.manifest.chainId,
       });

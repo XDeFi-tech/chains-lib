@@ -113,7 +113,7 @@ describe('seed-phrase.signer', () => {
     expect(signer.verifyAddress('0xDEADBEEF', 'cosmos')).toBe(false);
   });
 
-  it('should return false when verifing an invalid address', async () => {
+  it('should return false when verifing an invalid address with no prefix specified', async () => {
     expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
   });
 
