@@ -13,6 +13,7 @@ export enum CosmosHubChains {
   kujira = 'kujira',
   stride = 'stride',
   mars = 'mars',
+  terra = 'terra',
 }
 
 export interface CosmosManifest extends Chain.Manifest {
@@ -238,6 +239,24 @@ export const COSMOS_MANIFESTS: {
       high: 0,
       medium: 0,
       low: 0.01,
+    },
+  },
+  [CosmosHubChains.terra]: {
+    name: 'Terra',
+    description: '',
+    rpcURL: 'https://terra-rpc.polkachu.com/',
+    lcdURL: 'https://phoenix-lcd.terra.dev/',
+    chainSymbol: 'LUNA',
+    blockExplorerURL: 'https://www.mintscan.io/terra/account',
+    chainId: 'phoenix-1',
+    chain: 'terra',
+    denom: 'uluna',
+    decimals: 6,
+    prefix: 'terra',
+    feeGasStep: {
+      high: 0.003,
+      medium: 0.0025,
+      low: 0.001,
     },
   },
 };

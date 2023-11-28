@@ -3,7 +3,7 @@ import { Msg } from '@xdefi-tech/chains-core';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, CosmosChainType, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
@@ -88,10 +88,26 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(message as ChainMsg);
+    await signer.sign(message as ChainMsg, derivations.cosmos);
 
     expect(message.signedTransaction).toBeTruthy();
   });
+
+  // it('should sign a terra transaction using a seed phrase', async () => {
+  //   const terraProvider = new CosmosProvider(
+  //     new IndexerDataSource(COSMOS_MANIFESTS.terra)
+  //   );
+
+  //   const terraMessage = terraProvider.createMsg(txInput);
+
+  //   await signer.sign(
+  //     terraMessage as ChainMsg,
+  //     derivations.terra,
+  //     CosmosChainType.Terra
+  //   );
+
+  //   expect(message.signedTransaction).toBeTruthy();
+  // });
 
   it('should return false when verifing an invalid address', async () => {
     expect(signer.verifyAddress('0xDEADBEEF', 'cosmos')).toBe(false);
