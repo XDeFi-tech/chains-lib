@@ -28,10 +28,13 @@ export class SeedPhraseSigner extends Signer.Provider {
     return await ecc;
   }
 
-  verifyAddress(address: string): boolean {
+  verifyAddress(address: string, prefix?: string): boolean {
+    if (!prefix) {
+      prefix = 'thor';
+    }
     try {
       const result = bech32.decode(address);
-      return result.prefix === 'thor' && result.words.length === 32;
+      return result.prefix === prefix && result.words.length === 32;
     } catch (err) {
       return false;
     }
@@ -77,11 +80,11 @@ export class SeedPhraseSigner extends Signer.Provider {
     });
   }
 
-  async getAddress(derivation: string): Promise<string> {
+  async getAddress(derivation: string, prefix?: string): Promise<string> {
     const path: readonly HdPath[] = [stringToPath(derivation)];
     const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
       hdPaths: path,
-      prefix: 'thor',
+      prefix: prefix ?? 'thor',
     });
     const [{ address }] = await wallet.getAccounts();
     return address;
