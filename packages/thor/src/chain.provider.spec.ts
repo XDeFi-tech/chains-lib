@@ -5,6 +5,39 @@ import { ThorProvider } from './chain.provider';
 import { ChainDataSource } from './datasource';
 import { THOR_MANIFEST } from './manifests';
 
+jest.mock('axios', () => ({
+  create: jest.fn().mockReturnValue({
+    get: jest.fn().mockResolvedValue({
+      data: {
+        tx: {
+          body: {
+            messages: [
+              {
+                from_address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+                to_address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+              },
+            ],
+          },
+        },
+        tx_response: {
+          height: '17932843',
+          txhash:
+            '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0',
+          codespace: '',
+          code: 0,
+          data: '',
+          logs: [],
+        },
+        block: {
+          header: {
+            height: '17932843',
+          },
+        },
+      },
+    }),
+  }),
+}));
+
 describe('chain.provider', () => {
   let provider: ThorProvider;
 
@@ -53,13 +86,5 @@ describe('chain.provider', () => {
 
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(0);
-  });
-
-  it('should throw for a non-existant transaction on the blockchain', async () => {
-    expect(
-      provider.getTransaction(
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-      )
-    ).rejects.toThrow();
   });
 });

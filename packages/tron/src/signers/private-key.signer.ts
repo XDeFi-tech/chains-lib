@@ -1,15 +1,17 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import TronWeb from 'tronweb';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
+  constructor(key?: string) {
+    super(key);
+  }
+
+  verifyAddress(address: string, manifest?: Chain.Manifest): boolean {
     const tronWeb = new TronWeb({
-      fullHost: 'https://api.trongrid.io',
-      solidityNode: 'https://api.trongrid.io',
-      eventServer: 'https://api.trongrid.io',
+      fullHost: manifest?.rpcURL ? manifest.rpcURL : 'https://api.trongrid.io',
     });
 
     return tronWeb.isAddress(address);
@@ -19,19 +21,31 @@ export class PrivateKeySigner extends Signer.Provider {
     return this.key;
   }
 
-  async getAddress(_derivation: string): Promise<string> {
+  async getAddress(
+    key: string | null,
+    manifest?: Chain.Manifest
+  ): Promise<string> {
     const tronWeb = new TronWeb({
-      fullHost: 'https://api.trongrid.io',
-      solidityNode: 'https://api.trongrid.io',
-      eventServer: 'https://api.trongrid.io',
-      privateKey: this.key,
+      fullHost: manifest?.rpcURL ? manifest.rpcURL : 'https://api.trongrid.io',
+      privateKey: key ? key : this.key,
     });
 
     return tronWeb.defaultAddress.base58;
   }
 
-  async sign(_msg: ChainMsg): Promise<void> {
-    throw new Error('Method not implemented.');
+  async sign(
+    msg: ChainMsg,
+    key: string | null,
+    manifest: Chain.Manifest
+  ): Promise<void> {
+    const tronWeb = new TronWeb({
+      fullHost: manifest.rpcURL,
+      privateKey: key ? key : this.key,
+    });
+
+    const txData = await msg.buildTx();
+    const signature = await tronWeb.trx.sign(txData);
+    msg.sign(signature);
   }
 }
 

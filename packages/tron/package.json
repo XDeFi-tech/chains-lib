@@ -36,12 +36,14 @@
   },
   "dependencies": {
     "@xdefi-tech/chains-core": "*",
+    "axios": "^1.6.1",
     "bignumber.js": "^9.0.2",
     "eslint-config-custom": "*",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
-    "tronweb": "^5.1.0",
+    "tronweb": "^5.3.1",
     "ts-node": "^10.7.0"
   },
   "scripts": {
@@ -52,7 +54,8 @@
     "lint": "eslint .",
     "test": "jest",
     "lint:fix": "eslint . --fix",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage"
   },
   "type": "commonjs",
   "tsup": {
@@ -73,12 +76,13 @@
     "target": "ES6"
   },
   "jest": {
-    "setupFiles": [
-      "./jest-setup-file.ts"
-    ],
+    "setupFiles": [],
     "preset": "ts-jest",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
     },
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"

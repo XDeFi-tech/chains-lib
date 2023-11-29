@@ -44,12 +44,14 @@
     "@cosmjs/proto-signing": "^0.30.1",
     "@cosmjs/stargate": "^0.30.1",
     "@cosmos-client/core": "^0.47.1",
+    "@terra-money/feather.js": "^2.0.0-beta.13",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "axios": "^1.4.0",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",
+    "ethers": "^6.8.1",
     "lodash": "^4.17.21",
     "os-browserify": "^0.3.0",
     "reflect-metadata": "^0.1.13",
@@ -64,6 +66,7 @@
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -76,10 +79,11 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
+    "testURL": "https://rpc-proxy.xdefi.services/",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
     },
-    "testEnvironment": "jsdom",
+    "testEnvironment": "node",
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"

@@ -60,6 +60,7 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
