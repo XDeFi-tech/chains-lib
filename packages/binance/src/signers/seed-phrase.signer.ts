@@ -11,9 +11,13 @@ export class SeedPhraseSigner extends Signer.Provider {
     return crypto.checkAddress(address, prefix);
   }
 
-  async getPrivateKey(_derivation: string) {
-    // TODO add parse derivation to get derive index
-    return crypto.getPrivateKeyFromMnemonic(this.key, true, 0);
+  async getPrivateKey(derivation: string) {
+    let index = 0;
+    if (derivation) {
+      const indexStr = derivation.split('/').pop();
+      index = parseInt(indexStr || '0', 10);
+    }
+    return crypto.getPrivateKeyFromMnemonic(this.key, true, index);
   }
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
