@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-utxo
 
+## 1.0.7
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - eslint-config-custom@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.10
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+
 ## 1.1.9
 
 ### Patch Changes

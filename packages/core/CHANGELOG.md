@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.1.14
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+
 ## 1.1.13
 
 ### Patch Changes

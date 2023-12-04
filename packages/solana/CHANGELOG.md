@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.15
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - eslint-config-custom@1.0.1
+  - @xdefi-tech/chains-graphql@1.1.10
+
 ## 1.1.14
 
 ### Patch Changes

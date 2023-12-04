@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-thor
 
+## 1.0.9
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - @xdefi-tech/chains-graphql@1.1.10
+
 ## 1.0.8
 
 ### Patch Changes

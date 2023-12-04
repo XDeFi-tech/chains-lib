@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 1.1.18
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - @xdefi-tech/chains-graphql@1.1.10
+
 ## 1.1.17
 
 ### Patch Changes
