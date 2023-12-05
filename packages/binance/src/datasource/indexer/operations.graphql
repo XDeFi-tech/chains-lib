@@ -22,9 +22,9 @@ query GetBinanceBalances($address: String!) {
   }
 }
 
-query GetBinanceTransactions($address: String!, $pagination: CursorPagination, $dateRange: OptDateSelector, $blockRange: OptBlockSelector) {
+query GetBinanceTransactions($address: String!, $first: Int, $after: String, $blockRange: OptBlockSelector) {
   binance {
-    transactions(address: $address, pagination: $pagination, dateRange: $dateRange, blockRange: $blockRange) {
+    transactions(address: $address, first: $first, after: $after, blockRange: $blockRange) {
       pageInfo {
         endCursor
         hasNextPage
@@ -46,17 +46,19 @@ query GetBinanceTransactions($address: String!, $pagination: CursorPagination, $
               scalingFactor
             }
             symbol
+            type
           }
+          blockHeight
+          data
           fee {
             value
           }
+          fromAddress
           hash
           status
           time
           toAddress
-          fromAddress
           type
-          blockHeight
         }
       }
     }
