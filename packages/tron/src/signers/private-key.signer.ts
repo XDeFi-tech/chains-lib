@@ -30,7 +30,12 @@ export class PrivateKeySigner extends Signer.Provider {
       privateKey: key ? key : this.key,
     });
 
-    return tronWeb.defaultAddress.base58;
+    const address = tronWeb.defaultAddress.base58;
+    if (address) {
+      return address;
+    } else {
+      throw new Error('Error Getting TRON Address');
+    }
   }
 
   async sign(
