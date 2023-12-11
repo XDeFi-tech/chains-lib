@@ -116,7 +116,7 @@ export class ChainDataSource extends DataSource {
             symbol: symbol,
             native: false,
           }),
-          balance.div(BigNumber(10).pow(decimals).toString())
+          balance.div(new BigNumber(10).pow(decimals).toString())
         )
       );
     }

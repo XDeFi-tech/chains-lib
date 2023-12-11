@@ -17,8 +17,9 @@ export class SeedPhraseSigner extends Signer.Provider {
     return tronWeb.isAddress(address);
   }
 
-  async getPrivateKey(_derivation: string): Promise<string> {
-    return this.key;
+  async getPrivateKey(derivation: string): Promise<string> {
+    const tronWeb = TronWeb.fromMnemonic(this.key, derivation);
+    return tronWeb.privateKey;
   }
 
   async getAddress(key: string | null, derivation: string): Promise<string> {
