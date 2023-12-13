@@ -1,6 +1,6 @@
 import { Msg as BaseMsg } from '@xdefi-tech/chains-core';
 import TronWeb, { TronTransaction } from 'tronweb';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from 'ethers';
 
 import { TRON_MANIFEST } from './manifests';
 
