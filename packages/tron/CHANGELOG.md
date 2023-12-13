@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.9
+
+### Patch Changes
+
+- 4b0977a: Update TRC20 Balances and Fix Broken Import
+
 ## 1.1.8
 
 ### Patch Changes
