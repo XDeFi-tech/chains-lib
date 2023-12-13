@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.1.8
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-core@1.1.15
+
 ## 1.1.7
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-controller
 
+## 1.0.13
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-binance@1.0.15
+  - @xdefi-tech/chains-bitcoin@1.0.10
+  - @xdefi-tech/chains-bitcoincash@1.0.11
+  - @xdefi-tech/chains-core@1.1.15
+  - @xdefi-tech/chains-cosmos@1.0.21
+  - @xdefi-tech/chains-dogecoin@1.0.10
+  - @xdefi-tech/chains-evm@1.1.19
+  - @xdefi-tech/chains-litecoin@1.0.11
+  - @xdefi-tech/chains-solana@1.1.16
+  - @xdefi-tech/chains-thor@1.0.11
+  - @xdefi-tech/chains-graphql@1.1.12
+
 ## 1.0.12
 
 ### Patch Changes

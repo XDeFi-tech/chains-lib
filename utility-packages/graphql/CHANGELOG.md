@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.12
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-core@1.1.15
+
 ## 1.1.11
 
 ### Patch Changes
