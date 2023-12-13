@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 1.0.10
+
+### Patch Changes
+
+- a0e3beb: Add TRC20 support
+- Updated dependencies [a0e3beb]
+  - @xdefi-tech/chains-graphql@1.1.11
+
 ## 1.0.9
 
 ### Patch Changes

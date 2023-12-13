@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 1.0.14
+
+### Patch Changes
+
+- a0e3beb: Update binance transactions query regarding to changes on server side
+- Updated dependencies [a0e3beb]
+  - @xdefi-tech/chains-graphql@1.1.11
+
 ## 1.0.13
 
 ### Patch Changes

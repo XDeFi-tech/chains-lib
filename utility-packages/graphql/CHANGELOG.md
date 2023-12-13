@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.11
+
+### Patch Changes
+
+- a0e3beb: Update binance transactions query regarding to changes on server side
+
 ## 1.1.10
 
 ### Patch Changes
