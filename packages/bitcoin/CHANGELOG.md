@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-bitcoin
 
+## 1.0.11
+
+### Patch Changes
+
+- 005b329: Update GetBitcoinTransactions query with BE updates
+- Updated dependencies [005b329]
+  - @xdefi-tech/chains-graphql@1.1.13
+
 ## 1.0.10
 
 ### Patch Changes
