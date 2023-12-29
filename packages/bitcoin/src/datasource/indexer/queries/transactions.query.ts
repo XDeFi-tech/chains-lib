@@ -18,5 +18,5 @@ export const getTransactions = async (
     },
   });
 
-  return response.data.bitcoin.transactions;
+  return response.data.bitcoin.transactionsV2;
 };
