@@ -33,7 +33,7 @@ query GetLitecoinFees {
 
 query GetLitecoinTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
   litecoin {
-    transactions(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
       balanceChange {
         value
       }

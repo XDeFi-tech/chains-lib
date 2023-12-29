@@ -18,5 +18,5 @@ export const getTransactions = async (
     },
   });
 
-  return response.data.litecoin.transactions;
+  return response.data.litecoin.transactionsV2;
 };

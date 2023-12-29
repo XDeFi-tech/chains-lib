@@ -4891,8 +4891,8 @@ export type GetBitcoinCashTransactionsQuery = {
   __typename?: 'Query';
   bitcoincash: {
     __typename?: 'BitcoincashChain';
-    transactions: Array<{
-      __typename?: 'UTXOTransaction';
+    transactionsV2: Array<{
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
       timestamp?: any | null;
@@ -6529,8 +6529,8 @@ export type GetDogecoinTransactionsQuery = {
   __typename?: 'Query';
   dogecoin: {
     __typename?: 'DogeChain';
-    transactions: Array<{
-      __typename?: 'UTXOTransaction';
+    transactionsV2: Array<{
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
       timestamp?: any | null;
@@ -6659,8 +6659,8 @@ export type GetLitecoinTransactionsQuery = {
   __typename?: 'Query';
   litecoin: {
     __typename?: 'LitecoinChain';
-    transactions: Array<{
-      __typename?: 'UTXOTransaction';
+    transactionsV2: Array<{
+      __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
       timestamp?: any | null;
@@ -7892,7 +7892,7 @@ export const GetBitcoinCashTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -15836,7 +15836,7 @@ export const GetDogecoinTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -16422,7 +16422,7 @@ export const GetLitecoinTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
