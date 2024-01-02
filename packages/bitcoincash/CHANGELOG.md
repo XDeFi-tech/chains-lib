@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 1.0.12
+
+### Patch Changes
+
+- 04ce322: Update get transaction query with BE updates
+- Updated dependencies [04ce322]
+  - @xdefi-tech/chains-graphql@1.1.14
+
 ## 1.0.11
 
 ### Patch Changes

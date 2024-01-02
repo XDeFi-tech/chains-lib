@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.1.14
+
+### Patch Changes
+
+- 04ce322: Update get transaction query with BE updates
+
 ## 1.1.13
 
 ### Patch Changes
