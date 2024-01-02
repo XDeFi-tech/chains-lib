@@ -33,7 +33,7 @@ query GetBitcoinCashFees {
 
 query GetBitcoinCashTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
   bitcoincash {
-    transactions(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
       balanceChange {
         value
       }
