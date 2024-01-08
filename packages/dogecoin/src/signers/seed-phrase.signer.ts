@@ -67,7 +67,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       inputs.map((utxo: UTXO) => ({
         hash: utxo.hash,
         index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
+        nonWitnessUtxo: Buffer.from(utxo.txHex, 'hex'),
       }))
     );
 

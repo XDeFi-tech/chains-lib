@@ -1,4 +1,4 @@
-import { Transaction, TransactionData } from './transaction';
+import { Transaction, TransactionData, TransactionStatus } from './transaction';
 
 type InputData = {
   hash: string;
@@ -7,16 +7,19 @@ type InputData = {
 class MyTransaction extends Transaction<InputData> {
   public toData(): TransactionData {
     return {
-      hash: '',
+      hash: '0x1366a578b902e49ab3c1cea1941c808e8e6565181931f986a2468e7640dfed6e',
       to: '',
       from: '',
-      status: '',
+      status: TransactionStatus.pending,
     };
   }
 }
 
-const TRANSACTION_DATA: InputData = {
+const TRANSACTION_DATA: TransactionData = {
   hash: '0x1366a578b902e49ab3c1cea1941c808e8e6565181931f986a2468e7640dfed6e',
+  to: '',
+  from: '',
+  status: TransactionStatus.pending,
 };
 
 describe('Transaction', () => {

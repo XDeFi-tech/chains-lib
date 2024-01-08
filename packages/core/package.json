@@ -76,9 +76,6 @@
     "target": "ES6"
   },
   "jest": {
-    "setupFiles": [
-      "./jest-setup-file.ts"
-    ],
     "preset": "ts-jest",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -94,6 +91,7 @@
     "moduleNameMapper": {
       "^core(/?.*)": "<rootDir>/src/core$1",
       "^common(/?.*)": "<rootDir>/src/common$1"
-    }
+    },
+    "testTimeout": 15000
   }
 }

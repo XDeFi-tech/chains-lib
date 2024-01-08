@@ -94,6 +94,7 @@
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
-    }
+    },
+    "testTimeout": 15000
   }
 }

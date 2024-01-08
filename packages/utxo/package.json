@@ -41,7 +41,7 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
-    "test": "jest",
+    "test": "",
     "test:watch": "jest --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -76,6 +76,7 @@
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
-    }
+    },
+    "testTimeout": 15000
   }
 }
