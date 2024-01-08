@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 1.1.17
+
+### Patch Changes
+
+- e602ae7: add solana and btc seed phrase signers
+
 ## 1.1.16
 
 ### Patch Changes
