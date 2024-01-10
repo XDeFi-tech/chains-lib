@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 1.2.1
+
+### Patch Changes
+
+- 93a7327: export ledger signer
+
 ## 1.2.0
 
 ### Minor Changes
