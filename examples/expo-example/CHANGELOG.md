@@ -1,5 +1,16 @@
 # @xdefi/expo-example
 
+## 1.1.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-controller@1.1.0
+
 ## 1.0.3
 
 ### Patch Changes

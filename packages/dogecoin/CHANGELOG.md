@@ -1,5 +1,18 @@
 # @xdefi-tech/chains-dogecoin
 
+## 1.1.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-core@1.2.0
+  - @xdefi-tech/chains-utxo@1.1.0
+  - @xdefi-tech/chains-graphql@1.2.0
+
 ## 1.0.11
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.2.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
 ## 1.1.15
 
 ### Patch Changes

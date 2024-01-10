@@ -1,5 +1,26 @@
 # @xdefi/examples-react
 
+## 0.2.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-binance@1.1.0
+  - @xdefi-tech/chains-bitcoin@1.1.0
+  - @xdefi-tech/chains-bitcoincash@1.1.0
+  - @xdefi-tech/chains-core@1.2.0
+  - @xdefi-tech/chains-cosmos@1.1.0
+  - @xdefi-tech/chains-dogecoin@1.1.0
+  - @xdefi-tech/chains-evm@1.2.0
+  - @xdefi-tech/chains-litecoin@1.1.0
+  - @xdefi-tech/chains-solana@1.2.0
+  - @xdefi-tech/chains-thor@1.1.0
+  - @xdefi-tech/chains-controller@1.1.0
+
 ## 0.1.3
 
 ### Patch Changes
