@@ -3,7 +3,7 @@ import { Msg } from '@xdefi-tech/chains-core';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS } from '../manifests';
-import { ChainMsg, CosmosChainType, MsgBody } from '../msg';
+import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
