@@ -18,11 +18,11 @@ describe('tron private-key.signer', () => {
   const signer = new PrivateKeySigner(MOCK.privateKey);
 
   it('should return true for a valid address', () => {
-    expect(signer.verifyAddress(MOCK.address)).toBe(true);
+    expect(signer.verifyAddress(MOCK.address, TRON_MANIFEST)).toBe(true);
   });
 
   it('should return false for an invalid address', () => {
-    expect(signer.verifyAddress('invalid-address')).toBe(false);
+    expect(signer.verifyAddress('invalid-address', TRON_MANIFEST)).toBe(false);
   });
 
   it('should return the correct address for a valid private key', async () => {

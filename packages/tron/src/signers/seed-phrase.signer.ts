@@ -9,9 +9,9 @@ export class SeedPhraseSigner extends Signer.Provider {
     super(key);
   }
 
-  verifyAddress(address: string, manifest?: Chain.Manifest): boolean {
+  verifyAddress(address: string, manifest: Chain.Manifest): boolean {
     const tronWeb = new TronWeb({
-      fullHost: manifest?.rpcURL ? manifest.rpcURL : 'https://api.trongrid.io',
+      fullHost: manifest.rpcURL,
     });
 
     return tronWeb.isAddress(address);
