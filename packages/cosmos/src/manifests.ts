@@ -18,6 +18,7 @@ export enum CosmosHubChains {
 
 export interface CosmosManifest extends Chain.Manifest {
   lcdURL: string;
+  rpcURL: string;
   denom: string;
   prefix: string;
 }

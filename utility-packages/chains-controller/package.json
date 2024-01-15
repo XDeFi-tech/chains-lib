@@ -41,7 +41,8 @@
   "type": "commonjs",
   "tsup": {
     "entry": [
-      "src/index.ts"
+      "src",
+      "!src/**/*.spec.*"
     ],
     "outDir": "dist",
     "format": "cjs",

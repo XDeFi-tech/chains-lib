@@ -28,6 +28,7 @@ import { ChainDataSource } from './datasource';
 })
 export class ThorProvider extends Chain.Provider {
   public rest: Axios;
+  declare dataSource: any;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);

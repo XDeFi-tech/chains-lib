@@ -36,9 +36,9 @@ to: packages/<%= name.toLowerCase() %>/package.json
   "type": "module",
   "tsup": {
     "entry": [
-      "src/index.ts",
-      "src/signers/web.ts",
-      "src/signers/react-native.ts"
+      "src/**/*.ts",
+      "!src/**/*.spec.*",
+      "!src/custom.d.ts",
     ],
     "format": "esm",
     "splitting": false,

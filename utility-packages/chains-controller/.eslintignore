@@ -1,4 +1,4 @@
 .eslintrc.cjs
-**/*.spec.ts
+**/*.spec.*
 **/*.test.ts
 jest-setup-file.ts

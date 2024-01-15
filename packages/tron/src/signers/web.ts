@@ -6,3 +6,4 @@ import { LedgerSigner } from './ledger.signer';
 const signers: typeof Signer.Provider[] = [PrivateKeySigner, LedgerSigner];
 
 export default signers;
+export { PrivateKeySigner, LedgerSigner };
