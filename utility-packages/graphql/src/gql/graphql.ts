@@ -71,6 +71,7 @@ export enum AddressChain {
   /** Legacy, use "Bitcoin" instead */
   BTC = 'BTC',
   Band = 'Band',
+  Base = 'Base',
   BerachainTestnet = 'BerachainTestnet',
   BinanceChain = 'BinanceChain',
   BinanceChainTestnet = 'BinanceChainTestnet',
@@ -1754,6 +1755,18 @@ export type Eip1559GasFee = {
   medium?: Maybe<Eip1559Fee>;
 };
 
+export type EthtxPreview = {
+  __typename?: 'ETHTXPreview';
+  chainId: Scalars['Int'];
+  data: Scalars['String'];
+  fromAddress: Scalars['String'];
+  gas: Scalars['String'];
+  maxFeePerGas: Scalars['String'];
+  nonce: Scalars['Int'];
+  toAddress: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type EvmTransactionLog = {
   __typename?: 'EVMTransactionLog';
   data?: Maybe<Scalars['String']>;
@@ -1796,6 +1809,18 @@ export type EvmTransactionV2Edge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge */
   node: EvmTransactionV2;
+};
+
+export type Erc20ApproveInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  fromAddress: Scalars['String'];
+  gas: Scalars['Decimal'];
+  gasPrice?: InputMaybe<Scalars['Decimal']>;
+  maxFeePerGas: Scalars['Decimal'];
+  maxPriorityFeePerGas: Scalars['Decimal'];
+  nonce: Scalars['Int'];
+  spenderAddress: Scalars['String'];
 };
 
 export type Ethereum = {
@@ -2066,16 +2091,9 @@ export type LeaderboardV3 = {
   cctpV3?: Maybe<Array<LeaderboardEntryV3>>;
 };
 
-export type LidoStakePreview = {
-  __typename?: 'LidoStakePreview';
-  chainId: Scalars['Int'];
-  data: Scalars['String'];
-  fromAddress: Scalars['String'];
-  gas: Scalars['String'];
-  maxFeePerGas: Scalars['String'];
-  nonce: Scalars['Int'];
-  toAddress: Scalars['String'];
-  value: Scalars['String'];
+export type LidoErc20AllowanceInput = {
+  asset: SupportedAssets;
+  ownerAddress: Scalars['String'];
 };
 
 export type LidoStakedAssetBalance = {
@@ -2090,6 +2108,7 @@ export type LidoStakingInput = {
   address: Scalars['String'];
   asset: SupportedAssets;
   gas: Scalars['Decimal'];
+  gasPrice?: InputMaybe<Scalars['Decimal']>;
   maxFeePerGas: Scalars['Decimal'];
   maxPriorityFeePerGas: Scalars['Decimal'];
   nonce: Scalars['Int'];
@@ -3551,6 +3570,10 @@ export type RouteTypeV3 = {
   destAddress: Scalars['String'];
   errorBuildingRoute?: Maybe<Scalars['String']>;
   gasPrices?: Maybe<Scalars['JSON']>;
+  /**
+   * On chain wallet address of the referrer. Must be unique
+   * @deprecated Not necessary anymore, now this data is stored in the Campaigns service
+   */
   isOptIn?: Maybe<Scalars['Boolean']>;
   priceImpact: Scalars['String'];
   priceRate: Scalars['Decimal'];
@@ -3892,12 +3915,11 @@ export type Settings = {
   private?: Maybe<Scalars['String']>;
 };
 
-export type SimpleSwapAssetActivityV0 = {
-  __typename?: 'SimpleSwapAssetActivityV0';
-  fromAssets: Array<AssetAmountV0>;
-  /** amount paid during swap execution to the protocol */
-  swapFee: Array<FeeV0>;
-  toAssets: Array<AssetAmountV0>;
+/** Keep information about smart contract/program */
+export type SmartContractV0 = {
+  __typename?: 'SmartContractV0';
+  contract: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type SolanaChain = {
@@ -3921,6 +3943,8 @@ export type SolanaChainBalancesArgs = {
 
 export type SolanaChainLatestHistoryActivityV0Args = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type SolanaChainLegacyNfTsArgs = {
@@ -3977,7 +4001,8 @@ export type StakingService = {
   createCosmosIbcTransferTx: Scalars['String'];
   /** Returns a delegate tx in json format for Cosmos chains, either provider a Cosmos validator from providers or a valoper address but not both. */
   createCosmosUndelegateTx: Scalars['String'];
-  createLidoStakeTx: LidoStakePreview;
+  createErc20ApproveTx: EthtxPreview;
+  createLidoStakeTx: EthtxPreview;
   createStrideLiquidStakingTx: Scalars['String'];
   /** Returns a list of all APRs for all of the supported Providers per supported asset for each provider. */
   getAnnualPercentageRates: Array<AnnualPercentageRate>;
@@ -3992,6 +4017,7 @@ export type StakingService = {
   /** Returns a list of supported assets for any given provider */
   getProviderSupportedAssets: Array<SupportedAssets>;
   getStrideStakedAssetBalance: StrideStakedAssetBalance;
+  lidoCheckErc20Allowance: Scalars['Int'];
   name: Scalars['String'];
   stakingServiceStatus: StakingServiceStatus;
 };
@@ -4011,6 +4037,10 @@ export type StakingServiceCreateCosmosUndelegateTxArgs = {
   delegationInput: CosmosDelegationInput;
   provider?: InputMaybe<Providers>;
   validatorAddress?: InputMaybe<Scalars['String']>;
+};
+
+export type StakingServiceCreateErc20ApproveTxArgs = {
+  input: Erc20ApproveInput;
 };
 
 export type StakingServiceCreateLidoStakeTxArgs = {
@@ -4046,6 +4076,10 @@ export type StakingServiceGetProviderSupportedAssetsArgs = {
 export type StakingServiceGetStrideStakedAssetBalanceArgs = {
   asset: SupportedAssets;
   strideAddress: Scalars['String'];
+};
+
+export type StakingServiceLidoCheckErc20AllowanceArgs = {
+  input: LidoErc20AllowanceInput;
 };
 
 export type StakingServiceStatus = {
@@ -4130,11 +4164,12 @@ export enum SupportedAssets {
 
 export type SwapAssetActivityV0 = {
   __typename?: 'SwapAssetActivityV0';
-  fromAssets: Array<AssetAmountV0>;
-  routes?: Maybe<Array<SimpleSwapAssetActivityV0>>;
+  fromAssets?: Maybe<Array<AssetAmountV0>>;
+  /** Program that was used to execute swap */
+  program?: Maybe<SmartContractV0>;
   /** amount paid during swap execution to the protocol */
-  swapFee: Array<FeeV0>;
-  toAssets: Array<AssetAmountV0>;
+  swapFee?: Maybe<Array<FeeV0>>;
+  toAssets?: Maybe<Array<AssetAmountV0>>;
 };
 
 export type TerraChain = {

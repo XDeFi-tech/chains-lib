@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { gqlClient, LEGACY_NFTS_FRAGMENT } from '@xdefi-tech/chains-core';
 
 export const ARBITRUM_NFTS_QUERY = gql`

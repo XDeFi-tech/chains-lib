@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { gqlClient } from '@xdefi-tech/chains-core';
 import capitalize from 'lodash/capitalize';
 import map from 'lodash/map';
