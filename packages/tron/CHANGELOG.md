@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 1.2.3
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+- Updated dependencies [a0e1019]
+  - @xdefi-tech/chains-core@1.2.2
+
 ## 1.2.2
 
 ### Patch Changes

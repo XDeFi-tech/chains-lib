@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.2.2
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+
 ## 1.2.1
 
 ### Patch Changes
