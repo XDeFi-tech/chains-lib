@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
 export const LEGACY_NFTS_FRAGMENT = gql`
   fragment LegacyNftData on NFTv3 {

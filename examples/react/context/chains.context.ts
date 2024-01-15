@@ -1,11 +1,12 @@
 import React from 'react';
 import { ChainController } from '@xdefi-tech/chains-controller';
 import { EVM_MANIFESTS, EvmProvider } from '@xdefi-tech/chains-evm';
+// @ts-ignore
 import WebSigners from '@xdefi-tech/chains-evm/web';
 import { COSMOS_MANIFESTS, CosmosProvider } from '@xdefi-tech/chains-cosmos';
 import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
-import { THOR_MANIFEST, ThorProvider } from '@xdefi-tech/chains-thor';
+import { THORCHAIN_MANIFESTS, ThorProvider } from '@xdefi-tech/chains-thor';
 import { BITCOIN_MANIFEST, BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
 import {
   LITECOIN_MANIFEST,
@@ -213,7 +214,7 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new ThorProvider(
-      new ThorProvider.dataSourceList.ChainDataSource(THOR_MANIFEST),
+      new ThorProvider.dataSourceList.ChainDataSource(THORCHAIN_MANIFESTS.thorchain),
       {
         providerId: 'thor',
       }
