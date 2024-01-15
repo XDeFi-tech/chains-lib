@@ -36,12 +36,15 @@ export class LedgerSigner extends Signer.Provider {
       const trx = new Trx(transport);
       const tx = await msg.buildTx();
 
-      const signedTx = await trx.signTransactionHash(
+      const signedTx = await trx.signTransaction(
         derivation,
-        tx.raw_data_hex
+        tx.raw_data_hex,
+        []
       );
 
-      msg.sign(signedTx);
+      tx.signature = [signedTx];
+
+      msg.sign(tx);
     } catch (e) {
       throw e;
     } finally {
