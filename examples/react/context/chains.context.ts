@@ -214,7 +214,9 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new ThorProvider(
-      new ThorProvider.dataSourceList.ChainDataSource(THORCHAIN_MANIFESTS.thorchain),
+      new ThorProvider.dataSourceList.ChainDataSource(
+        THORCHAIN_MANIFESTS.thorchain
+      ),
       {
         providerId: 'thor',
       }
