@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.2.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+
 ## 1.2.0
 
 ### Minor Changes

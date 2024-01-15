@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-bitcoin
 
+## 1.1.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-graphql@1.2.1
+  - @xdefi-tech/chains-core@1.2.1
+  - @xdefi-tech/chains-utxo@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes

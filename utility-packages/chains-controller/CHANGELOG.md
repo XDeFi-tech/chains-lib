@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-controller
 
+## 1.1.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-graphql@1.2.1
+  - @xdefi-tech/chains-bitcoin@1.1.1
+  - @xdefi-tech/chains-cosmos@1.1.1
+  - @xdefi-tech/chains-solana@1.2.1
+  - @xdefi-tech/chains-core@1.2.1
+  - @xdefi-tech/chains-evm@1.2.1
+  - @xdefi-tech/chains-binance@1.1.1
+  - @xdefi-tech/chains-bitcoincash@1.1.1
+  - @xdefi-tech/chains-dogecoin@1.1.1
+  - @xdefi-tech/chains-litecoin@1.1.1
+  - @xdefi-tech/chains-thor@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
