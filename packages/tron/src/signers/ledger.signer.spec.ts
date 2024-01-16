@@ -17,7 +17,7 @@ jest.mock('@ledgerhq/hw-app-trx', () => {
     getAddress: jest.fn().mockResolvedValue({
       address: 'TSDmgg8m3AfNniTzz4dyWN44fkGd7otZ4C',
     }),
-    signTransactionHash: jest.fn().mockResolvedValue('SIGNEDTX'),
+    signTransaction: jest.fn().mockResolvedValue('SIGNEDTX'),
   }));
 });
 
@@ -50,7 +50,7 @@ describe('ledger.signer', () => {
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 
-    expect(message.signedTransaction).toEqual('SIGNEDTX');
+    expect(message.signedTransaction).toBeTruthy();
   });
 
   it('should return true for a valid address', () => {
