@@ -5,13 +5,8 @@ export enum ThorChains {
   mayachain = 'mayachain',
 }
 
-export interface ThorchainManifest extends Chain.Manifest {
-  denom: string;
-  prefix: string;
-}
-
 export const THORCHAIN_MANIFESTS: {
-  [key in ThorChains]: ThorchainManifest;
+  [key in ThorChains]: ThorManifest;
 } = {
   [ThorChains.thorchain]: {
     name: 'Thor',
@@ -50,6 +45,10 @@ export const THORCHAIN_MANIFESTS: {
 };
 
 export interface ThorManifest extends Chain.Manifest {
+  name: string;
+  decimals: any;
+  chainId: string;
+  rpcURL: string;
   denom: string;
   prefix: string;
 }

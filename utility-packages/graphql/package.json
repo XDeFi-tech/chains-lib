@@ -35,7 +35,8 @@
   },
   "tsup": {
     "entry": [
-      "src/gql/index.ts"
+      "src/**/*.ts",
+      "!src/**/*.spec.*"
     ],
     "outDir": "dist",
     "format": "cjs",
