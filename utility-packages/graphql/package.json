@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-graphql",
-  "version": "1.1.9",
+  "version": "1.2.2",
   "license": "MIT",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "main": "dist/index.js",
@@ -35,7 +35,8 @@
   },
   "tsup": {
     "entry": [
-      "src/gql/index.ts"
+      "src/**/*.ts",
+      "!src/**/*.spec.*"
     ],
     "outDir": "dist",
     "format": "cjs",

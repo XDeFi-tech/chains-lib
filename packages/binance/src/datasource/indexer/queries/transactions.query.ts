@@ -14,6 +14,8 @@ export const getTransaction = (
     variables: {
       address,
       blockRange,
+      first: 1000,
+      after: null,
     },
   });
 };

@@ -42,6 +42,12 @@ export interface TxData {
   nftId?: string;
 }
 
+export enum CosmosChainType {
+  Cosmos = 0,
+  Ethermint = 1,
+  Terra = 2,
+}
+
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   declare signedTransaction: StdTx | undefined;
   declare provider: CosmosProvider;

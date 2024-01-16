@@ -18,5 +18,5 @@ export const getTransactions = async (
     },
   });
 
-  return response.data.dogecoin.transactions;
+  return response.data.dogecoin.transactionsV2;
 };

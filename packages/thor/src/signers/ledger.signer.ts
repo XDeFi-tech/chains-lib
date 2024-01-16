@@ -53,7 +53,7 @@ export class LedgerSigner extends Signer.Provider {
 
         const tx = {
           account_number: accountNumber.toString(),
-          chain_id: 'thorchain-mainnet-v1',
+          chain_id: msg.provider.manifest.chainId,
           fee: {
             amount: [],
             gas: gasLimit,
@@ -66,7 +66,7 @@ export class LedgerSigner extends Signer.Provider {
                 amount: [
                   {
                     amount: value.toString(),
-                    denom: 'rune',
+                    denom: msg.provider.manifest.denom,
                   },
                 ],
                 from_address: from,

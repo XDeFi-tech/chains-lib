@@ -14,7 +14,7 @@ export interface AssetData {
 }
 
 export class Asset {
-  protected data: AssetData;
+  public data: AssetData;
 
   constructor(data: AssetData) {
     this.data = {

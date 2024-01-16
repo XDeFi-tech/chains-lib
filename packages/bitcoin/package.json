@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-bitcoin",
-  "version": "1.0.8",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -46,8 +46,10 @@
     "bip32": "4.0.0",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "5.2.0",
+    "coinkey": "^3.0.0",
     "coinselect": "^3.1.13",
     "eslint-config-custom": "*",
+    "hdkey": "^2.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
@@ -58,6 +60,7 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
@@ -67,9 +70,10 @@
   "type": "commonjs",
   "tsup": {
     "entry": [
-      "src/index.ts",
-      "src/signers/web.ts",
-      "src/signers/react-native.ts"
+      "src/**/*.ts",
+      "!src/**/*.spec.*",
+      "!src/custom.d.ts",
+      "!src/datasource/indexer/queries/**/*"
     ],
     "format": "cjs",
     "splitting": false,
@@ -100,6 +104,7 @@
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
-    }
+    },
+    "testTimeout": 15000
   }
 }

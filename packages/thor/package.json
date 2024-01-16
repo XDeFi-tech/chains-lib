@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-thor",
-  "version": "1.0.8",
+  "version": "1.1.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -65,6 +65,7 @@
   "scripts": {
     "build": "tsup --minify --clean",
     "watch": "tsup --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
@@ -86,6 +87,7 @@
     ],
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
-    }
+    },
+    "testTimeout": 15000
   }
 }

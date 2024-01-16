@@ -12,6 +12,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "publish:packages": "turbo run build && turbo run publish:packages",
+    "coverage:per-package": "turbo run coverage",
+    "coverage:total": "yarn coverage:per-package && node coverage.js",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "compile": "turbo run compile",

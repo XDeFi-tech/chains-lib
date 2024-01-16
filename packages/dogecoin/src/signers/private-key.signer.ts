@@ -26,7 +26,7 @@ export class PrivateKeySigner extends Signer.Provider {
 
   async getAddress(
     derivation: string,
-    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
+    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2pkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
     const pk = Dogecoin.ECPair.fromWIF(this.key);
@@ -35,7 +35,7 @@ export class PrivateKeySigner extends Signer.Provider {
       network,
     });
 
-    if (!address) throw new Error('BTC address is undefined');
+    if (!address) throw new Error('DOGE address is undefined');
 
     return address;
   }

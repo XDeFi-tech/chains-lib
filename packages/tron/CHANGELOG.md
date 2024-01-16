@@ -1,5 +1,61 @@
 # @xdefi-tech/chains-tron
 
+## 1.2.3
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+- Updated dependencies [a0e1019]
+  - @xdefi-tech/chains-core@1.2.2
+
+## 1.2.2
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-core@1.2.1
+
+## 1.2.1
+
+### Patch Changes
+
+- 93a7327: export ledger signer
+
+## 1.2.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-core@1.2.0
+
+## 1.1.9
+
+### Patch Changes
+
+- 4b0977a: Update TRC20 Balances and Fix Broken Import
+
+## 1.1.8
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-core@1.1.15
+
+## 1.1.7
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - eslint-config-custom@1.0.1
+
 ## 1.1.6
 
 ### Patch Changes

@@ -18,16 +18,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /**
-   * ISO 8601 calendar date without timezone.
-   * Format: %Y-%m-%d
-   *
-   * # Examples
-   *
-   * * `1994-11-13`
-   * * `2000-02-24`
-   */
-  Date: any;
+  AssetV0Args: any;
   /**
    * A datetime with timezone offset.
    *
@@ -48,11 +39,6 @@ export type Scalars = {
    * subseconds. E.g. "2022-01-12T07:30:19.12345".
    */
   LocalDateTime: any;
-};
-
-export type Apr = {
-  __typename?: 'APR';
-  smaApr: Scalars['Float'];
 };
 
 export type Address = {
@@ -85,6 +71,7 @@ export enum AddressChain {
   /** Legacy, use "Bitcoin" instead */
   BTC = 'BTC',
   Band = 'Band',
+  Base = 'Base',
   BerachainTestnet = 'BerachainTestnet',
   BinanceChain = 'BinanceChain',
   BinanceChainTestnet = 'BinanceChainTestnet',
@@ -106,13 +93,14 @@ export enum AddressChain {
   Comdex = 'Comdex',
   Cosmos = 'Cosmos',
   Crescent = 'Crescent',
-  Cronos = 'Cronos',
   CronosEVM = 'CronosEVM',
+  CronosPOS = 'CronosPOS',
   Cudos = 'Cudos',
   /** Legacy, use "Dogecoin" instead */
   DOGE = 'DOGE',
   Desmos = 'Desmos',
   Dogecoin = 'Dogecoin',
+  DogecoinTestnet = 'DogecoinTestnet',
   /** Legacy, use "Ethereum" instead */
   ETH = 'ETH',
   Emoney = 'Emoney',
@@ -141,6 +129,7 @@ export enum AddressChain {
   Litecoin = 'Litecoin',
   LitecoinTestnet = 'LitecoinTestnet',
   Lum = 'Lum',
+  MAYAChain = 'MAYAChain',
   MarsProtocol = 'MarsProtocol',
   Medibloc = 'Medibloc',
   Mumbai = 'Mumbai',
@@ -294,8 +283,17 @@ export type AmountType = {
   scalingFactor: Scalars['Float'];
 };
 
+export type AnnualPercentageRate = {
+  __typename?: 'AnnualPercentageRate';
+  asset?: Maybe<SupportedAssets>;
+  error?: Maybe<Scalars['String']>;
+  provider?: Maybe<Providers>;
+  rate?: Maybe<Scalars['Float']>;
+};
+
 export type Arbitrum = {
   __typename?: 'Arbitrum';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   legacyNFTs: Array<NfTv3>;
@@ -418,6 +416,12 @@ export type AssetAmountType = {
   weekPriceChange?: Maybe<Scalars['String']>;
   /** Currency yearPriceChange */
   yearPriceChange?: Maybe<Scalars['String']>;
+};
+
+export type AssetAmountV0 = {
+  __typename?: 'AssetAmountV0';
+  amount: Scalars['String'];
+  asset: AssetV0;
 };
 
 export type AssetBaseType = {
@@ -664,6 +668,8 @@ export type AssetType = {
   losers?: Maybe<Array<TrendingTokensType>>;
   /** Scaling factor for market cap */
   lpTokens?: Maybe<TokenResponse>;
+  /** NFTs by chain, contract and token_id. */
+  nftsV0?: Maybe<Array<NfTv0>>;
   /** Trending popular (by market cap) */
   popular?: Maybe<Array<TrendingTokensType>>;
   /** Scaling factor for market cap */
@@ -709,12 +715,28 @@ export type AssetTypeLpTokensArgs = {
   page: ConnectionArgs;
 };
 
+export type AssetTypeNftsV0Args = {
+  keys: Array<NfTv0Args>;
+};
+
 export type AssetTypeTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   afterPrice?: InputMaybe<Scalars['DateTime']>;
   filter?: InputMaybe<TokenFilter>;
   page: ConnectionArgs;
 };
+
+/** (experimental) Type that is responsible to resolve details (nft or token) */
+export type AssetV0 = {
+  __typename?: 'AssetV0';
+  /** json encoded input arguments for payload resolver */
+  args?: Maybe<Scalars['AssetV0Args']>;
+  chain: Scalars['String'];
+  payload?: Maybe<AssetV0Payload>;
+};
+
+/** (experimental) Union type that represent any asset (currently nft or token) */
+export type AssetV0Payload = NfTv0 | TokenV0;
 
 export type AssetVariant = CryptoAsset | NftAsset;
 
@@ -726,6 +748,7 @@ export type AssetWithAmount = {
 
 export type Aurora = {
   __typename?: 'Aurora';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   legacyNFTs: Array<NfTv3>;
@@ -768,8 +791,9 @@ export type Auth = {
 
 export type Avalanche = {
   __typename?: 'Avalanche';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
-  fee?: Maybe<AvalancheGasFee>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -801,19 +825,26 @@ export type AvalancheTransactionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
-export type AvalancheGasFee = {
-  __typename?: 'AvalancheGasFee';
-  high?: Maybe<Eip1559Fee>;
-  low?: Maybe<Eip1559Fee>;
-  medium?: Maybe<Eip1559Fee>;
-};
-
 export type Balance = {
   __typename?: 'Balance';
   address: Scalars['String'];
   amount: Amount;
   asset: CryptoAsset;
 };
+
+export type Base = {
+  __typename?: 'Base';
+  average24hFee?: Maybe<Eip1559GasFee>;
+  fee?: Maybe<Eip1559GasFee>;
+  name: Scalars['String'];
+};
+
+/**
+ * (experimental) Represent base activity
+ *
+ * All other activities should be build on top of these
+ */
+export type BasicActivityV0 = ReceiveAssetActivityV0 | SendAssetActivityV0;
 
 export type Binance = {
   __typename?: 'Binance';
@@ -830,13 +861,15 @@ export type BinanceBalancesArgs = {
 
 export type BinanceTransactionsArgs = {
   address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockSelector>;
   dateRange?: InputMaybe<OptDateSelector>;
-  pagination?: InputMaybe<CursorPagination>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type BinanceSmartChain = {
   __typename?: 'BinanceSmartChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   legacyNFTs: Array<NfTv3>;
@@ -904,18 +937,22 @@ export type BinanceTransactionEdge = {
 
 export type BitcoinChain = {
   __typename?: 'BitcoinChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  getTransactionByHashV5: UtxotransactionByHashV5;
+  latestHistoryActivityV0?: Maybe<WalletActivityV0Connection>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoinChainBalancesArgs = {
@@ -926,17 +963,12 @@ export type BitcoinChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type BitcoinChainDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type BitcoinChainDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type BitcoinChainGetTransactionByHashArgs = {
+export type BitcoinChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
+};
+
+export type BitcoinChainLatestHistoryActivityV0Args = {
+  address: Scalars['String'];
 };
 
 export type BitcoinChainLegacyNfTsArgs = {
@@ -945,8 +977,22 @@ export type BitcoinChainLegacyNfTsArgs = {
 
 export type BitcoinChainTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
+};
+
+export type BitcoinChainTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoinChainTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 export type BitcoinChainUnspentTxOutputsArgs = {
@@ -954,18 +1000,27 @@ export type BitcoinChainUnspentTxOutputsArgs = {
   page: Scalars['Int'];
 };
 
+export type BitcoinChainUnspentTxOutputsV5Args = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
 export type BitcoinChainTestNet = {
   __typename?: 'BitcoinChainTestNet';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  fee?: Maybe<DefaultGasFee>;
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoinChainTestNetBalancesArgs = {
@@ -976,23 +1031,28 @@ export type BitcoinChainTestNetBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type BitcoinChainTestNetDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type BitcoinChainTestNetDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type BitcoinChainTestNetGetTransactionByHashArgs = {
+export type BitcoinChainTestNetGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type BitcoinChainTestNetTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
+};
+
+export type BitcoinChainTestNetTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoinChainTestNetTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 export type BitcoinChainTestNetUnspentTxOutputsArgs = {
@@ -1000,19 +1060,27 @@ export type BitcoinChainTestNetUnspentTxOutputsArgs = {
   page: Scalars['Int'];
 };
 
+export type BitcoinChainTestNetUnspentTxOutputsV5Args = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
 export type BitcoincashChain = {
   __typename?: 'BitcoincashChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoincashChainBalancesArgs = {
@@ -1023,23 +1091,28 @@ export type BitcoincashChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type BitcoincashChainDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type BitcoincashChainDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type BitcoincashChainGetTransactionByHashArgs = {
+export type BitcoincashChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type BitcoincashChainTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
+};
+
+export type BitcoincashChainTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoincashChainTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 export type BitcoincashChainUnspentTxOutputsArgs = {
@@ -1047,18 +1120,27 @@ export type BitcoincashChainUnspentTxOutputsArgs = {
   page: Scalars['Int'];
 };
 
+export type BitcoincashChainUnspentTxOutputsV5Args = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
 export type BitcoincashChainTestNet = {
   __typename?: 'BitcoincashChainTestNet';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  fee?: Maybe<DefaultGasFee>;
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type BitcoincashChainTestNetBalancesArgs = {
@@ -1069,26 +1151,36 @@ export type BitcoincashChainTestNetBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type BitcoincashChainTestNetDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type BitcoincashChainTestNetDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type BitcoincashChainTestNetGetTransactionByHashArgs = {
+export type BitcoincashChainTestNetGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type BitcoincashChainTestNetTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
 
+export type BitcoincashChainTestNetTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type BitcoincashChainTestNetTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
 export type BitcoincashChainTestNetUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
+export type BitcoincashChainTestNetUnspentTxOutputsV5Args = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
@@ -1110,13 +1202,16 @@ export enum CacheControlScope {
 
 export type CantoChain = {
   __typename?: 'CantoChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
 };
 
 export type CantoEvm = {
   __typename?: 'CantoEVM';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1167,6 +1262,7 @@ export type ChainPortfolio = {
 
 export type ChainType = {
   __typename?: 'ChainType';
+  /** @deprecated The fee field is deprecated. To handle fee-related operations, utilize the fees-service directly. Deadline for transition: January 2024. */
   fee: FeeType;
   name: Scalars['String'];
 };
@@ -1175,6 +1271,25 @@ export type ChainedAddresses = {
   addresses: Array<Scalars['String']>;
   chain: PortfolioChainVariant;
 };
+
+export enum Chains {
+  akash = 'akash',
+  alexar = 'alexar',
+  avalanche = 'avalanche',
+  cosmoshub = 'cosmoshub',
+  crescent = 'crescent',
+  ethereum = 'ethereum',
+  juno = 'juno',
+  kava = 'kava',
+  kujira = 'kujira',
+  osmosis = 'osmosis',
+  polygon = 'polygon',
+  sei = 'sei',
+  solana = 'solana',
+  stargaze = 'stargaze',
+  stride = 'stride',
+  terra2 = 'terra2',
+}
 
 export type ClaimStatus = {
   __typename?: 'ClaimStatus';
@@ -1226,12 +1341,6 @@ export type CompositeTokenType = {
   token?: Maybe<TokenType>;
 };
 
-export type ConfigArgs = {
-  asset: SupportedAssets;
-  provider: Providers;
-  type: StakingTypes;
-};
-
 /** Pagination options. Requires first or last */
 export type ConnectionArgs = {
   /** Paginate after opaque cursor */
@@ -1252,6 +1361,7 @@ export type Contract = {
 
 export type CosmosBalanceChain = {
   __typename?: 'CosmosBalanceChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -1265,6 +1375,7 @@ export type CosmosBalanceChainBalancesArgs = {
 
 export type CosmosBasedChain = {
   __typename?: 'CosmosBasedChain';
+  average24hFee: DefaultGasFee;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -1286,20 +1397,44 @@ export type CosmosBasedChainTransactionsArgs = {
 
 export type CosmosBasedChainV2 = {
   __typename?: 'CosmosBasedChainV2';
+  average24hFee?: Maybe<DefaultGasFee>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
 };
 
 export type CosmosBasedChainWithNft = {
   __typename?: 'CosmosBasedChainWithNft';
+  average24hFee?: Maybe<DefaultGasFee>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
+};
+
+export type CosmosDelegationInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  delegatorAddress: Scalars['String'];
+  delegatorPubkeyHex: Scalars['String'];
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  memo: Scalars['String'];
 };
 
 export type CosmosFee = {
   __typename?: 'CosmosFee';
   amount: Array<AssetWithAmount>;
   payer?: Maybe<Scalars['String']>;
+};
+
+export type CosmosIbcTransferInput = {
+  amount: Scalars['Decimal'];
+  destChain: Chains;
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  memo: Scalars['String'];
+  recieverAddr: Scalars['String'];
+  senderAddr: Scalars['String'];
+  senderAsset: SupportedAssets;
+  senderPubkeyHex: Scalars['String'];
+  srcChain: Chains;
+  timeoutHeight: Scalars['Int'];
 };
 
 export type CosmosLikeTransaction = {
@@ -1329,6 +1464,15 @@ export type CosmosLikeTransactionEdge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge */
   node: CosmosLikeTransaction;
+};
+
+export type CosmosNativeStakedBalance = {
+  __typename?: 'CosmosNativeStakedBalance';
+  amount: Scalars['Int'];
+  decimal: Scalars['Int'];
+  denom: Scalars['String'];
+  validatorAddress: Scalars['String'];
+  validatorName?: Maybe<Scalars['String']>;
 };
 
 export type CreateReferrer = {
@@ -1361,7 +1505,9 @@ export type Credits = {
 
 export type CronosEvm = {
   __typename?: 'CronosEVM';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1395,7 +1541,7 @@ export type CronosEvmTransactionsArgs = {
 
 export type CryptoAsset = {
   __typename?: 'CryptoAsset';
-  /** supported list of chain are in [`Chain`] enum */
+  /** supported list of chain are in [`crate::chain::Chain`] enum */
   chain?: Maybe<Scalars['String']>;
   /** ID of token (contract address in most chain) */
   contract?: Maybe<Scalars['String']>;
@@ -1500,24 +1646,6 @@ export type DAppReputationInput = {
   url: Scalars['String'];
 };
 
-export type DailyAmount = {
-  __typename?: 'DailyAmount';
-  amount: Amount;
-  /** The amount is valid at the end of day (Meaning 23:59 UTC). */
-  day: Scalars['Date'];
-};
-
-export type DailyBalances = {
-  __typename?: 'DailyBalances';
-  address: Scalars['String'];
-  /**
-   * It is an expectation to provide intermediate daily amounts
-   * backfilling from 0 or previous value
-   */
-  amounts: Array<DailyAmount>;
-  asset: CryptoAsset;
-};
-
 /** Fiat amount at specific point of time (similar to `DatedAmount`) */
 export type DatedAmountFiat = {
   __typename?: 'DatedAmountFiat';
@@ -1548,19 +1676,24 @@ export type DefiProtocolType = {
   symbol: Scalars['String'];
 };
 
+export type DetailedActivityV0 = SwapAssetActivityV0;
+
 export type DogeChain = {
   __typename?: 'DogeChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
-  fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  fee: DefaultGasFee;
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type DogeChainBalancesArgs = {
@@ -1571,26 +1704,36 @@ export type DogeChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type DogeChainDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type DogeChainDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type DogeChainGetTransactionByHashArgs = {
+export type DogeChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type DogeChainTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
 
+export type DogeChainTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type DogeChainTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
 export type DogeChainUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
+export type DogeChainUnspentTxOutputsV5Args = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
@@ -1605,9 +1748,23 @@ export type Eip1559Fee = {
 /** Fee is a cryptocurrency transaction fees that is charged to users when performing crypto transactions */
 export type Eip1559GasFee = {
   __typename?: 'EIP1559GasFee';
+  /** Default gasPrice field for legacy transactions */
+  defaultGasPrice?: Maybe<Scalars['Float']>;
   high?: Maybe<Eip1559Fee>;
   low?: Maybe<Eip1559Fee>;
   medium?: Maybe<Eip1559Fee>;
+};
+
+export type EthtxPreview = {
+  __typename?: 'ETHTXPreview';
+  chainId: Scalars['Int'];
+  data: Scalars['String'];
+  fromAddress: Scalars['String'];
+  gas: Scalars['String'];
+  maxFeePerGas: Scalars['String'];
+  nonce: Scalars['Int'];
+  toAddress: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type EvmTransactionLog = {
@@ -1654,10 +1811,24 @@ export type EvmTransactionV2Edge = {
   node: EvmTransactionV2;
 };
 
+export type Erc20ApproveInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  fromAddress: Scalars['String'];
+  gas: Scalars['Decimal'];
+  gasPrice?: InputMaybe<Scalars['Decimal']>;
+  maxFeePerGas: Scalars['Decimal'];
+  maxPriorityFeePerGas: Scalars['Decimal'];
+  nonce: Scalars['Int'];
+  spenderAddress: Scalars['String'];
+};
+
 export type Ethereum = {
   __typename?: 'Ethereum';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  latestHistoryActivityV0?: Maybe<WalletActivityV0Connection>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1670,6 +1841,10 @@ export type EthereumBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type EthereumLatestHistoryActivityV0Args = {
+  address: Scalars['String'];
 };
 
 export type EthereumLegacyNfTsArgs = {
@@ -1699,8 +1874,9 @@ export type ExplainedTransaction = {
 
 export type Fantom = {
   __typename?: 'Fantom';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
-  fee?: Maybe<DefaultGasFee>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -1753,6 +1929,17 @@ export type FeeType = {
   value?: Maybe<Scalars['String']>;
 };
 
+/** (experimental) Represent amount of asset paid by payer(s) */
+export type FeeV0 = {
+  __typename?: 'FeeV0';
+  /** The sum of amount paid by payers */
+  amount: Scalars['String'];
+  /** The asset that was used to pay the fee */
+  asset: AssetV0;
+  /** Who paid the fee */
+  payer: Array<Scalars['String']>;
+};
+
 /** Unable to fetch some or all tokens information */
 export type FetchingError = {
   __typename?: 'FetchingError';
@@ -1793,12 +1980,6 @@ export type FilterArgs = {
   pool?: InputMaybe<Pool>;
 };
 
-export type GetBalance = {
-  __typename?: 'GetBalance';
-  balance?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-};
-
 export type GetTokensArgs = {
   address?: InputMaybe<Array<Scalars['String']>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
@@ -1807,6 +1988,8 @@ export type GetTokensArgs = {
 
 export type Gnosis = {
   __typename?: 'Gnosis';
+  average24hFee?: Maybe<Eip1559GasFee>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
 };
@@ -1838,6 +2021,7 @@ export type InvestingTypePoolsArgs = {
 
 export type JunoChain = {
   __typename?: 'JunoChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -1860,6 +2044,13 @@ export type JunoChainTransactionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockRange>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type Klaytn = {
+  __typename?: 'Klaytn';
+  average24hFee?: Maybe<Eip1559GasFee>;
+  fee?: Maybe<Eip1559GasFee>;
+  name: Scalars['String'];
 };
 
 export type LastBlock = {
@@ -1900,56 +2091,46 @@ export type LeaderboardV3 = {
   cctpV3?: Maybe<Array<LeaderboardEntryV3>>;
 };
 
-export type LidoSignedEthTx = {
-  __typename?: 'LidoSignedETHTx';
-  hash: Scalars['String'];
-  hex: Scalars['String'];
-  r: Scalars['String'];
-  s: Scalars['String'];
-  v: Scalars['String'];
+export type LidoErc20AllowanceInput = {
+  asset: SupportedAssets;
+  ownerAddress: Scalars['String'];
 };
 
-export type LidoStakePreviw = {
-  __typename?: 'LidoStakePreviw';
-  chainId: Scalars['Int'];
-  data: Scalars['String'];
-  fromAddress: Scalars['String'];
-  gas: Scalars['String'];
-  maxFeePerGas: Scalars['String'];
-  maxPriorityFeePerGas: Scalars['String'];
-  nonce: Scalars['Int'];
-  toAddress: Scalars['String'];
-  value: Scalars['String'];
+export type LidoStakedAssetBalance = {
+  __typename?: 'LidoStakedAssetBalance';
+  amount: Scalars['String'];
+  asset: Scalars['String'];
+  chain: Scalars['String'];
+  decimal: Scalars['Int'];
 };
 
 export type LidoStakingInput = {
   address: Scalars['String'];
-  asset: LidoSupportedAssets;
+  asset: SupportedAssets;
   gas: Scalars['Decimal'];
+  gasPrice?: InputMaybe<Scalars['Decimal']>;
   maxFeePerGas: Scalars['Decimal'];
   maxPriorityFeePerGas: Scalars['Decimal'];
+  nonce: Scalars['Int'];
   stakeValue: Scalars['Decimal'];
 };
 
-export enum LidoSupportedAssets {
-  ETH = 'ETH',
-  MATIC = 'MATIC',
-  SOL = 'SOL',
-}
-
 export type LitecoinChain = {
   __typename?: 'LitecoinChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
   fee?: Maybe<DefaultGasFee>;
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type LitecoinChainBalancesArgs = {
@@ -1960,23 +2141,28 @@ export type LitecoinChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type LitecoinChainDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type LitecoinChainDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type LitecoinChainGetTransactionByHashArgs = {
+export type LitecoinChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type LitecoinChainTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
+};
+
+export type LitecoinChainTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type LitecoinChainTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 export type LitecoinChainUnspentTxOutputsArgs = {
@@ -1984,18 +2170,27 @@ export type LitecoinChainUnspentTxOutputsArgs = {
   page: Scalars['Int'];
 };
 
+export type LitecoinChainUnspentTxOutputsV5Args = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
 export type LitecoinChainTestNet = {
   __typename?: 'LitecoinChainTestNet';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
-  dailyBalances: DailyBalances;
-  decodeRawTransaction: Scalars['String'];
-  getTransactionByHash: UtxoTransactionByHashV4;
-  isTestNet: Scalars['Boolean'];
+  fee?: Maybe<DefaultGasFee>;
+  getTransactionByHashV5: UtxotransactionByHashV5;
   name: Scalars['String'];
   status: Statusv2;
-  transactions: Array<UtxoTransactionV2>;
-  unspentTxOutputs: Array<UnspentTransactionOutputV5>;
+  /** @deprecated Use `transactions_v2` instead. */
+  transactions: Array<UtxoTransaction>;
+  transactionsV2: Array<UtxoTransactionV2>;
+  transactionsV3: UtxoTransactionV2Connection;
+  /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
+  unspentTxOutputs: Array<UnspentTransactionOutputV4>;
+  unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
 export type LitecoinChainTestNetBalancesArgs = {
@@ -2006,26 +2201,36 @@ export type LitecoinChainTestNetBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
-export type LitecoinChainTestNetDailyBalancesArgs = {
-  address: Scalars['String'];
-  dateRange?: OptDateRange;
-};
-
-export type LitecoinChainTestNetDecodeRawTransactionArgs = {
-  rawHex: Scalars['String'];
-};
-
-export type LitecoinChainTestNetGetTransactionByHashArgs = {
+export type LitecoinChainTestNetGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
 
 export type LitecoinChainTestNetTransactionsArgs = {
   address: Scalars['String'];
+  blockRange?: OptBlockRange;
+  dateRange?: OptDateRange;
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
 
+export type LitecoinChainTestNetTransactionsV2Args = {
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
+export type LitecoinChainTestNetTransactionsV3Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
 export type LitecoinChainTestNetUnspentTxOutputsArgs = {
+  address: Scalars['String'];
+  page: Scalars['Int'];
+};
+
+export type LitecoinChainTestNetUnspentTxOutputsV5Args = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
@@ -2073,6 +2278,27 @@ export type LpToken = {
   price: Scalars['Float'];
   symbol: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type MayaChain = {
+  __typename?: 'MayaChain';
+  fee?: Maybe<MayaChainFee>;
+  name: Scalars['String'];
+};
+
+/** Transactions fee management for MAYA chain. */
+export type MayaChainFee = {
+  __typename?: 'MayaChainFee';
+  /** Cacao fee on all on chain txs */
+  nativeTransactionFee?: Maybe<Scalars['Float']>;
+  /** Amount of cacao to withhold on all outbound transactions (1e8 notation) */
+  outboundTransactionFee?: Maybe<Scalars['Float']>;
+  /** Fee for TNS sale in basis points */
+  tnsFeeOnSale?: Maybe<Scalars['Float']>;
+  /** Per block cost for TNS, in cacao */
+  tnsFeePerBlock?: Maybe<Scalars['Float']>;
+  /** Registration fee for new MAYAName, in cacao */
+  tnsRegisterFee?: Maybe<Scalars['Float']>;
 };
 
 export type MediaV2 = {
@@ -2267,6 +2493,43 @@ export type NftLastSale = {
   quantity: Amount;
 };
 
+export type NftLastSaleV2 = {
+  __typename?: 'NFTLastSaleV2';
+  cryptoPrice?: Maybe<Amount>;
+  fiatPrice?: Maybe<Amount>;
+  quantity: Amount;
+};
+
+/**
+ * (experimental) NFT for a given chain, contract and token_id
+ *
+ * # Note
+ * This is just to query different service to resolve NFT details
+ */
+export type NfTv0 = {
+  __typename?: 'NFTv0';
+  attributes?: Maybe<Array<NftAttribute>>;
+  chain?: Maybe<Scalars['String']>;
+  collection?: Maybe<NftCollectionV2>;
+  contract?: Maybe<Scalars['String']>;
+  contractType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  isNftSpam?: Maybe<Scalars['Boolean']>;
+  lastSale?: Maybe<NftLastSaleV2>;
+  location?: Maybe<Scalars['String']>;
+  media?: Maybe<Array<MediaV2>>;
+  name?: Maybe<Scalars['String']>;
+  spamScore?: Maybe<Scalars['Float']>;
+  symbol?: Maybe<Scalars['String']>;
+  tokenId?: Maybe<Scalars['String']>;
+};
+
+export type NfTv0Args = {
+  chain?: InputMaybe<NftChainType>;
+  contract?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']>;
+};
+
 export type NfTv2 = {
   __typename?: 'NFTv2';
   attributes: Array<NftAttribute>;
@@ -2290,7 +2553,7 @@ export type NfTv3 = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isNftSpam: Scalars['Boolean'];
-  lastSale?: Maybe<NftLastSale>;
+  lastSale?: Maybe<NftLastSaleV2>;
   location?: Maybe<Scalars['String']>;
   media: Array<MediaV2>;
   name: Scalars['String'];
@@ -2301,6 +2564,7 @@ export type NfTv3 = {
 
 export type NearChain = {
   __typename?: 'NearChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -2362,7 +2626,7 @@ export type NearTransactionEdge = {
 
 export type NftAsset = {
   __typename?: 'NftAsset';
-  /** supported list of chain are in [`Chain`] enum */
+  /** supported list of chain are in [`crate::chain::Chain`] enum */
   chain?: Maybe<Scalars['String']>;
   /** ID of contract (contract address in most chain) */
   contract?: Maybe<Scalars['String']>;
@@ -2371,6 +2635,19 @@ export type NftAsset = {
   /** ID of the token. */
   tokenId: Scalars['String'];
 };
+
+export enum NftChainType {
+  Arbitrum = 'Arbitrum',
+  Avalanche = 'Avalanche',
+  Base = 'Base',
+  BinanceSmartChain = 'BinanceSmartChain',
+  Bitcoin = 'Bitcoin',
+  Ethereum = 'Ethereum',
+  Gnosis = 'Gnosis',
+  Optimism = 'Optimism',
+  Polygon = 'Polygon',
+  Solana = 'Solana',
+}
 
 /** A both end inclusive range selector for block */
 export type OptBlockRange = {
@@ -2400,7 +2677,9 @@ export type OptDateSelector = {
 
 export type Optimism = {
   __typename?: 'Optimism';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -2469,8 +2748,9 @@ export type PickObjectType = {
 
 export type Polygon = {
   __typename?: 'Polygon';
+  average24hFee?: Maybe<Eip1559GasFee>;
   balances: Array<Balance>;
-  fee?: Maybe<PolygonGasFee>;
+  fee?: Maybe<Eip1559GasFee>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -2500,13 +2780,6 @@ export type PolygonTransactionsArgs = {
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
-};
-
-export type PolygonGasFee = {
-  __typename?: 'PolygonGasFee';
-  high?: Maybe<Eip1559Fee>;
-  low?: Maybe<Eip1559Fee>;
-  medium?: Maybe<Eip1559Fee>;
 };
 
 export enum Pool {
@@ -2707,6 +2980,7 @@ export type Query = {
   aurora: Aurora;
   avalanche: Avalanche;
   axelar: CosmosBasedChain;
+  base: Base;
   binance: Binance;
   binanceSmartChain: BinanceSmartChain;
   bitcoin: BitcoinChain;
@@ -2721,8 +2995,11 @@ export type Query = {
   cosmos: CosmosBasedChain;
   cosmoshub: CosmosBasedChain;
   crescent: CosmosBasedChain;
+  /** @deprecated Use cronos_pos instead */
   cronos: CosmosBasedChain;
   cronosEVM: CronosEvm;
+  /** Cronos POS */
+  cronosPos: CosmosBasedChain;
   /** Fetch list of all available tokens */
   cryptoCurrencies: Array<CryptoCurrencyType>;
   dapp: DAppReputation;
@@ -2740,11 +3017,13 @@ export type Query = {
   investing: InvestingType;
   juno: JunoChain;
   kava: CosmosBasedChain;
+  klaytn: Klaytn;
   kujira: CosmosBasedChain;
   litecoin: LitecoinChain;
   litecoinTestnet: LitecoinChainTestNet;
   lpTokens: Array<LpBalance>;
   mars: CosmosBasedChain;
+  mayachain: MayaChain;
   near: NearChain;
   optimism: Optimism;
   osmosis: CosmosBasedChain;
@@ -2776,6 +3055,7 @@ export type Query = {
   walletInfo: WalletInfo;
   /** Fetch wallet information */
   walletInfoV3: WalletInfoV3;
+  zkSync: ZkSync;
 };
 
 export type QueryChainsArgs = {
@@ -2855,6 +3135,15 @@ export type QueryWalletInfoArgs = {
 
 export type QueryWalletInfoV3Args = {
   address: Scalars['String'];
+};
+
+/** (experimental) Represent receive asset activity, valid with wallet context */
+export type ReceiveAssetActivityV0 = {
+  __typename?: 'ReceiveAssetActivityV0';
+  amount: Scalars['String'];
+  asset: AssetV0;
+  /** Represent wallet address that send the asset */
+  from: Array<Scalars['String']>;
 };
 
 export type ReferralBonus = {
@@ -3261,6 +3550,10 @@ export type RouteTypeV2 = {
   destAddress: Scalars['String'];
   errorBuildingRoute?: Maybe<Scalars['String']>;
   gasPrices?: Maybe<Scalars['JSON']>;
+  /**
+   * On chain wallet address of the referrer. Must be unique
+   * @deprecated Not necessary anymore, now this data is stored in the Campaigns service
+   */
   isOptIn?: Maybe<Scalars['Boolean']>;
   priceImpact: Scalars['String'];
   priceRate: Scalars['Decimal'];
@@ -3277,6 +3570,10 @@ export type RouteTypeV3 = {
   destAddress: Scalars['String'];
   errorBuildingRoute?: Maybe<Scalars['String']>;
   gasPrices?: Maybe<Scalars['JSON']>;
+  /**
+   * On chain wallet address of the referrer. Must be unique
+   * @deprecated Not necessary anymore, now this data is stored in the Campaigns service
+   */
   isOptIn?: Maybe<Scalars['Boolean']>;
   priceImpact: Scalars['String'];
   priceRate: Scalars['Decimal'];
@@ -3601,15 +3898,37 @@ export type RoutingTypeV3TradesV3Args = {
   routeId: Scalars['String'];
 };
 
+/**
+ * (experimental) Represent send asset activity, valid with wallet context
+ * TODOs: check ReceiveAssetActivityV0
+ */
+export type SendAssetActivityV0 = {
+  __typename?: 'SendAssetActivityV0';
+  amount: Scalars['String'];
+  asset: AssetV0;
+  /** Represent wallet address that receive the asset */
+  to: Array<Scalars['String']>;
+};
+
 export type Settings = {
   __typename?: 'Settings';
   private?: Maybe<Scalars['String']>;
 };
 
+/** Keep information about smart contract/program */
+export type SmartContractV0 = {
+  __typename?: 'SmartContractV0';
+  contract: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+};
+
 export type SolanaChain = {
   __typename?: 'SolanaChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
+  /** (experimental) Get latest wallet activity */
+  latestHistoryActivityV0?: Maybe<WalletActivityV0Connection>;
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
@@ -3620,6 +3939,12 @@ export type SolanaChain = {
 
 export type SolanaChainBalancesArgs = {
   address: Scalars['String'];
+};
+
+export type SolanaChainLatestHistoryActivityV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type SolanaChainLegacyNfTsArgs = {
@@ -3671,54 +3996,90 @@ export type SolanaTransactionEdge = {
 
 export type StakingService = {
   __typename?: 'StakingService';
-  createAndSignAndBroadcastLidoStakeTx: Scalars['String'];
-  createAndSignAndBroadcastStrideStakeTx: Scalars['String'];
-  createAndSignLidoStakeTx: LidoSignedEthTx;
-  createAndSignStrideStakeTx: Scalars['String'];
-  createLidoStakeTx: LidoStakePreviw;
-  createStrideStakeTx: Scalars['String'];
-  getBalance: GetBalance;
-  getSmaApr: Apr;
+  /** Returns a delegate tx in json format for Cosmos chains, either provider a Cosmos validator from providers or a valoper address but not both. */
+  createCosmosDelegateTx: Scalars['String'];
+  createCosmosIbcTransferTx: Scalars['String'];
+  /** Returns a delegate tx in json format for Cosmos chains, either provider a Cosmos validator from providers or a valoper address but not both. */
+  createCosmosUndelegateTx: Scalars['String'];
+  createErc20ApproveTx: EthtxPreview;
+  createLidoStakeTx: EthtxPreview;
+  createStrideLiquidStakingTx: Scalars['String'];
+  /** Returns a list of all APRs for all of the supported Providers per supported asset for each provider. */
+  getAnnualPercentageRates: Array<AnnualPercentageRate>;
+  /** Returns the currenct cosmos zone height based on the asset */
+  getCosmosChainHeight: Scalars['Int'];
+  /** Returns nativly staked assets balances by the supported providers */
+  getCosmosDelegations: Array<CosmosNativeStakedBalance>;
+  /** Returns the transaction count for ETH only */
+  getEthAddressNonce: Scalars['Int'];
+  /** Returns balance for the staked token on Lido contract on Ethereum */
+  getLidoStakedBalance: LidoStakedAssetBalance;
+  /** Returns a list of supported assets for any given provider */
+  getProviderSupportedAssets: Array<SupportedAssets>;
+  getStrideStakedAssetBalance: StrideStakedAssetBalance;
+  lidoCheckErc20Allowance: Scalars['Int'];
   name: Scalars['String'];
   stakingServiceStatus: StakingServiceStatus;
 };
 
-export type StakingServiceCreateAndSignAndBroadcastLidoStakeTxArgs = {
-  addressPrivateKey: Scalars['String'];
-  input: LidoStakingInput;
-  replaceIndex?: Scalars['Int'];
+export type StakingServiceCreateCosmosDelegateTxArgs = {
+  delegationInput: CosmosDelegationInput;
+  provider?: InputMaybe<Providers>;
+  validatorAddress?: InputMaybe<Scalars['String']>;
 };
 
-export type StakingServiceCreateAndSignAndBroadcastStrideStakeTxArgs = {
-  input: StrideStakingInput;
-  senderPrivateKey: Scalars['String'];
+export type StakingServiceCreateCosmosIbcTransferTxArgs = {
+  input: CosmosIbcTransferInput;
+  provider: Providers;
 };
 
-export type StakingServiceCreateAndSignLidoStakeTxArgs = {
-  addressPrivateKey: Scalars['String'];
-  input: LidoStakingInput;
+export type StakingServiceCreateCosmosUndelegateTxArgs = {
+  delegationInput: CosmosDelegationInput;
+  provider?: InputMaybe<Providers>;
+  validatorAddress?: InputMaybe<Scalars['String']>;
 };
 
-export type StakingServiceCreateAndSignStrideStakeTxArgs = {
-  input: StrideStakingInput;
-  senderPrivateKey: Scalars['String'];
+export type StakingServiceCreateErc20ApproveTxArgs = {
+  input: Erc20ApproveInput;
 };
 
 export type StakingServiceCreateLidoStakeTxArgs = {
   input: LidoStakingInput;
 };
 
-export type StakingServiceCreateStrideStakeTxArgs = {
+export type StakingServiceCreateStrideLiquidStakingTxArgs = {
   input: StrideStakingInput;
 };
 
-export type StakingServiceGetBalanceArgs = {
-  address: Scalars['String'];
-  configurationArgs: ConfigArgs;
+export type StakingServiceGetCosmosChainHeightArgs = {
+  asset: SupportedAssets;
 };
 
-export type StakingServiceGetSmaAprArgs = {
-  configurationArgs: ConfigArgs;
+export type StakingServiceGetCosmosDelegationsArgs = {
+  address: Scalars['String'];
+  asset: SupportedAssets;
+};
+
+export type StakingServiceGetEthAddressNonceArgs = {
+  address: Scalars['String'];
+};
+
+export type StakingServiceGetLidoStakedBalanceArgs = {
+  address: Scalars['String'];
+  asset: SupportedAssets;
+};
+
+export type StakingServiceGetProviderSupportedAssetsArgs = {
+  provider: Providers;
+};
+
+export type StakingServiceGetStrideStakedAssetBalanceArgs = {
+  asset: SupportedAssets;
+  strideAddress: Scalars['String'];
+};
+
+export type StakingServiceLidoCheckErc20AllowanceArgs = {
+  input: LidoErc20AllowanceInput;
 };
 
 export type StakingServiceStatus = {
@@ -3727,13 +4088,9 @@ export type StakingServiceStatus = {
   status: Scalars['String'];
 };
 
-export enum StakingTypes {
-  LiquidStaking = 'LiquidStaking',
-  NativeOrNode = 'NativeOrNode',
-}
-
 export type StargazeChain = {
   __typename?: 'StargazeChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -3769,23 +4126,22 @@ export type Statusv2 = {
   blockchairHealth: ProviderHealth;
 };
 
-export type StrideStakingInput = {
-  amount: Scalars['Decimal'];
-  asset: StrideSupportedAssets;
-  destAddr: Scalars['String'];
-  gasLimit?: InputMaybe<Scalars['Decimal']>;
-  senderAddr: Scalars['String'];
-  senderPubkeyHex: Scalars['String'];
+export type StrideStakedAssetBalance = {
+  __typename?: 'StrideStakedAssetBalance';
+  amount: Scalars['Int'];
+  decimal: Scalars['Int'];
+  denom: Scalars['String'];
 };
 
-export enum StrideSupportedAssets {
-  ATOM = 'ATOM',
-  JUNO = 'JUNO',
-  LUNA = 'LUNA',
-  OSMO = 'OSMO',
-  STARS = 'STARS',
-  STRD = 'STRD',
-}
+export type StrideStakingInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  recieverStrideAddr: Scalars['String'];
+  senderAddr: Scalars['String'];
+  senderPubkeyHex: Scalars['String'];
+  timeoutHeight: Scalars['Int'];
+};
 
 export enum SupportedAssets {
   AKASH = 'AKASH',
@@ -3798,8 +4154,7 @@ export enum SupportedAssets {
   KAVA = 'KAVA',
   KUJI = 'KUJI',
   LUNA = 'LUNA',
-  MATIC = 'MATIC',
-  NEAR = 'NEAR',
+  MATIC_ERC20 = 'MATIC_ERC20',
   OSMO = 'OSMO',
   SEI = 'SEI',
   SOL = 'SOL',
@@ -3807,8 +4162,19 @@ export enum SupportedAssets {
   STRD = 'STRD',
 }
 
+export type SwapAssetActivityV0 = {
+  __typename?: 'SwapAssetActivityV0';
+  fromAssets?: Maybe<Array<AssetAmountV0>>;
+  /** Program that was used to execute swap */
+  program?: Maybe<SmartContractV0>;
+  /** amount paid during swap execution to the protocol */
+  swapFee?: Maybe<Array<FeeV0>>;
+  toAssets?: Maybe<Array<AssetAmountV0>>;
+};
+
 export type TerraChain = {
   __typename?: 'TerraChain';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   legacyNFTs: Array<NfTv3>;
@@ -3828,6 +4194,7 @@ export type TerraChainLegacyNfTsArgs = {
 export type ThorChain = {
   __typename?: 'ThorChain';
   balances: Array<Balance>;
+  fee?: Maybe<ThorChainFee>;
   name: Scalars['String'];
   status: Status;
   transactions: ThorchainTransactionConnection;
@@ -3841,6 +4208,21 @@ export type ThorChainBalancesArgs = {
 export type ThorChainTransactionsArgs = {
   address: Scalars['String'];
   pagination?: CursorPagination;
+};
+
+/** Transactions fee management for THORChain. */
+export type ThorChainFee = {
+  __typename?: 'ThorChainFee';
+  /** Cacao fee on all on chain txs */
+  nativeTransactionFee?: Maybe<Scalars['Float']>;
+  /** Amount of rune to withhold on all outbound transactions (1e8 notation) */
+  outboundTransactionFee?: Maybe<Scalars['Float']>;
+  /** Fee for TNS sale in basis points */
+  tnsFeeOnSale?: Maybe<Scalars['Float']>;
+  /** Per block cost for TNS, in rune */
+  tnsFeePerBlock?: Maybe<Scalars['Float']>;
+  /** Registration fee for new THORName, in rune */
+  tnsRegisterFee?: Maybe<Scalars['Float']>;
 };
 
 export type ThorchainFee = {
@@ -3938,6 +4320,29 @@ export type TokenType = {
   symbol: Scalars['String'];
 };
 
+/** (experimental) Represent Token for a given chain, contract and token_id */
+export type TokenV0 = {
+  __typename?: 'TokenV0';
+  /** Chain name */
+  chain?: Maybe<Scalars['String']>;
+  /** Contract for EVM/Cosmos and program_id for Solana */
+  contract?: Maybe<Scalars['String']>;
+  /** Number of decimals for current asset */
+  decimals?: Maybe<Scalars['Int']>;
+  /** Unique asset identifier */
+  id?: Maybe<Scalars['ID']>;
+  /** Asset image */
+  image?: Maybe<Scalars['String']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  /** The symbol that identifies token */
+  symbol?: Maybe<Scalars['String']>;
+  /** Null for EVM/Cosmos and mint for Solana */
+  tokenId?: Maybe<Scalars['String']>;
+  type?: Maybe<AssetInternalType>;
+};
+
 export type TradeRouteInputTypeV2 = {
   amountIn: Scalars['Decimal'];
   amountOut: Scalars['Decimal'];
@@ -3982,7 +4387,7 @@ export type TransactionPayload = {
   data: Scalars['String'];
   fromAddress: Scalars['String'];
   to: Scalars['String'];
-  value?: InputMaybe<Scalars['Int']>;
+  value?: InputMaybe<Scalars['String']>;
 };
 
 export enum TransactionType {
@@ -4007,6 +4412,7 @@ export type TrendingTokensType = {
 
 export type Tron = {
   __typename?: 'Tron';
+  average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
@@ -4035,67 +4441,18 @@ export type TronTransactionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
-export type UtxoScriptPubkey = {
-  __typename?: 'UTXOScriptPubkey';
-  /** (string, optional) The Bitcoin address (only if a well-defined address exists) */
-  address?: Maybe<Scalars['String']>;
-  /** (string) the asm */
-  asm: Scalars['String'];
-  /** (string, optional) Inferred descriptor for the output */
-  desc?: Maybe<Scalars['String']>;
-  /** (string) the hex */
-  hex: Scalars['String'];
-  /** (string) The type, eg 'pubkeyhash' */
-  scriptType: Scalars['String'];
-};
-
-export type UtxoScriptSig = {
-  __typename?: 'UTXOScriptSig';
-  /** asm */
-  asm: Scalars['String'];
-  /** hex */
-  hex: Scalars['String'];
-};
-
-export type UtxoTransactionByHashV4 = {
-  __typename?: 'UTXOTransactionByHashV4';
-  /** (numeric, optional) the block number in which this transaction is mined. */
+export type UtxoTransaction = {
+  __typename?: 'UTXOTransaction';
+  balanceChange?: Maybe<Amount>;
+  /** @deprecated Not used in the txs, is to be removed in the next version */
+  blockIndex?: Maybe<Scalars['Int']>;
   blockNumber?: Maybe<Scalars['Int']>;
-  /** (string, optional) the block hash */
-  blockhash?: Maybe<Scalars['String']>;
-  /** (numeric, optional) The block time expressed in UNIX epoch time */
-  blocktime?: Maybe<Scalars['Int']>;
-  /** (numeric, optional) The confirmations */
-  confirmations?: Maybe<Scalars['Int']>;
-  /** the amout of Satushi spent for this tx to be mined by a miner. */
-  fee: Amount;
-  /** (string) The transaction hash (differs from txid for witness transactions) */
+  fee?: Maybe<Amount>;
   hash: Scalars['String'];
-  /** (string) The serialized, hex-encoded data for 'txid' */
-  hex: Scalars['String'];
-  /** Inputs from the privous outputs, as addresses and values */
-  inputs: Array<Input>;
-  /** (numeric) The lock time */
-  locktime: Scalars['Int'];
-  /** outputs containing */
-  outputs: Array<Output>;
-  /** (numeric) The serialized transaction size */
-  size: Scalars['Int'];
-  /** (numeric, optional) Same as "blocktime" */
-  time?: Maybe<Scalars['Int']>;
-  /** (string) The transaction id (same as provided) */
-  txid: Scalars['String'];
-  /** (numeric) The version */
-  version: Scalars['Int'];
-  /**
-   * vin, input records directly from the node's response.
-   * contains the privious outputs data.
-   */
-  vin: Array<UtxoVinV2>;
-  /** vout */
-  vout: Array<UtxoVout>;
-  /** (numeric) The virtual transaction size (differs from size for witness transactions) */
-  vsize?: Maybe<Scalars['Int']>;
+  inputs?: Maybe<Array<Input>>;
+  outputs?: Maybe<Array<Output>>;
+  status?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['DateTime']>;
 };
 
 export type UtxoTransactionV2 = {
@@ -4110,30 +4467,36 @@ export type UtxoTransactionV2 = {
   timestamp?: Maybe<Scalars['DateTime']>;
 };
 
-export type UtxoVinV2 = {
-  __typename?: 'UTXOVinV2';
-  /** (string, optional) Coinbase, if the transactions is a coinbase tx */
-  coinbase?: Maybe<Scalars['String']>;
-  /** (json object, option) The script */
-  scriptSig?: Maybe<UtxoScriptSig>;
-  /** (numeric) The script sequence number */
-  sequence?: Maybe<Scalars['Int']>;
-  /** (string, optional) The transaction id, if not coinbase */
-  txid?: Maybe<Scalars['String']>;
-  /** (json array, optional), [(string) hex-encoded witness data (if any)] */
-  txinwitness?: Maybe<Array<Scalars['String']>>;
-  /** (numeric) The output number */
-  vout?: Maybe<Scalars['Int']>;
+export type UtxoTransactionV2Connection = {
+  __typename?: 'UTXOTransactionV2Connection';
+  /** A list of edges. */
+  edges: Array<UtxoTransactionV2Edge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
 };
 
-export type UtxoVout = {
-  __typename?: 'UTXOVout';
-  /** (numeric) index */
-  n: Scalars['Int'];
-  /** scriptPubkey */
-  scriptPubkey: UtxoScriptPubkey;
-  /** (numeric) The value in BTC */
-  value: Scalars['Float'];
+/** An edge in a connection. */
+export type UtxoTransactionV2Edge = {
+  __typename?: 'UTXOTransactionV2Edge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: UtxoTransactionV2;
+};
+
+export type UnspentTransactionOutputV4 = {
+  __typename?: 'UnspentTransactionOutputV4';
+  address?: Maybe<Scalars['String']>;
+  iTxHash?: Maybe<Scalars['String']>;
+  iTxIndex?: Maybe<Scalars['Int']>;
+  isCoinbase?: Maybe<Scalars['Boolean']>;
+  isSpent: Scalars['Boolean'];
+  oIndex: Scalars['Int'];
+  oTxHash: Scalars['String'];
+  oTxHex?: Maybe<Scalars['String']>;
+  oTxTime?: Maybe<Scalars['DateTime']>;
+  scriptHex?: Maybe<Scalars['String']>;
+  value: Amount;
 };
 
 export type UnspentTransactionOutputV5 = {
@@ -4159,6 +4522,72 @@ export type User = {
 export type UserSettingsInput = {
   private?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['Int']>;
+};
+
+export type UtxotransactionByHashV5 = {
+  __typename?: 'UtxotransactionByHashV5';
+  /** (numeric, optional) the block number in which this transaction is mined. */
+  blockNumber?: Maybe<Scalars['Int']>;
+  /** (string, optional) the block hash */
+  blockhash?: Maybe<Scalars['String']>;
+  /** (numeric, optional) The block time expressed in UNIX epoch time */
+  blocktime?: Maybe<Scalars['Int']>;
+  /** (numeric, optional) The confirmations */
+  confirmations?: Maybe<Scalars['Int']>;
+  /** the amout of Satushi spent for this tx to be mined by a miner. */
+  fee: Amount;
+  /** (string) The transaction hash (differs from txid for witness transactions) */
+  hash: Scalars['String'];
+  /** (string) The serialized, hex-encoded data for 'txid' */
+  hex?: Maybe<Scalars['String']>;
+  /** Inputs from the privous outputs, as addresses and values */
+  inputs: Array<Input>;
+  /** (numeric) The lock time */
+  locktime?: Maybe<Scalars['Int']>;
+  /** outputs containing */
+  outputs: Array<Output>;
+  /** (numeric) The serialized transaction size */
+  size: Scalars['Int'];
+  /** ( either blockbook or blockchair ) */
+  sourceOfData: Scalars['String'];
+  /** (numeric, optional) Same as "blocktime" */
+  time?: Maybe<Scalars['Int']>;
+  /** (string) The transaction id (same as provided) */
+  txid?: Maybe<Scalars['String']>;
+  /** (numeric) The version */
+  version: Scalars['Int'];
+  /**
+   * vin, input records directly from the node's response.
+   * contains the privious outputs data.
+   */
+  vin?: Maybe<Array<UtxovinV3>>;
+  /** vout */
+  vout?: Maybe<Array<UtxovoutV2>>;
+};
+
+export type UtxovinV3 = {
+  __typename?: 'UtxovinV3';
+  addresses?: Maybe<Array<Scalars['String']>>;
+  coinbase?: Maybe<Scalars['String']>;
+  isAddress?: Maybe<Scalars['Boolean']>;
+  n?: Maybe<Scalars['Int']>;
+  sequence?: Maybe<Scalars['Int']>;
+  txid?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+  vout?: Maybe<Scalars['Int']>;
+};
+
+export type UtxovoutV2 = {
+  __typename?: 'UtxovoutV2';
+  addresses?: Maybe<Array<Scalars['String']>>;
+  hex: Scalars['String'];
+  isAddress?: Maybe<Scalars['Boolean']>;
+  isOwn?: Maybe<Scalars['Boolean']>;
+  n?: Maybe<Scalars['Int']>;
+  spent?: Maybe<Scalars['Boolean']>;
+  spentHeight?: Maybe<Scalars['Int']>;
+  spentTxId?: Maybe<Scalars['String']>;
+  value: Scalars['String'];
 };
 
 export type Version = {
@@ -4190,6 +4619,44 @@ export type Wallet = {
   name: Scalars['String'];
 };
 
+/** (experimental) Represent wallet activities */
+export type WalletActivityV0 = {
+  __typename?: 'WalletActivityV0';
+  /** Wallet address */
+  address: Scalars['String'];
+  /** Assets movements (Sent and Received activities) */
+  basic: Array<BasicActivityV0>;
+  /** Block height (null for pending txs) */
+  blockHeight?: Maybe<Scalars['Int']>;
+  /** Chain */
+  chain: Scalars['String'];
+  /** Time of the transaction as ISO 8601 string */
+  datetime?: Maybe<Scalars['DateTime']>;
+  /** Complex activities (Swap, Withdraw, Stake, etc.); build on top of `basic` */
+  detailed?: Maybe<Array<DetailedActivityV0>>;
+  /** Transaction fee */
+  fee: Array<FeeV0>;
+  /** Tx hash */
+  txHash: Scalars['String'];
+};
+
+export type WalletActivityV0Connection = {
+  __typename?: 'WalletActivityV0Connection';
+  /** A list of edges. */
+  edges: Array<WalletActivityV0Edge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type WalletActivityV0Edge = {
+  __typename?: 'WalletActivityV0Edge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node: WalletActivityV0;
+};
+
 export type WalletInfo = {
   __typename?: 'WalletInfo';
   /** EVM address of the wallet. */
@@ -4212,6 +4679,13 @@ export type WalletInfoV3 = {
 
 export type WalletV3 = {
   __typename?: 'WalletV3';
+  name: Scalars['String'];
+};
+
+export type ZkSync = {
+  __typename?: 'ZkSync';
+  fee?: Maybe<DefaultGasFee>;
+  feeHistory: DefaultGasFee;
   name: Scalars['String'];
 };
 
@@ -4248,8 +4722,8 @@ export type GetBinanceBalancesQuery = {
 
 export type GetBinanceTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
-  pagination?: InputMaybe<CursorPagination>;
-  dateRange?: InputMaybe<OptDateSelector>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
   blockRange?: InputMaybe<OptBlockSelector>;
 }>;
 
@@ -4268,13 +4742,14 @@ export type GetBinanceTransactionsQuery = {
         __typename?: 'BinanceTransactionEdge';
         node: {
           __typename?: 'BinanceTransaction';
+          blockHeight: number;
+          data?: any | null;
+          fromAddress: string;
           hash: string;
           status: string;
           time: any;
           toAddress?: string | null;
-          fromAddress: string;
           type: string;
-          blockHeight: number;
           amount?: { __typename?: 'Amount'; value: string } | null;
           asset?: {
             __typename?: 'CryptoAsset';
@@ -4285,6 +4760,7 @@ export type GetBinanceTransactionsQuery = {
             image?: string | null;
             name?: string | null;
             symbol?: string | null;
+            type?: AssetInternalType | null;
             price?: {
               __typename?: 'AssetAmountType';
               amount: string;
@@ -4376,7 +4852,7 @@ export type GetBitcoinTransactionsQuery = {
   __typename?: 'Query';
   bitcoin: {
     __typename?: 'BitcoinChain';
-    transactions: Array<{
+    transactionsV2: Array<{
       __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
@@ -4450,7 +4926,7 @@ export type GetBitcoinCashTransactionsQuery = {
   __typename?: 'Query';
   bitcoincash: {
     __typename?: 'BitcoincashChain';
-    transactions: Array<{
+    transactionsV2: Array<{
       __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
@@ -6069,12 +6545,12 @@ export type GetDogecoinFeesQuery = {
   __typename?: 'Query';
   dogecoin: {
     __typename?: 'DogeChain';
-    fee?: {
+    fee: {
       __typename?: 'DefaultGasFee';
       high?: number | null;
       low?: number | null;
       medium?: number | null;
-    } | null;
+    };
   };
 };
 
@@ -6088,7 +6564,7 @@ export type GetDogecoinTransactionsQuery = {
   __typename?: 'Query';
   dogecoin: {
     __typename?: 'DogeChain';
-    transactions: Array<{
+    transactionsV2: Array<{
       __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
@@ -6218,7 +6694,7 @@ export type GetLitecoinTransactionsQuery = {
   __typename?: 'Query';
   litecoin: {
     __typename?: 'LitecoinChain';
-    transactions: Array<{
+    transactionsV2: Array<{
       __typename?: 'UTXOTransactionV2';
       blockNumber?: number | null;
       hash: string;
@@ -6508,23 +6984,17 @@ export const GetBinanceTransactionsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'pagination' },
+            name: { kind: 'Name', value: 'first' },
           },
-          type: {
-            kind: 'NamedType',
-            name: { kind: 'Name', value: 'CursorPagination' },
-          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
         },
         {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'dateRange' },
+            name: { kind: 'Name', value: 'after' },
           },
-          type: {
-            kind: 'NamedType',
-            name: { kind: 'Name', value: 'OptDateSelector' },
-          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
         },
         {
           kind: 'VariableDefinition',
@@ -6561,18 +7031,18 @@ export const GetBinanceTransactionsDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'pagination' },
+                      name: { kind: 'Name', value: 'first' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'pagination' },
+                        name: { kind: 'Name', value: 'first' },
                       },
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'dateRange' },
+                      name: { kind: 'Name', value: 'after' },
                       value: {
                         kind: 'Variable',
-                        name: { kind: 'Name', value: 'dateRange' },
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                     {
@@ -6707,8 +7177,23 @@ export const GetBinanceTransactionsDocument = {
                                             value: 'symbol',
                                           },
                                         },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'type' },
+                                        },
                                       ],
                                     },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockHeight',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'data' },
                                   },
                                   {
                                     kind: 'Field',
@@ -6724,6 +7209,13 @@ export const GetBinanceTransactionsDocument = {
                                           },
                                         },
                                       ],
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
                                     },
                                   },
                                   {
@@ -6744,21 +7236,7 @@ export const GetBinanceTransactionsDocument = {
                                   },
                                   {
                                     kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'fromAddress',
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
                                     name: { kind: 'Name', value: 'type' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'blockHeight',
-                                    },
                                   },
                                 ],
                               },
@@ -7087,7 +7565,7 @@ export const GetBitcoinTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -7449,7 +7927,7 @@ export const GetBitcoinCashTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -15393,7 +15871,7 @@ export const GetDogecoinTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -15979,7 +16457,7 @@ export const GetLitecoinTransactionsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'transactions' },
+                  name: { kind: 'Name', value: 'transactionsV2' },
                   arguments: [
                     {
                       kind: 'Argument',

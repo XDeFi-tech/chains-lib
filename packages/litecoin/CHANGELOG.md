@@ -1,5 +1,67 @@
 # @xdefi-tech/chains-litecoin
 
+## 1.1.2
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+- Updated dependencies [a0e1019]
+  - @xdefi-tech/chains-graphql@1.2.2
+  - @xdefi-tech/chains-core@1.2.2
+  - @xdefi-tech/chains-utxo@1.1.2
+
+## 1.1.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-graphql@1.2.1
+  - @xdefi-tech/chains-core@1.2.1
+  - @xdefi-tech/chains-utxo@1.1.1
+
+## 1.1.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-core@1.2.0
+  - @xdefi-tech/chains-utxo@1.1.0
+  - @xdefi-tech/chains-graphql@1.2.0
+
+## 1.0.12
+
+### Patch Changes
+
+- 04ce322: Update get transaction query with BE updates
+- Updated dependencies [04ce322]
+  - @xdefi-tech/chains-graphql@1.1.14
+
+## 1.0.11
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-core@1.1.15
+  - @xdefi-tech/chains-utxo@1.0.8
+  - @xdefi-tech/chains-graphql@1.1.12
+
+## 1.0.10
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+  - @xdefi-tech/chains-utxo@1.0.7
+  - eslint-config-custom@1.0.1
+  - @xdefi-tech/chains-graphql@1.1.10
+
 ## 1.0.9
 
 ### Patch Changes

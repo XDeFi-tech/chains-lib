@@ -2,7 +2,7 @@ import { Msg } from '@xdefi-tech/chains-core';
 
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
-import { THOR_MANIFEST } from '../manifests';
+import { ThorChains, THORCHAIN_MANIFESTS } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
@@ -37,7 +37,9 @@ describe('ledger.signer', () => {
   beforeEach(() => {
     signer = new LedgerSigner();
 
-    provider = new ThorProvider(new ChainDataSource(THOR_MANIFEST));
+    provider = new ThorProvider(
+      new ChainDataSource(THORCHAIN_MANIFESTS[ThorChains.thorchain])
+    );
     derivationPath = "m/44'/931'/0'/0/0";
 
     txInput = {

@@ -35,7 +35,7 @@ export class PrivateKeySigner extends Signer.Provider {
       network,
     });
 
-    if (!address) throw new Error('BTC address is undefined');
+    if (!address) throw new Error('LTC address is undefined');
 
     return address;
   }

@@ -1,5 +1,80 @@
 # @xdefi-tech/chains-controller
 
+## 1.1.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-graphql@1.2.1
+  - @xdefi-tech/chains-bitcoin@1.1.1
+  - @xdefi-tech/chains-cosmos@1.1.1
+  - @xdefi-tech/chains-solana@1.2.1
+  - @xdefi-tech/chains-core@1.2.1
+  - @xdefi-tech/chains-evm@1.2.1
+  - @xdefi-tech/chains-binance@1.1.1
+  - @xdefi-tech/chains-bitcoincash@1.1.1
+  - @xdefi-tech/chains-dogecoin@1.1.1
+  - @xdefi-tech/chains-litecoin@1.1.1
+  - @xdefi-tech/chains-thor@1.1.1
+
+## 1.1.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-binance@1.1.0
+  - @xdefi-tech/chains-bitcoin@1.1.0
+  - @xdefi-tech/chains-bitcoincash@1.1.0
+  - @xdefi-tech/chains-core@1.2.0
+  - @xdefi-tech/chains-cosmos@1.1.0
+  - @xdefi-tech/chains-dogecoin@1.1.0
+  - @xdefi-tech/chains-evm@1.2.0
+  - @xdefi-tech/chains-litecoin@1.1.0
+  - @xdefi-tech/chains-solana@1.2.0
+  - @xdefi-tech/chains-thor@1.1.0
+  - @xdefi-tech/chains-graphql@1.2.0
+
+## 1.0.13
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-binance@1.0.15
+  - @xdefi-tech/chains-bitcoin@1.0.10
+  - @xdefi-tech/chains-bitcoincash@1.0.11
+  - @xdefi-tech/chains-core@1.1.15
+  - @xdefi-tech/chains-cosmos@1.0.21
+  - @xdefi-tech/chains-dogecoin@1.0.10
+  - @xdefi-tech/chains-evm@1.1.19
+  - @xdefi-tech/chains-litecoin@1.0.11
+  - @xdefi-tech/chains-solana@1.1.16
+  - @xdefi-tech/chains-thor@1.0.11
+  - @xdefi-tech/chains-graphql@1.1.12
+
+## 1.0.12
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-binance@1.0.13
+  - @xdefi-tech/chains-bitcoin@1.0.9
+  - @xdefi-tech/chains-bitcoincash@1.0.10
+  - @xdefi-tech/chains-core@1.1.14
+  - @xdefi-tech/chains-cosmos@1.0.20
+  - @xdefi-tech/chains-dogecoin@1.0.9
+  - @xdefi-tech/chains-evm@1.1.18
+  - @xdefi-tech/chains-litecoin@1.0.10
+  - @xdefi-tech/chains-solana@1.1.15
+  - @xdefi-tech/chains-thor@1.0.9
+  - @xdefi-tech/chains-graphql@1.1.10
+
 ## 1.0.11
 
 ### Patch Changes

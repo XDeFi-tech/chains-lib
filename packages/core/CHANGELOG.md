@@ -1,5 +1,35 @@
 # @xdefi-tech/chains-core
 
+## 1.2.2
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+
+## 1.2.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+
+## 1.2.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+## 1.1.15
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+
+## 1.1.14
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+
 ## 1.1.13
 
 ### Patch Changes

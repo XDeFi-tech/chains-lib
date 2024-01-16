@@ -4,11 +4,7 @@ import {
   SignerDecorator,
   IsTrezorInitialized,
 } from '@xdefi-tech/chains-core';
-import TrezorConnect, {
-  Params,
-  SignTransaction,
-  Manifest,
-} from '@trezor/connect-web';
+import TrezorConnect, * as connectWeb from '@trezor/connect-web';
 import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
@@ -42,7 +38,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async sign(
     msg: ChainMsg,
     derivation: string,
-    manifest?: Manifest
+    manifest?: connectWeb.Manifest
   ): Promise<void> {
     if (manifest) {
       await TrezorConnect.manifest(manifest);
@@ -79,7 +75,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         amount: output.value,
       };
     });
-    const unsignedTx: Params<SignTransaction> = {
+    const unsignedTx: connectWeb.Params<connectWeb.SignTransaction> = {
       inputs: inputs,
       outputs: outputs,
       coin: 'Dogecoin',

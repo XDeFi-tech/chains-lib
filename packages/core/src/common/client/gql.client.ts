@@ -1,4 +1,6 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
+import { ApolloClient, split } from '@apollo/client/core';
+import { InMemoryCache } from '@apollo/client/cache';
+import { HttpLink } from '@apollo/client/link/http';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
@@ -8,13 +10,13 @@ const wsLink =
   typeof window !== 'undefined'
     ? new GraphQLWsLink(
         createClient({
-          url: 'wss://gateway-ws.dev.xdefiservices.com/',
+          url: 'wss://gateway-ws.xdefiservices.com/',
         })
       )
     : null;
 
 const httpLink = new HttpLink({
-  uri: 'https://gql-router.dev.xdefiservices.com/graphql',
+  uri: 'https://gql-router.xdefiservices.com/graphql',
   fetch,
 });
 

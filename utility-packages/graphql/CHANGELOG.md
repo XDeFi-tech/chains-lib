@@ -1,5 +1,66 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.2
+
+### Patch Changes
+
+- a0e1019: Feat: switch lib to production environment
+- Updated dependencies [a0e1019]
+  - @xdefi-tech/chains-core@1.2.2
+
+## 1.2.1
+
+### Patch Changes
+
+- bede5ce: Fix: remove react dependency from each package
+- Updated dependencies [bede5ce]
+  - @xdefi-tech/chains-core@1.2.1
+
+## 1.2.0
+
+### Minor Changes
+
+- 346e09e: Minor bump; Add Tron Ledger Signer; Fix Lint;
+
+### Patch Changes
+
+- Updated dependencies [346e09e]
+  - @xdefi-tech/chains-core@1.2.0
+
+## 1.1.14
+
+### Patch Changes
+
+- 04ce322: Update get transaction query with BE updates
+
+## 1.1.13
+
+### Patch Changes
+
+- 005b329: Update GetBitcoinTransactions query with BE updates
+
+## 1.1.12
+
+### Patch Changes
+
+- 9b2f6b6: Update assets for cor package. Add TRC20 balances
+- Updated dependencies [9b2f6b6]
+  - @xdefi-tech/chains-core@1.1.15
+
+## 1.1.11
+
+### Patch Changes
+
+- a0e3beb: Update binance transactions query regarding to changes on server side
+
+## 1.1.10
+
+### Patch Changes
+
+- 680b517: Add test coverage, bunch minor fixes
+- Updated dependencies [680b517]
+  - @xdefi-tech/chains-core@1.1.14
+
 ## 1.1.9
 
 ### Patch Changes

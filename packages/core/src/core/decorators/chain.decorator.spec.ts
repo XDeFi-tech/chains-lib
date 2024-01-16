@@ -1,6 +1,5 @@
 import { DiContainer } from '../../common';
 import { ChainDecorator } from '../decorators';
-
 import { CHAIN_SCOPE_NAME, METADATA_KEY } from '../constants';
 
 describe('chain.decorator', () => {

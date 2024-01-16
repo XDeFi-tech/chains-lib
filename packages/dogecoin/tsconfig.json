@@ -6,5 +6,5 @@
     "outDir": "./dist"
   },
   "allowJs": true,
-  "include": ["./src/custom.d.ts", "./src/**/*"],
+  "include": ["!./src/custom.d.ts", "./src/**/*"],
 }

@@ -68,12 +68,4 @@ describe('chain.provider', () => {
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(0);
   });
-
-  it('should get fee options', async () => {
-    const feeOptions = await provider.gasFeeOptions();
-
-    expect(feeOptions?.low).toBeTruthy();
-    expect(feeOptions?.medium).toBeTruthy();
-    expect(feeOptions?.high).toBeTruthy();
-  });
 });

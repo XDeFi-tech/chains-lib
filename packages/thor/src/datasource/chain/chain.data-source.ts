@@ -24,16 +24,16 @@ import {
 import Long from 'long';
 
 import { ChainMsg } from '../../msg';
-import type { ThorManifest } from '../../manifests';
+import * as manifests from '../../manifests';
 import { AccountInfo } from '../../types';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
   declare rpcProvider: cosmosclient.CosmosSDK;
-  declare manifest: ThorManifest;
+  declare manifest: manifests.ThorManifest;
   public rest: Axios;
 
-  constructor(manifest: ThorManifest) {
+  constructor(manifest: manifests.ThorManifest) {
     super(manifest);
     this.rpcProvider = new cosmosclient.CosmosSDK(
       this.manifest.rpcURL,

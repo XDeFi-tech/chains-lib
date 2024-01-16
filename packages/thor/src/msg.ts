@@ -46,6 +46,7 @@ export interface TxBody {
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
   declare provider: ThorProvider;
+  declare data: any;
 
   constructor(data: MsgBody, provider: ThorProvider, encoding: MsgEncoding) {
     super(data, provider, encoding);

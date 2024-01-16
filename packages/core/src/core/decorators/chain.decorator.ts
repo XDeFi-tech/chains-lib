@@ -1,6 +1,6 @@
-import { DiContainer } from 'common/di/container';
-import { CHAIN_SCOPE_NAME, METADATA_KEY } from 'core/constants';
-import { ChainOptions } from 'core/chain/interfaces';
+import { DiContainer } from '../../common/di/container';
+import { CHAIN_SCOPE_NAME, METADATA_KEY } from '../constants';
+import { ChainOptions } from '../chain/interfaces';
 
 /**
  * Decorator that marks a class as Chain provider that handles implementation of chain
@@ -29,7 +29,7 @@ export function ChainDecorator(name: string, options?: ChainOptions) {
       // Init dependencies
       options?.deps?.forEach((dep: any) => {
         if (typeof dep === 'function') {
-          new dep();
+          dep();
         }
       });
 

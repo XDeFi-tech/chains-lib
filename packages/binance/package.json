@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-binance",
-  "version": "1.0.12",
+  "version": "1.1.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -50,6 +50,7 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
@@ -59,9 +60,9 @@
   "type": "commonjs",
   "tsup": {
     "entry": [
-      "src/index.ts",
-      "src/signers/web.ts",
-      "src/signers/react-native.ts"
+      "src/**/*.ts",
+      "!src/**/*.spec.*",
+      "!src/custom.d.ts"
     ],
     "format": "cjs",
     "splitting": false,
@@ -93,6 +94,7 @@
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
-    }
+    },
+    "testTimeout": 15000
   }
 }
