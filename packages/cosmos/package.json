@@ -61,6 +61,9 @@
     "stream-browserify": "^3.0.0",
     "ts-node": "^10.7.0"
   },
+  "peerDependencies": {
+    "@terra-money/terra.proto": "4.0.4"
+  },
   "scripts": {
     "build": "tsup --minify --clean",
     "watch": "tsup --watch",

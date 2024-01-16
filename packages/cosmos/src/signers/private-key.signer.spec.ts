@@ -29,7 +29,7 @@ jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
   };
 });
 
-describe('seed-phrase.signer', () => {
+describe('private-key.signer', () => {
   let pk: string;
   let signer: PrivateKeySigner;
   let provider: CosmosProvider;
