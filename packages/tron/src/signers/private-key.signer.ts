@@ -38,14 +38,10 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async sign(
-    msg: ChainMsg,
-    key: string | null,
-    manifest: Chain.Manifest
-  ): Promise<void> {
+  async sign(msg: ChainMsg): Promise<void> {
     const tronWeb = new TronWeb({
-      fullHost: manifest.rpcURL,
-      privateKey: key ? key : this.key,
+      fullHost: 'https://api.trongrid.io',
+      privateKey: this.key,
     });
 
     const txData = await msg.buildTx();

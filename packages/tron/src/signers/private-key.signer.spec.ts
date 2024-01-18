@@ -42,7 +42,7 @@ describe('tron private-key.signer', () => {
       from: MOCK.address,
       amount: 0.000001,
     });
-    await signer.sign(msg, null, TRON_MANIFEST);
+    await signer.sign(msg);
     expect((msg.signedTransaction as any).txID.length).toBe(64);
   });
 
@@ -53,7 +53,7 @@ describe('tron private-key.signer', () => {
       amount: 0.000001,
       tokenType: TokenType.TRC10,
     });
-    await expect(signer.sign(msg, null, TRON_MANIFEST)).rejects.toThrow(
+    await expect(signer.sign(msg)).rejects.toThrow(
       'TRX10 Token ID not provided'
     );
   });
@@ -67,7 +67,7 @@ describe('tron private-key.signer', () => {
       decimals: MOCK.decimals,
       tokenType: TokenType.TRC20,
     });
-    await signer.sign(msg, null, TRON_MANIFEST);
+    await signer.sign(msg);
     expect((msg.signedTransaction as any).txID.length).toBe(64);
   });
 
@@ -80,7 +80,7 @@ describe('tron private-key.signer', () => {
       decimals: MOCK.decimals,
       tokenType: TokenType.TRC20,
     });
-    await signer.sign(msg, null, TRON_MANIFEST);
+    await signer.sign(msg);
     expect((msg.signedTransaction as any).txID.length).toBe(64);
   });
 
@@ -92,7 +92,7 @@ describe('tron private-key.signer', () => {
       contractAddress: MOCK.contractAddress,
       tokenType: TokenType.TRC20,
     });
-    await expect(signer.sign(msg, null, TRON_MANIFEST)).rejects.toThrow(
+    await expect(signer.sign(msg)).rejects.toThrow(
       'Token decimals not provided'
     );
   });
@@ -104,7 +104,7 @@ describe('tron private-key.signer', () => {
       amount: 0.000001,
       tokenType: TokenType.TRC20,
     });
-    await expect(signer.sign(msg, null, TRON_MANIFEST)).rejects.toThrow(
+    await expect(signer.sign(msg)).rejects.toThrow(
       'TRC20 Contract Address not provided'
     );
   });
