@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-thor
 
+## 1.2.0
+
+### Minor Changes
+
+- 5498e3e: refactor: Streamlined the way signers are exported across various cryptocurrency packages for both web and React Native environments;
+  feat: Enhanced accessibility to individual signers for Bitcoin, Bitcoin Cash, Cosmos, Dogecoin, EVM-compatible chains, Litecoin, Solana, Thorchain, and Tron;
+
 ## 1.1.2
 
 ### Patch Changes
