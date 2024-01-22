@@ -10,6 +10,15 @@ export interface TransactionData {
   from: string;
   status: TransactionStatus;
   data?: string;
+  date?: number;
+  amount?: string;
+  action?: TransactionAction;
+  contractAddress?: string;
+}
+
+export enum TransactionAction {
+  SEND = 'send',
+  RECEIVE = 'receive',
 }
 
 export abstract class Transaction<InData extends object = object> {

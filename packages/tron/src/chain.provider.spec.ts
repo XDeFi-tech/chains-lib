@@ -29,14 +29,51 @@ describe('chain.provider', () => {
     expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
   });
 
+  it('should get a token transaction from the blockchain', async () => {
+    const txData = await provider.getTransaction(
+      '992151e0fafb2e86504efbfd42074434af1ac03f460b2e96b687338471e7c79d'
+    );
+    expect(txData?.to).toEqual('TTd9qHyjqiUkfTxe3gotbuTMpjU8LEbpkN');
+    expect(txData?.from).toEqual('TBP3zWQPLXyEJx3QuBBvC4qZxbDWq7zQuC');
+    expect(txData?.hash).toEqual(
+      '992151e0fafb2e86504efbfd42074434af1ac03f460b2e96b687338471e7c79d'
+    );
+    expect(txData?.amount).toEqual('32546790000');
+    expect(txData?.contractAddress).toEqual(
+      'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+    );
+  });
+
+  it('should get all transactions from the blockchain for an address', async () => {
+    const txData = await (
+      provider.dataSource as ChainDataSource
+    ).getTransactionsForAddress({
+      address: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+    });
+
+    expect(txData.length).toBeGreaterThan(0);
+
+    const tx = txData[txData.length - 1];
+    expect(tx.hash).toEqual(
+      '1c905f8bf7de95f2152f7f47e2b1d9c1c9a3ca9cc15563faafc30bad3e08b363'
+    );
+    expect(tx.from).toEqual('TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18');
+    expect(tx.to).toEqual('TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH');
+    expect(tx.amount).toEqual('10000');
+    expect(tx.action).toBe('receive');
+  });
+
   it('should get a transaction from the blockchain', async () => {
     const txData = await provider.getTransaction(
       'f8e262c3871981fcab7ae129c426ee741c61653485c9fe831b53cb891a3ff42a'
     );
+    expect(txData?.to).toEqual('TDzBR3gNA9FSgQxPhzDNqXDg3DjjUbapYr');
     expect(txData?.from).toEqual('TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18');
     expect(txData?.hash).toEqual(
       'f8e262c3871981fcab7ae129c426ee741c61653485c9fe831b53cb891a3ff42a'
     );
+    expect(txData?.amount).toEqual('665000000');
+    expect(txData?.contractAddress).toBeFalsy();
   });
 
   it('should not get an address nonce', async () => {
