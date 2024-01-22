@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.2.3
+
+### Patch Changes
+
+- 9adefdc: Update TRON library to get more relevant data about transactions
+
 ## 1.2.2
 
 ### Patch Changes
