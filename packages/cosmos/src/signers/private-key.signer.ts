@@ -10,9 +10,9 @@ import {
   Keccak256,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { getAddress } from 'ethers';
-import { AccAddress, RawKey } from '@terra-money/feather.js';
+import { AccAddress, RawKey, LCDClient } from '@terra-money/feather.js';
 
-import { ChainMsg } from '../msg';
+import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
@@ -70,27 +70,56 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async sign(msg: ChainMsg): Promise<void> {
+  async sign(
+    msg: ChainMsg,
+    _derivation?: string,
+    chainType?: CosmosChainType
+  ): Promise<void> {
     const txData = await msg.buildTx();
-    const wallet = await DirectSecp256k1Wallet.fromKey(
-      fromHex(this.key),
-      msg.provider.manifest.prefix
-    );
-    const [{ address: senderAddress }] = await wallet.getAccounts();
-    const client = await SigningStargateClient.connectWithSigner(
-      msg.provider.manifest.rpcURL,
-      wallet,
-      STARGATE_CLIENT_OPTIONS
-    );
-    const signedTx = await client.sign(
-      senderAddress,
-      txData.msgs,
-      txData.fee,
-      txData.memo
-    );
-    const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
-    const rawTx = Buffer.from(txBytes).toString('base64');
-    msg.sign(rawTx);
+    if (chainType === CosmosChainType.Cosmos || !chainType) {
+      const wallet = await DirectSecp256k1Wallet.fromKey(
+        fromHex(this.key),
+        msg.provider.manifest.prefix
+      );
+      const [{ address: senderAddress }] = await wallet.getAccounts();
+      const client = await SigningStargateClient.connectWithSigner(
+        msg.provider.manifest.rpcURL,
+        wallet,
+        STARGATE_CLIENT_OPTIONS
+      );
+      const signedTx = await client.sign(
+        senderAddress,
+        txData.msgs,
+        txData.fee,
+        txData.memo
+      );
+      const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+      const rawTx = Buffer.from(txBytes).toString('base64');
+      msg.sign(rawTx);
+      return;
+    } else if (chainType === CosmosChainType.Terra) {
+      const clientOptions: Record<string, any> = {};
+      clientOptions[msg.provider.manifest.chainId] = {
+        chainID: msg.provider.manifest.chainId,
+        lcd: msg.provider.manifest.lcdURL,
+        gasAdjustment: 1.75,
+        gasPrices: {
+          uluna: 0.015,
+        },
+        prefix: msg.provider.manifest.prefix, // bech32 prefix, used by the LCD to understand which is the right chain to query
+      };
+      const lcdClient = new LCDClient(clientOptions);
+      const terraWallet = lcdClient.wallet(
+        new RawKey(Buffer.from(this.key, 'hex'))
+      );
+
+      const tx = await terraWallet.createAndSignTx({
+        msgs: [txData.msgs],
+        chainID: msg.provider.manifest.chainId,
+      });
+
+      msg.sign(Buffer.from(tx.toBytes()).toString('base64'));
+    }
   }
 }
 
