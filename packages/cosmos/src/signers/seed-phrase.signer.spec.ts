@@ -13,6 +13,9 @@ jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
       createWithSigner: jest.fn().mockResolvedValue({
         sign: jest.fn().mockResolvedValue({}),
       }),
+      connectWithSigner: jest.fn().mockResolvedValue({
+        sign: jest.fn().mockResolvedValue({}),
+      }),
     },
     defaultRegistryTypes: [],
     createDefaultAminoConverters: jest.fn().mockResolvedValue([]),

@@ -9,7 +9,7 @@ import {
   Keccak256,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { toHex } from '@cosmjs/encoding';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from 'ethers';
 import { MnemonicKey, AccAddress, LCDClient } from '@terra-money/feather.js';
 
 import { ChainMsg, CosmosChainType } from '../msg';

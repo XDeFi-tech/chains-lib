@@ -13,6 +13,9 @@ jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
       createWithSigner: jest.fn().mockResolvedValue({
         sign: jest.fn().mockResolvedValue({}),
       }),
+      connectWithSigner: jest.fn().mockResolvedValue({
+        sign: jest.fn().mockResolvedValue({}),
+      }),
     },
     defaultRegistryTypes: [],
     createDefaultAminoConverters: jest.fn().mockResolvedValue([]),
@@ -38,7 +41,7 @@ describe('private-key.signer', () => {
   let derivation: string;
 
   beforeEach(() => {
-    pk = '';
+    pk = 'e3246f2377f01629ccb565a5ae3a23cdb4f6a89268da133b6fe0e647a84f6e1a';
     signer = new PrivateKeySigner(pk);
 
     derivation = "m/44'/118'/0'/0/0";
@@ -56,11 +59,11 @@ describe('private-key.signer', () => {
     message = provider.createMsg(txInput);
   });
 
-  it('should get an address from a seed phrase', async () => {
+  it('should get an address from a private key', async () => {
     expect(await signer.getAddress(derivation, 'cosmos')).toBe(txInput.from);
   });
 
-  it('should sign a transaction using a seed phrase', async () => {
+  it('should sign a transaction using a private key', async () => {
     await signer.sign(message as ChainMsg);
 
     expect(message.signedTransaction).toBeTruthy();
