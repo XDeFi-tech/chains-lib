@@ -1,11 +1,16 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { fromHex } from '@cosmjs/encoding';
+import { fromHex, toHex } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
+import {
+  stringToPath,
+  pathToString,
+  Keccak256,
+} from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { getAddress } from 'ethers';
-import { AccAddress } from '@terra-money/feather.js';
+import { AccAddress, RawKey } from '@terra-money/feather.js';
 
 import { ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -34,16 +39,35 @@ export class PrivateKeySigner extends Signer.Provider {
     return this.key;
   }
 
-  async getAddress(derivation: string, prefix: string): Promise<string> {
+  async getAddress(derivation: string, prefix?: string): Promise<string> {
+    const hdPath = stringToPath(derivation);
     const wallet = await DirectSecp256k1Wallet.fromKey(
       fromHex(this.key),
       prefix
     );
-    const [{ address }] = await wallet.getAccounts();
-    if (!this.verifyAddress(address, prefix)) {
-      throw new Error('Invalid address');
+    if (pathToString(hdPath).split('/')[2] == "60'") {
+      const [{ pubkey }] = await wallet.getAccounts();
+      const hash = new Keccak256(pubkey.slice(1)).digest();
+      const lastTwentyBytes = toHex(hash.slice(-20));
+
+      return getAddress('0x' + lastTwentyBytes);
+    } else if (
+      pathToString(hdPath).split('/')[2] == "330'" ||
+      prefix === 'terra'
+    ) {
+      const key = new RawKey(Buffer.from(this.key, 'hex'));
+
+      return key.accAddress('terra');
+    } else {
+      if (!prefix) {
+        prefix = 'cosmos';
+      }
+      const [{ address }] = await wallet.getAccounts();
+      if (!this.verifyAddress(address, prefix)) {
+        throw new Error('Invalid address');
+      }
+      return address;
     }
-    return address;
   }
 
   async sign(msg: ChainMsg): Promise<void> {
