@@ -1,6 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { Secp256k1HdWallet } from '@cosmjs/launchpad';
+import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { fromHex } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 import {
@@ -8,14 +9,14 @@ import {
   pathToString,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { utils, Wallet } from 'ethers';
-import { MnemonicKey, AccAddress, LCDClient } from '@terra-money/feather.js';
+import { AccAddress, RawKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 
 import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
-@SignerDecorator(Signer.SignerType.SEED_PHRASE)
-export class SeedPhraseSigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string, prefix?: string): boolean {
     try {
       if (address.substring(0, 2) === '0x') {
@@ -33,14 +34,16 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
   }
 
+  async getPrivateKey(_derivation?: string) {
+    return this.key;
+  }
+
   async getAddress(derivation: string, prefix?: string): Promise<string> {
     const hdPath = stringToPath(derivation);
-
-    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-      prefix,
-      hdPaths: [hdPath],
-    });
-
+    const wallet = await DirectSecp256k1Wallet.fromKey(
+      fromHex(this.key),
+      prefix
+    );
     if (pathToString(hdPath).split('/')[2] == "60'") {
       const evmAddress = (await this.getEthermintAddress(derivation)) as string;
 
@@ -52,19 +55,13 @@ export class SeedPhraseSigner extends Signer.Provider {
       pathToString(hdPath).split('/')[2] == "330'" ||
       prefix === 'terra'
     ) {
-      const wallet = new MnemonicKey({
-        mnemonic: this._key,
-        coinType: 330, // optional, default
-        account: parseInt(pathToString(hdPath).split('/')[3]), // optional, default
-        index: parseInt(pathToString(hdPath).split('/')[4]), // optional, default
-      });
+      const key = new RawKey(Buffer.from(this.key, 'hex'));
 
-      return wallet.accAddress('terra');
+      return key.accAddress('terra');
     } else {
       if (!prefix) {
         prefix = 'cosmos';
       }
-
       const [{ address }] = await wallet.getAccounts();
       if (!this.verifyAddress(address, prefix)) {
         throw new Error('Invalid address');
@@ -79,20 +76,21 @@ export class SeedPhraseSigner extends Signer.Provider {
     if (pathToString(hdPath).split('/')[2] != "60'") {
       return null;
     }
-    const wallet = Wallet.fromMnemonic(this.key, derivation);
+    const wallet = new Wallet(this.key);
     return wallet.address;
   }
 
   async sign(
     msg: ChainMsg,
-    derivation: string,
+    _derivation?: string,
     chainType?: CosmosChainType
   ): Promise<void> {
     const txData = await msg.buildTx();
     if (chainType === CosmosChainType.Cosmos || !chainType) {
-      const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-        prefix: msg.provider.manifest.prefix,
-      });
+      const wallet = await DirectSecp256k1Wallet.fromKey(
+        fromHex(this.key),
+        msg.provider.manifest.prefix
+      );
       const [{ address: senderAddress }] = await wallet.getAccounts();
       const client = await SigningStargateClient.connectWithSigner(
         msg.provider.manifest.rpcURL,
@@ -121,14 +119,8 @@ export class SeedPhraseSigner extends Signer.Provider {
         prefix: msg.provider.manifest.prefix, // bech32 prefix, used by the LCD to understand which is the right chain to query
       };
       const lcdClient = new LCDClient(clientOptions);
-      const hdPath = stringToPath(derivation);
       const terraWallet = lcdClient.wallet(
-        new MnemonicKey({
-          mnemonic: this._key,
-          coinType: 330, // optional, default
-          account: parseInt(pathToString(hdPath).split('/')[3]), // optional, default
-          index: parseInt(pathToString(hdPath).split('/')[4]), // optional, default
-        })
+        new RawKey(Buffer.from(this.key, 'hex'))
       );
 
       const tx = await terraWallet.createAndSignTx({
@@ -141,4 +133,4 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 }
 
-export default SeedPhraseSigner;
+export default PrivateKeySigner;

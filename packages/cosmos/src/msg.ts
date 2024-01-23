@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 
 import type { CosmosProvider } from './chain.provider';
 
-export interface MsgBody {
+export type MsgBody = {
   from: string;
   to: string;
   amount: string;
@@ -24,7 +24,8 @@ export interface MsgBody {
   contractAddress?: string;
   nftId?: string;
   msgs?: any[];
-}
+  data?: string;
+};
 
 export interface TxData {
   msgs: any[];
@@ -117,6 +118,55 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
 
   async buildTx() {
     const msgData = this.toData();
+
+    if (this.encoding === MsgEncoding.string) {
+      if (!msgData.data || typeof msgData.data !== 'string') {
+        throw new Error(
+          'Invalid msg data, see examples to build msg from data'
+        );
+      }
+      const {
+        signDoc: { fee, memo, msgs, sequence, account_number },
+        signer,
+      } = JSON.parse(msgData.data);
+
+      const encodedMsgs = msgs.map(
+        ({ '@type': type, ...rest }: { '@type': any; [key: string]: any }) => {
+          let returningValue = rest;
+          switch (type) {
+            case '/ibc.applications.transfer.v1.MsgTransfer':
+              returningValue = {
+                ...rest,
+                timeoutTimestamp:
+                  typeof rest.timeoutTimestamp === 'object'
+                    ? rest.timeoutTimestamp.high.toString()
+                    : rest.timeoutTimestamp.toString(),
+              };
+              break;
+          }
+
+          return { typeUrl: type, value: returningValue };
+        }
+      );
+
+      return {
+        msgs: encodedMsgs,
+        fee: {
+          amount: fee.amount.map(({ amount, denom }: any) => ({
+            amount: amount.toString(),
+            denom,
+          })),
+          gas: fee.gas.toString(),
+        },
+        ...(memo && { memo }),
+        sequence: parseInt(sequence),
+        accountNumber: parseInt(account_number),
+        from: signer,
+        to: '',
+        value: 0,
+      };
+    }
+
     const { typeUrl, msgs } = this.getMsgToSend();
     const fee = {
       amount: [
