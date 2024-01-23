@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-cosmos
 
+## 1.2.1
+
+### Patch Changes
+
+- 2e30ddc: feat: add swaps support and private key signer
+- Updated dependencies [2e30ddc]
+  - @xdefi-tech/chains-core@1.2.4
+  - @xdefi-tech/chains-graphql@1.2.3
+
 ## 1.2.0
 
 ### Minor Changes

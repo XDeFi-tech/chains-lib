@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 1.1.3
+
+### Patch Changes
+
+- 2e30ddc: feat: update MsgEncoding type in core lib
+- Updated dependencies [2e30ddc]
+  - @xdefi-tech/chains-core@1.2.4
+
 ## 1.1.2
 
 ### Patch Changes

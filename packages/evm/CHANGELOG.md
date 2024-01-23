@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 1.3.1
+
+### Patch Changes
+
+- 2e30ddc: feat: update MsgEncoding type in core lib
+- Updated dependencies [2e30ddc]
+  - @xdefi-tech/chains-core@1.2.4
+  - @xdefi-tech/chains-graphql@1.2.3
+
 ## 1.3.0
 
 ### Minor Changes
