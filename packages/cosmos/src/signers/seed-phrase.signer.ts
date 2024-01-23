@@ -6,11 +6,10 @@ import { bech32 } from 'bech32';
 import {
   stringToPath,
   pathToString,
-  Keccak256,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
-import { toHex } from '@cosmjs/encoding';
-import { getAddress } from 'ethers';
+import { utils, Wallet } from 'ethers';
 import { MnemonicKey, AccAddress, LCDClient } from '@terra-money/feather.js';
+import { encode } from 'bech32-buffer';
 
 import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -20,8 +19,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string, prefix?: string): boolean {
     try {
       if (address.substring(0, 2) === '0x') {
-        getAddress(address);
-        return true;
+        return utils.isAddress(address);
       } else if (address.substring(0, 5) === 'terra') {
         return AccAddress.validate(address);
       } else {
@@ -44,11 +42,12 @@ export class SeedPhraseSigner extends Signer.Provider {
     });
 
     if (pathToString(hdPath).split('/')[2] == "60'") {
-      const [{ pubkey }] = await wallet.getAccounts();
-      const hash = new Keccak256(pubkey.slice(1)).digest();
-      const lastTwentyBytes = toHex(hash.slice(-20));
+      const evmAddress = (await this.getEthermintAddress(derivation)) as string;
 
-      return getAddress('0x' + lastTwentyBytes);
+      return encode(
+        prefix || 'cosmos',
+        Uint8Array.from(Buffer.from(evmAddress.slice(2), 'hex'))
+      );
     } else if (
       pathToString(hdPath).split('/')[2] == "330'" ||
       prefix === 'terra'
@@ -72,6 +71,16 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
       return address;
     }
+  }
+
+  // Only for slip44coinType: 60
+  async getEthermintAddress(derivation: string): Promise<string | null> {
+    const hdPath = stringToPath(derivation);
+    if (pathToString(hdPath).split('/')[2] != "60'") {
+      return null;
+    }
+    const wallet = Wallet.fromMnemonic(this.key, derivation);
+    return wallet.address;
   }
 
   async sign(

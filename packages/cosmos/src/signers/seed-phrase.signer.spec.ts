@@ -78,10 +78,20 @@ describe('seed-phrase.signer', () => {
     );
   });
 
-  it('should get an ethermint address from a seed phrase', async () => {
-    expect(await signer.getAddress(derivations.ethermint)).toBe(
-      '0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d'
+  it('should get an ethermint address with prefix from a seed phrase', async () => {
+    expect(await signer.getAddress(derivations.ethermint, 'evmos')).toBe(
+      'evmos14gya7fnnuxhrlnywmp6uzvd4y3yul9vpp7tu6m'
     );
+  });
+
+  it('should get an ethermint evm-like address from a seed phrase', async () => {
+    expect(await signer.getEthermintAddress(derivations.ethermint)).toBe(
+      '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581'
+    );
+  });
+
+  it('should get null from getEthermintAddress for non ethermint derivations path', async () => {
+    expect(await signer.getEthermintAddress(derivations.cosmos)).toBe(null);
   });
 
   it('should get a terra address from a seed phrase', async () => {
