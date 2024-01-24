@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.4
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-core@1.2.5
+
 ## 1.2.3
 
 ### Patch Changes

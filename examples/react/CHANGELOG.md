@@ -1,5 +1,23 @@
 # @xdefi/examples-react
 
+## 0.2.1
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-binance@1.2.2
+  - @xdefi-tech/chains-bitcoin@1.2.2
+  - @xdefi-tech/chains-bitcoincash@1.2.2
+  - @xdefi-tech/chains-core@1.2.5
+  - @xdefi-tech/chains-cosmos@1.2.2
+  - @xdefi-tech/chains-dogecoin@1.2.2
+  - @xdefi-tech/chains-evm@1.3.2
+  - @xdefi-tech/chains-litecoin@1.2.2
+  - @xdefi-tech/chains-solana@1.3.2
+  - @xdefi-tech/chains-thor@1.2.2
+  - @xdefi-tech/chains-controller@1.1.2
+
 ## 0.2.0
 
 ### Minor Changes

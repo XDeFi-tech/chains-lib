@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 1.2.5
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+
 ## 1.2.4
 
 ### Patch Changes

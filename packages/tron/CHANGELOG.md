@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-tron
 
+## 1.3.3
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-core@1.2.5
+  - eslint-config-custom@1.0.2
+
 ## 1.3.2
 
 ### Patch Changes
