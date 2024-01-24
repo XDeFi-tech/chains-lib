@@ -27,7 +27,7 @@ import { ChainDataSource } from './datasource/chain/chain.data-source';
 })
 export class TronProvider extends Chain.Provider {
   declare rpcProvider: any;
-  declare dataSource: any;
+  declare dataSource: ChainDataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
