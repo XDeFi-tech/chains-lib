@@ -1,5 +1,13 @@
 # @xdefi/expo-example
 
+## 1.1.1
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-controller@1.1.2
+
 ## 1.1.0
 
 ### Minor Changes

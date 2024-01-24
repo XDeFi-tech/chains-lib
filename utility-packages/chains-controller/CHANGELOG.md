@@ -1,5 +1,43 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.0
+
+### Major Changes
+
+- 381bcfc: Bump major vesion to get highest version from develop branch
+
+### Patch Changes
+
+- Updated dependencies [381bcfc]
+  - @xdefi-tech/chains-binance@2.0.0
+  - @xdefi-tech/chains-bitcoin@2.0.0
+  - @xdefi-tech/chains-bitcoincash@2.0.0
+  - @xdefi-tech/chains-core@2.0.0
+  - @xdefi-tech/chains-cosmos@2.0.0
+  - @xdefi-tech/chains-dogecoin@2.0.0
+  - @xdefi-tech/chains-evm@2.0.0
+  - @xdefi-tech/chains-litecoin@2.0.0
+  - @xdefi-tech/chains-solana@2.0.0
+  - @xdefi-tech/chains-thor@2.0.0
+
+## 1.1.2
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-binance@1.2.2
+  - @xdefi-tech/chains-bitcoin@1.2.2
+  - @xdefi-tech/chains-bitcoincash@1.2.2
+  - @xdefi-tech/chains-core@1.2.5
+  - @xdefi-tech/chains-cosmos@1.2.2
+  - @xdefi-tech/chains-dogecoin@1.2.2
+  - @xdefi-tech/chains-evm@1.3.2
+  - @xdefi-tech/chains-litecoin@1.2.2
+  - @xdefi-tech/chains-solana@1.3.2
+  - @xdefi-tech/chains-thor@1.2.2
+  - @xdefi-tech/chains-graphql@1.2.4
+
 ## 1.1.1
 
 ### Patch Changes

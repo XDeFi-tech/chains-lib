@@ -1,5 +1,25 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.0
+
+### Major Changes
+
+- 381bcfc: Bump major vesion to get highest version from develop branch
+
+### Patch Changes
+
+- Updated dependencies [381bcfc]
+  - @xdefi-tech/chains-core@2.0.0
+
+## 1.2.2
+
+### Patch Changes
+
+- af2734d: Bump all packages to apply changes from develop branch
+- Updated dependencies [af2734d]
+  - @xdefi-tech/chains-core@1.2.5
+  - @xdefi-tech/chains-graphql@1.2.4
+
 ## 1.2.1
 
 ### Patch Changes
