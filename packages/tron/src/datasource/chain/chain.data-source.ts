@@ -283,7 +283,8 @@ export class ChainDataSource extends DataSource {
     if (response.status === 200 && response.data.energy_used) {
       return {
         energy: parseInt(response.data.energy_used),
-        willRevert: response.data.transaction.ret[0].ret === 'FAILED' ? true : false,
+        willRevert:
+          response.data.transaction.ret[0].ret === 'FAILED' ? true : false,
       };
     } else {
       throw new Error('Error Estimating Energy!');
