@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.1
+
+### Patch Changes
+
+- 6728ac5: add tron fee estimation logic
+
 ## 2.0.0
 
 ### Major Changes
