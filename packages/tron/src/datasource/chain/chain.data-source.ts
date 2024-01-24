@@ -20,7 +20,7 @@ import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { AbiCoder } from 'ethers';
 
-import { ChainMsg } from '../../msg';
+import { ChainMsg, TronEnergyEstimate } from '../../msg';
 import type { TronManifest } from '../../manifests';
 
 @Injectable()
@@ -255,6 +255,40 @@ export class ChainDataSource extends DataSource {
     _filter: TransactionsFilter
   ): Promise<Observable<Transaction>> {
     throw new Error('Method not implemented.');
+  }
+
+  async estimateEnergy(
+    sender: string,
+    contractAddress: string,
+    selector: string,
+    params: string
+  ): Promise<TronEnergyEstimate> {
+    const response = await axios.post(
+      'https://api.trongrid.io/wallet/triggerconstantcontract',
+      JSON.stringify({
+        owner_address: sender,
+        contract_address: contractAddress,
+        function_selector: selector,
+        parameter: params,
+        visible: true,
+      }),
+      {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.status === 200 && response.data.energy_used) {
+      return {
+        energy: parseInt(response.data.energy_used),
+        willRevert:
+          response.data.transaction.ret[0].ret === 'FAILED' ? true : false,
+      };
+    } else {
+      throw new Error('Error Estimating Energy!');
+    }
   }
 
   async estimateFee(

@@ -10,6 +10,18 @@ export enum TokenType {
   TRC20 = 'TRC20',
 }
 
+export interface TronFee {
+  bandwidth: number;
+  energy: number;
+  cost: number;
+  willRevert: boolean;
+}
+
+export interface TronEnergyEstimate {
+  energy: number;
+  willRevert: boolean;
+}
+
 export interface MsgBody {
   to: string;
   from: string;

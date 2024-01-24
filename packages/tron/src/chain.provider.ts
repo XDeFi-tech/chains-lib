@@ -18,7 +18,8 @@ import { some } from 'lodash';
 import TronWeb from 'tronweb';
 import { AbiCoder } from 'ethers';
 
-import { ChainMsg } from './msg';
+import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
+import { ChainDataSource } from './datasource/chain/chain.data-source';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -26,6 +27,7 @@ import { ChainMsg } from './msg';
 })
 export class TronProvider extends Chain.Provider {
   declare rpcProvider: any;
+  declare dataSource: ChainDataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
@@ -53,7 +55,68 @@ export class TronProvider extends Chain.Provider {
   }
 
   async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method not implemented.');
+    throw new Error('Method Not Implemented - Use estimateTronFee');
+  }
+
+  async estimateTronFees(msgs: Msg[]): Promise<TronFee[]> {
+    const feeData: TronFee[] = [];
+
+    // Can change with a network update / fork, but not worth using an API call here.
+    // 1000 SUN (not TRX) for bandwidth and 420 SUN for energy per unit.
+    const bandiwtdthPrice = 1000;
+    const energyPrice = 420;
+
+    for (let i = 0; i < msgs.length; i++) {
+      const msg = msgs[i];
+
+      // See bandwidth calculation below;
+      // We need the TX to be signed for the calculation to be accurate
+      if (!msg.hasSignature) {
+        throw new Error('TX Must be signed to estimate fee!');
+      }
+      const transactionByteLength =
+        9 +
+        60 +
+        Buffer.from(msg.signedTransaction.raw_data_hex, 'hex').byteLength +
+        Buffer.from(msg.signedTransaction.signature[0], 'hex').byteLength;
+
+      const bandwidthConsumed =
+        (transactionByteLength * bandiwtdthPrice) / 1000;
+
+      const msgBody = msg.toData() as MsgBody;
+
+      if (!msgBody.tokenType || msgBody.tokenType === TokenType.None) {
+        feeData.push({
+          bandwidth: bandwidthConsumed,
+          energy: 0,
+          cost: bandwidthConsumed,
+          willRevert: false,
+        });
+      } else if (
+        msgBody.tokenType === TokenType.TRC20 &&
+        msgBody.contractAddress
+      ) {
+        const { energy, willRevert } = await (
+          this.dataSource as ChainDataSource
+        ).estimateEnergy(
+          msgBody.from,
+          msgBody.contractAddress,
+          'transfer(address,uint256)',
+          msg.signedTransaction.raw_data.contract[0].parameter.value.data
+        );
+
+        feeData.push({
+          bandwidth: bandwidthConsumed,
+          energy: energy,
+          cost: this.rpcProvider.fromSun(
+            bandwidthConsumed + energy * energyPrice
+          ),
+          willRevert,
+        });
+      }
+    }
+
+    return feeData;
   }
 
   async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
