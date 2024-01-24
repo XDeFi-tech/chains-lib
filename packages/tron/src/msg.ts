@@ -1,4 +1,4 @@
-import { Msg as BaseMsg, NumberIsh } from '@xdefi-tech/chains-core';
+import { Msg as BaseMsg } from '@xdefi-tech/chains-core';
 import TronWeb, { TronTransaction } from 'tronweb';
 import { parseUnits } from 'ethers';
 
