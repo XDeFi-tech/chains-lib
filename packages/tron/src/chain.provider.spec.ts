@@ -1,10 +1,17 @@
-import { ChainMsg } from './msg';
+import { ChainMsg, TokenType } from './msg';
 import { TronProvider } from './chain.provider';
 import { ChainDataSource } from './datasource';
 import { TRON_MANIFEST } from './manifests';
+import PrivateKeySigner from './signers/private-key.signer';
 
 describe('chain.provider', () => {
   let provider: TronProvider;
+  const messageData = {
+    to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+    from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
+    amount: 0.000001,
+  };
+  const pk = '9e30f488d7079ddcba9f012506d5dda99df9eba6e8d98aaab69e2c4ac1c6f656';
 
   beforeEach(() => {
     provider = new TronProvider(new ChainDataSource(TRON_MANIFEST));
@@ -27,6 +34,44 @@ describe('chain.provider', () => {
       'TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18'
     );
     expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should not estimate fees for an unsigned TRX transactoon', async () => {
+    const msg = new ChainMsg(messageData);
+
+    expect(provider.estimateTronFees([msg])).rejects.toThrow(
+      'TX Must be signed to estimate fee!'
+    );
+  });
+
+  it('should estimate fees for a TRX transactoon', async () => {
+    const msg = new ChainMsg(messageData);
+    const signer = new PrivateKeySigner(pk);
+
+    await signer.sign(msg);
+
+    const fees = await provider.estimateTronFees([msg]);
+    expect(fees.length).toEqual(1);
+    expect(fees[0].bandwidth).toEqual(265);
+    expect(fees[0].energy).toEqual(0);
+  });
+
+  it('should estimate fees for a TRC20 transactoon', async () => {
+    const msg = new ChainMsg({
+      ...messageData,
+      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      tokenType: TokenType.TRC20,
+      decimals: 6,
+    });
+    const signer = new PrivateKeySigner(pk);
+
+    await signer.sign(msg);
+
+    const fees = await provider.estimateTronFees([msg]);
+    expect(fees[0].bandwidth).toEqual(345);
+    expect(fees[0].energy).toEqual(4146);
+    expect(fees[0].cost).toEqual('1.741665');
+    expect(fees[0].willRevert).toBeTruthy();
   });
 
   it('should get a token transaction from the blockchain', async () => {

@@ -3,11 +3,24 @@ import TronWeb, { TronTransaction } from 'tronweb';
 import { parseUnits } from 'ethers';
 
 import { TRON_MANIFEST } from './manifests';
+import { NumberIsh } from '@xdefi-tech/chains-core';
 
 export enum TokenType {
   None = 'None',
   TRC10 = 'TRC10',
   TRC20 = 'TRC20',
+}
+
+export interface TronFee {
+  bandwidth: number;
+  energy: number;
+  cost: number;
+  willRevert: boolean;
+}
+
+export interface TronEnergyEstimate {
+  energy: number;
+  willRevert: boolean;
 }
 
 export interface MsgBody {
