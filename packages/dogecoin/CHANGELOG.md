@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.0
+
+### Major Changes
+
+- 381bcfc: Bump major vesion to get highest version from develop branch
+
+### Patch Changes
+
+- Updated dependencies [381bcfc]
+  - @xdefi-tech/chains-core@2.0.0
+  - @xdefi-tech/chains-utxo@2.0.0
+
 ## 1.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.0
+
+### Major Changes
+
+- 381bcfc: Bump major vesion to get highest version from develop branch
+
 ## 1.2.5
 
 ### Patch Changes
