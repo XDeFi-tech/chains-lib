@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.1
+
+### Patch Changes
+
+- 39da0d5: feat: add seed phrase signer
+
 ## 2.0.0
 
 ### Major Changes
