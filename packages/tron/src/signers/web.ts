@@ -1,3 +1,5 @@
 import { PrivateKeySigner } from './private-key.signer';
 import { LedgerSigner } from './ledger.signer';
-export { PrivateKeySigner, LedgerSigner };
+import { SeedPhraseSigner } from './seed-phrase.signer';
+
+export { PrivateKeySigner, LedgerSigner, SeedPhraseSigner };
