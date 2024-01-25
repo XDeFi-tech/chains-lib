@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.2
+
+### Patch Changes
+
+- e7c77f6: feat: add seed phrase signer to export
+
 ## 2.0.1
 
 ### Patch Changes
