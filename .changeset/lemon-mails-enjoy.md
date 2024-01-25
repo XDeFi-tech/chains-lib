@@ -2,4 +2,4 @@
 '@xdefi-tech/chains-bitcoin': patch
 ---
 
-fear: add seed phrase signer
+feat: add seed phrase signer
