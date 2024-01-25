@@ -64,7 +64,7 @@ jobs:
       - name: Install Dependencies
         run: yarn
       - name: Build Package
-        run: yarn build
+        run: yarn build --concurrency 2
       - name: Publish packages
         uses: changesets/action@v1
         with:
