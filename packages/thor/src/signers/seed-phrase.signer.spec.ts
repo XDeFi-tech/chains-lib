@@ -7,7 +7,7 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
-describe('private-key.signer', () => {
+describe('seed-phrase.signer', () => {
   let mnemonic: string;
   let signer: SeedPhraseSigner;
   const providers: Record<ThorChains, ThorProvider> = {

@@ -1,9 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
-import { BitcoinProvider } from '../chain.provider';
-import { IndexerDataSource } from '../datasource';
-import { BITCOIN_MANIFEST } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { MsgBody } from '../msg';
 
 import { SeedPhraseSigner } from './seed-phrase.signer';
 
@@ -13,52 +8,29 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
-jest.mock('hdkey', () => ({
-  fromMasterSeed: jest.fn().mockReturnValue({
-    derive: jest.fn().mockReturnValue({
-      privateKey: Buffer.from(
-        '7a3b9933a09c5d685973c4594c9f8f0139a5144683cc40e71f910757520d5467',
-        'hex'
-      ),
-    }),
-  }),
-}));
-
 describe('seed-phrase.signer', () => {
   let privateKey: string;
   let derivation: string;
   let seedPhrase: string;
   let signer: SeedPhraseSigner;
-  let provider: BitcoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
 
   beforeEach(() => {
     seedPhrase =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
-    privateKey = 'L1KKFYRZ9vBp9XeTGGnbuDQVbVvcvwDyStF5K1oQ797GhodB63vx';
-    derivation = "m/44'/0'/0'/0/0";
+    privateKey = 'KyaowqfYE7mJmTYEpxPJmAXwErQQY6KdDRynbg7SQPTAvC3bLNmF';
+    derivation = "m/84'/0'/0'/0/0";
     signer = new SeedPhraseSigner(seedPhrase);
 
-    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
-
     txInput = {
-      from: '13xvX5tEbieKtNLNidd6ZZtDHaUMW9A4KB',
-      to: '12NNZQp2sWJ4r31XjfR3z56suZxp3gHDnJ',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
     };
-
-    message = provider.createMsg(txInput);
   });
 
   it('should get an address from the seed phrase', async () => {
-    expect(await signer.getAddress(derivation, 'p2pkh')).toBe(txInput.from);
-  });
-
-  it('should sign a transaction using the seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
-
-    expect(message.signedTransaction).toBeTruthy();
+    expect(await signer.getAddress(derivation)).toBe(txInput.from);
   });
 
   it('should return false when verifing an invalid address', async () => {

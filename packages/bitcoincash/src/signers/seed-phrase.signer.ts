@@ -1,9 +1,8 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
+import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
-import * as HDKey from 'hdkey';
-import CoinKey from 'coinkey';
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import coininfo from 'coininfo';
@@ -15,40 +14,35 @@ import { ChainMsg } from '../msg';
 export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      BitcoinCash.address.toOutputScript(address);
-      return true;
+      const _address = bchaddr.toCashAddress(address);
+      return bchaddr.isValidAddress(_address);
     } catch (err) {
       return false;
     }
   }
 
   async getPrivateKey(derivation: string): Promise<string> {
-    if (!this._key) {
+    if (!this.key) {
       throw new Error('Seed phrase not set!');
     }
 
-    const seed = bip39.mnemonicToSeedSync(this._key);
-    const hdKey = HDKey.fromMasterSeed(seed);
-    const child = hdKey.derive(derivation);
-    const coinKey = new CoinKey(
-      child.privateKey,
-      coininfo.bitcoincash.main.toBitcoinJS()
-    );
+    const seed = await bip39.mnemonicToSeed(this.key);
+    const root = bip32.fromSeed(seed, coininfo.bitcoincash.main.toBitcoinJS());
+    const master = root.derivePath(derivation);
 
-    return coinKey.privateWif;
+    return master.toWIF();
   }
 
   async getAddress(derivation: string): Promise<string> {
     const network = coininfo.bitcoincash.main.toBitcoinJS();
-    const pk = BitcoinCash.ECPair.fromWIF(
-      await this.getPrivateKey(derivation),
-      network
-    );
+    const privateKey = await this.getPrivateKey(derivation);
+    const pk = BitcoinCash.ECPair.fromWIF(privateKey, network);
     const address = pk.getAddress();
 
     if (!address) throw new Error('BCH address is undefined');
+    const adddressWithPrefix = bchaddr.toCashAddress(address); // bitcoincash:${address}
 
-    return address;
+    return adddressWithPrefix.replace(/(bchtest:|bitcoincash:)/, '');
   }
 
   private toLegacy(address: string) {

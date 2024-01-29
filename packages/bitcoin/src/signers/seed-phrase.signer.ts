@@ -3,8 +3,6 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 import * as bip39 from 'bip39';
-import * as HDKey from 'hdkey';
-import CoinKey from 'coinkey';
 
 import { ChainMsg } from '../msg';
 
@@ -20,24 +18,22 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async getPrivateKey(derivation: string): Promise<string> {
-    if (!this._key) {
+    if (!this.key) {
       throw new Error('Seed phrase not set!');
     }
+    const seed = await bip39.mnemonicToSeed(this.key, '');
+    const root = Bitcoin.bip32.fromSeed(seed);
+    const master = root.derivePath(derivation);
 
-    const seed = bip39.mnemonicToSeedSync(this._key);
-    // throw new Error(seed.toString('hex'));
-    const hdKey = HDKey.fromMasterSeed(seed);
-    const child = hdKey.derive(derivation);
-    const coinKey = new CoinKey(child.privateKey, Bitcoin.networks.bitcoin);
-
-    return coinKey.privateWif;
+    return master.toWIF();
   }
 
   async getAddress(
     derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
-    const pk = Bitcoin.ECPair.fromWIF(await this.getPrivateKey(derivation));
+    const privateKey = await this.getPrivateKey(derivation);
+    const pk = Bitcoin.ECPair.fromWIF(privateKey);
     const { address } = Bitcoin.payments[type]({
       pubkey: pk.publicKey,
       network: Bitcoin.networks.bitcoin,

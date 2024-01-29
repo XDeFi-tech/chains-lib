@@ -2,8 +2,6 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as bip39 from 'bip39';
-import * as HDKey from 'hdkey';
-import CoinKey from 'coinkey';
 import * as Dogecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
 
@@ -24,19 +22,17 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async getPrivateKey(derivation: string): Promise<string> {
-    if (!this._key) {
+    if (!this.key) {
       throw new Error('Seed phrase not set!');
     }
-
-    const seed = bip39.mnemonicToSeedSync(this._key);
-    const hdKey = HDKey.fromMasterSeed(seed);
-    const child = hdKey.derive(derivation);
-    const coinKey = new CoinKey(
-      child.privateKey,
+    const seed = await bip39.mnemonicToSeed(this.key, '');
+    const root = Dogecoin.bip32.fromSeed(
+      seed,
       coininfo.dogecoin.main.toBitcoinJS()
     );
+    const master = root.derivePath(derivation);
 
-    return coinKey.privateWif;
+    return master.toWIF();
   }
 
   async getAddress(
@@ -44,10 +40,8 @@ export class SeedPhraseSigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2pkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = Dogecoin.ECPair.fromWIF(
-      await this.getPrivateKey(derivation),
-      network
-    );
+    const privateKey = await this.getPrivateKey(derivation);
+    const pk = Dogecoin.ECPair.fromWIF(privateKey, network);
 
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
