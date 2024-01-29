@@ -11,8 +11,8 @@ import { ChainMsg } from '../msg';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      BitcoinCash.address.toOutputScript(address);
-      return true;
+      const _address = bchaddr.toCashAddress(address);
+      return bchaddr.isValidAddress(_address);
     } catch (err) {
       return false;
     }
@@ -28,8 +28,9 @@ export class PrivateKeySigner extends Signer.Provider {
     const address = pk.getAddress();
 
     if (!address) throw new Error('BCH address is undefined');
+    const adddressWithPrefix = bchaddr.toCashAddress(address); // bitcoincash:${address}
 
-    return address;
+    return adddressWithPrefix.replace(/(bchtest:|bitcoincash:)/, '');
   }
 
   private toLegacy(address: string) {
