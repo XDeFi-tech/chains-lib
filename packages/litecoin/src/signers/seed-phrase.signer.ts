@@ -77,9 +77,8 @@ export class SeedPhraseSigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(
-      Litecoin.ECPair.fromWIF(await this.getPrivateKey(derivation), network)
-    );
+    const privateKey = await this.getPrivateKey(derivation);
+    psbt.signAllInputs(Litecoin.ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

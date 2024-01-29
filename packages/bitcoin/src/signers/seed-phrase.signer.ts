@@ -69,9 +69,8 @@ export class SeedPhraseSigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(
-      Bitcoin.ECPair.fromWIF(await this.getPrivateKey(derivation))
-    );
+    const privateKey = await this.getPrivateKey(derivation);
+    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());
