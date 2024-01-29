@@ -1,7 +1,6 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
 import { BitcoinCashProvider } from '../chain.provider';
-import { IndexerDataSource } from '../datasource';
 import { BITCOINCASH_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
@@ -11,17 +10,6 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
     return [];
   },
-}));
-
-jest.mock('hdkey', () => ({
-  fromMasterSeed: jest.fn().mockReturnValue({
-    derive: jest.fn().mockReturnValue({
-      privateKey: Buffer.from(
-        '7a3b9933a09c5d685973c4594c9f8f0139a5144683cc40e71f910757520d5467',
-        'hex'
-      ),
-    }),
-  }),
 }));
 
 describe('seed-phrase.signer', () => {
@@ -36,17 +24,19 @@ describe('seed-phrase.signer', () => {
   beforeEach(() => {
     seedPhrase =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
-    privateKey = 'L1KKFYRZ9vBp9XeTGGnbuDQVbVvcvwDyStF5K1oQ797GhodB63vx';
-    derivation = "m/44'/0'/0'/0/0";
+    privateKey = 'Kz1YMmxrFVd2uyCnEHT546Bjw3Wime47AoTQeYATUCSsuirJczu5';
+    derivation = "m/44'/145'/0'/0/0";
     signer = new SeedPhraseSigner(seedPhrase);
 
     provider = new BitcoinCashProvider(
-      new IndexerDataSource(BITCOINCASH_MANIFEST)
+      new BitcoinCashProvider.dataSourceList.IndexerDataSource(
+        BITCOINCASH_MANIFEST
+      )
     );
 
     txInput = {
-      from: '13xvX5tEbieKtNLNidd6ZZtDHaUMW9A4KB',
-      to: '12NNZQp2sWJ4r31XjfR3z56suZxp3gHDnJ',
+      from: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+      to: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
       amount: 0.000001,
     };
 

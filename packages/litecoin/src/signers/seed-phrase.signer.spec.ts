@@ -1,7 +1,6 @@
 import { Msg } from '@xdefi-tech/chains-core';
 
 import { LitecoinProvider } from '../chain.provider';
-import { IndexerDataSource } from '../datasource';
 import { LITECOIN_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
@@ -11,17 +10,6 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
     return [];
   },
-}));
-
-jest.mock('hdkey', () => ({
-  fromMasterSeed: jest.fn().mockReturnValue({
-    derive: jest.fn().mockReturnValue({
-      privateKey: Buffer.from(
-        '7a3b9933a09c5d685973c4594c9f8f0139a5144683cc40e71f910757520d5467',
-        'hex'
-      ),
-    }),
-  }),
 }));
 
 describe('seed-phrase.signer', () => {
@@ -36,18 +24,19 @@ describe('seed-phrase.signer', () => {
   beforeEach(() => {
     seedPhrase =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
-    privateKey = 'T79ahHijZJAQvNHKoujU7ZwsYMZw12EsG69LApRwg7HSDhEQFSw3';
-    derivation = "m/44'/0'/0'/0/0";
+    privateKey = 'T4gbj9QbHwmYkUMS5edgsjN8e1aYvh19d9jWAMeXQMUBZh9mNJwM';
+    derivation = "m/84'/2'/0'/0/0";
     signer = new SeedPhraseSigner(seedPhrase);
 
-    provider = new LitecoinProvider(new IndexerDataSource(LITECOIN_MANIFEST));
+    provider = new LitecoinProvider(
+      new LitecoinProvider.dataSourceList.IndexerDataSource(LITECOIN_MANIFEST)
+    );
 
     txInput = {
-      from: 'ltc1qyzpum7a94ew8dyng8kf6p96p2pzgemytcpcm3g',
-      to: 'ltc1qyzpum7a94ew8dyng8kf6p96p2pzgemytcpcm3g',
+      from: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+      to: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
       amount: 0.000001,
     };
-
     message = provider.createMsg(txInput);
   });
 

@@ -6,7 +6,7 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 import * as bip39 from 'bip39';
-import * as HDKey from 'hdkey';
+import { derivePath } from 'ed25519-hd-key';
 
 import { ChainMsg } from '../msg';
 
@@ -22,15 +22,14 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async getPrivateKey(derivation: string): Promise<string> {
-    if (!this._key) {
+    if (!this.key) {
       throw new Error('No seed phrase set!');
     }
-
-    const seed = bip39.mnemonicToSeedSync(this._key, '');
-    const hdKey = HDKey.fromMasterSeed(seed);
-    const child = hdKey.derive(derivation);
-    const keypair = Keypair.fromSeed(child.privateKey);
-    return Buffer.from(keypair.secretKey).toString('hex');
+    const seed = await bip39.mnemonicToSeed(this.key, '');
+    const seedBuffer = Buffer.from(seed).toString('hex');
+    const derivedSeed = derivePath(derivation, seedBuffer).key;
+    const secretKey = Keypair.fromSeed(Uint8Array.from(derivedSeed)).secretKey;
+    return Buffer.from(secretKey).toString('hex');
   }
 
   async getAddress(derivation: string): Promise<string> {

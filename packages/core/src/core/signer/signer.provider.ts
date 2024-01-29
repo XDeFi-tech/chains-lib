@@ -45,6 +45,6 @@ export abstract class Provider {
       throw new Error('key is required');
     }
 
-    return this._key as string;
+    return this._key.normalize('NFKD');
   }
 }

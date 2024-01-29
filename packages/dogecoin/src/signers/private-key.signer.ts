@@ -29,7 +29,7 @@ export class PrivateKeySigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2pkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = Dogecoin.ECPair.fromWIF(this.key);
+    const pk = Dogecoin.ECPair.fromWIF(this.key, network);
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -65,7 +65,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key));
+    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

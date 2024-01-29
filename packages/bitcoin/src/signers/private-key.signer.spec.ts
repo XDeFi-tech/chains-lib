@@ -21,14 +21,14 @@ describe('private-key.signer', () => {
   let message: Msg;
 
   beforeEach(() => {
-    privateKey = 'Kz1YMmxrFVd2uyCnEHT546Bjw3Wime47AoTQeYATUCSsuirJczu5';
+    privateKey = 'KyaowqfYE7mJmTYEpxPJmAXwErQQY6KdDRynbg7SQPTAvC3bLNmF';
     signer = new PrivateKeySigner(privateKey);
 
     provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
 
     txInput = {
-      from: '12NNZQp2sWJ4r31XjfR3z56suZxp3gHDnJ',
-      to: '12NNZQp2sWJ4r31XjfR3z56suZxp3gHDnJ',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
     };
 
@@ -36,7 +36,7 @@ describe('private-key.signer', () => {
   });
 
   it('should get an address from the ledger device', async () => {
-    expect(await signer.getAddress('', 'p2pkh')).toBe(txInput.from);
+    expect(await signer.getAddress('')).toBe(txInput.from);
   });
 
   it('should sign a transaction using a ledger device', async () => {
@@ -54,8 +54,6 @@ describe('private-key.signer', () => {
   });
 
   it('should get a private key', async () => {
-    expect(await signer.getPrivateKey('')).toEqual(
-      'Kz1YMmxrFVd2uyCnEHT546Bjw3Wime47AoTQeYATUCSsuirJczu5'
-    );
+    expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });
 });

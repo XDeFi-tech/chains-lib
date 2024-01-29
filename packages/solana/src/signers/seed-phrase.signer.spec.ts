@@ -13,7 +13,7 @@ jest.mock('../datasource/indexer/queries/fees.query', () => ({
   }),
 }));
 
-describe('private-key.signer', () => {
+describe('seed-phrase.signer', () => {
   let mnemonic: string;
   let derivation: string;
   let privateKey: string;
@@ -27,13 +27,13 @@ describe('private-key.signer', () => {
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
     derivation = "m/44'/501'/0'/0'";
     privateKey =
-      '6e108951472eef1f852c2942c1faebced2d4cd2a32fb39df19995ce1de1a82bcd4b6acc6bff757d555c4923f6a22e9095f4fe4d7a7943cf172de493e8d87b3b5';
+      '22d58eee867e660f58cd4e6699eaeb058a613c5fb1c738e6de5fe02d7839eafba3c563b0519a293f7323680e09a6a3b4bb9a451ed3eaaf7067cc38505563f3c6';
     signer = new SeedPhraseSigner(mnemonic);
 
     provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
 
     txInput = {
-      from: 'FKLzTBCYQgFsczHYT4spPXuNB1as3vYEN5NjjfqhZfdv',
+      from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       amount: 0.000001,
     };
