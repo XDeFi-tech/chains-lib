@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.1
+
+### Patch Changes
+
+- 7638e90: fix: return normalized key for signer provider from core package
+  fix: update seed phrase signers with broken private keys
+- Updated dependencies [7638e90]
+  - @xdefi-tech/chains-core@2.0.2
+  - @xdefi-tech/chains-graphql@1.2.5
+
 ## 2.0.0
 
 ### Major Changes
