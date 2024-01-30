@@ -11,12 +11,12 @@ import {
   FeeData,
   DefaultFeeOptions,
   TransactionData,
-  TransactionStatus,
   TransactionAction,
 } from '@xdefi-tech/chains-core';
 import { AbiCoder, formatUnits } from 'ethers';
 import { Observable } from 'rxjs';
-import axios from 'axios';
+import TronWeb from 'tronweb';
+import axios, { AxiosInstance } from 'axios';
 
 import type { TronManifest } from '../../manifests';
 import { TronEnergyEstimate } from '../../msg';
@@ -26,9 +26,13 @@ import { getBalance, getTransactions } from './queries';
 @Injectable()
 export class IndexerDataSource extends DataSource {
   declare manifest: TronManifest;
+  declare rpcProvider: TronWeb;
+  declare httpProvider: AxiosInstance;
 
   constructor(manifest: TronManifest) {
     super(manifest);
+
+    this.httpProvider = axios.create({ baseURL: manifest.dataProviderURL });
   }
 
   async getNFTBalance(_address: string) {
@@ -123,57 +127,6 @@ export class IndexerDataSource extends DataSource {
     return transactions.map((transaction) => Transaction.fromData(transaction));
   }
 
-  async getTransaction(txHash: string): Promise<TransactionData> {
-    const tx = await this.rpcProvider.trx.getTransaction(txHash);
-    if (!tx) {
-      throw new Error(`Transaction ${txHash} not found!`);
-    }
-
-    const result: TransactionData = {
-      hash: tx.txID,
-      from: '',
-      to: '',
-      status: tx.blockNumber
-        ? TransactionStatus.success
-        : TransactionStatus.pending,
-      date: tx.blockTimeStamp,
-      amount: '',
-    };
-
-    if (
-      tx.raw_data.contract.length > 0 &&
-      tx.raw_data.contract[0].type === 'TransferContract'
-    ) {
-      const transferData = tx.raw_data.contract[0].parameter.value;
-
-      result.to = this.rpcProvider.address.fromHex(transferData.to_address);
-      result.from = this.rpcProvider.address.fromHex(
-        transferData.owner_address
-      );
-      result.amount = transferData.amount.toString();
-    } else if (
-      tx.raw_data.contract.length > 0 &&
-      tx.raw_data.contract[0].type === 'TriggerSmartContract'
-    ) {
-      const params = await this.decodeParams(
-        ['address', 'uint256'],
-        tx.raw_data.contract[0].parameter.value.data,
-        true
-      );
-
-      result.to = this.rpcProvider.address.fromHex(params[0]);
-      result.amount = params[1].toString();
-      result.from = this.rpcProvider.address.fromHex(
-        tx.raw_data.contract[0].parameter.value.owner_address
-      );
-      result.contractAddress = this.rpcProvider.address.fromHex(
-        tx.raw_data.contract[0].parameter.value.contract_address
-      );
-    }
-
-    return result;
-  }
-
   async subscribeTransactions(
     _filter: TransactionsFilter
   ): Promise<Observable<Transaction>> {
@@ -214,8 +167,8 @@ export class IndexerDataSource extends DataSource {
     selector: string,
     params: string
   ): Promise<TronEnergyEstimate> {
-    const response = await axios.post(
-      'https://api.trongrid.io/wallet/triggerconstantcontract',
+    const response = await this.httpProvider.post(
+      '/wallet/triggerconstantcontract',
       JSON.stringify({
         owner_address: sender,
         contract_address: contractAddress,
