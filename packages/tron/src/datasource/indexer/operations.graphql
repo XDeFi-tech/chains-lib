@@ -17,24 +17,52 @@ query GetTronBalance($address: String!) {
       }
       amount {
         value
+        scalingFactor
       }
     }
   }
 }
 
-query GetTronTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
+query GetTronTransactions($address: String!, $first: Int) {
   tron {
-    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
-      balanceChange {
-        value
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
       }
-      blockNumber
-      fee {
-        value
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
       }
-      hash
-      timestamp
-      status
     }
   }
 }

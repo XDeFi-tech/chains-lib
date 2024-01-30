@@ -3,7 +3,7 @@ import { gqlClient } from '@xdefi-tech/chains-core';
 import filter from 'lodash/filter';
 
 export const GET_BALANCE = () => gql`
-  query GetBalance($address: String!) {
+  query GetTronBalance($address: String!) {
     tron {
       balances(address: $address) {
         address
