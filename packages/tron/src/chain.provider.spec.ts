@@ -1,11 +1,20 @@
+import XMLHttpRequest from 'xhr2';
+
 import { ChainMsg, TokenType } from './msg';
 import { TronProvider } from './chain.provider';
-import { ChainDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import { TRON_MANIFEST } from './manifests';
 import PrivateKeySigner from './signers/private-key.signer';
 
-describe('chain.provider', () => {
-  let provider: TronProvider;
+interface TronProviders {
+  chain: TronProvider;
+  indexer: TronProvider;
+}
+
+global.XMLHttpRequest = XMLHttpRequest;
+
+describe('chain.providers.chain', () => {
+  let providers: TronProviders;
   const messageData = {
     to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
     from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
@@ -14,49 +23,80 @@ describe('chain.provider', () => {
   const pk = '9e30f488d7079ddcba9f012506d5dda99df9eba6e8d98aaab69e2c4ac1c6f656';
 
   beforeEach(() => {
-    provider = new TronProvider(new ChainDataSource(TRON_MANIFEST));
+    providers = {
+      chain: new TronProvider(new ChainDataSource(TRON_MANIFEST)),
+      indexer: new TronProvider(new IndexerDataSource(TRON_MANIFEST)),
+    };
   });
 
   it('createMsg(): should create message with data', () => {
-    const msg = provider.createMsg({});
+    let msg = providers.chain.createMsg({});
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+
+    msg = providers.indexer.createMsg({});
 
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
   it('should throw an error when broadcasting an unsigned tx', async () => {
-    const msg = provider.createMsg({});
+    const msg = providers.chain.createMsg({});
 
-    expect(provider.broadcast([msg])).rejects.toThrow();
+    expect(providers.chain.broadcast([msg])).rejects.toThrow();
+    expect(providers.indexer.broadcast([msg])).rejects.toThrow();
   });
 
-  it('should get transactions for an address from the blockchain', async () => {
-    const txData = await provider.getTransactions(
+  it('should get transactions for an address from the blockchain using a chain data source', async () => {
+    const txData = await providers.chain.getTransactions(
       'TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18'
     );
     expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
   });
 
-  it('should not estimate fees for an unsigned TRX transactoon', async () => {
+  it('should get transactions for an address from the blockchain using an indexer data source', async () => {
+    const txData = await providers.indexer.getTransactions(
+      'TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18'
+    );
+    expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should not estimate fees for an unsigned TRX transaction using any data source', async () => {
     const msg = new ChainMsg(messageData);
 
-    expect(provider.estimateTronFees([msg])).rejects.toThrow(
+    expect(providers.chain.estimateTronFees([msg])).rejects.toThrow(
+      'TX Must be signed to estimate fee!'
+    );
+
+    expect(providers.indexer.estimateTronFees([msg])).rejects.toThrow(
       'TX Must be signed to estimate fee!'
     );
   });
 
-  it('should estimate fees for a TRX transactoon', async () => {
+  it('should estimate fees for a TRX transaction using a chain data source', async () => {
     const msg = new ChainMsg(messageData);
     const signer = new PrivateKeySigner(pk);
 
     await signer.sign(msg);
 
-    const fees = await provider.estimateTronFees([msg]);
+    const fees = await providers.chain.estimateTronFees([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
   });
 
-  it('should estimate fees for a TRC20 transactoon', async () => {
+  it('should estimate fees for a TRX transaction using an indexer data source', async () => {
+    const msg = new ChainMsg(messageData);
+    const signer = new PrivateKeySigner(pk);
+
+    await signer.sign(msg);
+
+    const fees = await providers.indexer.estimateTronFees([msg]);
+    expect(fees.length).toEqual(1);
+    expect(fees[0].bandwidth).toEqual(265);
+    expect(fees[0].energy).toEqual(0);
+  });
+
+  it('should estimate fees for a TRC20 transaction using a chain data source', async () => {
     const msg = new ChainMsg({
       ...messageData,
       contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
@@ -67,15 +107,33 @@ describe('chain.provider', () => {
 
     await signer.sign(msg);
 
-    const fees = await provider.estimateTronFees([msg]);
+    const fees = await providers.chain.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(4146);
     expect(fees[0].cost).toEqual('1.741665');
     expect(fees[0].willRevert).toBeTruthy();
   });
 
-  it('should get a token transaction from the blockchain', async () => {
-    const txData = await provider.getTransaction(
+  it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
+    const msg = new ChainMsg({
+      ...messageData,
+      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      tokenType: TokenType.TRC20,
+      decimals: 6,
+    });
+    const signer = new PrivateKeySigner(pk);
+
+    await signer.sign(msg);
+
+    const fees = await providers.indexer.estimateTronFees([msg]);
+    expect(fees[0].bandwidth).toEqual(345);
+    expect(fees[0].energy).toEqual(4146);
+    expect(fees[0].cost).toEqual('1.741665');
+    expect(fees[0].willRevert).toBeTruthy();
+  });
+
+  it('should get a token transaction from the blockchain using a chain data source', async () => {
+    const txData = await providers.chain.getTransaction(
       '992151e0fafb2e86504efbfd42074434af1ac03f460b2e96b687338471e7c79d'
     );
     expect(txData?.to).toEqual('TTd9qHyjqiUkfTxe3gotbuTMpjU8LEbpkN');
@@ -89,9 +147,9 @@ describe('chain.provider', () => {
     );
   });
 
-  it('should get all transactions from the blockchain for an address', async () => {
+  it('should get all transactions from the blockchain for an address with an indexer data source', async () => {
     const txData = await (
-      provider.dataSource as ChainDataSource
+      providers.indexer.dataSource as IndexerDataSource
     ).getTransactionsForAddress({
       address: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
     });
@@ -108,8 +166,8 @@ describe('chain.provider', () => {
     expect(tx.action).toBe('receive');
   });
 
-  it('should get a transaction from the blockchain', async () => {
-    const txData = await provider.getTransaction(
+  it('should get a transaction from the blockchain using a chain data source', async () => {
+    const txData = await providers.chain.getTransaction(
       'f8e262c3871981fcab7ae129c426ee741c61653485c9fe831b53cb891a3ff42a'
     );
     expect(txData?.to).toEqual('TDzBR3gNA9FSgQxPhzDNqXDg3DjjUbapYr');
@@ -123,12 +181,27 @@ describe('chain.provider', () => {
 
   it('should not get an address nonce', async () => {
     expect(
-      provider.getNonce('TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52')
+      providers.chain.getNonce('TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52')
+    ).rejects.toThrow();
+
+    expect(
+      providers.indexer.getNonce('TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52')
     ).rejects.toThrow();
   });
 
-  it('should get a balance for a valid address', async () => {
-    const balance = await provider.getBalance(
+  it('should get a balance for a valid address using a chain data source', async () => {
+    const balance = await providers.chain.getBalance(
+      'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52'
+    );
+
+    const balanceData = await balance.getData();
+    expect(balanceData.length).toBeGreaterThanOrEqual(1);
+    expect(balanceData[0].amount.toNumber()).toBeGreaterThanOrEqual(0);
+    expect(balanceData[0].asset.name).toEqual('Tron');
+  });
+
+  it('should get a balance for a valid address using an indexer data source', async () => {
+    const balance = await providers.indexer.getBalance(
       'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52'
     );
 

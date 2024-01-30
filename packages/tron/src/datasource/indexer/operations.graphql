@@ -1,0 +1,40 @@
+query GetTronBalance($address: String!) {
+  tron {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          scalingFactor
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query GetTronTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
+  tron {
+    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+      balanceChange {
+        value
+      }
+      blockNumber
+      fee {
+        value
+      }
+      hash
+      timestamp
+      status
+    }
+  }
+}
