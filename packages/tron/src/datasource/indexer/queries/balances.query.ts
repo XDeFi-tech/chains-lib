@@ -1,6 +1,5 @@
 import { gql } from 'graphql-tag';
 import { gqlClient } from '@xdefi-tech/chains-core';
-import filter from 'lodash/filter';
 
 export const GET_BALANCE = () => gql`
   query GetTronBalance($address: String!) {
@@ -38,8 +37,5 @@ export const getBalance = async (address: string) => {
     },
   });
 
-  return filter(
-    response.data.tron.balances,
-    (b: any) => b.asset.symbol && b.asset.id // cut off balances without asset
-  );
+  return response.data.tron.balances;
 };

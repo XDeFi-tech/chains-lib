@@ -43,28 +43,31 @@ export class IndexerDataSource extends DataSource {
     const { address } = filter;
     const balances = await getBalance(address);
 
-    return balances.reduce((result, balance) => {
-      const { asset, amount } = balance;
-      if (asset.id && asset.symbol && asset.name) {
-        result.push(
-          new Coin(
-            new Asset({
-              id: asset.id,
-              chainId: this.manifest.chainId,
-              name: asset.name,
-              symbol: asset.symbol,
-              icon: asset.image,
-              native: asset.contract === null || asset.contract === undefined,
-              address: asset.contract,
-              price: asset.price?.amount,
-              decimals: asset.decimals || 0,
-            }),
-            formatUnits(amount.value, asset.decimals || 0)
-          )
-        );
-      }
-      return result;
-    }, [] as Coin[]);
+    return balances.reduce(
+      (result: Coin[], balance: { asset: any; amount: any }) => {
+        const { asset, amount } = balance;
+        if (asset.id && asset.symbol && asset.name) {
+          result.push(
+            new Coin(
+              new Asset({
+                id: asset.id,
+                chainId: this.manifest.chainId,
+                name: asset.name,
+                symbol: asset.symbol,
+                icon: asset.image,
+                native: asset.contract === null || asset.contract === undefined,
+                address: asset.contract,
+                price: asset.price?.amount,
+                decimals: asset.decimals || 0,
+              }),
+              formatUnits(amount.value, asset.decimals || 0)
+            )
+          );
+        }
+        return result;
+      },
+      [] as Coin[]
+    );
   }
 
   async subscribeBalance(

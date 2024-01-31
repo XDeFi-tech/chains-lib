@@ -142,7 +142,9 @@ export class ChainDataSource extends DataSource {
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
-    const response = await this.httpProvider.get(`/v1/accounts/${address}/transactions`);
+    const response = await this.httpProvider.get(
+      `/v1/accounts/${address}/transactions`
+    );
 
     return response.data.data.map((transaction: any) =>
       Transaction.fromData(transaction)
@@ -153,7 +155,9 @@ export class ChainDataSource extends DataSource {
     filter: TransactionsFilter
   ): Promise<TransactionData[]> {
     const { address } = filter;
-    const { data } = await this.httpProvider.get(`/v1/accounts/${address}/transactions`);
+    const { data } = await this.httpProvider.get(
+      `/v1/accounts/${address}/transactions`
+    );
 
     const transactions: TransactionData[] = [];
 
