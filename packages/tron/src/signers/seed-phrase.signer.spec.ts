@@ -1,5 +1,5 @@
 import { TronProvider } from '../chain.provider';
-import { ChainDataSource, IndexerDataSource } from '../datasource';
+import { ChainDataSource } from '../datasource';
 import { TRON_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody, TokenType } from '../msg';
 
