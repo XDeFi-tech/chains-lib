@@ -20,6 +20,7 @@ import { AbiCoder } from 'ethers';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
 import { ChainDataSource } from './datasource/chain/chain.data-source';
+import { IndexerDataSource } from './datasource';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -27,7 +28,7 @@ import { ChainDataSource } from './datasource/chain/chain.data-source';
 })
 export class TronProvider extends Chain.Provider {
   declare rpcProvider: any;
-  declare dataSource: ChainDataSource;
+  declare dataSource: ChainDataSource | IndexerDataSource;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);

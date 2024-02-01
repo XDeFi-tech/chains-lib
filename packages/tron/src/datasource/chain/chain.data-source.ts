@@ -16,7 +16,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import TronWeb from 'tronweb';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import BigNumber from 'bignumber.js';
 import { AbiCoder } from 'ethers';
 
@@ -27,11 +27,15 @@ import type { TronManifest } from '../../manifests';
 export class ChainDataSource extends DataSource {
   declare rpcProvider: any;
   declare manifest: TronManifest;
+  declare httpProvider: AxiosInstance;
+
   constructor(manifest: TronManifest) {
     super(manifest);
     this.rpcProvider = new TronWeb({
       fullHost: manifest.rpcURL,
     });
+
+    this.httpProvider = axios.create({ baseURL: manifest.dataProviderURL });
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
@@ -53,9 +57,7 @@ export class ChainDataSource extends DataSource {
       )
     );
 
-    const response = await axios.get(
-      `${this.manifest.dataProviderURL}/v1/accounts/${address}`
-    );
+    const response = await this.httpProvider.get(`/v1/accounts/${address}`);
 
     const tokenBalances: Record<string, string>[] = response.data.data[0].trc20
       ? response.data.data[0].trc20
@@ -140,8 +142,8 @@ export class ChainDataSource extends DataSource {
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
-    const response = await axios.get(
-      `${this.manifest.dataProviderURL}/v1/accounts/${address}/transactions`
+    const response = await this.httpProvider.get(
+      `/v1/accounts/${address}/transactions`
     );
 
     return response.data.data.map((transaction: any) =>
@@ -153,8 +155,8 @@ export class ChainDataSource extends DataSource {
     filter: TransactionsFilter
   ): Promise<TransactionData[]> {
     const { address } = filter;
-    const { data } = await axios.get(
-      `${this.manifest.dataProviderURL}/v1/accounts/${address}/transactions`
+    const { data } = await this.httpProvider.get(
+      `/v1/accounts/${address}/transactions`
     );
 
     const transactions: TransactionData[] = [];
@@ -263,8 +265,8 @@ export class ChainDataSource extends DataSource {
     selector: string,
     params: string
   ): Promise<TronEnergyEstimate> {
-    const response = await axios.post(
-      'https://api.trongrid.io/wallet/triggerconstantcontract',
+    const response = await this.httpProvider.post(
+      '/wallet/triggerconstantcontract',
       JSON.stringify({
         owner_address: sender,
         contract_address: contractAddress,
