@@ -1,12 +1,17 @@
 import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import TronWeb from 'tronweb';
+import type { TronManifest } from 'src/manifests';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  constructor(key?: string) {
+  public manifest: TronManifest;
+
+  constructor(key: string, manifest: TronManifest) {
     super(key);
+
+    this.manifest = manifest;
   }
 
   verifyAddress(address: string, manifest: Chain.Manifest): boolean {
@@ -21,13 +26,10 @@ export class PrivateKeySigner extends Signer.Provider {
     return this.key;
   }
 
-  async getAddress(
-    key: string | null,
-    manifest?: Chain.Manifest
-  ): Promise<string> {
+  async getAddress(): Promise<string> {
     const tronWeb = new TronWeb({
-      fullHost: manifest?.rpcURL ? manifest.rpcURL : 'https://api.trongrid.io',
-      privateKey: key ? key : this.key,
+      fullHost: this.manifest.rpcURL,
+      privateKey: this.key,
     });
 
     const address = tronWeb.defaultAddress.base58;
@@ -40,7 +42,7 @@ export class PrivateKeySigner extends Signer.Provider {
 
   async sign(msg: ChainMsg): Promise<void> {
     const tronWeb = new TronWeb({
-      fullHost: 'https://api.trongrid.io',
+      fullHost: this.manifest.rpcURL,
       privateKey: this.key,
     });
 

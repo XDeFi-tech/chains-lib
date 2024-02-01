@@ -61,20 +61,21 @@ describe('chain.providers.chain', () => {
   });
 
   it('should not estimate fees for an unsigned TRX transaction using any data source', async () => {
-    const msg = new ChainMsg(messageData);
+    let msg = new ChainMsg({ ...messageData, provider: providers.chain });
 
     expect(providers.chain.estimateTronFees([msg])).rejects.toThrow(
       'TX Must be signed to estimate fee!'
     );
 
+    msg = new ChainMsg({ ...messageData, provider: providers.indexer });
     expect(providers.indexer.estimateTronFees([msg])).rejects.toThrow(
       'TX Must be signed to estimate fee!'
     );
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
-    const msg = new ChainMsg(messageData);
-    const signer = new PrivateKeySigner(pk);
+    const msg = new ChainMsg({ ...messageData, provider: providers.chain });
+    const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 
@@ -85,8 +86,8 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for a TRX transaction using an indexer data source', async () => {
-    const msg = new ChainMsg(messageData);
-    const signer = new PrivateKeySigner(pk);
+    const msg = new ChainMsg({ ...messageData, provider: providers.indexer });
+    const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 
@@ -102,8 +103,9 @@ describe('chain.providers.chain', () => {
       contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
       tokenType: TokenType.TRC20,
       decimals: 6,
+      provider: providers.chain,
     });
-    const signer = new PrivateKeySigner(pk);
+    const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 
@@ -120,8 +122,9 @@ describe('chain.providers.chain', () => {
       contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
       tokenType: TokenType.TRC20,
       decimals: 6,
+      provider: providers.indexer,
     });
-    const signer = new PrivateKeySigner(pk);
+    const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 

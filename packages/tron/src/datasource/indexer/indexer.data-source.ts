@@ -12,11 +12,13 @@ import {
   DefaultFeeOptions,
   TransactionData,
   TransactionAction,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { AbiCoder, formatUnits } from 'ethers';
 import { Observable } from 'rxjs';
 import TronWeb from 'tronweb';
 import axios, { AxiosInstance } from 'axios';
+import { CryptoAsset } from '@xdefi-tech/chains-graphql';
 
 import type { TronManifest } from '../../manifests';
 import { TronEnergyEstimate } from '../../msg';
@@ -86,12 +88,13 @@ export class IndexerDataSource extends DataSource {
       (transaction) => {
         const fromAddress =
           transaction.transfers.length > 0 &&
-          transaction.fromAddress != transaction.transfers[0].fromAddress
+          transaction.fromAddress != transaction.transfers[0].fromAddress &&
+          transaction.transfers[0].fromAddress
             ? transaction.transfers[0].fromAddress
             : transaction.fromAddress;
 
         const toAddress =
-          transaction.transfers.length > 0
+          transaction.transfers.length > 0 && transaction.transfers[0].toAddress
             ? transaction.transfers[0].toAddress
             : '';
 
@@ -100,16 +103,16 @@ export class IndexerDataSource extends DataSource {
           from: fromAddress,
           to: toAddress,
 
-          status: transaction.status,
+          status: TransactionStatus.success,
           date: transaction.timestamp,
           amount:
-            transaction.transfers.length > 0
+            transaction.transfers.length > 0 &&
+            transaction.transfers[0].amount.value
               ? transaction.transfers[0].amount.value
-              : 0,
+              : '0',
           contractAddress:
-            transaction.transfers.length > 0
-              ? transaction.transfers[0].asset.contract
-              : undefined,
+            (transaction.transfers[0]?.asset as CryptoAsset).contract ??
+            undefined,
           action:
             fromAddress === address
               ? TransactionAction.SEND

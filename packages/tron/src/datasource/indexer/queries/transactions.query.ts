@@ -1,52 +1,6 @@
-import { gql } from 'graphql-tag';
 import { gqlClient } from '@xdefi-tech/chains-core';
+import { GetTronTransactionsDocument } from '@xdefi-tech/chains-graphql';
 import map from 'lodash/map';
-
-export const GET_TRANSACTION_WITH_PAGINATION = () => gql`
-  query GetTronTransactions($address: String!, $first: Int) {
-    tron {
-      transactions(address: $address, first: $first) {
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
-        edges {
-          node {
-            hash
-            blockIndex
-            blockNumber
-            status
-            value
-            timestamp
-            fromAddress
-            transfers {
-              amount {
-                value
-              }
-              asset {
-                ... on CryptoAsset {
-                  chain
-                  contract
-                  decimals
-                  id
-                  image
-                  name
-                  price {
-                    amount
-                    scalingFactor
-                  }
-                  symbol
-                }
-              }
-              fromAddress
-              toAddress
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 
 export interface BlockRange {
   from: number;
@@ -58,7 +12,7 @@ export const getTransactions = async (
   blockRange: BlockRange | null
 ) => {
   const response = await gqlClient.query({
-    query: GET_TRANSACTION_WITH_PAGINATION(),
+    query: GetTronTransactionsDocument,
     variables: {
       address,
       ...(blockRange && { blockRange }),
