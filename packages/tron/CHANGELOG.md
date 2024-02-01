@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.4
+
+### Patch Changes
+
+- e9a3d69: tsconfig: added references
+  @xdefi-tech/chains-graphql: added gql queries for tron
+  @xdefi-tech/chains-tron: added IndexerDataSource
+- Updated dependencies [e9a3d69]
+  - @xdefi-tech/chains-graphql@1.2.6
+
 ## 2.0.3
 
 ### Patch Changes

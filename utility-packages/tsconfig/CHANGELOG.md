@@ -1,5 +1,13 @@
 # tsconfig
 
+## 0.0.3
+
+### Patch Changes
+
+- e9a3d69: tsconfig: added references
+  @xdefi-tech/chains-graphql: added gql queries for tron
+  @xdefi-tech/chains-tron: added IndexerDataSource
+
 ## 0.0.2
 
 ### Patch Changes
