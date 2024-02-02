@@ -1,5 +1,5 @@
 import {
-  GetDogecoinTransactionsDocument,
+  GetBitcoinCashTransactionsDocument,
   Scalars,
   UtxoTransactionV2,
 } from '@xdefi-tech/chains-graphql';
@@ -10,7 +10,7 @@ export const getTransactions = async (
   address: Scalars['String']
 ): Promise<Array<UtxoTransactionV2>> => {
   const response = await gqlClient.query({
-    query: GetDogecoinTransactionsDocument,
+    query: GetBitcoinCashTransactionsDocument,
     variables: {
       address,
       pageNumber: 1,
@@ -18,5 +18,5 @@ export const getTransactions = async (
     },
   });
 
-  return response.data.dogecoin.transactionsV2;
+  return response.data.bitcoincash.transactionsV2;
 };

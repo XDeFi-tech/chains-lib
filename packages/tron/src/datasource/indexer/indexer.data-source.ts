@@ -78,59 +78,48 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async getTransactionsForAddress(
+  async getTransactions(
     filter: TransactionsFilter
-  ): Promise<TransactionData[]> {
+  ): Promise<Transaction<TransactionData>[]> {
     const { address } = filter;
     const transactions = await getTransactions(address, null);
 
-    const mappedTransactions: TransactionData[] = transactions.map(
-      (transaction) => {
-        const fromAddress =
+    return transactions.map((transaction) => {
+      const fromAddress =
+        transaction.transfers.length > 0 &&
+        transaction.fromAddress != transaction.transfers[0].fromAddress &&
+        transaction.transfers[0].fromAddress
+          ? transaction.transfers[0].fromAddress
+          : transaction.fromAddress;
+
+      const toAddress =
+        transaction.transfers.length > 0 && transaction.transfers[0].toAddress
+          ? transaction.transfers[0].toAddress
+          : '';
+
+      return Transaction.fromData({
+        hash: transaction.hash,
+        from: fromAddress,
+        to: toAddress,
+
+        status: TransactionStatus.success,
+        date: transaction.timestamp,
+        amount:
           transaction.transfers.length > 0 &&
-          transaction.fromAddress != transaction.transfers[0].fromAddress &&
-          transaction.transfers[0].fromAddress
-            ? transaction.transfers[0].fromAddress
-            : transaction.fromAddress;
-
-        const toAddress =
-          transaction.transfers.length > 0 && transaction.transfers[0].toAddress
-            ? transaction.transfers[0].toAddress
-            : '';
-
-        return {
-          hash: transaction.hash,
-          from: fromAddress,
-          to: toAddress,
-
-          status: TransactionStatus.success,
-          date: transaction.timestamp,
-          amount:
-            transaction.transfers.length > 0 &&
-            transaction.transfers[0].amount.value
-              ? transaction.transfers[0].amount.value
-              : '0',
-          contractAddress:
-            (transaction.transfers[0]?.asset as CryptoAsset).contract ??
-            undefined,
-          action:
-            fromAddress === address
-              ? TransactionAction.SEND
-              : toAddress === address
-              ? TransactionAction.RECEIVE
-              : undefined,
-        };
-      }
-    );
-
-    return mappedTransactions;
-  }
-
-  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { address } = filter;
-    const transactions = await getTransactions(address, null);
-
-    return transactions.map((transaction) => Transaction.fromData(transaction));
+          transaction.transfers[0].amount.value
+            ? transaction.transfers[0].amount.value
+            : '0',
+        contractAddress:
+          (transaction.transfers[0]?.asset as CryptoAsset).contract ??
+          undefined,
+        action:
+          fromAddress === address
+            ? TransactionAction.SEND
+            : toAddress === address
+            ? TransactionAction.RECEIVE
+            : undefined,
+      });
+    });
   }
 
   async subscribeTransactions(

@@ -9,5 +9,5 @@ export const getBalance = async (address: string): Promise<Array<Balance>> => {
     },
   });
 
-  return response.data.litecoin.balances;
+  return response.data.litecoin.balances as Array<Balance>;
 };
