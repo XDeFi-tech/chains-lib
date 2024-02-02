@@ -9,5 +9,5 @@ export const getBalance = async (address: string): Promise<Array<Balance>> => {
     },
   });
 
-  return response.data.dogecoin.balances;
+  return response.data.dogecoin.balances as Array<Balance>;
 };

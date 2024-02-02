@@ -9,5 +9,5 @@ export const getBalance = async (address: string): Promise<Array<Balance>> => {
     },
   });
 
-  return response.data.bitcoin.balances;
+  return response.data.bitcoin.balances as Array<Balance>;
 };
