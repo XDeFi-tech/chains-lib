@@ -153,20 +153,46 @@ describe('chain.providers.chain', () => {
   it('should get all transactions from the blockchain for an address with an indexer data source', async () => {
     const txData = await (
       providers.indexer.dataSource as IndexerDataSource
-    ).getTransactionsForAddress({
+    ).getTransactions({
       address: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
     });
 
     expect(txData.length).toBeGreaterThan(0);
 
-    const tx = txData[txData.length - 1];
-    expect(tx.hash).toEqual(
+    const tx = txData.find(
+      (tx) =>
+        tx.data.hash ===
+        '1c905f8bf7de95f2152f7f47e2b1d9c1c9a3ca9cc15563faafc30bad3e08b363'
+    )!;
+
+    expect(tx.data.hash).toEqual(
       '1c905f8bf7de95f2152f7f47e2b1d9c1c9a3ca9cc15563faafc30bad3e08b363'
     );
-    expect(tx.from).toEqual('TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18');
-    expect(tx.to).toEqual('TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH');
-    expect(tx.amount).toEqual('10000');
-    expect(tx.action).toBe('receive');
+    expect(tx.data.from).toEqual('TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18');
+    expect(tx.data.to).toEqual('TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH');
+    expect(tx.data.amount).toEqual('10000');
+    expect(tx.data.action).toBe('receive');
+
+    const txData2 = await (
+      providers.chain.dataSource as ChainDataSource
+    ).getTransactions({
+      address: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+    });
+    expect(txData2.length).toBeGreaterThan(0);
+
+    const tx2 = txData2.find(
+      (tx) =>
+        tx.data.hash ===
+        '1c905f8bf7de95f2152f7f47e2b1d9c1c9a3ca9cc15563faafc30bad3e08b363'
+    )!;
+
+    expect(tx2.data.hash).toEqual(
+      '1c905f8bf7de95f2152f7f47e2b1d9c1c9a3ca9cc15563faafc30bad3e08b363'
+    );
+    expect(tx2.data.from).toEqual('TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18');
+    expect(tx2.data.to).toEqual('TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH');
+    expect(tx2.data.amount).toEqual('10000');
+    expect(tx2.data.action).toBe('receive');
   });
 
   it('should get a transaction from the blockchain using a chain data source', async () => {

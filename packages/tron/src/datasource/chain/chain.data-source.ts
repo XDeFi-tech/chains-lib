@@ -140,26 +140,15 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { address } = filter;
-    const response = await this.httpProvider.get(
-      `/v1/accounts/${address}/transactions`
-    );
-
-    return response.data.data.map((transaction: any) =>
-      Transaction.fromData(transaction)
-    );
-  }
-
-  async getTransactionsForAddress(
+  async getTransactions(
     filter: TransactionsFilter
-  ): Promise<TransactionData[]> {
+  ): Promise<Transaction<TransactionData>[]> {
     const { address } = filter;
     const { data } = await this.httpProvider.get(
       `/v1/accounts/${address}/transactions`
     );
 
-    const transactions: TransactionData[] = [];
+    const transactions: Transaction<TransactionData>[] = [];
 
     if (data && data.data) {
       for (let i = 0; i < data.data.length; i++) {
@@ -170,7 +159,7 @@ export class ChainDataSource extends DataSource {
           } else if (tx.to === address) {
             tx.action = TransactionAction.RECEIVE;
           }
-          transactions.push(tx);
+          transactions.push(Transaction.fromData(tx));
         }
       }
     }

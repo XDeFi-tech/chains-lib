@@ -1,10 +1,6 @@
 import { Transaction, TransactionData, TransactionStatus } from './transaction';
 
-type InputData = {
-  hash: string;
-};
-
-class MyTransaction extends Transaction<InputData> {
+class MyTransaction extends Transaction {
   public toData(): TransactionData {
     return {
       hash: '0x1366a578b902e49ab3c1cea1941c808e8e6565181931f986a2468e7640dfed6e',

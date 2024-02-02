@@ -10,10 +10,11 @@ export interface TransactionData {
   from: string;
   status: TransactionStatus;
   data?: string;
+  action?: TransactionAction;
   date?: number;
   amount?: string;
-  action?: TransactionAction;
   contractAddress?: string;
+  [key: string]: any; // allow for custom fields
 }
 
 export enum TransactionAction {
@@ -21,7 +22,7 @@ export enum TransactionAction {
   RECEIVE = 'receive',
 }
 
-export abstract class Transaction<InData extends object = object> {
+export abstract class Transaction<InData extends TransactionData = TransactionData> {
   constructor(public readonly data: InData) {}
 
   /**
@@ -29,7 +30,7 @@ export abstract class Transaction<InData extends object = object> {
    *
    * @param `data` represents transaction
    */
-  public static fromData(data: any): Transaction<object> {
+  public static fromData(data: any): Transaction<TransactionData> {
     return new (this as any)(data);
   }
 
