@@ -1,5 +1,16 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.3
+
+### Patch Changes
+
+- c2732db: fix: gql queries for each UTXO chain
+- a559cce: fix: transaction type in core lib
+- Updated dependencies [a559cce]
+  - @xdefi-tech/chains-core@2.0.3
+  - @xdefi-tech/chains-utxo@2.0.2
+  - @xdefi-tech/chains-graphql@1.2.7
+
 ## 2.0.2
 
 ### Patch Changes

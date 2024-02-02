@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.5
+
+### Patch Changes
+
+- a559cce: fix: transaction type in core lib
+- Updated dependencies [a559cce]
+  - @xdefi-tech/chains-core@2.0.3
+  - @xdefi-tech/chains-graphql@1.2.7
+
 ## 2.0.4
 
 ### Patch Changes

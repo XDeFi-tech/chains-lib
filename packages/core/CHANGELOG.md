@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.3
+
+### Patch Changes
+
+- a559cce: fix: transaction type in core lib
+
 ## 2.0.2
 
 ### Patch Changes

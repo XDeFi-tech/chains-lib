@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.2
+
+### Patch Changes
+
+- a559cce: fix: transaction type in core lib
+- Updated dependencies [a559cce]
+  - @xdefi-tech/chains-core@2.0.3
+
 ## 2.0.1
 
 ### Patch Changes
