@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.8
+
+### Patch Changes
+
+- 5ea32e5: fix: simplify tron indexer data source transaction response
+
 ## 1.2.7
 
 ### Patch Changes
