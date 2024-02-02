@@ -39,6 +39,7 @@ query GetTronTransactions($address: String!, $first: Int) {
           value
           timestamp
           fromAddress
+          toAddress
           transfers {
             amount {
               value

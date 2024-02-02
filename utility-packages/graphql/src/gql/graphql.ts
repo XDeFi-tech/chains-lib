@@ -6931,6 +6931,7 @@ export type GetTronTransactionsQuery = {
           value: string;
           timestamp: any;
           fromAddress: string;
+          toAddress: string;
           transfers: Array<{
             __typename?: 'AssetTransferV2';
             fromAddress?: string | null;
@@ -17510,6 +17511,10 @@ export const GetTronTransactionsDocument = {
                                       kind: 'Name',
                                       value: 'fromAddress',
                                     },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'toAddress' },
                                   },
                                   {
                                     kind: 'Field',

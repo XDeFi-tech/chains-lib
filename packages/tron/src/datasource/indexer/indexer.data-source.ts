@@ -85,24 +85,13 @@ export class IndexerDataSource extends DataSource {
     const transactions = await getTransactions(address, null);
 
     return transactions.map((transaction) => {
-      const fromAddress =
-        transaction.transfers.length > 0 &&
-        transaction.fromAddress != transaction.transfers[0].fromAddress &&
-        transaction.transfers[0].fromAddress
-          ? transaction.transfers[0].fromAddress
-          : transaction.fromAddress;
-
-      const toAddress =
-        transaction.transfers.length > 0 && transaction.transfers[0].toAddress
-          ? transaction.transfers[0].toAddress
-          : '';
+      const asset = transaction.transfers[0].asset as CryptoAsset;
 
       return Transaction.fromData({
         hash: transaction.hash,
-        from: fromAddress,
-        to: toAddress,
-
-        status: TransactionStatus.success,
+        from: transaction.fromAddress,
+        to: transaction.toAddress,
+        status: TransactionStatus[transaction.status as 'success' | 'failure'],
         date: transaction.timestamp,
         amount:
           transaction.transfers.length > 0 &&
@@ -113,11 +102,23 @@ export class IndexerDataSource extends DataSource {
           (transaction.transfers[0]?.asset as CryptoAsset).contract ??
           undefined,
         action:
-          fromAddress === address
+          transaction.fromAddress === address
             ? TransactionAction.SEND
-            : toAddress === address
+            : transaction.toAddress === address
             ? TransactionAction.RECEIVE
             : undefined,
+        rawTransaction: transaction,
+        asset: new Asset({
+          id: asset.id || '',
+          chainId: this.manifest.chainId,
+          name: asset.name || '',
+          symbol: asset.symbol || '',
+          icon: asset.image,
+          native: asset.contract === null || asset.contract === undefined,
+          address: asset.contract,
+          price: asset.price?.amount,
+          decimals: asset.decimals || 0,
+        }),
       });
     });
   }
