@@ -1,4 +1,3 @@
-/*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as bip39 from 'bip39';
@@ -11,11 +10,25 @@ import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
 
-const ECPair: ECPairAPI = ECPairFactory(tinysecp);
-const bip32 = BIP32Factory(tinysecp);
-
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
+  private _ECPair?: ECPairAPI;
+  private _bip32?: ReturnType<typeof BIP32Factory>;
+
+  private get ECPair(): ECPairAPI {
+    if (!this._ECPair) {
+      this._ECPair = ECPairFactory(tinysecp);
+    }
+    return this._ECPair;
+  }
+
+  private get bip32() {
+    if (!this._bip32) {
+      this._bip32 = BIP32Factory(tinysecp);
+    }
+    return this._bip32;
+  }
+
   verifyAddress(address: string): boolean {
     try {
       Litecoin.address.toOutputScript(
@@ -33,7 +46,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = bip32.fromSeed(seed, coininfo.litecoin.main.toBitcoinJS());
+    const root = this.bip32.fromSeed(seed, coininfo.litecoin.main.toBitcoinJS());
     const master = root.derivePath(derivation);
 
     return master.toWIF();
@@ -45,7 +58,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   ): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = ECPair.fromWIF(privateKey, network);
+    const pk = this.ECPair.fromWIF(privateKey, network);
     const { address } = Litecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -81,7 +94,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
     });
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(this.ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

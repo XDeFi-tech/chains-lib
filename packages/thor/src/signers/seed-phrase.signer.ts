@@ -2,7 +2,7 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';
-import { BIP32Factory, BIP32API } from 'bip32';
+import { BIP32Factory } from 'bip32';
 import * as ecc from 'tiny-secp256k1';
 import Long from 'long';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
@@ -15,17 +15,13 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  private bip32?: BIP32API;
+  private _bip32?: ReturnType<typeof BIP32Factory>;
 
-  constructor(mnemonic: string) {
-    super(mnemonic);
-    this.initBip32().then((secp256k1) => {
-      this.bip32 = BIP32Factory(secp256k1);
-    });
-  }
-
-  async initBip32() {
-    return await ecc;
+  private get bip32() {
+    if (!this._bip32) {
+      this._bip32 = BIP32Factory(ecc);
+    }
+    return this._bip32;
   }
 
   verifyAddress(address: string, prefix?: string): boolean {
