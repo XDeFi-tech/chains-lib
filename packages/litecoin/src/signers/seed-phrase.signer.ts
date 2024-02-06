@@ -33,10 +33,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = bip32.fromSeed(
-      seed,
-      coininfo.litecoin.main.toBitcoinJS()
-    );
+    const root = bip32.fromSeed(seed, coininfo.litecoin.main.toBitcoinJS());
     const master = root.derivePath(derivation);
 
     return master.toWIF();
