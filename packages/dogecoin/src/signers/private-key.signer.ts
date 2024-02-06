@@ -3,8 +3,12 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Dogecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
+import tinysecp from 'tiny-secp256k1';
+import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
+
+const ECPair: ECPairAPI = ECPairFactory(tinysecp);
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -29,7 +33,7 @@ export class PrivateKeySigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2pkh'
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const pk = Dogecoin.ECPair.fromWIF(this.key, network);
+    const pk = ECPair.fromWIF(this.key, network);
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -65,7 +69,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(this.key, network));
+    psbt.signAllInputs(ECPair.fromWIF(this.key, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

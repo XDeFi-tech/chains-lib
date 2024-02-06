@@ -5,8 +5,14 @@ import * as bip39 from 'bip39';
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import * as Litecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
+import { BIP32Factory } from 'bip32';
+import tinysecp from 'tiny-secp256k1';
+import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
+
+const ECPair: ECPairAPI = ECPairFactory(tinysecp);
+const bip32 = BIP32Factory(tinysecp);
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
@@ -27,7 +33,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = Litecoin.bip32.fromSeed(
+    const root = bip32.fromSeed(
       seed,
       coininfo.litecoin.main.toBitcoinJS()
     );
@@ -42,7 +48,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   ): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = Litecoin.ECPair.fromWIF(privateKey, network);
+    const pk = ECPair.fromWIF(privateKey, network);
     const { address } = Litecoin.payments[type]({
       pubkey: pk.publicKey,
       network,
@@ -78,7 +84,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
     });
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

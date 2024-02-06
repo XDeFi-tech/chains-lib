@@ -4,8 +4,14 @@ import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as bip39 from 'bip39';
 import * as Dogecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
+import { BIP32Factory } from 'bip32';
+import tinysecp from 'tiny-secp256k1';
+import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
+
+const ECPair: ECPairAPI = ECPairFactory(tinysecp);
+const bip32 = BIP32Factory(tinysecp);
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
@@ -26,10 +32,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = Dogecoin.bip32.fromSeed(
-      seed,
-      coininfo.dogecoin.main.toBitcoinJS()
-    );
+    const root = bip32.fromSeed(seed, coininfo.dogecoin.main.toBitcoinJS());
     const master = root.derivePath(derivation);
 
     return master.toWIF();
@@ -41,7 +44,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = Dogecoin.ECPair.fromWIF(privateKey, network);
+    const pk = ECPair.fromWIF(privateKey, network);
 
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
@@ -78,7 +81,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
     });
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

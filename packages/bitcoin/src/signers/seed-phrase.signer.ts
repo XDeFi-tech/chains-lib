@@ -3,8 +3,14 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 import * as bip39 from 'bip39';
+import { BIP32Factory } from 'bip32';
+import tinysecp from 'tiny-secp256k1';
+import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
+
+const ECPair: ECPairAPI = ECPairFactory(tinysecp);
+const bip32 = BIP32Factory(tinysecp);
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
@@ -22,7 +28,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = Bitcoin.bip32.fromSeed(seed);
+    const root = bip32.fromSeed(seed);
     const master = root.derivePath(derivation);
 
     return master.toWIF();
@@ -33,7 +39,7 @@ export class SeedPhraseSigner extends Signer.Provider {
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = Bitcoin.ECPair.fromWIF(privateKey);
+    const pk = ECPair.fromWIF(privateKey);
     const { address } = Bitcoin.payments[type]({
       pubkey: pk.publicKey,
       network: Bitcoin.networks.bitcoin,
@@ -70,7 +76,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
     });
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
+    psbt.signAllInputs(ECPair.fromWIF(privateKey));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());
