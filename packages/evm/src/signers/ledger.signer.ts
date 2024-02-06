@@ -1,5 +1,5 @@
 import App from '@ledgerhq/hw-app-eth';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 

@@ -2,7 +2,7 @@ import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
 import { fromBech32 } from '@cosmjs/encoding';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';

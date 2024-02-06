@@ -1,6 +1,6 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
 import { Client } from '@xchainjs/xchain-thorchain';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';

@@ -1,4 +1,4 @@
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import Trx from '@ledgerhq/hw-app-trx';
 import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import TronWeb from 'tronweb';

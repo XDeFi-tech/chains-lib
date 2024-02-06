@@ -1,6 +1,6 @@
 import Solana from '@ledgerhq/hw-app-solana';
 import { PublicKey, Transaction as SolanaTransaction } from '@solana/web3.js';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
