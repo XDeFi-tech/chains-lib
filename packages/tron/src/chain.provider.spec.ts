@@ -68,12 +68,39 @@ describe('chain.providers.chain', () => {
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(200);
     expect(fees[0].energy).toEqual(0);
+    expect(fees[0].cost).toEqual(0.2);
 
     msg = new ChainMsg({ ...messageData, provider: providers.indexer });
     fees = await providers.indexer.estimateTronFees([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(200);
     expect(fees[0].energy).toEqual(0);
+    expect(fees[0].cost).toEqual(0.2);
+  });
+
+  it('should not estimate fees for an unsigned TRC20 transaction using any data source', async () => {
+    let msg = new ChainMsg({
+      ...messageData,
+      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      tokenType: TokenType.TRC20,
+      decimals: 6,
+      provider: providers.chain,
+    });
+
+    expect(providers.chain.estimateTronFees([msg])).rejects.toThrow(
+      'TX Must be signed to estimate a TRC20 transaction'
+    );
+
+    msg = new ChainMsg({
+      ...messageData,
+      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      tokenType: TokenType.TRC20,
+      decimals: 6,
+      provider: providers.indexer,
+    });
+    expect(providers.indexer.estimateTronFees([msg])).rejects.toThrow(
+      'TX Must be signed to estimate a TRC20 transaction'
+    );
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
@@ -115,7 +142,7 @@ describe('chain.providers.chain', () => {
     const fees = await providers.chain.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741665');
+    expect(fees[0].cost).toEqual('1.741320345');
     expect(fees[0].willRevert).toBeTruthy();
   });
 
@@ -134,7 +161,7 @@ describe('chain.providers.chain', () => {
     const fees = await providers.indexer.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741665');
+    expect(fees[0].cost).toEqual('1.741320345');
     expect(fees[0].willRevert).toBeTruthy();
   });
 

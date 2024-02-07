@@ -74,6 +74,12 @@ export class TronProvider extends Chain.Provider {
         ? msg.signedTransaction
         : await msg.buildTx();
 
+      const msgBody = msg.toData() as MsgBody;
+
+      if (!msg.hasSignature && msgBody.tokenType === TokenType.TRC20) {
+        throw new Error('TX Must be signed to estimate a TRC20 transaction');
+      }
+
       const transactionByteLength =
         9 +
         60 +
@@ -83,13 +89,11 @@ export class TronProvider extends Chain.Provider {
       const bandwidthConsumed =
         (transactionByteLength * bandiwtdthPrice) / 1000;
 
-      const msgBody = msg.toData() as MsgBody;
-
       if (!msgBody.tokenType || msgBody.tokenType === TokenType.None) {
         feeData.push({
           bandwidth: bandwidthConsumed,
           energy: 0,
-          cost: bandwidthConsumed,
+          cost: bandwidthConsumed / bandiwtdthPrice,
           willRevert: false,
         });
       } else if (
@@ -110,7 +114,7 @@ export class TronProvider extends Chain.Provider {
           bandwidth: bandwidthConsumed,
           energy: energy,
           cost: this.rpcProvider.fromSun(
-            bandwidthConsumed + energy * energyPrice
+            bandwidthConsumed / bandiwtdthPrice + energy * energyPrice
           ),
           willRevert,
         });
