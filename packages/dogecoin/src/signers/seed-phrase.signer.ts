@@ -4,31 +4,11 @@ import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as bip39 from 'bip39';
 import * as Dogecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
-import { BIP32Factory } from 'bip32';
-import tinysecp from 'tiny-secp256k1';
-import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  private _ECPair?: ECPairAPI;
-  private _bip32?: ReturnType<typeof BIP32Factory>;
-
-  private get ECPair(): ECPairAPI {
-    if (!this._ECPair) {
-      this._ECPair = ECPairFactory(tinysecp);
-    }
-    return this._ECPair;
-  }
-
-  private get bip32() {
-    if (!this._bip32) {
-      this._bip32 = BIP32Factory(tinysecp);
-    }
-    return this._bip32;
-  }
-
   verifyAddress(address: string): boolean {
     try {
       Dogecoin.address.toOutputScript(
@@ -46,7 +26,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = this.bip32.fromSeed(
+    const root = Dogecoin.bip32.fromSeed(
       seed,
       coininfo.dogecoin.main.toBitcoinJS()
     );
@@ -61,7 +41,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   ): Promise<string> {
     const network = coininfo.dogecoin.main.toBitcoinJS();
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = this.ECPair.fromWIF(privateKey, network);
+    const pk = Dogecoin.ECPair.fromWIF(privateKey, network);
 
     const { address } = Dogecoin.payments[type]({
       pubkey: pk.publicKey,
@@ -85,12 +65,12 @@ export class SeedPhraseSigner extends Signer.Provider {
       }))
     );
 
-    outputs.forEach((output: Dogecoin.PsbtTxOutput) => {
+    outputs.forEach((output: any) => {
       if (!output.address) {
         output.address = from;
       }
-      if (!output.script) {
-        psbt.addOutput(output);
+      if (!output.hasOwnProperty('script')) {
+        psbt.addOutput(output as any); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
       } else {
         if (compiledMemo) {
           psbt.addOutput({ script: compiledMemo, value: 0 });
@@ -98,7 +78,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       }
     });
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(this.ECPair.fromWIF(privateKey, network));
+    psbt.signAllInputs(Dogecoin.ECPair.fromWIF(privateKey, network));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

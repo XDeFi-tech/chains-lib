@@ -61,10 +61,10 @@ export class LedgerSigner extends Signer.Provider {
           hash: utxo.hash,
           index: utxo.index,
           witnessUtxo: utxo.witnessUtxo,
-        });
+        } as any);
       });
 
-      outputs.forEach((output: Litecoin.PsbtTxOutput) => {
+      outputs.forEach((output: any) => {
         if (!output.address) {
           output.address = from;
         }
@@ -79,7 +79,7 @@ export class LedgerSigner extends Signer.Provider {
 
       outputWriter.writeVarInt(psbt.txOutputs.length);
 
-      psbt.txOutputs.forEach((output) => {
+      psbt.txOutputs.forEach((output: any) => {
         outputWriter.writeUInt64(output.value);
         outputWriter.writeVarSlice(output.script);
       });

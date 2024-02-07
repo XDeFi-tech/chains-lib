@@ -1,5 +1,6 @@
 import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Dogecoin from 'bitcoinjs-lib';
@@ -44,7 +45,7 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = await Transport.create();
+    const transport = (await TransportWebHID.create()) as Transport;
     try {
       const app = new BtcOld({ transport, currency: 'dogecoin' });
 
@@ -63,7 +64,7 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = await Transport.create();
+    const transport = (await TransportWebHID.create()) as Transport;
     try {
       const app = new BtcOld({ transport, currency: 'dogecoin' });
       const { inputs, outputs, from } = await msg.buildTx();
@@ -74,10 +75,10 @@ export class LedgerSigner extends Signer.Provider {
           hash: utxo.hash,
           index: utxo.index,
           witnessUtxo: utxo.witnessUtxo,
-        });
+        } as any);
       });
 
-      outputs.forEach((output: Dogecoin.PsbtTxOutput) => {
+      outputs.forEach((output: any) => {
         if (!output.address) {
           output.address = from;
         }
@@ -92,7 +93,7 @@ export class LedgerSigner extends Signer.Provider {
 
       outputWriter.writeVarInt(psbt.txOutputs.length);
 
-      psbt.txOutputs.forEach((output) => {
+      psbt.txOutputs.forEach((output: any) => {
         outputWriter.writeUInt64(output.value);
         outputWriter.writeVarSlice(output.script);
       });

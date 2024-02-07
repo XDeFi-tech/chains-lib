@@ -2,12 +2,8 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
-import tinysecp from 'tiny-secp256k1';
-import ECPairFactory, { ECPairAPI } from 'ecpair';
 
 import { ChainMsg } from '../msg';
-
-const ECPair: ECPairAPI = ECPairFactory(tinysecp);
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -28,7 +24,7 @@ export class PrivateKeySigner extends Signer.Provider {
     _derivation: string,
     type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
   ): Promise<string> {
-    const pk = ECPair.fromWIF(this.key);
+    const pk = Bitcoin.ECPair.fromWIF(this.key);
     const { address } = Bitcoin.payments[type]({
       pubkey: pk.publicKey,
       network: Bitcoin.networks.bitcoin,
@@ -52,7 +48,7 @@ export class PrivateKeySigner extends Signer.Provider {
       }))
     );
 
-    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+    outputs.forEach((output: any) => {
       if (!output.address) {
         output.address = from;
       }
@@ -64,7 +60,7 @@ export class PrivateKeySigner extends Signer.Provider {
         }
       }
     });
-    psbt.signAllInputs(ECPair.fromWIF(this.key));
+    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(this.key));
     psbt.finalizeAllInputs();
 
     message.sign(psbt.extractTransaction(true).toHex());

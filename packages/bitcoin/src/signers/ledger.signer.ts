@@ -48,7 +48,7 @@ export class LedgerSigner extends Signer.Provider {
         })
       );
 
-      outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+      outputs.forEach((output: any) => {
         if (!output.address) {
           output.address = from;
         }
@@ -63,7 +63,7 @@ export class LedgerSigner extends Signer.Provider {
 
       outputWriter.writeVarInt(psbt.txOutputs.length);
 
-      psbt.txOutputs.forEach((output) => {
+      psbt.txOutputs.forEach((output: any) => {
         outputWriter.writeUInt64(output.value);
         outputWriter.writeVarSlice(output.script);
       });
