@@ -26,10 +26,7 @@ export class LedgerSigner extends Signer.Provider {
 
   async getAddress(derivation: string): Promise<string> {
     const app = new THORChainApp(this.transport as Transport);
-    const derivationArray = derivation
-      .replace(/'/g, '')
-      .split('/')
-      .map(Number);
+    const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
     const { bech32Address } = await app.getAddressAndPubKey(
       derivationArray,
       'thor'

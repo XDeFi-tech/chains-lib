@@ -26,10 +26,7 @@ export class LedgerSigner extends Signer.Provider {
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
     const app = new LedgerApp(this.transport);
-    const derivationArray = derivation
-      .replace(/'/g, '')
-      .split('/')
-      .map(Number);
+    const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
     const publicKey = await app.getPublicKey(derivationArray);
     if (publicKey.pk) {
       const address = crypto.getAddressFromPublicKey(
@@ -101,10 +98,7 @@ export class LedgerSigner extends Signer.Provider {
       source: txData.source,
     });
 
-    const derivationArray = derivation
-      .replace(/'/g, '')
-      .split('/')
-      .map(Number);
+    const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
     await app.showAddress('bnb', derivationArray);
     const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
 
