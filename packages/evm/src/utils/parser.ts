@@ -23,5 +23,7 @@ export const parseGwei = (n: NumberIsh): BigNumber => {
       throw new Error('Invalid NumberIsh value');
   }
 
-  return BigNumber(ethers.utils.parseUnits(num.toString(), 'gwei').toString());
+  return new BigNumber(
+    ethers.utils.parseUnits(num.toString(), 'gwei').toString()
+  );
 };

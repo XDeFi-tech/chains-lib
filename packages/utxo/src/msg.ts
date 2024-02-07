@@ -91,7 +91,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     const feeEstimation: FeeEstimation = { fee: null, maxFee: null };
     const msgData = this.toData();
     if (msgData.gasLimit) {
-      feeEstimation.fee = BigNumber(msgData.gasLimit.toString())
+      feeEstimation.fee = new BigNumber(msgData.gasLimit.toString())
         .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
         .toString();
     } else {
@@ -100,7 +100,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
         return feeEstimation;
       }
 
-      feeEstimation.fee = BigNumber(
+      feeEstimation.fee = new BigNumber(
         feeOptions[speed || GasFeeSpeed.medium].toString()
       )
         .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
