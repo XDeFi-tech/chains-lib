@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import XMLHttpRequest from 'xhr2';
 
 import { ChainMsg, TokenType } from './msg';
@@ -60,17 +61,19 @@ describe('chain.providers.chain', () => {
     expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
   });
 
-  it('should not estimate fees for an unsigned TRX transaction using any data source', async () => {
+  it('should estimate fees for an unsigned TRX transaction using any data source', async () => {
     let msg = new ChainMsg({ ...messageData, provider: providers.chain });
 
-    expect(providers.chain.estimateTronFees([msg])).rejects.toThrow(
-      'TX Must be signed to estimate fee!'
-    );
+    let fees = await providers.chain.estimateTronFees([msg]);
+    expect(fees.length).toEqual(1);
+    expect(fees[0].bandwidth).toEqual(200);
+    expect(fees[0].energy).toEqual(0);
 
     msg = new ChainMsg({ ...messageData, provider: providers.indexer });
-    expect(providers.indexer.estimateTronFees([msg])).rejects.toThrow(
-      'TX Must be signed to estimate fee!'
-    );
+    fees = await providers.indexer.estimateTronFees([msg]);
+    expect(fees.length).toEqual(1);
+    expect(fees[0].bandwidth).toEqual(200);
+    expect(fees[0].energy).toEqual(0);
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
