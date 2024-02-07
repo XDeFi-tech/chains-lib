@@ -31,7 +31,6 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
-  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: EvmProvider;
   let txInput: MsgBody;
@@ -40,9 +39,7 @@ describe('ledger.signer', () => {
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
-    signerWithExternalTransport = new LedgerSigner(externalTransport);
-
-    signer = new LedgerSigner();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
     derivationPath = "m/44'/60'/0'/0/0";
@@ -69,12 +66,6 @@ describe('ledger.signer', () => {
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
-
-    expect(message.signedTransaction).toBeTruthy();
-  });
-
-  it('should sign a transaction using a ledger device and external transport', async () => {
-    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

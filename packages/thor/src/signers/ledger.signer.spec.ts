@@ -31,7 +31,6 @@ jest.mock('@thorchain/ledger-thorchain', () => {
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
-  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: ThorProvider;
   let txInput: MsgBody;
@@ -40,9 +39,7 @@ describe('ledger.signer', () => {
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
-    signerWithExternalTransport = new LedgerSigner(externalTransport);
-
-    signer = new LedgerSigner();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new ThorProvider(
       new ChainDataSource(THORCHAIN_MANIFESTS[ThorChains.thorchain])
@@ -69,12 +66,6 @@ describe('ledger.signer', () => {
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
-
-    expect(message.signedTransaction).toBeTruthy();
-  });
-
-  it('should sign a transaction using a ledger device and external transport', async () => {
-    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

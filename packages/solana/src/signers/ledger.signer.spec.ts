@@ -34,7 +34,6 @@ jest.mock('@ledgerhq/hw-app-solana', () => {
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
-  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: SolanaProvider;
   let txInput: MsgBody;
@@ -43,9 +42,7 @@ describe('ledger.signer', () => {
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
-    signerWithExternalTransport = new LedgerSigner(externalTransport);
-
-    signer = new LedgerSigner();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
     derivationPath = "m/44'/60'/0'/0/0";
@@ -73,15 +70,6 @@ describe('ledger.signer', () => {
       .spyOn(Transaction.prototype, 'serialize')
       .mockImplementation(() => Buffer.from('0xDEADBEEF', 'hex'));
     await signer.sign(message as ChainMsg, derivationPath);
-
-    expect(message.signedTransaction).toBeTruthy();
-  });
-
-  it('should sign a transaction using a ledger device and external transport', async () => {
-    jest
-      .spyOn(Transaction.prototype, 'serialize')
-      .mockImplementation(() => Buffer.from('0xDEADBEEF', 'hex'));
-    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

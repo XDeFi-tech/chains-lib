@@ -2,7 +2,6 @@ import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 import * as types from '@binance-chain/javascript-sdk/lib/types';
 import LedgerApp from '@binance-chain/javascript-sdk/lib/ledger/ledger-app';
 import Transaction from '@binance-chain/javascript-sdk/lib/tx';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
@@ -10,27 +9,11 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
-  private transport: Transport | null;
-  private isInternalTransport: boolean;
+  private transport: Transport;
 
-  constructor(transport?: Transport) {
+  constructor(transport: Transport) {
     super();
-    this.transport = null;
-
-    if (transport) {
-      this.transport = transport;
-      this.isInternalTransport = false;
-    } else {
-      this.isInternalTransport = true;
-      TransportWebHID.create().then((t) => {
-        this.transport = t as Transport;
-      });
-    }
-  }
-
-  async initTransport() {
-    this.transport = (await TransportWebHID.create()) as Transport;
-    this.isInternalTransport = true;
+    this.transport = transport;
   }
 
   verifyAddress(address: string, prefix = 'bnb'): boolean {
@@ -42,39 +25,25 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
-    try {
-      if (!this.transport) {
-        await this.initTransport();
-      }
-      const app = new LedgerApp(this.transport as Transport);
-      const derivationArray = derivation
-        .replace(/'/g, '')
-        .split('/')
-        .map(Number);
-      const publicKey = await app.getPublicKey(derivationArray);
-      if (publicKey.pk) {
-        const address = crypto.getAddressFromPublicKey(
-          publicKey.pk.toString('hex'),
-          prefix
-        );
+    const app = new LedgerApp(this.transport);
+    const derivationArray = derivation
+      .replace(/'/g, '')
+      .split('/')
+      .map(Number);
+    const publicKey = await app.getPublicKey(derivationArray);
+    if (publicKey.pk) {
+      const address = crypto.getAddressFromPublicKey(
+        publicKey.pk.toString('hex'),
+        prefix
+      );
 
-        return address;
-      } else {
-        throw new Error(`Cant get address from Ledger`);
-      }
-    } finally {
-      if (this.isInternalTransport && this.transport) {
-        this.transport.close();
-        this.transport = null;
-      }
+      return address;
+    } else {
+      throw new Error(`Cant get address from Ledger`);
     }
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
-    if (!this.transport) {
-      await this.initTransport();
-    }
-
     const txData = await msg.buildTx();
     const coin = {
       denom: txData.denom,
@@ -122,31 +91,24 @@ export class LedgerSigner extends Signer.Provider {
       ],
     };
 
-    try {
-      const app = new LedgerApp(this.transport as Transport);
-      const tx = new Transaction({
-        accountNumber: txData.accountNumber,
-        chainId: txData.chainId,
-        memo: txData.memo || '',
-        msg: msgToSend,
-        sequence: txData.sequence,
-        source: txData.source,
-      });
+    const app = new LedgerApp(this.transport as Transport);
+    const tx = new Transaction({
+      accountNumber: txData.accountNumber,
+      chainId: txData.chainId,
+      memo: txData.memo || '',
+      msg: msgToSend,
+      sequence: txData.sequence,
+      source: txData.source,
+    });
 
-      const derivationArray = derivation
-        .replace(/'/g, '')
-        .split('/')
-        .map(Number);
-      await app.showAddress('bnb', derivationArray);
-      const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
+    const derivationArray = derivation
+      .replace(/'/g, '')
+      .split('/')
+      .map(Number);
+    await app.showAddress('bnb', derivationArray);
+    const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
 
-      msg.sign(signedTx.signature);
-    } finally {
-      if (this.isInternalTransport && this.transport) {
-        this.transport.close();
-        this.transport = null;
-      }
-    }
+    msg.sign(signedTx.signature);
   }
 }
 

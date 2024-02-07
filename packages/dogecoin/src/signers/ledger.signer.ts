@@ -1,6 +1,5 @@
 import BtcOld from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Dogecoin from 'bitcoinjs-lib';
@@ -10,27 +9,11 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
-  private transport: Transport | null;
-  private isInternalTransport: boolean;
+  private transport: Transport;
 
-  constructor(transport?: Transport) {
+  constructor(transport: Transport) {
     super();
-    this.transport = null;
-
-    if (transport) {
-      this.transport = transport;
-      this.isInternalTransport = false;
-    } else {
-      this.isInternalTransport = true;
-      TransportWebHID.create().then((t) => {
-        this.transport = t as Transport;
-      });
-    }
-  }
-
-  async initTransport() {
-    this.transport = (await TransportWebHID.create()) as Transport;
-    this.isInternalTransport = true;
+    this.transport = transport;
   }
 
   network = {
@@ -68,96 +51,72 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    try {
-      if (!this.transport) {
-        await this.initTransport();
-      }
-      const app = new BtcOld({
-        transport: this.transport as Transport,
-        currency: 'dogecoin',
-      });
+    const app = new BtcOld({
+      transport: this.transport as Transport,
+      currency: 'dogecoin',
+    });
 
-      const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
+    const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
 
-      if (bitcoinAddress) {
-        return bitcoinAddress;
-      } else {
-        throw new Error('Error getting Dogecoin address');
-      }
-    } catch (e) {
-      throw e;
-    } finally {
-      if (this.isInternalTransport && this.transport) {
-        this.transport.close();
-        this.transport = null;
-      }
+    if (bitcoinAddress) {
+      return bitcoinAddress;
+    } else {
+      throw new Error('Error getting Dogecoin address');
     }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    try {
-      if (!this.transport) {
-        await this.initTransport();
+    const app = new BtcOld({
+      transport: this.transport as Transport,
+      currency: 'dogecoin',
+    });
+    const { inputs, outputs, from } = await msg.buildTx();
+    const psbt = new Dogecoin.Psbt({ network: this.network });
+
+    inputs.forEach((utxo: UTXO) => {
+      psbt.addInput({
+        hash: utxo.hash,
+        index: utxo.index,
+        witnessUtxo: utxo.witnessUtxo,
+      } as any);
+    });
+
+    outputs.forEach((output: any) => {
+      if (!output.address) {
+        output.address = from;
       }
-      const app = new BtcOld({
-        transport: this.transport as Transport,
-        currency: 'dogecoin',
+
+      psbt.addOutput({
+        script: Dogecoin.address.toOutputScript(output.address, this.network),
+        value: output.value,
       });
-      const { inputs, outputs, from } = await msg.buildTx();
-      const psbt = new Dogecoin.Psbt({ network: this.network });
+    });
 
-      inputs.forEach((utxo: UTXO) => {
-        psbt.addInput({
-          hash: utxo.hash,
-          index: utxo.index,
-          witnessUtxo: utxo.witnessUtxo,
-        } as any);
-      });
+    const outputWriter = new utils.BufferWriter();
 
-      outputs.forEach((output: any) => {
-        if (!output.address) {
-          output.address = from;
-        }
+    outputWriter.writeVarInt(psbt.txOutputs.length);
 
-        psbt.addOutput({
-          script: Dogecoin.address.toOutputScript(output.address, this.network),
-          value: output.value,
-        });
-      });
+    psbt.txOutputs.forEach((output: any) => {
+      outputWriter.writeUInt64(output.value);
+      outputWriter.writeVarSlice(output.script);
+    });
 
-      const outputWriter = new utils.BufferWriter();
+    const outputScriptHex = outputWriter.buffer().toString('hex');
 
-      outputWriter.writeVarInt(psbt.txOutputs.length);
+    const data: CreateTransactionArg = {
+      inputs: inputs.map((utxo: UTXO) => [
+        app.splitTransaction(utxo.txHex, true),
+        utxo.index,
+        utxo.witnessUtxo.script.toString('hex'),
+      ]),
+      associatedKeysets: [derivation],
+      outputScriptHex,
+      additionals: [],
+    };
 
-      psbt.txOutputs.forEach((output: any) => {
-        outputWriter.writeUInt64(output.value);
-        outputWriter.writeVarSlice(output.script);
-      });
+    const signedTx = await app.createPaymentTransaction(data);
 
-      const outputScriptHex = outputWriter.buffer().toString('hex');
-
-      const data: CreateTransactionArg = {
-        inputs: inputs.map((utxo: UTXO) => [
-          app.splitTransaction(utxo.txHex, true),
-          utxo.index,
-          utxo.witnessUtxo.script.toString('hex'),
-        ]),
-        associatedKeysets: [derivation],
-        outputScriptHex,
-        additionals: [],
-      };
-
-      const signedTx = await app.createPaymentTransaction(data);
-
-      msg.sign(signedTx);
-    } catch (e) {
-      throw e;
-    } finally {
-      if (this.isInternalTransport && this.transport) {
-        this.transport.close();
-        this.transport = null;
-      }
-    }
+    msg.sign(signedTx);
   }
 }
 

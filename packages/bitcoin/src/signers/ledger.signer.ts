@@ -1,6 +1,5 @@
 import Btc from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
@@ -10,27 +9,11 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
-  private transport: Transport | null;
-  private isInternalTransport: boolean;
+  private transport: Transport;
 
-  constructor(transport?: Transport) {
+  constructor(transport: Transport) {
     super();
-    this.transport = null;
-
-    if (transport) {
-      this.transport = transport;
-      this.isInternalTransport = false;
-    } else {
-      this.isInternalTransport = true;
-      TransportWebHID.create().then((t) => {
-        this.transport = t as Transport;
-      });
-    }
-  }
-
-  async initTransport() {
-    this.transport = (await TransportWebHID.create()) as Transport;
-    this.isInternalTransport = true;
+    this.transport = transport;
   }
 
   verifyAddress(address: string): boolean {
@@ -46,90 +29,70 @@ export class LedgerSigner extends Signer.Provider {
     derivation: string,
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
   ): Promise<string> {
-    if (!this.transport) {
-      await this.initTransport();
-    }
     const app = new Btc({
-      transport: this.transport as Transport,
+      transport: this.transport,
       currency: 'bitcoin',
     });
 
     const address = await app.getWalletPublicKey(derivation, { format: type });
 
-    if (this.isInternalTransport && this.transport) {
-      this.transport.close();
-      this.transport = null;
-    }
-
     return address.bitcoinAddress;
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    try {
-      if (!this.transport) {
-        await this.initTransport();
+    const app = new Btc({
+      transport: this.transport,
+      currency: 'bitcoin',
+    });
+    const { inputs, outputs, from } = await msg.buildTx();
+    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+
+    psbt.addInputs(
+      inputs.map((utxo: UTXO) => {
+        return {
+          hash: utxo.hash,
+          index: utxo.index,
+          witnessUtxo: utxo.witnessUtxo,
+        };
+      })
+    );
+
+    outputs.forEach((output: any) => {
+      if (!output.address) {
+        output.address = from;
       }
-      const app = new Btc({
-        transport: this.transport as Transport,
-        currency: 'bitcoin',
+
+      psbt.addOutput({
+        address: output.address,
+        value: output.value,
       });
-      const { inputs, outputs, from } = await msg.buildTx();
-      const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+    });
 
-      psbt.addInputs(
-        inputs.map((utxo: UTXO) => {
-          return {
-            hash: utxo.hash,
-            index: utxo.index,
-            witnessUtxo: utxo.witnessUtxo,
-          };
-        })
-      );
+    const outputWriter = new utils.BufferWriter();
 
-      outputs.forEach((output: any) => {
-        if (!output.address) {
-          output.address = from;
-        }
+    outputWriter.writeVarInt(psbt.txOutputs.length);
 
-        psbt.addOutput({
-          address: output.address,
-          value: output.value,
-        });
-      });
+    psbt.txOutputs.forEach((output: any) => {
+      outputWriter.writeUInt64(output.value);
+      outputWriter.writeVarSlice(output.script);
+    });
 
-      const outputWriter = new utils.BufferWriter();
+    const outputScriptHex = outputWriter.buffer().toString('hex');
 
-      outputWriter.writeVarInt(psbt.txOutputs.length);
+    const data: CreateTransactionArg = {
+      inputs: inputs.map((utxo: UTXO) => [
+        app.splitTransaction(utxo.txHex, true),
+        utxo.index,
+        utxo.witnessUtxo.script.toString('hex'),
+      ]),
+      associatedKeysets: [derivation],
+      outputScriptHex,
+      additionals: ['bech32'],
+    };
 
-      psbt.txOutputs.forEach((output: any) => {
-        outputWriter.writeUInt64(output.value);
-        outputWriter.writeVarSlice(output.script);
-      });
+    const signedTx = await app.createPaymentTransaction(data);
 
-      const outputScriptHex = outputWriter.buffer().toString('hex');
-
-      const data: CreateTransactionArg = {
-        inputs: inputs.map((utxo: UTXO) => [
-          app.splitTransaction(utxo.txHex, true),
-          utxo.index,
-          utxo.witnessUtxo.script.toString('hex'),
-        ]),
-        associatedKeysets: [derivation],
-        outputScriptHex,
-        additionals: ['bech32'],
-      };
-
-      const signedTx = await app.createPaymentTransaction(data);
-
-      msg.sign(signedTx);
-    } catch (e) {
-      throw e;
-    } finally {
-      if (this.isInternalTransport && this.transport) {
-        this.transport.close();
-        this.transport = null;
-      }
-    }
+    msg.sign(signedTx);
   }
 }
 
