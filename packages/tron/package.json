@@ -38,7 +38,8 @@
   "dependencies": {
     "@agrozyme/types-tronweb": "5.3.2",
     "@ledgerhq/hw-app-trx": "6.28.1",
-    "@ledgerhq/hw-transport-webhid": "6.28.1",
+    "@ledgerhq/hw-transport": "6.30.3",
+    "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "axios": "1.6.1",

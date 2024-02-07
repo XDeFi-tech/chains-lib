@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -51,14 +52,19 @@ jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
   };
 });
 
-describe('ledger.signer', () => {
+describe('cosmos::ledger.signer', () => {
   let signer: LedgerSigner;
+  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: CosmosProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signerWithExternalTransport = new LedgerSigner(externalTransport);
+
     signer = new LedgerSigner();
 
     provider = new CosmosProvider(
@@ -75,6 +81,10 @@ describe('ledger.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    externalTransport.close();
+  });
+
   it('should get an address from the ledger device', async () => {
     expect(await signer.getAddress(derivationPath, 'cosmos')).toBe(
       txInput.from
@@ -83,6 +93,16 @@ describe('ledger.signer', () => {
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath, 'cosmos');
+
+    expect(message.signedTransaction).toBeTruthy();
+  });
+
+  it('should sign a transaction using a ledger device and external transport', async () => {
+    await signerWithExternalTransport.sign(
+      message as ChainMsg,
+      derivationPath,
+      'cosmos'
+    );
 
     expect(message.signedTransaction).toBeTruthy();
   });

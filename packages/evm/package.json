@@ -40,8 +40,9 @@
   },
   "dependencies": {
     "@ledgerhq/cryptoassets": "9.1.0",
-    "@ledgerhq/hw-app-eth": "6.27.1",
-    "@ledgerhq/hw-transport-webhid": "6.27.1",
+    "@ledgerhq/hw-app-eth": "6.35.4",
+    "@ledgerhq/hw-transport": "6.30.3",
+    "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@trezor/connect-web": "9.1.4",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",

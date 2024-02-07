@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "@binance-chain/javascript-sdk": "4.2.1",
+    "@ledgerhq/hw-transport": "6.30.3",
+    "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "axios": "1.4.0",

@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -32,12 +33,17 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
+  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: BitcoinProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signerWithExternalTransport = new LedgerSigner(externalTransport);
+
     signer = new LedgerSigner();
 
     provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
@@ -52,12 +58,22 @@ describe('ledger.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    externalTransport.close();
+  });
+
   it('should get an address from the ledger device', async () => {
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
+
+    expect(message.signedTransaction).toEqual('SIGNEDTX');
+  });
+
+  it('should sign a transaction using a ledger device and external transport', async () => {
+    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toEqual('SIGNEDTX');
   });

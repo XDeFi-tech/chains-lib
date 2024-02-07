@@ -6,12 +6,36 @@ import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 
 import { ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   verifyAddress(address: string, requiredPrefix: string): boolean {
     try {
       const { prefix, data } = fromBech32(address);
@@ -29,10 +53,12 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix: string): Promise<string> {
-    const transport = await Transport.create();
     try {
+      if (!this.transport) {
+        await this.initTransport();
+      }
       const hdPath = stringToPath(derivation);
-      const app = new LedgerApp(transport, {
+      const app = new LedgerApp(this.transport as Transport, {
         testModeAllowed: true,
         hdPaths: [hdPath],
         prefix,
@@ -42,19 +68,24 @@ export class LedgerSigner extends Signer.Provider {
 
       return address;
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string, prefix: string): Promise<void> {
-    const transport = await Transport.create();
     try {
+      if (!this.transport) {
+        await this.initTransport();
+      }
       if (!derivation.startsWith('m/')) {
         derivation = 'm/' + derivation;
       }
 
       const hdPath = stringToPath(derivation);
-      const app = new LedgerApp(transport, {
+      const app = new LedgerApp(this.transport as Transport, {
         testModeAllowed: true,
         hdPaths: [hdPath],
         prefix,
@@ -85,7 +116,10 @@ export class LedgerSigner extends Signer.Provider {
       const rawTx = Buffer.from(txBytes).toString('base64');
       msg.sign(rawTx);
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

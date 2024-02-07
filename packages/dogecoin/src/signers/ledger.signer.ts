@@ -10,6 +10,29 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   network = {
     hashGenesisBlock:
       '1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691',
@@ -45,9 +68,14 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = (await TransportWebHID.create()) as Transport;
     try {
-      const app = new BtcOld({ transport, currency: 'dogecoin' });
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new BtcOld({
+        transport: this.transport as Transport,
+        currency: 'dogecoin',
+      });
 
       const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
 
@@ -59,14 +87,22 @@ export class LedgerSigner extends Signer.Provider {
     } catch (e) {
       throw e;
     } finally {
-      await transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = (await TransportWebHID.create()) as Transport;
     try {
-      const app = new BtcOld({ transport, currency: 'dogecoin' });
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new BtcOld({
+        transport: this.transport as Transport,
+        currency: 'dogecoin',
+      });
       const { inputs, outputs, from } = await msg.buildTx();
       const psbt = new Dogecoin.Psbt({ network: this.network });
 
@@ -117,7 +153,10 @@ export class LedgerSigner extends Signer.Provider {
     } catch (e) {
       throw e;
     } finally {
-      await transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import App from '@ledgerhq/hw-app-eth';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
@@ -7,6 +8,29 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   verifyAddress(address: string): boolean {
     return utils.isAddress(address);
   }
@@ -16,21 +40,28 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = await Transport.create();
     try {
-      const app = new App(transport);
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new App(this.transport as Transport);
       const address = await app.getAddress(derivation);
 
       return address.address;
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
-    const transport = await Transport.create();
     try {
-      const app = new App(transport);
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new App(this.transport as Transport);
       const txData = await msg.buildTx();
       const unsignedTx = {
         to: txData.to,
@@ -57,7 +88,10 @@ export class LedgerSigner extends Signer.Provider {
       );
       msg.sign('0x' + signedTransaction);
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

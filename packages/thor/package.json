@@ -39,6 +39,8 @@
   "dependencies": {
     "@cosmos-client/core": "0.47.1",
     "@thorchain/ledger-thorchain": "0.1.0-alpha.2",
+    "@ledgerhq/hw-transport": "6.30.3",
+    "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@xchainjs/xchain-client": "0.14.2",
     "@xchainjs/xchain-cosmos": "0.21.3",
     "@xchainjs/xchain-crypto": "0.3.0",

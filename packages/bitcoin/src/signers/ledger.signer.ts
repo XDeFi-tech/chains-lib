@@ -1,5 +1,6 @@
 import Btc from '@ledgerhq/hw-app-btc';
 import Transport from '@ledgerhq/hw-transport';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
@@ -9,6 +10,29 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);
@@ -22,19 +46,33 @@ export class LedgerSigner extends Signer.Provider {
     derivation: string,
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
   ): Promise<string> {
-    const transport = await Transport.create();
-    const app = new Btc({ transport, currency: 'bitcoin' });
+    if (!this.transport) {
+      await this.initTransport();
+    }
+    const app = new Btc({
+      transport: this.transport as Transport,
+      currency: 'bitcoin',
+    });
 
     const address = await app.getWalletPublicKey(derivation, { format: type });
-    transport.close();
+
+    if (this.isInternalTransport && this.transport) {
+      this.transport.close();
+      this.transport = null;
+    }
 
     return address.bitcoinAddress;
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = await Transport.create();
     try {
-      const app = new Btc({ transport, currency: 'bitcoin' });
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new Btc({
+        transport: this.transport as Transport,
+        currency: 'bitcoin',
+      });
       const { inputs, outputs, from } = await msg.buildTx();
       const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
 
@@ -87,7 +125,10 @@ export class LedgerSigner extends Signer.Provider {
     } catch (e) {
       throw e;
     } finally {
-      await transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

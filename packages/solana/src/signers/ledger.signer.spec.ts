@@ -1,5 +1,6 @@
 import { Msg } from '@xdefi-tech/chains-core';
 import { Transaction } from '@solana/web3.js';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { SolanaProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -33,12 +34,17 @@ jest.mock('@ledgerhq/hw-app-solana', () => {
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
+  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: SolanaProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signerWithExternalTransport = new LedgerSigner(externalTransport);
+
     signer = new LedgerSigner();
 
     provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
@@ -54,6 +60,10 @@ describe('ledger.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    externalTransport.close();
+  });
+
   it('should get an address from the ledger device', async () => {
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
@@ -63,6 +73,15 @@ describe('ledger.signer', () => {
       .spyOn(Transaction.prototype, 'serialize')
       .mockImplementation(() => Buffer.from('0xDEADBEEF', 'hex'));
     await signer.sign(message as ChainMsg, derivationPath);
+
+    expect(message.signedTransaction).toBeTruthy();
+  });
+
+  it('should sign a transaction using a ledger device and external transport', async () => {
+    jest
+      .spyOn(Transaction.prototype, 'serialize')
+      .mockImplementation(() => Buffer.from('0xDEADBEEF', 'hex'));
+    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

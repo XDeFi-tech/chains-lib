@@ -1,4 +1,3 @@
-import * as Litecoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,

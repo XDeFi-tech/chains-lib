@@ -2,6 +2,7 @@ import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 import * as types from '@binance-chain/javascript-sdk/lib/types';
 import LedgerApp from '@binance-chain/javascript-sdk/lib/ledger/ledger-app';
 import Transaction from '@binance-chain/javascript-sdk/lib/tx';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
@@ -9,6 +10,29 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   verifyAddress(address: string, prefix = 'bnb'): boolean {
     return crypto.checkAddress(address, prefix);
   }
@@ -18,9 +42,11 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
-    const transport = await Transport.create();
     try {
-      const app = new LedgerApp(transport);
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new LedgerApp(this.transport as Transport);
       const derivationArray = derivation
         .replace(/'/g, '')
         .split('/')
@@ -37,11 +63,18 @@ export class LedgerSigner extends Signer.Provider {
         throw new Error(`Cant get address from Ledger`);
       }
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
+    if (!this.transport) {
+      await this.initTransport();
+    }
+
     const txData = await msg.buildTx();
     const coin = {
       denom: txData.denom,
@@ -89,12 +122,8 @@ export class LedgerSigner extends Signer.Provider {
       ],
     };
 
-    const transport = await Transport.create();
     try {
-      const app = new LedgerApp(transport);
-      /* eslint-enable */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      const app = new LedgerApp(this.transport as Transport);
       const tx = new Transaction({
         accountNumber: txData.accountNumber,
         chainId: txData.chainId,
@@ -113,7 +142,10 @@ export class LedgerSigner extends Signer.Provider {
 
       msg.sign(signedTx.signature);
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

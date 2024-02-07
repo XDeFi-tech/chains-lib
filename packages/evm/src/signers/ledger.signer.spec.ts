@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -30,12 +31,17 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
 
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
+  let signerWithExternalTransport: LedgerSigner;
   let derivationPath: string;
   let provider: EvmProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signerWithExternalTransport = new LedgerSigner(externalTransport);
+
     signer = new LedgerSigner();
 
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
@@ -53,12 +59,22 @@ describe('ledger.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    externalTransport.close();
+  });
+
   it('should get an address from the ledger device', async () => {
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
+
+    expect(message.signedTransaction).toBeTruthy();
+  });
+
+  it('should sign a transaction using a ledger device and external transport', async () => {
+    await signerWithExternalTransport.sign(message as ChainMsg, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

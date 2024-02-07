@@ -2,11 +2,35 @@ import THORChainApp from '@thorchain/ledger-thorchain';
 import { Client } from '@xchainjs/xchain-thorchain';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   verifyAddress(address: string): boolean {
     // We need to init the client with some kind of seed phrase, even
     // if we just want to check the address
@@ -18,9 +42,11 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = await Transport.create();
     try {
-      const app = new THORChainApp(transport);
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new THORChainApp(this.transport as Transport);
       const derivationArray = derivation
         .replace(/'/g, '')
         .split('/')
@@ -32,17 +58,19 @@ export class LedgerSigner extends Signer.Provider {
 
       return bech32Address;
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
-    const transport = await Transport.create();
     try {
-      const app = new THORChainApp(transport);
-      /* eslint-enable */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new THORChainApp(this.transport as Transport);
       const { txBody, from, to, sequence, value, accountNumber, gasLimit } =
         await msg.buildTx();
       if (txBody) {
@@ -85,7 +113,10 @@ export class LedgerSigner extends Signer.Provider {
         }
       }
     } finally {
-      transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

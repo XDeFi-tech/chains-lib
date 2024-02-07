@@ -1,4 +1,3 @@
-import * as Dogecoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,

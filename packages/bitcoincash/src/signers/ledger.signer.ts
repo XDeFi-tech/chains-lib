@@ -5,11 +5,35 @@ import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 import { isValidAddress, toLegacyAddress } from 'bchaddrjs';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport | null;
+  private isInternalTransport: boolean;
+
+  constructor(transport?: Transport) {
+    super();
+    this.transport = null;
+
+    if (transport) {
+      this.transport = transport;
+      this.isInternalTransport = false;
+    } else {
+      this.isInternalTransport = true;
+      TransportWebHID.create().then((t) => {
+        this.transport = t as Transport;
+      });
+    }
+  }
+
+  async initTransport() {
+    this.transport = (await TransportWebHID.create()) as Transport;
+    this.isInternalTransport = true;
+  }
+
   network = {
     hashGenesisBlock:
       '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
@@ -55,9 +79,14 @@ export class LedgerSigner extends Signer.Provider {
     derivation: string,
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'cashaddr'
   ): Promise<string> {
-    const transport = await Transport.create();
     try {
-      const app = new BtcOld({ transport, currency: 'abc' });
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new BtcOld({
+        transport: this.transport as Transport,
+        currency: 'abc',
+      });
 
       const address = await app.getWalletPublicKey(derivation, {
         format: type,
@@ -67,14 +96,22 @@ export class LedgerSigner extends Signer.Provider {
     } catch (e) {
       throw e;
     } finally {
-      await transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = await Transport.create();
     try {
-      const app = new BtcOld({ transport, currency: 'bch' });
+      if (!this.transport) {
+        await this.initTransport();
+      }
+      const app = new BtcOld({
+        transport: this.transport as Transport,
+        currency: 'bch',
+      });
       const { inputs, outputs, from } = await msg.buildTx();
       const psbt = new Bitcoin.Psbt({ network: this.network });
 
@@ -129,7 +166,10 @@ export class LedgerSigner extends Signer.Provider {
     } catch (e) {
       throw e;
     } finally {
-      await transport.close();
+      if (this.isInternalTransport && this.transport) {
+        this.transport.close();
+        this.transport = null;
+      }
     }
   }
 }

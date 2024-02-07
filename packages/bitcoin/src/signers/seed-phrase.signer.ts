@@ -3,7 +3,6 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 import * as bip39 from 'bip39';
-import type { WitnessUtxo } from 'bip174/src/lib/interfaces';
 
 import { ChainMsg } from '../msg';
 
