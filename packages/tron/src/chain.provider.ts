@@ -70,14 +70,17 @@ export class TronProvider extends Chain.Provider {
     for (let i = 0; i < msgs.length; i++) {
       const msg = msgs[i];
 
-      const tx: TronTransaction = msg.hasSignature
-        ? msg.signedTransaction
-        : await msg.buildTx();
-
       const msgBody = msg.toData() as MsgBody;
 
-      if (!msg.hasSignature && msgBody.tokenType === TokenType.TRC20) {
-        throw new Error('TX Must be signed to estimate a TRC20 transaction');
+      let tx: TronTransaction;
+
+      if (!msg.hasSignature) {
+        const account = await this.rpcProvider.createAccount();
+        msg.data.from = account.address.base58;
+        const dummyTx = await msg.buildTx();
+        tx = await this.rpcProvider.trx.sign(dummyTx, account.privateKey);
+      } else {
+        tx = msg.signedTransaction;
       }
 
       const transactionByteLength =
