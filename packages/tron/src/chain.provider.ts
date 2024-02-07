@@ -15,7 +15,7 @@ import {
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { some } from 'lodash';
-import TronWeb from 'tronweb';
+import TronWeb, { TronTransaction, TronTransactionRawData } from 'tronweb';
 import { AbiCoder } from 'ethers';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
@@ -70,27 +70,33 @@ export class TronProvider extends Chain.Provider {
     for (let i = 0; i < msgs.length; i++) {
       const msg = msgs[i];
 
-      // See bandwidth calculation below;
-      // We need the TX to be signed for the calculation to be accurate
+      const msgBody = msg.toData() as MsgBody;
+
+      let tx: TronTransaction;
+
       if (!msg.hasSignature) {
-        throw new Error('TX Must be signed to estimate fee!');
+        const account = await this.rpcProvider.createAccount();
+        msg.data.from = account.address.base58;
+        const dummyTx = await msg.buildTx();
+        tx = await this.rpcProvider.trx.sign(dummyTx, account.privateKey);
+      } else {
+        tx = msg.signedTransaction;
       }
+
       const transactionByteLength =
         9 +
         60 +
-        Buffer.from(msg.signedTransaction.raw_data_hex, 'hex').byteLength +
-        Buffer.from(msg.signedTransaction.signature[0], 'hex').byteLength;
+        Buffer.from(tx.raw_data_hex, 'hex').byteLength +
+        Buffer.from(tx.signature ? tx.signature[0] : '', 'hex').byteLength;
 
       const bandwidthConsumed =
         (transactionByteLength * bandiwtdthPrice) / 1000;
-
-      const msgBody = msg.toData() as MsgBody;
 
       if (!msgBody.tokenType || msgBody.tokenType === TokenType.None) {
         feeData.push({
           bandwidth: bandwidthConsumed,
           energy: 0,
-          cost: bandwidthConsumed,
+          cost: bandwidthConsumed / bandiwtdthPrice,
           willRevert: false,
         });
       } else if (
@@ -103,14 +109,15 @@ export class TronProvider extends Chain.Provider {
           msgBody.from,
           msgBody.contractAddress,
           'transfer(address,uint256)',
-          msg.signedTransaction.raw_data.contract[0].parameter.value.data
+          (tx.raw_data as unknown as TronTransactionRawData).contract[0]
+            .parameter.value.data
         );
 
         feeData.push({
           bandwidth: bandwidthConsumed,
           energy: energy,
           cost: this.rpcProvider.fromSun(
-            bandwidthConsumed + energy * energyPrice
+            bandwidthConsumed / bandiwtdthPrice + energy * energyPrice
           ),
           willRevert,
         });
