@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.7
+
+### Patch Changes
+
+- 59ba44a: feat: allow estimating tron fees without signing a tx
+
 ## 2.0.6
 
 ### Patch Changes
