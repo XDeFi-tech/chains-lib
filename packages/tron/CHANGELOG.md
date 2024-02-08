@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.8
+
+### Patch Changes
+
+- e08adeb: fix tron trc20 fee estimation
+
 ## 2.0.7
 
 ### Patch Changes
