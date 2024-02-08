@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.9
+
+### Patch Changes
+
+- 1bd83d3: fix: Set cache policy to 'network-only' for getBalance GQL query
+
 ## 2.0.8
 
 ### Patch Changes
