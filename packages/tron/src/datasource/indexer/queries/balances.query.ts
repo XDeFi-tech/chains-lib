@@ -8,6 +8,7 @@ export const getBalance = async (address: string) => {
       address,
       first: 100,
     },
+    fetchPolicy: 'network-only',
   });
 
   return response.data.tron.balances;
