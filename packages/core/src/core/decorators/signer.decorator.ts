@@ -1,7 +1,7 @@
-import { DiContainer } from 'common';
-import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
-import { TrezorProvider } from 'core/signer';
-import { SignerType } from 'core/signer/interfaces';
+import { DiContainer } from '../../common/di/container';
+import { METADATA_KEY, SIGNER_SCOPE_NAME } from '../constants';
+import { TrezorProvider } from '../signer';
+import { SignerType } from '../signer/interfaces';
 
 export function SignerDecorator(type: SignerType) {
   return function <T extends new (...args: any[]) => object>(target: T) {

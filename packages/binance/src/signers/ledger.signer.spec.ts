@@ -1,5 +1,4 @@
 import { Msg } from '@xdefi-tech/chains-core';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BinanceProvider } from '../chain.provider';
@@ -42,7 +41,7 @@ describe('binance::ledger.signer', () => {
   let externalTransport: any;
 
   beforeEach(async () => {
-    externalTransport = (await TransportWebHID.create()) as Transport;
+    externalTransport = await Transport.create();
     signer = new LedgerSigner(externalTransport);
 
     provider = new BinanceProvider(new IndexerDataSource(BINANCE_MANIFEST));

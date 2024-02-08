@@ -5511,6 +5511,17 @@
     long "^4.0.0"
     protobufjs "~6.11.2"
 
+"@terra-money/terra.proto@4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-4.0.4.tgz#32c95ec9cc3cdc5ff49f20e453b593392bab87a7"
+  integrity sha512-Xju3ObFvMWXCDpeOXwa+WpmcbvUFOgJ4shSSfbgocnX5q3250aTaIAaycxkArUtg1QoqV4B5qoboRAplMHYDZw==
+  dependencies:
+    "@improbable-eng/grpc-web" "^0.14.1"
+    browser-headers "^0.4.1"
+    google-protobuf "^3.17.3"
+    long "^4.0.0"
+    protobufjs "~6.11.2"
+
 "@terra-money/terra.proto@^4.0.4":
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-4.0.7.tgz#58ca9b40af505775c9a4a569683c3a005a8d9bef"
