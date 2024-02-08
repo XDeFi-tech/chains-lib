@@ -101,9 +101,9 @@ describe('chain.providers.chain', () => {
 
     let fees = await providers.chain.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741320345');
-    expect(fees[0].willRevert).toBeTruthy();
+    expect(fees[0].energy).toEqual(64895);
+    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].willRevert).toBeFalsy();
 
     msg = new ChainMsg({
       ...messageData,
@@ -115,9 +115,9 @@ describe('chain.providers.chain', () => {
 
     fees = await providers.indexer.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741320345');
-    expect(fees[0].willRevert).toBeTruthy();
+    expect(fees[0].energy).toEqual(64895);
+    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].willRevert).toBeFalsy();
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
@@ -158,9 +158,9 @@ describe('chain.providers.chain', () => {
 
     const fees = await providers.chain.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741320345');
-    expect(fees[0].willRevert).toBeTruthy();
+    expect(fees[0].energy).toEqual(64895);
+    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].willRevert).toBeFalsy();
   });
 
   it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
@@ -177,9 +177,9 @@ describe('chain.providers.chain', () => {
 
     const fees = await providers.indexer.estimateTronFees([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(4146);
-    expect(fees[0].cost).toEqual('1.741320345');
-    expect(fees[0].willRevert).toBeTruthy();
+    expect(fees[0].energy).toEqual(64895);
+    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].willRevert).toBeFalsy();
   });
 
   it('should get a token transaction from the blockchain using a chain data source', async () => {

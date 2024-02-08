@@ -75,10 +75,12 @@ export class TronProvider extends Chain.Provider {
       let tx: TronTransaction;
 
       if (!msg.hasSignature) {
+        const originalAddress = msg.data.from;
         const account = await this.rpcProvider.createAccount();
         msg.data.from = account.address.base58;
         const dummyTx = await msg.buildTx();
         tx = await this.rpcProvider.trx.sign(dummyTx, account.privateKey);
+        msg.data.from = originalAddress;
       } else {
         tx = msg.signedTransaction;
       }
@@ -109,8 +111,9 @@ export class TronProvider extends Chain.Provider {
           msgBody.from,
           msgBody.contractAddress,
           'transfer(address,uint256)',
-          (tx.raw_data as unknown as TronTransactionRawData).contract[0]
-            .parameter.value.data
+          (
+            tx.raw_data as unknown as TronTransactionRawData
+          ).contract[0].parameter.value.data.substring(8)
         );
 
         feeData.push({
