@@ -1,7 +1,6 @@
 import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
 import { fromBech32 } from '@cosmjs/encoding';
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
@@ -60,12 +59,8 @@ export class LedgerSigner extends Signer.Provider {
       prefix,
     });
 
-    const tendermintClient = await Tendermint34Client.connect(
-      msg.provider.manifest.rpcURL
-    );
-
-    const client = await SigningStargateClient.createWithSigner(
-      tendermintClient,
+    const client = await SigningStargateClient.connectWithSigner(
+      msg.provider.manifest.rpcURL,
       app,
       STARGATE_CLIENT_OPTIONS
     );
