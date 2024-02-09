@@ -1,5 +1,14 @@
 # @xdefi/expo-example
 
+## 1.1.2
+
+### Patch Changes
+
+- 4fe86fc: feat: pin all package dependencies to strict versions
+  feat: update ledger signer initialisation stage, currently required transport. see README for the details
+- Updated dependencies [4fe86fc]
+  - @xdefi-tech/chains-controller@2.0.2
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.9
+
+### Patch Changes
+
+- 4fe86fc: feat: pin all package dependencies to strict versions
+  feat: update ledger signer initialisation stage, currently required transport. see README for the details
+- Updated dependencies [4fe86fc]
+  - @xdefi-tech/chains-core@2.0.4
+
 ## 1.2.8
 
 ### Patch Changes

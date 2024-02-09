@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-core
 
+## 2.0.4
+
+### Patch Changes
+
+- 4fe86fc: feat: pin all package dependencies to strict versions
+  feat: update ledger signer initialisation stage, currently required transport. see README for the details
+
 ## 2.0.3
 
 ### Patch Changes
