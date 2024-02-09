@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.9
+
+### Patch Changes
+
+- 1bd83d3: fix: Set cache policy to 'network-only' for getBalance GQL query
+
+## 2.0.8
+
+### Patch Changes
+
+- e08adeb: fix tron trc20 fee estimation
+
+## 2.0.7
+
+### Patch Changes
+
+- 59ba44a: feat: allow estimating tron fees without signing a tx
+
 ## 2.0.6
 
 ### Patch Changes
