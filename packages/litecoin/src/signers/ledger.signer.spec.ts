@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { LitecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -41,9 +42,11 @@ describe('ledger.signer', () => {
   let provider: LitecoinProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     const dataSource = new IndexerDataSource(LITECOIN_MANIFEST);
 
@@ -60,6 +63,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

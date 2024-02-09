@@ -170,8 +170,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       this.data.txType !== TransactionType.Legacy &&
       feeOptions.maxFeePerGas
     ) {
-      const maxFee = BigNumber(feeOptions.maxFeePerGas);
-      const priorityFee = BigNumber(feeOptions.maxPriorityFeePerGas);
+      const maxFee = new BigNumber(feeOptions.maxFeePerGas);
+      const priorityFee = new BigNumber(feeOptions.maxPriorityFeePerGas);
       const maxFeeWithPriority = maxFee.plus(priorityFee);
       estimation.fee = ethers.utils
         .formatUnits(
@@ -189,7 +189,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       if (!feeOptions.gasPrice) {
         return estimation;
       }
-      const gasPrice = BigNumber(feeOptions.gasPrice);
+      const gasPrice = new BigNumber(feeOptions.gasPrice);
       const gasFee = gasPrice.multipliedBy(feeOptions.gasLimit);
 
       estimation.fee = ethers.utils

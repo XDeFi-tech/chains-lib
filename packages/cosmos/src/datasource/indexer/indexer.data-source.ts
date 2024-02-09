@@ -14,13 +14,7 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { LcdClient, setupBankExtension } from '@cosmjs/launchpad';
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import {
-  accountFromAny,
-  QueryClient,
-  setupAuthExtension,
-  Account,
-} from '@cosmjs/stargate';
+import { Account } from '@cosmjs/stargate';
 import axios, { AxiosInstance } from 'axios';
 import {
   AuthInfo,
@@ -226,22 +220,29 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getAccount(address: string): Promise<null | Account> {
-    const client = await Tendermint34Client.connect(this.manifest.rpcURL);
-    const authExtension = setupAuthExtension(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      QueryClient.withExtensions(client)
-    );
     let acc = null;
 
     try {
-      acc = await authExtension.auth.account(address);
+      const { data } = await this.lcdAxiosClient.get(
+        `/cosmos/auth/v1beta1/accounts/${address}`
+      );
+      acc = data.account;
     } catch (err) {}
 
     if (!acc) {
       return null;
     }
 
-    return accountFromAny(acc);
+    return {
+      address: acc.address,
+      accountNumber: parseInt(acc.account_number),
+      sequence: parseInt(acc.sequence),
+      pubkey: acc.pub_key
+        ? {
+            type: acc.pub_key['@type'],
+            value: acc.pub_key.key,
+          }
+        : null,
+    };
   }
 }

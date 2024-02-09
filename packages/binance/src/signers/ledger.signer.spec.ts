@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -31,15 +32,17 @@ jest.mock('@binance-chain/javascript-sdk/lib/ledger/ledger-app', () => {
   }));
 });
 
-describe('ledger.signer', () => {
+describe('binance::ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
   let provider: BinanceProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new BinanceProvider(new IndexerDataSource(BINANCE_MANIFEST));
     derivationPath = "m/44'/714'/0'/0/0";
@@ -52,6 +55,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

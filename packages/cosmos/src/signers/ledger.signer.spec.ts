@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -16,6 +17,9 @@ jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
   return {
     SigningStargateClient: {
       createWithSigner: jest.fn().mockResolvedValue({
+        sign: jest.fn().mockResolvedValue({}),
+      }),
+      connectWithSigner: jest.fn().mockResolvedValue({
         sign: jest.fn().mockResolvedValue({}),
       }),
     },
@@ -51,15 +55,17 @@ jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
   };
 });
 
-describe('ledger.signer', () => {
+describe('cosmos::ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
   let provider: CosmosProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new CosmosProvider(
       new IndexerDataSource(COSMOS_MANIFESTS.cosmos)
@@ -73,6 +79,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

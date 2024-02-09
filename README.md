@@ -91,10 +91,13 @@ const message: Msg = provider.createMsg(txInput);
 Use the LedgerSigner to sign the transaction. Provide the message and the derivation path:
 
 ```typescript
-const signer = new LedgerSigner();
+const transport = await Transport.create();
+const signer = new LedgerSigner(transport);
 const derivationPath = "m/84'/0'/0'/0/0";
 
 await signer.sign(message, derivationPath);
+// finally close
+transport.close();
 ```
 
 ### 6. Broadcast the Transaction

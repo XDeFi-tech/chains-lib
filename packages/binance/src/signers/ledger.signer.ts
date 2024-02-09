@@ -2,13 +2,20 @@ import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 import * as types from '@binance-chain/javascript-sdk/lib/types';
 import LedgerApp from '@binance-chain/javascript-sdk/lib/ledger/ledger-app';
 import Transaction from '@binance-chain/javascript-sdk/lib/tx';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport;
+
+  constructor(transport: Transport) {
+    super();
+    this.transport = transport;
+  }
+
   verifyAddress(address: string, prefix = 'bnb'): boolean {
     return crypto.checkAddress(address, prefix);
   }
@@ -18,26 +25,18 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix = 'bnb'): Promise<string> {
-    const transport = await Transport.create();
-    try {
-      const app = new LedgerApp(transport);
-      const derivationArray = derivation
-        .replace(/'/g, '')
-        .split('/')
-        .map(Number);
-      const publicKey = await app.getPublicKey(derivationArray);
-      if (publicKey.pk) {
-        const address = crypto.getAddressFromPublicKey(
-          publicKey.pk.toString('hex'),
-          prefix
-        );
+    const app = new LedgerApp(this.transport);
+    const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
+    const publicKey = await app.getPublicKey(derivationArray);
+    if (publicKey.pk) {
+      const address = crypto.getAddressFromPublicKey(
+        publicKey.pk.toString('hex'),
+        prefix
+      );
 
-        return address;
-      } else {
-        throw new Error(`Cant get address from Ledger`);
-      }
-    } finally {
-      transport.close();
+      return address;
+    } else {
+      throw new Error(`Cant get address from Ledger`);
     }
   }
 
@@ -89,32 +88,21 @@ export class LedgerSigner extends Signer.Provider {
       ],
     };
 
-    const transport = await Transport.create();
-    try {
-      const app = new LedgerApp(transport);
-      /* eslint-enable */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const tx = new Transaction({
-        accountNumber: txData.accountNumber,
-        chainId: txData.chainId,
-        memo: txData.memo || '',
-        msg: msgToSend,
-        sequence: txData.sequence,
-        source: txData.source,
-      });
+    const app = new LedgerApp(this.transport as Transport);
+    const tx = new Transaction({
+      accountNumber: txData.accountNumber,
+      chainId: txData.chainId,
+      memo: txData.memo || '',
+      msg: msgToSend,
+      sequence: txData.sequence,
+      source: txData.source,
+    });
 
-      const derivationArray = derivation
-        .replace(/'/g, '')
-        .split('/')
-        .map(Number);
-      await app.showAddress('bnb', derivationArray);
-      const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
+    const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
+    await app.showAddress('bnb', derivationArray);
+    const signedTx = await app.sign(tx.getSignBytes(), derivationArray);
 
-      msg.sign(signedTx.signature);
-    } finally {
-      transport.close();
-    }
+    msg.sign(signedTx.signature);
   }
 }
 

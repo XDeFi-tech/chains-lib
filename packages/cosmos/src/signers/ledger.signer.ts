@@ -1,8 +1,7 @@
 import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
 import { fromBech32 } from '@cosmjs/encoding';
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
@@ -12,6 +11,13 @@ import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport;
+
+  constructor(transport: Transport) {
+    super();
+    this.transport = transport;
+  }
+
   verifyAddress(address: string, requiredPrefix: string): boolean {
     try {
       const { prefix, data } = fromBech32(address);
@@ -29,64 +35,47 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string, prefix: string): Promise<string> {
-    const transport = await Transport.create();
-    try {
-      const hdPath = stringToPath(derivation);
-      const app = new LedgerApp(transport, {
-        testModeAllowed: true,
-        hdPaths: [hdPath],
-        prefix,
-      });
+    const hdPath = stringToPath(derivation);
+    const app = new LedgerApp(this.transport as Transport, {
+      testModeAllowed: true,
+      hdPaths: [hdPath],
+      prefix,
+    });
 
-      const [{ address }] = await app.getAccounts();
+    const [{ address }] = await app.getAccounts();
 
-      return address;
-    } finally {
-      transport.close();
-    }
+    return address;
   }
 
   async sign(msg: ChainMsg, derivation: string, prefix: string): Promise<void> {
-    const transport = await Transport.create();
-    try {
-      if (!derivation.startsWith('m/')) {
-        derivation = 'm/' + derivation;
-      }
-
-      const hdPath = stringToPath(derivation);
-      const app = new LedgerApp(transport, {
-        testModeAllowed: true,
-        hdPaths: [hdPath],
-        prefix,
-      });
-
-      const tendermintClient = await Tendermint34Client.connect(
-        msg.provider.manifest.rpcURL
-      );
-
-      const client = await SigningStargateClient.createWithSigner(
-        tendermintClient,
-        app,
-        STARGATE_CLIENT_OPTIONS
-      );
-
-      /* eslint-enable */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const txData = await msg.buildTx();
-      const [{ address: senderAddress }] = await app.getAccounts();
-      const signedTx = await client.sign(
-        senderAddress,
-        txData.msgs,
-        txData.fee,
-        txData.memo
-      );
-      const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
-      const rawTx = Buffer.from(txBytes).toString('base64');
-      msg.sign(rawTx);
-    } finally {
-      transport.close();
+    if (!derivation.startsWith('m/')) {
+      derivation = 'm/' + derivation;
     }
+
+    const hdPath = stringToPath(derivation);
+    const app = new LedgerApp(this.transport as Transport, {
+      testModeAllowed: true,
+      hdPaths: [hdPath],
+      prefix,
+    });
+
+    const client = await SigningStargateClient.connectWithSigner(
+      msg.provider.manifest.rpcURL,
+      app,
+      STARGATE_CLIENT_OPTIONS
+    );
+
+    const txData = await msg.buildTx();
+    const [{ address: senderAddress }] = await app.getAccounts();
+    const signedTx = await client.sign(
+      senderAddress,
+      txData.msgs,
+      txData.fee,
+      txData.memo
+    );
+    const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+    const rawTx = Buffer.from(txBytes).toString('base64');
+    msg.sign(rawTx);
   }
 }
 

@@ -1,5 +1,5 @@
 import BtcOld from '@ledgerhq/hw-app-btc';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Litecoin from 'bitcoinjs-lib';
@@ -9,6 +9,13 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport;
+
+  constructor(transport: Transport) {
+    super();
+    this.transport = transport;
+  }
+
   network = {
     messagePrefix: '\x19Litecoin Signed Message:\n',
     bech32: 'ltc',
@@ -31,80 +38,72 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = await Transport.create();
-    try {
-      const app = new BtcOld({ transport, currency: 'litecoin' });
+    const app = new BtcOld({
+      transport: this.transport as Transport,
+      currency: 'litecoin',
+    });
 
-      const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
+    const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
 
-      if (bitcoinAddress) {
-        return bitcoinAddress;
-      } else {
-        throw new Error('Error getting Litecoin address');
-      }
-    } catch (e) {
-      throw e;
-    } finally {
-      await transport.close();
+    if (bitcoinAddress) {
+      return bitcoinAddress;
+    } else {
+      throw new Error('Error getting Litecoin address');
     }
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = await Transport.create();
-    try {
-      const app = new BtcOld({ transport, currency: 'litecoin' });
-      const { inputs, outputs, from } = await msg.buildTx();
-      const psbt = new Litecoin.Psbt({ network: this.network });
+    const app = new BtcOld({
+      transport: this.transport as Transport,
+      currency: 'litecoin',
+    });
+    const { inputs, outputs, from } = await msg.buildTx();
+    const psbt = new Litecoin.Psbt({ network: this.network });
 
-      inputs.forEach((utxo: UTXO) => {
-        psbt.addInput({
-          hash: utxo.hash,
-          index: utxo.index,
-          witnessUtxo: utxo.witnessUtxo,
-        });
+    inputs.forEach((utxo: UTXO) => {
+      psbt.addInput({
+        hash: utxo.hash,
+        index: utxo.index,
+        witnessUtxo: utxo.witnessUtxo,
+      } as any);
+    });
+
+    outputs.forEach((output: any) => {
+      if (!output.address) {
+        output.address = from;
+      }
+
+      psbt.addOutput({
+        script: Litecoin.address.toOutputScript(output.address, this.network),
+        value: output.value,
       });
+    });
 
-      outputs.forEach((output: Litecoin.PsbtTxOutput) => {
-        if (!output.address) {
-          output.address = from;
-        }
+    const outputWriter = new utils.BufferWriter();
 
-        psbt.addOutput({
-          script: Litecoin.address.toOutputScript(output.address, this.network),
-          value: output.value,
-        });
-      });
+    outputWriter.writeVarInt(psbt.txOutputs.length);
 
-      const outputWriter = new utils.BufferWriter();
+    psbt.txOutputs.forEach((output: any) => {
+      outputWriter.writeUInt64(output.value);
+      outputWriter.writeVarSlice(output.script);
+    });
 
-      outputWriter.writeVarInt(psbt.txOutputs.length);
+    const outputScriptHex = outputWriter.buffer().toString('hex');
 
-      psbt.txOutputs.forEach((output) => {
-        outputWriter.writeUInt64(output.value);
-        outputWriter.writeVarSlice(output.script);
-      });
+    const data: CreateTransactionArg = {
+      inputs: inputs.map((utxo: UTXO) => [
+        app.splitTransaction(utxo.txHex, true),
+        utxo.index,
+        utxo.witnessUtxo.script.toString('hex'),
+      ]),
+      associatedKeysets: [derivation],
+      outputScriptHex,
+      additionals: [],
+    };
 
-      const outputScriptHex = outputWriter.buffer().toString('hex');
+    const signedTx = await app.createPaymentTransaction(data);
 
-      const data: CreateTransactionArg = {
-        inputs: inputs.map((utxo: UTXO) => [
-          app.splitTransaction(utxo.txHex, true),
-          utxo.index,
-          utxo.witnessUtxo.script.toString('hex'),
-        ]),
-        associatedKeysets: [derivation],
-        outputScriptHex,
-        additionals: [],
-      };
-
-      const signedTx = await app.createPaymentTransaction(data);
-
-      msg.sign(signedTx);
-    } catch (e) {
-      throw e;
-    } finally {
-      await transport.close();
-    }
+    msg.sign(signedTx);
   }
 }
 

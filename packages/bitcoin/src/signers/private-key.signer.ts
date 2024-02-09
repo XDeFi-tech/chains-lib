@@ -48,7 +48,7 @@ export class PrivateKeySigner extends Signer.Provider {
       }))
     );
 
-    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+    outputs.forEach((output: any) => {
       if (!output.address) {
         output.address = from;
       }

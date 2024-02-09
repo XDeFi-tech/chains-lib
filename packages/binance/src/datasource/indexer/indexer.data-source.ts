@@ -52,7 +52,7 @@ export class IndexerDataSource extends DataSource {
               price: asset.price?.amount,
               decimals: asset.decimals || 0,
             }),
-            BigNumber(amount.value)
+            new BigNumber(amount.value)
               .dividedBy(10 ** (asset.decimals || 0))
               .toString()
           )

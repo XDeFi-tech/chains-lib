@@ -103,7 +103,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       account,
       to: msgData.to,
       from: msgData.from,
-      value: BigNumber(msgData.amount)
+      value: new BigNumber(msgData.amount)
         .multipliedBy(10 ** this.provider.manifest.decimals)
         .toNumber(),
       chainId: this.provider.manifest.chainId,
@@ -131,7 +131,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       return feeEstimation;
     }
 
-    feeEstimation.fee = BigNumber(fee[GasFeeSpeed.medium] as number)
+    feeEstimation.fee = new BigNumber(fee[GasFeeSpeed.medium] as number)
       .dividedBy(10 ** this.provider.manifest.decimals)
       .toString();
     return feeEstimation;

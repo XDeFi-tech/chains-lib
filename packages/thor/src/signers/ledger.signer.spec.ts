@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
@@ -6,6 +7,7 @@ import { ThorChains, THORCHAIN_MANIFESTS } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
+
 jest.mock('@ledgerhq/hw-transport-webhid', () => ({
   create: jest.fn().mockResolvedValue({
     close: jest.fn().mockImplementation(),
@@ -33,9 +35,11 @@ describe('ledger.signer', () => {
   let provider: ThorProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new ThorProvider(
       new ChainDataSource(THORCHAIN_MANIFESTS[ThorChains.thorchain])
@@ -50,6 +54,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

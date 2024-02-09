@@ -21,6 +21,7 @@ import {
 import BalancesComponent from '../components/balances.component';
 import TransactionsComponent from '../components/transactions.component';
 import BroadcastComponent from '../components/broadcast.component';
+import DogecoinLedgerComponent from '../components/tests/ledger/dogecoin.ledger';
 
 const Home: NextPage = () => {
   const chains = useContext(ChainsContext);
@@ -61,6 +62,7 @@ const Home: NextPage = () => {
 
   return (
     <Container>
+      <DogecoinLedgerComponent />
       <Typography variant="h3" my={3}>
         <svg
           width="40"

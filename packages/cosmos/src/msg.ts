@@ -61,7 +61,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
   }
 
   private getValue() {
-    return BigNumber(this.toData().amount || 0)
+    return new BigNumber(this.toData().amount || 0)
       .multipliedBy(10 ** this.provider.manifest.decimals)
       .toString();
   }
@@ -171,13 +171,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const fee = {
       amount: [
         {
-          amount: BigNumber(msgData.gasPrice)
+          amount: new BigNumber(msgData.gasPrice)
             .multipliedBy(10 ** this.provider.manifest.decimals)
             .toString(),
           denom: this.provider.manifest.denom,
         },
       ],
-      gas: BigNumber(msgData.gasLimit).toString(),
+      gas: new BigNumber(msgData.gasLimit).toString(),
     };
     const acc = await this.provider.getAccount(msgData.from);
 
@@ -212,13 +212,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         speed || GasFeeSpeed.medium
       );
       if (feeEstimation.gasPrice && feeEstimation.gasLimit) {
-        estimation.fee = BigNumber(feeEstimation.gasLimit.toString())
+        estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
           .multipliedBy(feeEstimation.gasPrice.toString())
           .dividedBy(10 ** this.provider.manifest.decimals)
           .toString();
       }
     } else if (data.gasLimit && data.gasPrice) {
-      estimation.fee = BigNumber(data.gasLimit)
+      estimation.fee = new BigNumber(data.gasLimit)
         .multipliedBy(data.gasPrice)
         .dividedBy(10 ** this.provider.manifest.decimals)
         .toString();

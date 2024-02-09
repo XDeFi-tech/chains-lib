@@ -27,31 +27,32 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.21.0",
-    "@types/jest": "^27.4.1",
-    "cross-fetch": "^3.1.5",
+    "@babel/preset-typescript": "7.21.0",
+    "@types/jest": "27.4.1",
+    "cross-fetch": "3.1.5",
     "eslint-config-custom": "*",
-    "jest": "^27.5.1",
-    "jest-environment-jsdom": "^27.5.1",
-    "jest-watch-typeahead": "^1.0.0",
-    "ts-jest": "^27.1.4",
-    "tsup": "^6.6.3",
-    "typescript": "^4.6.3"
+    "jest": "27.5.1",
+    "jest-environment-jsdom": "27.5.1",
+    "jest-watch-typeahead": "1.0.0",
+    "ts-jest": "27.1.4",
+    "tsup": "6.6.3",
+    "typescript": "4.6.3"
   },
   "dependencies": {
-    "@ledgerhq/cryptoassets": "^9.1.0",
-    "@ledgerhq/hw-app-eth": "^6.27.1",
-    "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@trezor/connect-web": "^9.1.4",
+    "@ledgerhq/cryptoassets": "9.1.0",
+    "@ledgerhq/hw-app-eth": "6.35.4",
+    "@ledgerhq/hw-transport": "6.30.3",
+    "@ledgerhq/hw-transport-webhid": "6.28.3",
+    "@trezor/connect-web": "9.1.4",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
-    "bignumber.js": "^9.0.2",
-    "ethers": "^5.6.4",
-    "lodash": "^4.17.21",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^4.4.0",
-    "rxjs": "^7.8.0",
-    "ts-node": "^10.7.0"
+    "bignumber.js": "9.1.2",
+    "ethers": "5.6.4",
+    "lodash": "4.17.21",
+    "reflect-metadata": "0.1.13",
+    "rimraf": "4.4.0",
+    "rxjs": "7.8.0",
+    "ts-node": "10.7.0"
   },
   "scripts": {
     "build": "tsup --minify --clean",
@@ -71,6 +72,7 @@
       "!src/**/*.spec.*",
       "!src/custom.d.ts"
     ],
+    "outDir": "dist",
     "format": "cjs",
     "splitting": false,
     "dts": true,
@@ -88,7 +90,7 @@
     ],
     "preset": "ts-jest",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      ".+\\.(t|j)s$": "ts-jest"
     },
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"

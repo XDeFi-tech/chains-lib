@@ -1,4 +1,3 @@
-import * as Litecoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,
@@ -69,7 +68,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
       ],
     }));
 
-    const outputs = txData.outputs.map((output: Litecoin.PsbtTxOutput) => {
+    const outputs = txData.outputs.map((output: any) => {
       const to = output.address ? output.address : txData.from;
       return {
         address: to,

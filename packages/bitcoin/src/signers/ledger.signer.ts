@@ -1,5 +1,5 @@
 import Btc from '@ledgerhq/hw-app-btc';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
@@ -9,6 +9,13 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport;
+
+  constructor(transport: Transport) {
+    super();
+    this.transport = transport;
+  }
+
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);
@@ -22,73 +29,70 @@ export class LedgerSigner extends Signer.Provider {
     derivation: string,
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
   ): Promise<string> {
-    const transport = await Transport.create();
-    const app = new Btc({ transport, currency: 'bitcoin' });
+    const app = new Btc({
+      transport: this.transport,
+      currency: 'bitcoin',
+    });
 
     const address = await app.getWalletPublicKey(derivation, { format: type });
-    transport.close();
 
     return address.bitcoinAddress;
   }
 
   async sign(msg: ChainMsg, derivation: string) {
-    const transport = await Transport.create();
-    try {
-      const app = new Btc({ transport, currency: 'bitcoin' });
-      const { inputs, outputs, from } = await msg.buildTx();
-      const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
+    const app = new Btc({
+      transport: this.transport,
+      currency: 'bitcoin',
+    });
+    const { inputs, outputs, from } = await msg.buildTx();
+    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
 
-      psbt.addInputs(
-        inputs.map((utxo: UTXO) => {
-          return {
-            hash: utxo.hash,
-            index: utxo.index,
-            witnessUtxo: utxo.witnessUtxo,
-          };
-        })
-      );
+    psbt.addInputs(
+      inputs.map((utxo: UTXO) => {
+        return {
+          hash: utxo.hash,
+          index: utxo.index,
+          witnessUtxo: utxo.witnessUtxo,
+        };
+      })
+    );
 
-      outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
-        if (!output.address) {
-          output.address = from;
-        }
+    outputs.forEach((output: any) => {
+      if (!output.address) {
+        output.address = from;
+      }
 
-        psbt.addOutput({
-          address: output.address,
-          value: output.value,
-        });
+      psbt.addOutput({
+        address: output.address,
+        value: output.value,
       });
+    });
 
-      const outputWriter = new utils.BufferWriter();
+    const outputWriter = new utils.BufferWriter();
 
-      outputWriter.writeVarInt(psbt.txOutputs.length);
+    outputWriter.writeVarInt(psbt.txOutputs.length);
 
-      psbt.txOutputs.forEach((output) => {
-        outputWriter.writeUInt64(output.value);
-        outputWriter.writeVarSlice(output.script);
-      });
+    psbt.txOutputs.forEach((output: any) => {
+      outputWriter.writeUInt64(output.value);
+      outputWriter.writeVarSlice(output.script);
+    });
 
-      const outputScriptHex = outputWriter.buffer().toString('hex');
+    const outputScriptHex = outputWriter.buffer().toString('hex');
 
-      const data: CreateTransactionArg = {
-        inputs: inputs.map((utxo: UTXO) => [
-          app.splitTransaction(utxo.txHex, true),
-          utxo.index,
-          utxo.witnessUtxo.script.toString('hex'),
-        ]),
-        associatedKeysets: [derivation],
-        outputScriptHex,
-        additionals: ['bech32'],
-      };
+    const data: CreateTransactionArg = {
+      inputs: inputs.map((utxo: UTXO) => [
+        app.splitTransaction(utxo.txHex, true),
+        utxo.index,
+        utxo.witnessUtxo.script.toString('hex'),
+      ]),
+      associatedKeysets: [derivation],
+      outputScriptHex,
+      additionals: ['bech32'],
+    };
 
-      const signedTx = await app.createPaymentTransaction(data);
+    const signedTx = await app.createPaymentTransaction(data);
 
-      msg.sign(signedTx);
-    } catch (e) {
-      throw e;
-    } finally {
-      await transport.close();
-    }
+    msg.sign(signedTx);
   }
 }
 

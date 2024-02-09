@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -36,9 +37,11 @@ describe('ledger.signer', () => {
   let provider: BitcoinProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
     derivationPath = "m/84'/0'/0'/0/0";
@@ -50,6 +53,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

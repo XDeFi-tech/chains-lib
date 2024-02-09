@@ -35,6 +35,7 @@ describe('seed-phrase.signer', () => {
       from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
+      memo: 'test',
     };
     message = provider.createMsg(txInput);
   });

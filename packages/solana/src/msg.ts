@@ -106,7 +106,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         TOKEN_PROGRAM_ID
       );
       programId = TOKEN_PROGRAM_ID;
-      value = BigNumber(msgData.amount)
+      value = new BigNumber(msgData.amount)
         .multipliedBy(10 ** mint.decimals)
         .toNumber();
       const [fromTokenAcc, toTokenAcc] = await Promise.all([
@@ -125,7 +125,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       );
       decimals = mint.decimals;
     } else {
-      value = BigNumber(msgData.amount)
+      value = new BigNumber(msgData.amount)
         .multipliedBy(LAMPORTS_PER_SOL)
         .toNumber();
       instruction = new TransactionInstruction({
@@ -189,12 +189,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const msgData = this.toData();
 
     if (msgData.gasPrice) {
-      result.fee = BigNumber(msgData.gasPrice)
+      result.fee = new BigNumber(msgData.gasPrice)
         .dividedBy(LAMPORTS_PER_SOL)
         .toString();
     } else {
       const options = await this.provider.gasFeeOptions();
-      result.fee = BigNumber(
+      result.fee = new BigNumber(
         options ? (options[speed || GasFeeSpeed.medium] as number) : DEFAULT_FEE
       )
         .dividedBy(LAMPORTS_PER_SOL)

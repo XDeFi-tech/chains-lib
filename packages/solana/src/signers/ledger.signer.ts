@@ -1,12 +1,19 @@
 import Solana from '@ledgerhq/hw-app-solana';
 import { PublicKey, Transaction as SolanaTransaction } from '@solana/web3.js';
-import Transport from '@ledgerhq/hw-transport-webhid';
+import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  private transport: Transport;
+
+  constructor(transport: Transport) {
+    super();
+    this.transport = transport;
+  }
+
   verifyAddress(address: string): boolean {
     try {
       const publicKey = new PublicKey(address);
@@ -21,37 +28,27 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const transport = await Transport.create();
-    try {
-      const app = new Solana(transport);
-      const addressBuffer = await app.getAddress(derivation);
-      return new PublicKey(addressBuffer.address).toBase58();
-    } finally {
-      transport.close();
-    }
+    const app = new Solana(this.transport as Transport);
+    const addressBuffer = await app.getAddress(derivation);
+    return new PublicKey(addressBuffer.address).toBase58();
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
-    const transport = await Transport.create();
-    try {
-      const app = new Solana(transport);
-      const { tx } = await msg.buildTx();
-      const transaction = tx as SolanaTransaction;
-      const signedTx = await app.signTransaction(
-        derivation,
-        transaction.serializeMessage()
-      );
+    const app = new Solana(this.transport as Transport);
+    const { tx } = await msg.buildTx();
+    const transaction = tx as SolanaTransaction;
+    const signedTx = await app.signTransaction(
+      derivation,
+      transaction.serializeMessage()
+    );
 
-      const addressBuffer = await app.getAddress(derivation);
-      transaction.addSignature(
-        new PublicKey(addressBuffer.address),
-        signedTx.signature
-      );
+    const addressBuffer = await app.getAddress(derivation);
+    transaction.addSignature(
+      new PublicKey(addressBuffer.address),
+      signedTx.signature
+    );
 
-      msg.sign(transaction.serialize());
-    } finally {
-      transport.close();
-    }
+    msg.sign(transaction.serialize());
   }
 }
 

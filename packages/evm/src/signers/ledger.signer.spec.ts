@@ -1,4 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -34,9 +35,11 @@ describe('ledger.signer', () => {
   let provider: EvmProvider;
   let txInput: MsgBody;
   let message: Msg;
+  let externalTransport: any;
 
-  beforeEach(() => {
-    signer = new LedgerSigner();
+  beforeEach(async () => {
+    externalTransport = await Transport.create();
+    signer = new LedgerSigner(externalTransport);
 
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
     derivationPath = "m/44'/60'/0'/0/0";
@@ -51,6 +54,10 @@ describe('ledger.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    externalTransport.close();
   });
 
   it('should get an address from the ledger device', async () => {

@@ -57,12 +57,12 @@ export class SeedPhraseSigner extends Signer.Provider {
       }))
     );
 
-    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+    outputs.forEach((output: any) => {
       if (!output.address) {
         output.address = from;
       }
-      if (!output.script) {
-        psbt.addOutput(output);
+      if (!output.hasOwnProperty('script')) {
+        psbt.addOutput(output as any); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
       } else {
         if (compiledMemo) {
           psbt.addOutput({ script: compiledMemo, value: 0 });

@@ -206,6 +206,7 @@ describe('chain.providers.chain', () => {
 
     expect(txData.length).toBeGreaterThan(0);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const tx = txData.find(
       (tx) =>
         tx.data.hash ===
@@ -227,6 +228,7 @@ describe('chain.providers.chain', () => {
     });
     expect(txData2.length).toBeGreaterThan(0);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const tx2 = txData2.find(
       (tx) =>
         tx.data.hash ===
