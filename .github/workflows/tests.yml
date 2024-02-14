@@ -27,3 +27,8 @@ jobs:
 
       - name: Run tests
         run: yarn test --concurrency 2
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: XDeFi-tech/chains
