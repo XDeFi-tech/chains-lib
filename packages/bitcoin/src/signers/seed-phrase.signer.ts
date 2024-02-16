@@ -1,8 +1,9 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-import * as Bitcoin from 'bitcoinjs-lib';
 import * as bip39 from 'bip39';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import { HDKey } from '@scure/bip32';
+import * as btc from '@scure/btc-signer';
 
 import { ChainMsg } from '../msg';
 
@@ -10,8 +11,11 @@ import { ChainMsg } from '../msg';
 export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Bitcoin.address.toOutputScript(address);
-      return true;
+      if (btc.Address().decode(address)) {
+        return true;
+      }
+
+      return false;
     } catch (err) {
       return false;
     }
@@ -22,22 +26,21 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = Bitcoin.bip32.fromSeed(seed);
-    const master = root.derivePath(derivation);
+    const root = HDKey.fromMasterSeed(new Uint8Array(seed));
+    const child = root.derive(derivation);
+    const pk = child.privateKey;
 
-    return master.toWIF();
+    if (!pk) {
+      throw new Error('Error generating private key!');
+    }
+
+    return Buffer.from(pk).toString('hex');
   }
 
-  async getAddress(
-    derivation: string,
-    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
-  ): Promise<string> {
+  async getAddress(derivation: string): Promise<string> {
     const privateKey = await this.getPrivateKey(derivation);
-    const pk = Bitcoin.ECPair.fromWIF(privateKey);
-    const { address } = Bitcoin.payments[type]({
-      pubkey: pk.publicKey,
-      network: Bitcoin.networks.bitcoin,
-    });
+    const publicKey = secp256k1.getPublicKey(privateKey, true);
+    const { address } = btc.p2wpkh(publicKey);
 
     if (!address) throw new Error('BTC address is undefined');
 
@@ -45,35 +48,29 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async sign(message: ChainMsg, derivation: string) {
-    const { inputs, outputs, compiledMemo, from } = await message.buildTx();
-    const psbt = new Bitcoin.Psbt({ network: Bitcoin.networks.bitcoin });
-    psbt.setMaximumFeeRate(2_500_000);
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-        nonWitnessUtxo: Buffer.from(utxo.txHex, 'hex'),
-      }))
-    );
-
-    outputs.forEach((output: any) => {
+    const { inputs, outputs, from } = await message.buildTx();
+    const txP2WPKH = new btc.Transaction();
+    for (const input of inputs) {
+      txP2WPKH.addInput({
+        txid: input.hash,
+        index: input.index,
+        witnessUtxo: {
+          script: new Uint8Array(input.witnessUtxo.script),
+          amount: BigInt(input.witnessUtxo.value),
+        },
+      });
+    }
+    for (const output of outputs) {
       if (!output.address) {
         output.address = from;
       }
-      if (!output.hasOwnProperty('script')) {
-        psbt.addOutput(output as any); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
-      } else {
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
-        }
-      }
-    });
+      txP2WPKH.addOutputAddress(output.address, BigInt(output.value)); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
+    }
     const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(Bitcoin.ECPair.fromWIF(privateKey));
-    psbt.finalizeAllInputs();
+    txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));
+    txP2WPKH.finalize();
 
-    message.sign(psbt.extractTransaction(true).toHex());
+    message.sign(txP2WPKH.hex);
   }
 }
 

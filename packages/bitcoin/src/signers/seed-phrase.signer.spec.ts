@@ -6,6 +6,7 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import { SeedPhraseSigner } from './seed-phrase.signer';
 
+
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
     return [];
@@ -24,7 +25,7 @@ describe('seed-phrase.signer', () => {
   beforeEach(() => {
     seedPhrase =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
-    privateKey = 'KyaowqfYE7mJmTYEpxPJmAXwErQQY6KdDRynbg7SQPTAvC3bLNmF';
+    privateKey = '468772a4bca7b68106d70bfe93ba23bcf7eaf59414737c7cb71ab7c98fa4ad44';
     derivation = "m/84'/0'/0'/0/0";
     signer = new SeedPhraseSigner(seedPhrase);
     provider = new BitcoinProvider(
