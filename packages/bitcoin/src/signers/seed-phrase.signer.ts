@@ -64,7 +64,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       if (!output.address) {
         output.address = from;
       }
-      txP2WPKH.addOutputAddress(output.address, BigInt(output.value)); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
+      txP2WPKH.addOutputAddress(output.address, BigInt(output.value));
     }
     const privateKey = await this.getPrivateKey(derivation);
     txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));

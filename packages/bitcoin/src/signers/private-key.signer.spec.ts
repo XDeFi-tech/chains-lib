@@ -21,7 +21,8 @@ describe('private-key.signer', () => {
   let message: Msg;
 
   beforeEach(() => {
-    privateKey = 'KyaowqfYE7mJmTYEpxPJmAXwErQQY6KdDRynbg7SQPTAvC3bLNmF';
+    privateKey =
+      '468772a4bca7b68106d70bfe93ba23bcf7eaf59414737c7cb71ab7c98fa4ad44';
     signer = new PrivateKeySigner(privateKey);
 
     provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
