@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.5
+
+### Patch Changes
+
+- c5f9d20: Fix: use createMsg for specific chain instead of use basic message for all chains
+
 ## 2.0.4
 
 ### Patch Changes
