@@ -1,8 +1,7 @@
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
-
 import { BitcoinCashProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOINCASH_MANIFEST } from './manifests';
+import { ChainMsg } from './msg';
 
 jest.mock('./datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
