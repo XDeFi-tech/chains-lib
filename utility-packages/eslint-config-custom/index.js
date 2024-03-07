@@ -15,9 +15,6 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
   ],
-
-
-
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
     'prettier/prettier': [

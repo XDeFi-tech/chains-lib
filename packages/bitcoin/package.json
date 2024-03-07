@@ -10,29 +10,13 @@
     "CHANGELOG.md",
     "README.md"
   ],
-  "exports": {
-    "./web": {
-      "require": "./dist/signers/web.js",
-      "import": "./dist/signers/web.js",
-      "types": "./dist/signers/web.d.ts"
-    },
-    "./react-native": {
-      "require": "./dist/signers/react-native.js",
-      "import": "./dist/signers/react-native.js",
-      "types": "./dist/signers/react-native.d.ts"
-    },
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.js"
-    }
-  },
   "devDependencies": {
     "jest": "27.5.1",
     "jest-environment-jsdom": "27.5.1",
     "jest-watch-typeahead": "1.0.0",
     "ts-jest": "27.1.4",
     "tsup": "6.6.3",
-    "typescript": "4.6.3"
+    "typescript": "4.8.3"
   },
   "dependencies": {
     "@ledgerhq/hw-app-btc": "10.0.0",
@@ -73,18 +57,18 @@
   "type": "commonjs",
   "tsup": {
     "entry": [
-      "src/**/*.ts",
-      "!src/**/*.spec.*",
-      "!src/custom.d.ts",
-      "!src/datasource/indexer/queries/**/*"
+      "src/signers/web.ts",
+      "src/signers/react-native.ts",
+      "src/index.ts"
     ],
     "format": "cjs",
     "splitting": false,
     "dts": true,
+    "shims": true,
     "types": [
-      "./dist/index.d.ts",
       "./dist/signers/web.d.ts",
-      "./dist/signers/react-native.d.ts"
+      "./dist/signers/react-native.d.ts",
+      "./dist/index.d.ts"
     ],
     "platform": "browser",
     "target": "ES6"
