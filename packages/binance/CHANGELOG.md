@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.5
+
+### Patch Changes
+
+- 290355b: Fix: export ledger files from package
+- Updated dependencies [290355b]
+  - @xdefi-tech/chains-graphql@1.2.10
+  - @xdefi-tech/chains-core@2.0.5
+
 ## 2.0.4
 
 ### Patch Changes
