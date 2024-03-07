@@ -15,7 +15,7 @@ to: packages/<%= name.toLowerCase() %>/package.json
     "jest-watch-typeahead": "^1.0.0",
     "ts-jest": "^27.1.4",
     "tsup": "^6.6.3",
-    "typescript": "^4.6.3"
+    "typescript": "4.8.3"
   },
   "dependencies": {
     "@xdefi-tech/chains-core": "*",

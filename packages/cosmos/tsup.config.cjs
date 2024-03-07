@@ -10,6 +10,7 @@ module.exports = {
     format: 'cjs',
     splitting: false,
     dts: true,
+    shims: true,
     types: [
       './dist/index.d.ts',
       './dist/signers/web.d.ts',
