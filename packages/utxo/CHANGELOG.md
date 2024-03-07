@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.4
+
+### Patch Changes
+
+- 290355b: Fix: export ledger files from package
+- Updated dependencies [290355b]
+  - @xdefi-tech/chains-core@2.0.5
+
 ## 2.0.3
 
 ### Patch Changes

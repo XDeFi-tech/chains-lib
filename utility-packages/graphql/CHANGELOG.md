@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.10
+
+### Patch Changes
+
+- 290355b: Fix: export ledger files from package
+- Updated dependencies [290355b]
+  - @xdefi-tech/chains-core@2.0.5
+
 ## 1.2.9
 
 ### Patch Changes

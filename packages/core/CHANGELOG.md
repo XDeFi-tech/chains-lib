@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.5
+
+### Patch Changes
+
+- 290355b: Fix: export ledger files from package
+
 ## 2.0.4
 
 ### Patch Changes
