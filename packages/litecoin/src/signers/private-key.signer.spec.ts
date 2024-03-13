@@ -38,7 +38,7 @@ describe('private-key.signer', () => {
   });
 
   it('should get an address from a private key', async () => {
-    expect(await signer.getAddress('', 'p2wpkh')).toBe(txInput.from);
+    expect(await signer.getAddress()).toBe(txInput.from);
   });
 
   it('should sign a transaction using a private key', async () => {
@@ -58,6 +58,6 @@ describe('private-key.signer', () => {
   });
 
   it('should get a private key', async () => {
-    expect(await signer.getPrivateKey('')).toEqual(privateKey);
+    expect(await signer.getPrivateKey()).toEqual(privateKey);
   });
 });

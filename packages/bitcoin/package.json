@@ -34,7 +34,6 @@
     "bignumber.js": "9.1.2",
     "bip32": "4.0.0",
     "bip39": "3.1.0",
-    "bitcoinjs-lib": "5.2.0",
     "coinselect": "3.1.13",
     "eslint-config-custom": "*",
     "reflect-metadata": "0.1.13",
