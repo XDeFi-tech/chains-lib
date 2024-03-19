@@ -68,6 +68,15 @@ export class SeedPhraseSigner extends Signer.Provider {
 
     message.sign(txP2WPKH.hex);
   }
+
+  async signRawTransaction(txHex: string, derivation: string): Promise<string> {
+    const pk = Bitcoin.ECPair.fromWIF(await this.getPrivateKey(derivation));
+    const psbt = Bitcoin.Psbt.fromHex(txHex);
+
+    psbt.signAllInputs(pk);
+    psbt.finalizeAllInputs();
+    return psbt.extractTransaction(true).toHex();
+  }
 }
 
 export default SeedPhraseSigner;
