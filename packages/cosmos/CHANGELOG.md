@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.5
+
+### Patch Changes
+
+- 5a46337: Fix: update terra-money version
+
 ## 2.0.4
 
 ### Patch Changes

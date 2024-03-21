@@ -1,17 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material';
-import { Chain, GasFeeSpeed } from '@xdefi-tech/chains-core';
-// @ts-ignore
-import WebSigners from '@xdefi-tech/chains-binance/web';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Chain, GasFeeSpeed, MsgEncoding } from '@xdefi-tech/chains-core';
+import { PrivateKeySigner } from '@xdefi-tech/chains-binance/dist/signers/web';
 
 export interface IBroadcastComponent {
   provider: Chain.Provider;
@@ -50,9 +40,8 @@ const SendTransaction = (props: IBroadcastComponent) => {
       return;
     }
     const getAddress = async () => {
-      // @ts-ignore
-      const signerInstance = new WebSigners[0]();
-      const address = await signerInstance.getAddress(pk);
+      const signerInstance = new PrivateKeySigner(pk);
+      const address = await signerInstance.getAddress();
       if (address) {
         setFromAddress(address);
       }
@@ -79,12 +68,12 @@ const SendTransaction = (props: IBroadcastComponent) => {
       from: fromAddress,
       to: toAddress,
       amount: parseFloat(amount),
-    });
+    }, MsgEncoding.object);
     const [fee] = await props.provider.estimateFee([msg], speed as GasFeeSpeed);
     const msgWithFee = await props.provider.createMsg({
       ...msg.toData(),
       ...fee,
-    });
+    }, MsgEncoding.object);
     setMsg(msgWithFee);
   }, [fromAddress, toAddress, amount, speed]);
 
@@ -92,8 +81,8 @@ const SendTransaction = (props: IBroadcastComponent) => {
     if (!msg) {
       return;
     }
-    const signerInstance = new WebSigners[0]();
-    await signerInstance.sign(pk, msg);
+    const signerInstance = new PrivateKeySigner(pk);
+    await signerInstance.sign(msg);
     if (msg.hasSignature) {
       setSignedTx(msg.signedTransaction);
     }

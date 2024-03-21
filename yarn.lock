@@ -5475,14 +5475,13 @@
   dependencies:
     tslib "^2.4.0"
 
-"@terra-money/feather.js@2.0.0-beta.13":
-  version "2.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/@terra-money/feather.js/-/feather.js-2.0.0-beta.13.tgz#eb6c3da5235d925d5006b6dafac66dd985830099"
-  integrity sha512-r4/BsFCGsWKnOil0iMe8ZyquqAoZbbFlcKLNWb72lbBvkUAfzHjJA/WBBy13vuGuS7Y80jsDbFBditBMaV7cvA==
+"@terra-money/feather.js@2.1.0-beta.3":
+  version "2.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@terra-money/feather.js/-/feather.js-2.1.0-beta.3.tgz#788e4af5e252a11113cc1cdace2e27bdec94c92b"
+  integrity sha512-jUsZ0nHV+ycvGMwS/M9uUYrOfRE2HyFOWcpG6Khm2CIqZs7MLvTjj30dtHSWv1YWXoG+RjN08DE9iIGap5rGPA==
   dependencies:
-    "@ethersproject/bytes" "^5.7.0"
     "@terra-money/legacy.proto" "npm:@terra-money/terra.proto@^0.1.7"
-    "@terra-money/terra.proto" "^4.0.4"
+    "@terra-money/terra.proto" "^5.1.0-beta.3"
     assert "^2.0.0"
     axios "^0.27.2"
     bech32 "^2.0.0"
@@ -5491,7 +5490,6 @@
     bufferutil "^4.0.3"
     crypto-browserify "^3.12.0"
     decimal.js "^10.2.1"
-    ethers "^5.7.2"
     jscrypto "^1.0.1"
     keccak256 "^1.0.6"
     long "^5.2.3"
@@ -5510,10 +5508,10 @@
     long "^4.0.0"
     protobufjs "~6.11.2"
 
-"@terra-money/terra.proto@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-4.0.4.tgz#32c95ec9cc3cdc5ff49f20e453b593392bab87a7"
-  integrity sha512-Xju3ObFvMWXCDpeOXwa+WpmcbvUFOgJ4shSSfbgocnX5q3250aTaIAaycxkArUtg1QoqV4B5qoboRAplMHYDZw==
+"@terra-money/terra.proto@5.3.0-beta.0":
+  version "5.3.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-5.3.0-beta.0.tgz#c05e9a8174c331c27d5728e666374632f8466546"
+  integrity sha512-pRy8RScTbhHuSZsuevQBGdVAcFaMTriQeCrT1TOJ2/cMJLGnBJ/43wQN/0KS+4tg2UyYpudZzBhARp+0nvbs1Q==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.1"
     browser-headers "^0.4.1"
@@ -5521,10 +5519,10 @@
     long "^4.0.0"
     protobufjs "~6.11.2"
 
-"@terra-money/terra.proto@^4.0.4":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-4.0.7.tgz#58ca9b40af505775c9a4a569683c3a005a8d9bef"
-  integrity sha512-5RDN6B8E4+tWupHa+//AnyGTy2tPAVwILICH466jJEJBpaUaxuJs9g3kG29Yx/1gtttwCeu1sR/ABE0x5fagQw==
+"@terra-money/terra.proto@^5.1.0-beta.3":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@terra-money/terra.proto/-/terra.proto-5.2.0.tgz#d31a2235f421efd4536f5d3c1a03ee06cc9cc0b6"
+  integrity sha512-fD/jqDryw97ogPyNXUSQGIUfHGgJ7n1QgS5cBthwzS1gmq3Dc0dt2q94/AM4bWp6PjN0F84QJu/T3fwHlbeDsQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.1"
     browser-headers "^0.4.1"
@@ -9879,7 +9877,7 @@ ethers@5.6.4:
     "@ethersproject/web" "5.6.0"
     "@ethersproject/wordlists" "5.6.0"
 
-ethers@5.7.2, ethers@^5.7.2:
+ethers@5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==

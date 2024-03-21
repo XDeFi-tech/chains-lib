@@ -1,8 +1,6 @@
 import React from 'react';
 import { ChainController } from '@xdefi-tech/chains-controller';
 import { EVM_MANIFESTS, EvmProvider } from '@xdefi-tech/chains-evm';
-// @ts-ignore
-import WebSigners from '@xdefi-tech/chains-evm/web';
 import { COSMOS_MANIFESTS, CosmosProvider } from '@xdefi-tech/chains-cosmos';
 import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
@@ -45,7 +43,6 @@ export const initDefaultProviders = () => {
     new EvmProvider(
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.ethereum),
       {
-        signers: WebSigners,
         providerId: 'ethereum',
       }
     )
@@ -57,7 +54,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.ethereum.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'ethereum-chain',
       }
     )
@@ -80,7 +76,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.smartchain.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'smartchain-chain',
       }
     )
@@ -89,7 +84,6 @@ export const initDefaultProviders = () => {
     new EvmProvider(
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.polygon),
       {
-        signers: WebSigners,
         providerId: 'polygon',
       }
     )
@@ -102,7 +96,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.polygon.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'polygon-chain',
       }
     )
@@ -123,7 +116,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.avalanche.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'avalanche-chain',
       }
     )
@@ -145,7 +137,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.fantom.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'fantom-chain',
       }
     )
@@ -167,7 +158,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.arbitrum.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'arbitrum-chain',
       }
     )
@@ -188,7 +178,6 @@ export const initDefaultProviders = () => {
         name: `${EVM_MANIFESTS.aurora.name} chain`,
       }),
       {
-        signers: WebSigners,
         providerId: 'aurora-chain',
       }
     )
