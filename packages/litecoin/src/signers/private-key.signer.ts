@@ -63,6 +63,22 @@ export class PrivateKeySigner extends Signer.Provider {
 
     message.sign(psbt.hex);
   }
+
+  async signRawTransaction(
+    txHex: string,
+    derivation?: string
+  ): Promise<string> {
+    const network = coininfo.litecoin.main.toBitcoinJS();
+    const pk = Litecoin.ECPair.fromWIF(
+      await this.getPrivateKey(derivation ?? ''),
+      network
+    );
+    const psbt = Litecoin.Psbt.fromHex(txHex, network);
+
+    psbt.signAllInputs(pk);
+    psbt.finalizeAllInputs();
+    return psbt.extractTransaction(true).toHex();
+  }
 }
 
 export default PrivateKeySigner;

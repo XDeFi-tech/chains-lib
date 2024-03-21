@@ -53,6 +53,16 @@ describe('seed-phrase.signer', () => {
     expect(message.signedTransaction).toBeTruthy();
   });
 
+  it('should sign a raw transaction using a seed phrase', async () => {
+    const txHex =
+      '020000000186339733afada6e9c280ed345dba8c67388066e3a0cd887edbc4c4eff3a436950000000000ffffffff0264000000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688acca250000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac00000000';
+    const signedTx = await signer.signRawTransaction(txHex, derivation);
+
+    expect(signedTx).toEqual(
+      '02000000000101a841c88e7ac355b1f4af08ec8b26ca6c9e1cee86b7f1f2d355d75597461a73a80000000000ffffffff0364000000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a530000000000000000066a0474657374ac260000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5302483045022100883119b3ba1fccb4ca79d6df974018bba0c838ffc1fbb4abb959e8685a03931002204e40ee30fdb35513f194e55878b79eaa81fde381cc93a0c97f35788ac8f48857012103e389368c5d8bd73599616a574d9b74bf77cb5aee13692e5a3855a7fd2b945f9200000000'
+    );
+  });
+
   it('should return false when verifing an invalid address', async () => {
     expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
   });
