@@ -70,6 +70,19 @@ export class SeedPhraseSigner extends Signer.Provider {
 
     message.sign(psbt.hex);
   }
+
+  async signRawTransaction(txHex: string, derivation: string): Promise<string> {
+    const network = coininfo.dogecoin.main.toBitcoinJS();
+    const pk = Dogecoin.ECPair.fromWIF(
+      await this.getPrivateKey(derivation),
+      network
+    );
+    const psbt = Dogecoin.Psbt.fromHex(txHex, network);
+
+    psbt.signAllInputs(pk);
+    psbt.finalizeAllInputs();
+    return psbt.extractTransaction(true).toHex();
+  }
 }
 
 export default SeedPhraseSigner;
