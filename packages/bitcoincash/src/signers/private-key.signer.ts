@@ -72,6 +72,7 @@ export class PrivateKeySigner extends Signer.Provider {
         utxo.witnessUtxo.value
       );
     });
+
     message.sign(builder.build().toHex());
   }
 
