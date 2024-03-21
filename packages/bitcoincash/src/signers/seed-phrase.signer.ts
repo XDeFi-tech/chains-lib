@@ -5,6 +5,7 @@ import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
+import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
 import * as bchaddr from 'bchaddrjs';
 
