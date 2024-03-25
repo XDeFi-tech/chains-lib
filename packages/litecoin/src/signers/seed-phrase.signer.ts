@@ -1,9 +1,10 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-import * as bip39 from 'bip39';
 /*eslint import/namespace: [2, { allowComputed: true }]*/
-import * as Litecoin from 'bitcoinjs-lib';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import coininfo from 'coininfo';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import * as btc from '@scure/btc-signer';
+import * as bip32 from 'bip32';
+import * as bip39 from 'bip39';
 
 import { ChainMsg } from '../msg';
 
@@ -11,11 +12,9 @@ import { ChainMsg } from '../msg';
 export class SeedPhraseSigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Litecoin.address.toOutputScript(
-        address,
-        coininfo.litecoin.main.toBitcoinJS()
-      );
-      return true;
+      return btc.Address(coininfo.litecoin.main.toBitcoinJS()).decode(address)
+        ? true
+        : false;
     } catch (err) {
       return false;
     }
@@ -23,29 +22,24 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
-      throw new Error('Seed phrase not set!');
+      throw new Error('Private key not set!');
     }
-    const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = Litecoin.bip32.fromSeed(
-      seed,
-      coininfo.litecoin.main.toBitcoinJS()
-    );
+
+    const network = coininfo.litecoin.main.toBitcoinJS();
+    const seed = await bip39.mnemonicToSeed(this.key);
+    const root = bip32.fromSeed(seed, network);
     const master = root.derivePath(derivation);
 
     return master.toWIF();
   }
 
-  async getAddress(
-    derivation: string,
-    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
-  ): Promise<string> {
+  async getAddress(derivation: string): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const privateKey = await this.getPrivateKey(derivation);
-    const pk = Litecoin.ECPair.fromWIF(privateKey, network);
-    const { address } = Litecoin.payments[type]({
-      pubkey: pk.publicKey,
-      network,
-    });
+    const publicKey = secp256k1.getPublicKey(
+      btc.WIF(network).decode(await this.getPrivateKey(derivation)),
+      true
+    );
+    const { address } = btc.p2wpkh(publicKey, network);
 
     if (!address) throw new Error('LTC address is undefined');
 
@@ -53,34 +47,28 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async sign(message: ChainMsg, derivation: string) {
-    const { inputs, outputs, compiledMemo, from } = await message.buildTx();
+    const { inputs, outputs, from } = await message.buildTx();
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const psbt = new Litecoin.Psbt({ network });
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-      }))
-    );
+    const psbt = new btc.Transaction();
 
-    outputs.forEach((output: any) => {
+    for (const utxo of inputs) {
+      psbt.addInput({
+        txid: utxo.hash,
+        index: utxo.index,
+        nonWitnessUtxo: utxo.txHex,
+      });
+    }
+
+    for (const output of outputs) {
       if (!output.address) {
         output.address = from;
       }
-      if (!output.hasOwnProperty('script')) {
-        psbt.addOutput(output as any); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
-      } else {
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
-        }
-      }
-    });
-    const privateKey = await this.getPrivateKey(derivation);
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(privateKey, network));
-    psbt.finalizeAllInputs();
+      psbt.addOutputAddress(output.address, BigInt(output.value), network);
+    }
+    psbt.sign(btc.WIF(network).decode(await this.getPrivateKey(derivation)));
+    psbt.finalize();
 
-    message.sign(psbt.extractTransaction(true).toHex());
+    message.sign(psbt.hex);
   }
 }
 

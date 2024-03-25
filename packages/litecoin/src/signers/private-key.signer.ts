@@ -1,8 +1,8 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-import * as Litecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import * as btc from '@scure/btc-signer';
 
 import { ChainMsg } from '../msg';
 
@@ -10,64 +10,58 @@ import { ChainMsg } from '../msg';
 export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string): boolean {
     try {
-      Litecoin.address.toOutputScript(
-        address,
-        coininfo.litecoin.main.toBitcoinJS()
-      );
-      return true;
+      return btc.Address(coininfo.litecoin.main.toBitcoinJS()).decode(address)
+        ? true
+        : false;
     } catch (err) {
       return false;
     }
   }
 
-  async getPrivateKey(_derivation: string): Promise<string> {
+  async getPrivateKey(_derivation?: string): Promise<string> {
+    if (!this.key) {
+      throw new Error('Private key not set!');
+    }
+
     return this.key;
   }
 
-  async getAddress(
-    derivation: string,
-    type: 'p2ms' | 'p2pk' | 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' = 'p2wpkh'
-  ): Promise<string> {
+  async getAddress(_derivation?: string): Promise<string> {
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const pk = Litecoin.ECPair.fromWIF(this.key, network);
-    const { address } = Litecoin.payments[type]({
-      pubkey: pk.publicKey,
-      network,
-    });
+    const publicKey = secp256k1.getPublicKey(
+      btc.WIF(network).decode(await this.getPrivateKey()),
+      true
+    );
+    const { address } = btc.p2wpkh(publicKey, network);
 
-    if (!address) throw new Error('LTC address is undefined');
+    if (!address) throw new Error('DOGE address is undefined');
 
     return address;
   }
 
   async sign(message: ChainMsg) {
-    const { inputs, outputs, compiledMemo, from } = await message.buildTx();
+    const { inputs, outputs, from } = await message.buildTx();
     const network = coininfo.litecoin.main.toBitcoinJS();
-    const psbt = new Litecoin.Psbt({ network });
-    psbt.addInputs(
-      inputs.map((utxo: UTXO) => ({
-        hash: utxo.hash,
-        index: utxo.index,
-        witnessUtxo: utxo.witnessUtxo,
-      }))
-    );
+    const psbt = new btc.Transaction();
 
-    outputs.forEach((output: any) => {
+    for (const utxo of inputs) {
+      psbt.addInput({
+        txid: utxo.hash,
+        index: utxo.index,
+        nonWitnessUtxo: utxo.txHex,
+      });
+    }
+
+    for (const output of outputs) {
       if (!output.address) {
         output.address = from;
       }
-      if (!output.hasOwnProperty('script')) {
-        psbt.addOutput(output as any); // bitcoinjs-lib types doesn't provide PsbtOutputExtended
-      } else {
-        if (compiledMemo) {
-          psbt.addOutput({ script: compiledMemo, value: 0 });
-        }
-      }
-    });
-    psbt.signAllInputs(Litecoin.ECPair.fromWIF(this.key, network));
-    psbt.finalizeAllInputs();
+      psbt.addOutputAddress(output.address, BigInt(output.value), network);
+    }
+    psbt.sign(btc.WIF(network).decode(await this.getPrivateKey()));
+    psbt.finalize();
 
-    message.sign(psbt.extractTransaction(true).toHex());
+    message.sign(psbt.hex);
   }
 }
 
