@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.6
+
+### Patch Changes
+
+- c62adeb: update utxo signers to use noble and scure instead of bitcoinjs
+
 ## 2.0.5
 
 ### Patch Changes

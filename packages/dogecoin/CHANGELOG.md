@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.7
+
+### Patch Changes
+
+- c62adeb: update utxo signers to use noble and scure instead of bitcoinjs
+
 ## 2.0.6
 
 ### Patch Changes
