@@ -1,6 +1,5 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import * as Dogecoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';

@@ -28,7 +28,8 @@ export class PrivateKeySigner extends Signer.Provider {
   }
 
   async getAddress(_derivation?: string): Promise<string> {
-    const privateKey = await this.getPrivateKey(_derivation);
+    const wif = await this.getPrivateKey(_derivation);
+    const privateKey = Buffer.from(btc.WIF().decode(wif)).toString('hex');
     const publicKey = secp256k1.getPublicKey(privateKey, true);
     const { address } = btc.p2wpkh(publicKey);
 
@@ -57,7 +58,7 @@ export class PrivateKeySigner extends Signer.Provider {
       txP2WPKH.addOutputAddress(output.address, BigInt(output.value));
     }
     const privateKey = await this.getPrivateKey(_derivation);
-    txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));
+    txP2WPKH.sign(new Uint8Array(Buffer.from(btc.WIF().decode(privateKey))));
     txP2WPKH.finalize();
 
     message.sign(txP2WPKH.hex);

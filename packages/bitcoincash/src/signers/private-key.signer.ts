@@ -23,13 +23,15 @@ export class PrivateKeySigner extends Signer.Provider {
       throw new Error('Private key not set!');
     }
 
-    const network = coininfo.bitcoincash.main.toBitcoinJS();
-    return Buffer.from(btc.WIF(network).decode(this.key)).toString('hex');
+    return this.key;
   }
 
   async getAddress(_derivation?: string): Promise<string> {
     const network = coininfo.bitcoincash.main.toBitcoinJS();
-    const privateKey = await this.getPrivateKey(_derivation);
+    const wif = await this.getPrivateKey(_derivation);
+    const privateKey = Buffer.from(btc.WIF(network).decode(wif)).toString(
+      'hex'
+    );
     const publicKey = secp256k1.getPublicKey(privateKey, true);
     const { address } = btc.p2pkh(publicKey, network);
 
@@ -67,7 +69,9 @@ export class PrivateKeySigner extends Signer.Provider {
       );
     }
     const privateKey = await this.getPrivateKey(_derivation);
-    txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));
+    txP2WPKH.sign(
+      new Uint8Array(Buffer.from(btc.WIF(network).decode(privateKey)))
+    );
     txP2WPKH.finalize();
 
     message.sign(txP2WPKH.hex);

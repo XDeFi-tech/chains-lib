@@ -62,8 +62,6 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should get a private key from a seed phrase', async () => {
-    expect(await signer.getPrivateKey(derivation)).toEqual(
-      '53407513001a7258fd3d7fefa6e71ade5af9d9001d04898667ddeb8370161009'
-    );
+    expect(await signer.getPrivateKey(derivation)).toEqual(privateKey);
   });
 });

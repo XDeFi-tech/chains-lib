@@ -1,8 +1,8 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import * as bip39 from 'bip39';
+import * as bip32 from 'bip32';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { HDKey } from '@scure/bip32';
 import * as btc from '@scure/btc-signer';
 
 import { ChainMsg } from '../msg';
@@ -26,19 +26,15 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Seed phrase not set!');
     }
     const seed = await bip39.mnemonicToSeed(this.key, '');
-    const root = HDKey.fromMasterSeed(new Uint8Array(seed));
-    const child = root.derive(derivation);
-    const pk = child.privateKey;
+    const root = bip32.fromSeed(seed);
+    const master = root.derivePath(derivation);
 
-    if (!pk) {
-      throw new Error('Error generating private key!');
-    }
-
-    return Buffer.from(pk).toString('hex');
+    return master.toWIF();
   }
 
   async getAddress(derivation: string): Promise<string> {
-    const privateKey = await this.getPrivateKey(derivation);
+    const wif = await this.getPrivateKey(derivation);
+    const privateKey = Buffer.from(btc.WIF().decode(wif)).toString('hex');
     const publicKey = secp256k1.getPublicKey(privateKey, true);
     const { address } = btc.p2wpkh(publicKey);
 
@@ -67,7 +63,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       txP2WPKH.addOutputAddress(output.address, BigInt(output.value));
     }
     const privateKey = await this.getPrivateKey(derivation);
-    txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));
+    txP2WPKH.sign(new Uint8Array(Buffer.from(btc.WIF().decode(privateKey))));
     txP2WPKH.finalize();
 
     message.sign(txP2WPKH.hex);

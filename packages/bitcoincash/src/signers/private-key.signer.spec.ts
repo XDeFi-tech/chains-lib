@@ -58,8 +58,6 @@ describe('private-key.signer', () => {
   });
 
   it('should get a private key', async () => {
-    expect(await signer.getPrivateKey('')).toEqual(
-      '53407513001a7258fd3d7fefa6e71ade5af9d9001d04898667ddeb8370161009'
-    );
+    expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });
 });

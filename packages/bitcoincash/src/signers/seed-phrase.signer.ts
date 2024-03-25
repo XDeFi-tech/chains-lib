@@ -30,12 +30,15 @@ export class SeedPhraseSigner extends Signer.Provider {
     const root = bip32.fromSeed(seed, network);
     const master = root.derivePath(derivation);
 
-    return Buffer.from(btc.WIF(network).decode(master.toWIF())).toString('hex');
+    return master.toWIF();
   }
 
   async getAddress(derivation: string): Promise<string> {
     const network = coininfo.bitcoincash.main.toBitcoinJS();
-    const privateKey = await this.getPrivateKey(derivation);
+    const wif = await this.getPrivateKey(derivation);
+    const privateKey = Buffer.from(btc.WIF(network).decode(wif)).toString(
+      'hex'
+    );
     const publicKey = secp256k1.getPublicKey(privateKey, true);
     const { address } = btc.p2pkh(publicKey, network);
 
@@ -73,7 +76,9 @@ export class SeedPhraseSigner extends Signer.Provider {
       );
     }
     const privateKey = await this.getPrivateKey(derivation);
-    txP2WPKH.sign(new Uint8Array(Buffer.from(privateKey, 'hex')));
+    txP2WPKH.sign(
+      new Uint8Array(Buffer.from(btc.WIF(network).decode(privateKey)))
+    );
     txP2WPKH.finalize();
 
     message.sign(txP2WPKH.hex);
