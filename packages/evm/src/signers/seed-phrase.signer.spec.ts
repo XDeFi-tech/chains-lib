@@ -3,7 +3,7 @@ import { Msg } from '@xdefi-tech/chains-core';
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, MsgBody, SignatureType } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
@@ -40,10 +40,26 @@ describe('seed-phrase.signer', () => {
     expect(await signer.getAddress(derivation)).toBe(txInput.from);
   });
 
-  it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+  it('should sign a transaction using a seed phrase', async () => {
+    await signer.sign(
+      message as ChainMsg,
+      derivation,
+      SignatureType.Transaction
+    );
 
     expect(message.signedTransaction).toBeTruthy();
+  });
+
+  it('should sign a message using a seed phrase', async () => {
+    txInput.data = 'test test';
+    const chainMsg = provider.createMsg(txInput);
+    await signer.sign(
+      chainMsg as ChainMsg,
+      derivation,
+      SignatureType.PersonalSign
+    );
+
+    expect(chainMsg.signedTransaction).toBeTruthy();
   });
 
   it('should return false when verifing an invalid address', async () => {

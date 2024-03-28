@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
 
-import { ChainMsg } from '../msg';
+import { ChainMsg, SignatureType } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -18,24 +18,34 @@ export class PrivateKeySigner extends Signer.Provider {
     return wallet.address;
   }
 
-  async sign(msg: ChainMsg): Promise<void> {
+  async sign(
+    msg: ChainMsg,
+    _derivation: string,
+    signatureType: SignatureType
+  ): Promise<void> {
     const wallet = new Wallet(this.key);
     const txData = await msg.buildTx();
-    const signature = await wallet.signTransaction({
-      to: txData.to,
-      from: txData.from,
-      nonce: txData.nonce,
-      gasLimit: txData.gasLimit,
-      value: txData.value,
-      chainId: parseInt(txData.chainId),
-      ...(txData.maxPriorityFeePerGas && {
-        maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
-      }),
-      ...(txData.maxFeePerGas && { maxFeePerGas: txData.maxFeePerGas }),
-      ...(txData.gasPrice && { gasPrice: txData.gasPrice }),
-      data: txData.data,
-      type: txData.type,
-    });
+    let signature;
+    if (signatureType === SignatureType.PersonalSign) {
+      signature = await wallet.signMessage(txData.data);
+    } else if (signatureType === SignatureType.Transaction) {
+      signature = await wallet.signTransaction({
+        to: txData.to,
+        from: txData.from,
+        nonce: txData.nonce,
+        gasLimit: txData.gasLimit,
+        value: txData.value,
+        chainId: parseInt(txData.chainId),
+        ...(txData.maxPriorityFeePerGas && {
+          maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
+        }),
+        ...(txData.maxFeePerGas && { maxFeePerGas: txData.maxFeePerGas }),
+        ...(txData.gasPrice && { gasPrice: txData.gasPrice }),
+        data: txData.data,
+        type: txData.type,
+      });
+    }
+
     msg.sign(signature);
   }
 }

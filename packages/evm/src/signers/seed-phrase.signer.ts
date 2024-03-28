@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
 
-import { ChainMsg } from '../msg';
+import { ChainMsg, SignatureType } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
@@ -21,24 +21,34 @@ export class SeedPhraseSigner extends Signer.Provider {
     return wallet.address;
   }
 
-  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+  async sign(
+    msg: ChainMsg,
+    derivation: string,
+    signatureType: SignatureType
+  ): Promise<void> {
     const wallet = Wallet.fromMnemonic(this.key, derivation);
     const txData = await msg.buildTx();
-    const signature = await wallet.signTransaction({
-      to: txData.to,
-      from: txData.from,
-      nonce: txData.nonce,
-      gasLimit: txData.gasLimit,
-      value: txData.value,
-      chainId: parseInt(txData.chainId),
-      ...(txData.maxPriorityFeePerGas && {
-        maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
-      }),
-      ...(txData.maxFeePerGas && { maxFeePerGas: txData.maxFeePerGas }),
-      ...(txData.gasPrice && { gasPrice: txData.gasPrice }),
-      data: txData.data,
-      type: txData.type,
-    });
+    let signature;
+    if (signatureType === SignatureType.PersonalSign) {
+      signature = await wallet.signMessage(txData.data);
+    } else if (signatureType === SignatureType.Transaction) {
+      signature = await wallet.signTransaction({
+        to: txData.to,
+        from: txData.from,
+        nonce: txData.nonce,
+        gasLimit: txData.gasLimit,
+        value: txData.value,
+        chainId: parseInt(txData.chainId),
+        ...(txData.maxPriorityFeePerGas && {
+          maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
+        }),
+        ...(txData.maxFeePerGas && { maxFeePerGas: txData.maxFeePerGas }),
+        ...(txData.gasPrice && { gasPrice: txData.gasPrice }),
+        data: txData.data,
+        type: txData.type,
+      });
+    }
+
     msg.sign(signature);
   }
 }
