@@ -47,6 +47,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a message using a seed phrase', async () => {
+    txInput.data = 'test test';
     const chainMsg = provider.createMsg(txInput);
     await signer.sign(
       chainMsg as ChainMsg,

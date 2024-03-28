@@ -46,7 +46,6 @@ export class PrivateKeySigner extends Signer.Provider {
       signature = await wallet.signMessage(txData.data);
     }
 
-    throw new Error(signature);
     msg.sign(signature);
   }
 }
