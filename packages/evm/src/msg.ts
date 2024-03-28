@@ -31,6 +31,11 @@ export enum TransactionType {
   EIP1559 = 2,
 }
 
+export enum SignatureType {
+  Transaction = 0,
+  PersonalSign = 1,
+}
+
 export interface MsgBody {
   nonce: NumberIsh;
   to: string;
