@@ -20,13 +20,15 @@ export class PrivateKeySigner extends Signer.Provider {
 
   async sign(
     msg: ChainMsg,
-    _derivation?: string,
-    signatureType?: SignatureType
+    _derivation: string,
+    signatureType: SignatureType
   ): Promise<void> {
     const wallet = new Wallet(this.key);
     const txData = await msg.buildTx();
     let signature;
-    if (signatureType === SignatureType.Transaction) {
+    if (signatureType === SignatureType.PersonalSign) {
+      signature = await wallet.signMessage(txData.data);
+    } else if (signatureType === SignatureType.Transaction) {
       signature = await wallet.signTransaction({
         to: txData.to,
         from: txData.from,
@@ -42,8 +44,6 @@ export class PrivateKeySigner extends Signer.Provider {
         data: txData.data,
         type: txData.type,
       });
-    } else if (signatureType === SignatureType.PersonalSign) {
-      signature = await wallet.signMessage(txData.data);
     }
 
     msg.sign(signature);

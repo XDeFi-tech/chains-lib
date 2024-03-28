@@ -38,7 +38,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg);
+    await signer.sign(message as ChainMsg, '', SignatureType.Transaction);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -46,13 +46,9 @@ describe('private-key.signer', () => {
   it('should sign a message using a private key', async () => {
     txInput.data = 'test test';
     const chainMsg = provider.createMsg(txInput);
-    await signer.sign(
-      chainMsg as ChainMsg,
-      undefined,
-      SignatureType.PersonalSign
-    );
+    await signer.sign(chainMsg as ChainMsg, '', SignatureType.PersonalSign);
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(chainMsg.signedTransaction).toBeTruthy();
   });
 
   it('should return false when verifing an invalid address', async () => {

@@ -24,12 +24,14 @@ export class SeedPhraseSigner extends Signer.Provider {
   async sign(
     msg: ChainMsg,
     derivation: string,
-    signatureType?: SignatureType
+    signatureType: SignatureType
   ): Promise<void> {
     const wallet = Wallet.fromMnemonic(this.key, derivation);
     const txData = await msg.buildTx();
     let signature;
-    if (signatureType === SignatureType.Transaction) {
+    if (signatureType === SignatureType.PersonalSign) {
+      signature = await wallet.signMessage(txData.data);
+    } else if (signatureType === SignatureType.Transaction) {
       signature = await wallet.signTransaction({
         to: txData.to,
         from: txData.from,
@@ -45,8 +47,6 @@ export class SeedPhraseSigner extends Signer.Provider {
         data: txData.data,
         type: txData.type,
       });
-    } else if (signatureType === SignatureType.PersonalSign) {
-      signature = await wallet.signMessage(txData.data);
     }
 
     msg.sign(signature);

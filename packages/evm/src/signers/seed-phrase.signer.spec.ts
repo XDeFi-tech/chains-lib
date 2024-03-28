@@ -41,7 +41,11 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(
+      message as ChainMsg,
+      derivation,
+      SignatureType.Transaction
+    );
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -55,7 +59,7 @@ describe('seed-phrase.signer', () => {
       SignatureType.PersonalSign
     );
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(chainMsg.signedTransaction).toBeTruthy();
   });
 
   it('should return false when verifing an invalid address', async () => {
