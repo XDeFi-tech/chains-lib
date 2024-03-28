@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.5
+
+### Patch Changes
+
+- 7f90cae: Feat: add personal signing
+
 ## 2.0.4
 
 ### Patch Changes
