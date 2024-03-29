@@ -1,6 +1,5 @@
 import { Msg } from '@xdefi-tech/chains-core';
 import { BlockchairDataProvider } from '@xdefi-tech/chains-utxo';
-import * as btc from '@scure/btc-signer';
 
 import { DogecoinProvider } from '../chain.provider';
 import { DOGECOIN_MANIFEST } from '../manifests';
@@ -42,12 +41,6 @@ describe('seed-phrase.signer', () => {
             '010000000102a95e8c5a5ebefa6431867f1e1691e5dd9cad10b2d1e8efce9b15c48c86f68d000000006b483045022100f21d3cac7d1332fdea2b33b8dd9859743b923dfa42431b49512d8dbb81acce5702204d2a009e45657147acf1b23204bc01a0d338e86c8cad458a394d933e2b3f24f20121031db6a1e76aad4f63aaea779d05a15a5619749a808c8d5b6856ae449b503e1d58ffffffff0280969800000000001976a914c602dc308aa94acd75537757eeca791da957e4f188ac700c4c05000000001976a91447542a50d8d84ed278690657e36bdda110f0181688ac00000000',
         },
       ]);
-
-    // jest.spyOn(btc.Transaction.prototype, 'sign').mockReturnValue(0);
-    // jest.spyOn(btc.Transaction.prototype, 'finalize').mockReturnValue();
-    // jest
-    //   .spyOn(btc.Transaction.prototype, 'hex', 'get')
-    //   .mockReturnValue('signedtx');
   });
 
   beforeEach(() => {
