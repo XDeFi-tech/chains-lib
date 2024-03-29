@@ -37,7 +37,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     return this.data;
   }
 
-  async buildTx() {
+  async buildTx(): Promise<any> {
     const msgData = this.toData();
     const utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
     const { fee } = await this.getFee();

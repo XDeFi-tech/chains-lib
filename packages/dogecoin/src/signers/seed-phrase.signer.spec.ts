@@ -13,6 +13,11 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({ inputs: [{ value: 1000 }], outputs: [{ value: 100 }] }),
+}));
+
 describe('seed-phrase.signer', () => {
   let privateKey: string;
   let derivation: string;
