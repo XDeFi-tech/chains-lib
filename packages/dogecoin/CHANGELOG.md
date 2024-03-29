@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.8
+
+### Patch Changes
+
+- 4776364: update dogecoin mocks to not use network
+
 ## 2.0.7
 
 ### Patch Changes
