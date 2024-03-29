@@ -38,6 +38,14 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({
+    inputs: [{ value: 1000, witnessUtxo: { script: '' } }],
+    outputs: [{ value: 100 }],
+  }),
+}));
+
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
