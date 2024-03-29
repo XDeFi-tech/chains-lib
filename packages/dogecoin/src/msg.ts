@@ -40,6 +40,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
   async buildTx(): Promise<any> {
     const msgData = this.toData();
     const utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
+    // throw new Error(JSON.stringify(utxos));
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
