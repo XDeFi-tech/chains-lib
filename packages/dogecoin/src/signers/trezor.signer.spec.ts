@@ -4,7 +4,11 @@ import {
   Params,
   Success,
 } from '@trezor/connect-web';
-import { ChainMsg, MsgBody } from '@xdefi-tech/chains-utxo';
+import {
+  BlockchairDataProvider,
+  ChainMsg,
+  MsgBody,
+} from '@xdefi-tech/chains-utxo';
 
 import { DogecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -45,12 +49,34 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({ inputs: [{ value: 1000 }], outputs: [{ value: 100 }] }),
+}));
+
 describe('trezor.signer', () => {
   let signer: TrezorSigner;
   let derivationPath: string;
   let provider: DogecoinProvider;
   let txInput: MsgBody;
   let message: ChainMsg;
+
+  beforeAll(() => {
+    jest
+      .spyOn(BlockchairDataProvider.prototype, 'scanUTXOs')
+      .mockResolvedValue([
+        {
+          hash: 'hash1',
+          value: 10000,
+          index: 0,
+          witnessUtxo: {
+            value: 10000,
+            script: Buffer.from('0x0', 'hex'),
+          },
+          txHex: 'raw_transaction',
+        },
+      ]);
+  });
 
   beforeEach(() => {
     signer = new TrezorSigner();
@@ -69,6 +95,10 @@ describe('trezor.signer', () => {
     };
 
     message = provider.createMsg(txInput);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should fail signing if trezor device is not initialized', async () => {

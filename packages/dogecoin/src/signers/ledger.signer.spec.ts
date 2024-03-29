@@ -1,5 +1,7 @@
 import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
+import { BlockchairDataProvider } from '@xdefi-tech/chains-utxo';
+import * as Dogecoin from 'bitcoinjs-lib';
 
 import { DogecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -36,6 +38,14 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({
+    inputs: [{ value: 1000, witnessUtxo: { script: '' } }],
+    outputs: [{ value: 100 }],
+  }),
+}));
+
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
@@ -43,6 +53,27 @@ describe('ledger.signer', () => {
   let txInput: MsgBody;
   let message: Msg;
   let externalTransport: any;
+
+  beforeAll(() => {
+    jest
+      .spyOn(BlockchairDataProvider.prototype, 'scanUTXOs')
+      .mockResolvedValue([
+        {
+          hash: 'hash1',
+          value: 10000,
+          index: 0,
+          witnessUtxo: {
+            value: 10000,
+            script: Buffer.from('0x0', 'hex'),
+          },
+          txHex: 'raw_transaction',
+        },
+      ]);
+
+    jest
+      .spyOn(Dogecoin.Psbt.prototype, 'addInput')
+      .mockReturnValue({} as Dogecoin.Psbt);
+  });
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
@@ -67,6 +98,7 @@ describe('ledger.signer', () => {
 
   afterEach(() => {
     externalTransport.close();
+    jest.clearAllMocks();
   });
 
   it('should get an address from the ledger device', async () => {

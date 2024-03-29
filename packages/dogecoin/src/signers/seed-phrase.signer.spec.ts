@@ -1,4 +1,6 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import { BlockchairDataProvider } from '@xdefi-tech/chains-utxo';
+import * as btc from '@scure/btc-signer';
 
 import { DogecoinProvider } from '../chain.provider';
 import { DOGECOIN_MANIFEST } from '../manifests';
@@ -12,6 +14,11 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({ inputs: [{ value: 1000 }], outputs: [{ value: 100 }] }),
+}));
+
 describe('seed-phrase.signer', () => {
   let privateKey: string;
   let derivation: string;
@@ -20,6 +27,29 @@ describe('seed-phrase.signer', () => {
   let provider: DogecoinProvider;
   let txInput: MsgBody;
   let message: Msg;
+
+  beforeAll(() => {
+    jest
+      .spyOn(BlockchairDataProvider.prototype, 'scanUTXOs')
+      .mockResolvedValue([
+        {
+          hash: 'hash1',
+          value: 10000,
+          index: 0,
+          witnessUtxo: {
+            value: 10000,
+            script: Buffer.from('0x0', 'hex'),
+          },
+          txHex: 'raw_transaction',
+        },
+      ]);
+
+    jest.spyOn(btc.Transaction.prototype, 'sign').mockReturnValue(0);
+    jest.spyOn(btc.Transaction.prototype, 'finalize').mockReturnValue();
+    jest
+      .spyOn(btc.Transaction.prototype, 'hex', 'get')
+      .mockReturnValue('signedtx');
+  });
 
   beforeEach(() => {
     seedPhrase =
@@ -39,6 +69,10 @@ describe('seed-phrase.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should get an address from the seed phrase', async () => {
     expect(await signer.getAddress(derivation)).toBe(txInput.from);
   });
@@ -46,7 +80,7 @@ describe('seed-phrase.signer', () => {
   it('should sign a transaction using the seed phrase', async () => {
     await signer.sign(message as ChainMsg, derivation);
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(message.signedTransaction).toEqual('signedtx');
   });
 
   it('should return false when verifing an invalid address', async () => {

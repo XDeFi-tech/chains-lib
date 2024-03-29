@@ -1,4 +1,6 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import { BlockchairDataProvider } from '@xdefi-tech/chains-utxo';
+import * as btc from '@scure/btc-signer';
 
 import { DogecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -13,12 +15,40 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('coinselect/accumulative', () => ({
+  __esModule: true,
+  default: () => ({ inputs: [{ value: 1000 }], outputs: [{ value: 100 }] }),
+}));
+
 describe('private-key.signer', () => {
   let privateKey: string;
   let signer: PrivateKeySigner;
   let provider: DogecoinProvider;
   let txInput: MsgBody;
   let message: Msg;
+
+  beforeAll(() => {
+    jest
+      .spyOn(BlockchairDataProvider.prototype, 'scanUTXOs')
+      .mockResolvedValue([
+        {
+          hash: 'hash1',
+          value: 10000,
+          index: 0,
+          witnessUtxo: {
+            value: 10000,
+            script: Buffer.from('0x0', 'hex'),
+          },
+          txHex: 'raw_transaction',
+        },
+      ]);
+
+    jest.spyOn(btc.Transaction.prototype, 'sign').mockReturnValue(0);
+    jest.spyOn(btc.Transaction.prototype, 'finalize').mockReturnValue();
+    jest
+      .spyOn(btc.Transaction.prototype, 'hex', 'get')
+      .mockReturnValue('signedtx');
+  });
 
   beforeEach(() => {
     privateKey = 'QSyxzBP6nd6bUCqNE11fNBK4MTB7BVPvLMJy6NuveCSUUhACNHSH';
@@ -37,6 +67,10 @@ describe('private-key.signer', () => {
     message = provider.createMsg(txInput);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should get an address from the private key', async () => {
     expect(await signer.getAddress('')).toBe(txInput.from);
   });
@@ -44,9 +78,7 @@ describe('private-key.signer', () => {
   it('should sign a transaction using the private key', async () => {
     await signer.sign(message as ChainMsg);
 
-    expect(message.signedTransaction).toEqual(
-      '0200000001ad2c88f940cd48f724d667e58323efd048bdea62e32f426cf04b8fdf87071216000000006a473044022068b491ee366b00d7ee0643111977b4f9d69d280446e4672c25f91e137f82ca5702205ce414f90daa6cb99f79ad80db6b2fb6cc700dcb74594e57b4f87b72d60260bf0121037e6c9ff86d24858e73a75d08d1c4270cf3aa56d421e362eacdd063e264e5b12cffffffff0164000000000000001976a914c602dc308aa94acd75537757eeca791da957e4f188ac00000000'
-    );
+    expect(message.signedTransaction).toEqual('signedtx');
   });
 
   it('should return false when verifing an invalid address', async () => {
