@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Chain, GasFeeSpeed, MsgEncoding } from '@xdefi-tech/chains-core';
 import { PrivateKeySigner } from '@xdefi-tech/chains-binance/dist/signers/web';
 
@@ -64,16 +73,22 @@ const SendTransaction = (props: IBroadcastComponent) => {
   );
 
   const handleEstimateFee = useCallback(async () => {
-    const msg = await props.provider.createMsg({
-      from: fromAddress,
-      to: toAddress,
-      amount: parseFloat(amount),
-    }, MsgEncoding.object);
+    const msg = await props.provider.createMsg(
+      {
+        from: fromAddress,
+        to: toAddress,
+        amount: parseFloat(amount),
+      },
+      MsgEncoding.object
+    );
     const [fee] = await props.provider.estimateFee([msg], speed as GasFeeSpeed);
-    const msgWithFee = await props.provider.createMsg({
-      ...msg.toData(),
-      ...fee,
-    }, MsgEncoding.object);
+    const msgWithFee = await props.provider.createMsg(
+      {
+        ...msg.toData(),
+        ...fee,
+      },
+      MsgEncoding.object
+    );
     setMsg(msgWithFee);
   }, [fromAddress, toAddress, amount, speed]);
 
