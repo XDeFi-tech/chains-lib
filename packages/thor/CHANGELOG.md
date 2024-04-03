@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.6
+
+### Patch Changes
+
+- ce13b63: fix: seed-phrase signer and manifest for mayachain
+
 ## 2.0.5
 
 ### Patch Changes
