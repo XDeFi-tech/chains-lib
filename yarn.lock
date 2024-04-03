@@ -5244,7 +5244,7 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.7.2.tgz#2d4260033e199b3032a08b41348ac10de21c47e9"
   integrity sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==
 
-"@scure/base@^1.1.1", "@scure/base@~1.1.4", "@scure/base@~1.1.5":
+"@scure/base@~1.1.4", "@scure/base@~1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.5.tgz#1d85d17269fe97694b9c592552dd9e5e33552157"
   integrity sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==
@@ -7407,16 +7407,6 @@ bip32@2.0.4:
     create-hash "^1.2.0"
     create-hmac "^1.1.7"
     tiny-secp256k1 "^1.1.0"
-    typeforce "^1.11.5"
-    wif "^2.0.6"
-
-bip32@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/bip32/-/bip32-4.0.0.tgz#7fac3c05072188d2d355a4d6596b37188f06aa2f"
-  integrity sha512-aOGy88DDlVUhspIXJN+dVEtclhIsfAUppD43V0j40cPTld3pv/0X/MlrZSZ6jowIaQQzFwP8M6rFU2z2mVYjDQ==
-  dependencies:
-    "@noble/hashes" "^1.2.0"
-    "@scure/base" "^1.1.1"
     typeforce "^1.11.5"
     wif "^2.0.6"
 
@@ -10470,7 +10460,7 @@ form-data@^4.0.0:
     blakejs "^1.1.0"
     bn.js "^4.11.8"
     buffer "^5.2.1"
-    crypto-js "4.2.0"
+    crypto-js "^3.1.9-1"
     elliptic "^6.4.1"
     hmac-drbg "^1.0.1"
     lodash "^4.17.21"

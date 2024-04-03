@@ -35,7 +35,7 @@ export const THORCHAIN_MANIFESTS: {
     chain: 'mayachain',
     denom: 'cacao',
     prefix: 'maya',
-    decimals: 8,
+    decimals: 10,
     feeGasStep: {
       high: 0,
       medium: 0,

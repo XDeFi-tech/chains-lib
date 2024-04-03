@@ -2,8 +2,7 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';
-import { BIP32Factory } from 'bip32';
-import * as ecc from 'tiny-secp256k1';
+import * as bip32 from 'bip32';
 import Long from 'long';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import {
@@ -15,15 +14,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  private _bip32?: ReturnType<typeof BIP32Factory>;
-
-  private get bip32() {
-    if (!this._bip32) {
-      this._bip32 = BIP32Factory(ecc);
-    }
-    return this._bip32;
-  }
-
   verifyAddress(address: string, prefix?: string): boolean {
     if (!prefix) {
       prefix = 'thor';
@@ -41,10 +31,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Invalid phrase');
     }
     const seed = await bip39.mnemonicToSeed(this.key);
-    if (!this.bip32) {
-      throw new Error('Invalid bip32');
-    }
-    const node = this.bip32.fromSeed(seed);
+    const node = bip32.fromSeed(seed);
     const child = node.derivePath(derivation);
 
     if (!child.privateKey) {
@@ -61,10 +48,7 @@ export class SeedPhraseSigner extends Signer.Provider {
       throw new Error('Invalid phrase');
     }
     const seed = await bip39.mnemonicToSeed(this.key);
-    if (!this.bip32) {
-      throw new Error('Invalid bip32');
-    }
-    const node = this.bip32.fromSeed(seed);
+    const node = bip32.fromSeed(seed);
     const child = node.derivePath(derivation);
 
     if (!child.privateKey) {
