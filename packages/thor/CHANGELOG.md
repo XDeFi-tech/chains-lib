@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.5
+
+### Patch Changes
+
+- 3f0581e: fix: add cosmjs dependency
+
 ## 2.0.4
 
 ### Patch Changes
