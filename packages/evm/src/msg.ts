@@ -7,7 +7,7 @@ import {
   NumberIsh,
   utils,
 } from '@xdefi-tech/chains-core';
-import { ethers } from 'ethers';
+import { BigNumberish, BytesLike, ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 
 import erc20ABI from './consts/erc20.json';
@@ -34,6 +34,26 @@ export enum TransactionType {
 export enum SignatureType {
   Transaction = 0,
   PersonalSign = 1,
+  SignTypedData = 2,
+}
+
+export interface EvmTypedData {
+  domain: TypedDataDomain;
+  fields: Record<string, Array<TypedDataField>>;
+  values: Record<string, any>;
+}
+
+export interface TypedDataField {
+  name: string;
+  type: string;
+}
+
+export interface TypedDataDomain {
+  name?: string;
+  version?: string;
+  chainId?: BigNumberish;
+  verifyingContract?: string;
+  salt?: BytesLike;
 }
 
 export interface MsgBody {
@@ -44,6 +64,7 @@ export interface MsgBody {
   decimals: string | number;
   chainId: NumberIsh;
   data?: HexString;
+  typedData?: EvmTypedData;
   gasLimit?: NumberIsh;
   gasPrice?: NumberIsh; // wei
   maxFeePerGas?: NumberIsh;
@@ -222,6 +243,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       contractAddress: this.data?.contractAddress,
       nftId: this.data?.nftId,
       txType: this.data?.txType,
+      typedData: this.data?.typedData,
     };
   }
 
