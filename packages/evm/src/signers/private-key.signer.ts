@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
 
-import { ChainMsg, SignatureType } from '../msg';
+import { ChainMsg, EvmTypedData, SignatureType } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -28,6 +28,20 @@ export class PrivateKeySigner extends Signer.Provider {
     let signature;
     if (signatureType === SignatureType.PersonalSign) {
       signature = await wallet.signMessage(txData.data);
+    } else if (signatureType === SignatureType.SignTypedData) {
+      if (
+        !msg.toData().typedData ||
+        typeof msg.toData().typedData !== 'object'
+      ) {
+        throw new Error('Invalid Typed Data Provided');
+      }
+
+      const typedData = msg.toData().typedData as EvmTypedData;
+      signature = await wallet._signTypedData(
+        typedData.domain,
+        typedData.fields,
+        typedData.values
+      );
     } else if (signatureType === SignatureType.Transaction) {
       signature = await wallet.signTransaction({
         to: txData.to,

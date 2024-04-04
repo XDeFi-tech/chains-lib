@@ -3,7 +3,13 @@ import { Msg } from '@xdefi-tech/chains-core';
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody, SignatureType } from '../msg';
+import {
+  ChainMsg,
+  EvmTypedData,
+  MsgBody,
+  SignatureType,
+  TypedDataField,
+} from '../msg';
 
 import PrivateKeySigner from './private-key.signer';
 
@@ -49,6 +55,30 @@ describe('private-key.signer', () => {
     await signer.sign(chainMsg as ChainMsg, '', SignatureType.PersonalSign);
 
     expect(chainMsg.signedTransaction).toBeTruthy();
+  });
+
+  it('should sign a typed message using a seed phrase', async () => {
+    const record: Record<string, Array<TypedDataField>> = {
+      test: [{ name: 'test', type: 'string' }],
+    };
+    const values: Record<string, any> = {
+      test: 'test',
+    };
+
+    const testData: EvmTypedData = {
+      domain: {},
+      fields: record,
+      values: values,
+    };
+
+    txInput.typedData = testData;
+    const chainMsg = provider.createMsg(txInput);
+
+    await signer.sign(chainMsg as ChainMsg, '', SignatureType.SignTypedData);
+
+    expect(chainMsg.signedTransaction).toEqual(
+      '0x41d9578d76d6460e125a783418c644de2663e585d59f507e7a86697a58d9bba24307fdad5f9647dba44b5ed5ac54741b3959fb8838c8a2b33afaa88d8d8c15571b'
+    );
   });
 
   it('should return false when verifing an invalid address', async () => {
