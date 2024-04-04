@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
 
-import { ChainMsg, EvmTypedData, SignatureType, TypedDataField } from '../msg';
+import { ChainMsg, EvmTypedData, SignatureType } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
