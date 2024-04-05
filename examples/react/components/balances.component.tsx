@@ -15,6 +15,7 @@ import { isEmpty } from 'lodash';
 export interface IBalancesComponent {
   provider: Chain.Provider;
   address: string;
+  tokenList: string[];
 }
 
 const BalancesComponent = (props: IBalancesComponent) => {
@@ -23,10 +24,9 @@ const BalancesComponent = (props: IBalancesComponent) => {
   const [balanceLoader, setBalanceLoader] = useState<boolean>(false);
   const [subscription, setSubscription] = useState(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-
   useEffect(() => {
     handleUnsubscribe();
-  }, [props.address, props.provider]);
+  }, [props.address, props.provider, props.tokenList]);
 
   useEffect(() => {
     setBalanceError(null);
@@ -44,9 +44,11 @@ const BalancesComponent = (props: IBalancesComponent) => {
     try {
       setBalanceLoader(true);
       setBalanceError(null);
-      const balanceResponse = await props.provider.getBalance(props.address);
+      const balanceResponse = await props.provider.getBalance(
+        props.address,
+        props.tokenList.length > 0 ? props.tokenList : null
+      );
       const balanceData = await balanceResponse.getData();
-
       setLastUpdate(new Date());
       setBalances(balanceData);
       setBalanceLoader(false);
@@ -54,7 +56,7 @@ const BalancesComponent = (props: IBalancesComponent) => {
       setBalanceError(err.message);
       setBalanceLoader(false);
     }
-  }, [props.address, props.provider]);
+  }, [props.address, props.provider, props.tokenList]);
 
   const handleStreamingClick = useCallback(async () => {
     try {

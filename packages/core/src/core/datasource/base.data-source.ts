@@ -44,6 +44,8 @@ export abstract class DataSource {
 
   abstract getBalance(filter: BalanceFilter): Promise<Coin[]>;
 
+  abstract getBalance(filter: BalanceFilter, tokenAddresses: string[]): Promise<Coin[]>;
+
   abstract subscribeBalance(filter: BalanceFilter): Promise<Observable<Balance[]>>;
 
   abstract getTransactions(filter: TransactionsFilter): Promise<Transaction[]>;

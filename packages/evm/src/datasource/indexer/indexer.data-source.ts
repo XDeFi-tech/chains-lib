@@ -31,6 +31,7 @@ import {
   FACTOR_ESTIMATE,
 } from '../../constants';
 import { RestEstimateGasRequest } from '../../types';
+import { getEvmBalance } from '../multicall/evm.multicall';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
 import {
@@ -58,11 +59,20 @@ export class IndexerDataSource extends DataSource {
     return getNFTBalance(this.manifest.chain, address);
   }
 
-  async getBalance(filter: BalanceFilter): Promise<Coin[]> {
+  async getBalance(
+    filter: BalanceFilter,
+    tokenAddresses?: string[]
+  ): Promise<Coin[]> {
+    if (!tokenAddresses) {
+      return [];
+    }
     const { address } = filter;
-    const balances = await getBalance(
-      this.manifest.chain as EVMChains,
-      address
+    const balances = await getEvmBalance(
+      this.manifest.rpcURL,
+      '0xcA11bde05977b3631167028862bE2a173976CA11', // tmp hardcode, TODO: get from manifest
+      address,
+      this.manifest.chainSymbol,
+      tokenAddresses
     );
 
     return balances.map((balance: any): Coin => {
