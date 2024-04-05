@@ -36,6 +36,7 @@ describe('seed-phrase.signer', () => {
       from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       amount: 0.000001,
+      priorityFeeAmount: 10000,
     };
 
     message = provider.createMsg(txInput);

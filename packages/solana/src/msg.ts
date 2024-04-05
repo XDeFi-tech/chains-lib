@@ -13,6 +13,7 @@ import {
   TransactionInstruction,
   LAMPORTS_PER_SOL,
   VersionedTransaction,
+  ComputeBudgetProgram,
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -32,7 +33,8 @@ export interface MsgBody {
   decimals?: number;
   contractAddress?: string;
   memo?: string;
-  data?: string; // for swaps when encoded is base64
+  data?: string; // for swaps when encoded is base64a
+  priorityFeeAmount?: number;
 }
 
 export interface TxBody {
@@ -143,6 +145,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       programId = SystemProgram.programId;
     }
 
+    if (msgData.priorityFeeAmount) {
+      const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: msgData.priorityFeeAmount,
+      });
+      transaction.add(addPriorityFee);
+    }
     transaction.add(instruction);
 
     if (msgData.memo) {
