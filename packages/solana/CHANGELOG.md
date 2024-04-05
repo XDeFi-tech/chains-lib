@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.6
+
+### Patch Changes
+
+- 82fdce3: Add support for solana priority fees
+
 ## 2.0.5
 
 ### Patch Changes
