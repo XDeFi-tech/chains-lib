@@ -52,6 +52,7 @@ describe('ledger.signer', () => {
       to: '7HZYYfdqQgDgNduLA5gh8y4A5Mr3rCLVWeXBF4Vg9qZZ',
       amount: 0.000001,
       gasPrice: 100,
+      priorityFeeAmount: 10000,
     };
 
     message = provider.createMsg(txInput);
