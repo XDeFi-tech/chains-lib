@@ -13,7 +13,11 @@ import {
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { LcdClient, setupBankExtension } from '@cosmjs/launchpad';
+import {
+  BankBalancesResponse,
+  LcdClient,
+  setupBankExtension,
+} from '@cosmjs/launchpad';
 import {
   AddressChain,
   getCryptoAssets,
@@ -54,6 +58,9 @@ export class ChainDataSource extends DataSource {
     );
     this.lcdAxiosClient = axios.create({
       baseURL: this.manifest.lcdURL,
+      headers: {
+        'Cache-Control': 'no-cache', // Additional header to suggest no caching
+      },
     });
   }
 
@@ -63,11 +70,12 @@ export class ChainDataSource extends DataSource {
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
-    const client = LcdClient.withExtensions(
-      { apiUrl: this.manifest.lcdURL },
-      setupBankExtension
+
+    const response = await this.lcdAxiosClient.get(
+      `/bank/balances/${address}?timestamp=${new Date().getTime()}`
     );
-    const balances = await client.bank.balances(address);
+
+    const balances = response.data as BankBalancesResponse;
     const chain = capitalize(this.manifest.chain) as AddressChain;
     const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
       ({ denom }) => ({
