@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.6
+
+### Patch Changes
+
+- 9f067eb: dont cache balances when fetching
+
 ## 2.0.5
 
 ### Patch Changes
