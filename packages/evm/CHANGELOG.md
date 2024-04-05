@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.7
+
+### Patch Changes
+
+- 13a3eb3: feat: add ethers to export
+
 ## 2.0.6
 
 ### Patch Changes
