@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.6
+
+### Patch Changes
+
+- caa099e: add klaytn and cronos chains to manifest
+
 ## 2.0.5
 
 ### Patch Changes
