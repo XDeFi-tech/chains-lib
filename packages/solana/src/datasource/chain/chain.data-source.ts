@@ -5,7 +5,6 @@ import {
   Chain,
   Coin,
   DataSource,
-  EIP1559Fee,
   FeeData,
   FeeOptions,
   GasFeeSpeed,
@@ -39,7 +38,6 @@ export class ChainDataSource extends DataSource {
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
-    const { address, afterBlock } = filter;
     const balance = await this.rpcProvider.getBalance(
       new PublicKey(filter.address)
     );
