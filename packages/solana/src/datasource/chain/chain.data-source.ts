@@ -17,7 +17,12 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';
-import { Connection, PublicKey, VersionedMessage } from '@solana/web3.js';
+import {
+  Connection,
+  ParsedAccountData,
+  PublicKey,
+  VersionedMessage,
+} from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
 
 import { ChainMsg } from '../../msg';
@@ -72,7 +77,11 @@ export class ChainDataSource extends DataSource {
 
       const tokenName = accountInfo.mint.toBase58();
       const tokenSymbol = '';
-      const tokenDecimals = 1;
+      const mint = await this.rpcProvider.getParsedAccountInfo(
+        accountInfo.mint
+      );
+      const tokenDecimals =
+        (mint.value?.data as ParsedAccountData).parsed ?? 18;
       const tokenBalance = accountInfo.amount;
 
       const coin = new Coin(
