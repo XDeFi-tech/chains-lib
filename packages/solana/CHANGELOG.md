@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.7
+
+### Patch Changes
+
+- ac0a640: add solana chain data set
+
 ## 2.0.6
 
 ### Patch Changes
