@@ -140,7 +140,9 @@ export class ChainDataSource extends DataSource {
           ]?.transaction.message.instructions[0].programId.toBase58() ?? '',
         from: filter.address,
         status: transactionDetails[i]?.blockTime
-          ? TransactionStatus.success
+          ? transactionDetails[i]?.meta?.err
+            ? TransactionStatus.failure
+            : TransactionStatus.success
           : TransactionStatus.pending,
       };
 
