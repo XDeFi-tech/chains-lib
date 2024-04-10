@@ -1,18 +1,22 @@
 import { Contract, ethers } from 'ethers';
-import { decodeHexString } from '../../utils';
 
+import { decodeHexString } from '../../utils';
 import multicallAbi from '../../consts/multicall.json';
 import erc20Abi from '../../consts/erc20.json';
+import { MULTICALL3_CONTRACT_ADDRESS } from '../../constants';
 export const getEvmBalance = async (
   rpc: string,
-  multiCallAddress: string,
-  walletAddress: string,
   chainSymbol: string,
+  walletAddress: string,
   tokenAddresses: string[]
 ) => {
   try {
     const provider = new ethers.providers.JsonRpcProvider(rpc);
-    const multicall = new Contract(multiCallAddress, multicallAbi, provider);
+    const multicall = new Contract(
+      MULTICALL3_CONTRACT_ADDRESS,
+      multicallAbi,
+      provider
+    );
     const ethersDecimal = 18;
     const interfaces = new ethers.utils.Interface(erc20Abi);
     const balanceOfCallData = interfaces.encodeFunctionData('balanceOf', [

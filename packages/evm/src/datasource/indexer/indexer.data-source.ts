@@ -69,9 +69,8 @@ export class IndexerDataSource extends DataSource {
     const { address } = filter;
     const balances = await getEvmBalance(
       this.manifest.rpcURL,
-      '0xcA11bde05977b3631167028862bE2a173976CA11', // tmp hardcode, TODO: get from manifest
+      this.manifest.name,
       address,
-      this.manifest.chainSymbol,
       tokenAddresses
     );
 
