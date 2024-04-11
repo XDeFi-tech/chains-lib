@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.6
+
+### Patch Changes
+
+- 737695e: feat: add get custom tokents, multicall get balance
+
 ## 2.0.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.8
+
+### Patch Changes
+
+- 737695e: feat: add get custom tokents, multicall get balance
+- Updated dependencies [737695e]
+  - @xdefi-tech/chains-core@2.0.6
+
 ## 2.0.7
 
 ### Patch Changes
