@@ -28,6 +28,7 @@ const Home: NextPage = () => {
   const [currentProvider, setCurrentProvider] = useState<
     undefined | Chain.Provider
   >(chains.getProviderList()[0]);
+  const [tokenList, setTokenList] = useState<string[]>([]);
   const handleChainChange = useCallback(
     (event) => {
       setCurrentProvider(chains.getProviderById(event.target.value));
@@ -40,6 +41,10 @@ const Home: NextPage = () => {
     (event) => setAddress(event.target.value),
     []
   );
+
+  const handleTokenListChange = useCallback((event) => {
+    setTokenList(event.target.value.split(','));
+  }, []);
 
   useEffect(() => {
     const list = chains.getProviderList();
@@ -162,7 +167,22 @@ const Home: NextPage = () => {
         />
       </Box>
 
-      <BalancesComponent provider={currentProvider} address={address} />
+      <Box my={2}>
+        <TextField
+          id="token-list"
+          label="List token addresses"
+          variant="outlined"
+          value={tokenList}
+          onChange={handleTokenListChange}
+          fullWidth
+        />
+      </Box>
+
+      <BalancesComponent
+        provider={currentProvider}
+        address={address}
+        tokenList={tokenList}
+      />
 
       <TransactionsComponent provider={currentProvider} address={address} />
 

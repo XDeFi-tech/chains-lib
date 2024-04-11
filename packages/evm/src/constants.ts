@@ -5,3 +5,6 @@ export const ERC721_SAFE_TRANSFER_METHOD =
 export const ERC1155_SAFE_TRANSFER_METHOD =
   'safeTransferFrom(address,address,uint256,uint256,bytes)';
 export const FACTOR_ESTIMATE = 1.5; // estimate factor for gas limit
+
+export const MULTICALL3_CONTRACT_ADDRESS =
+  '0xcA11bde05977b3631167028862bE2a173976CA11';

@@ -80,9 +80,16 @@ export class EvmProvider extends Chain.Provider {
     return this.dataSource.getNFTBalance(address);
   }
 
-  async getBalance(address: string): Promise<Response<Coin[], Balance[]>> {
+  async getBalance(
+    address: string,
+    tokenList?: string[]
+  ): Promise<Response<Coin[], Balance[]>> {
     return new Response(
-      () => this.dataSource.getBalance({ address }),
+      () =>
+        this.dataSource.getBalance(
+          { address },
+          tokenList && tokenList.length ? tokenList : []
+        ),
       () => this.dataSource.subscribeBalance({ address })
     );
   }

@@ -27,3 +27,8 @@ export const parseGwei = (n: NumberIsh): BigNumber => {
     ethers.utils.parseUnits(num.toString(), 'gwei').toString()
   );
 };
+
+export const decodeHexString = (hexString: string): string => {
+  const decoded = ethers.utils.defaultAbiCoder.decode(['string'], hexString);
+  return decoded[0];
+};

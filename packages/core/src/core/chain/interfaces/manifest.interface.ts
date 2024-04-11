@@ -14,4 +14,5 @@ export interface Manifest {
     medium: number;
     low: number;
   };
+  multicallContractAddress?: string;
 }
