@@ -34,13 +34,7 @@ import { RestEstimateGasRequest } from '../../types';
 import { getEvmBalance } from '../multicall/evm.multicall';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
-import {
-  getBalance,
-  getFees,
-  getStatus,
-  getTransactions,
-  getNFTBalance,
-} from './queries';
+import { getFees, getStatus, getTransactions, getNFTBalance } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -73,7 +67,6 @@ export class IndexerDataSource extends DataSource {
       address,
       tokenAddresses
     );
-
     return balances.map((balance: any): Coin => {
       const { asset, amount } = balance;
 
