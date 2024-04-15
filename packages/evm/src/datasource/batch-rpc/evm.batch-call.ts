@@ -8,8 +8,7 @@ export const getBalanceByBatch = async (
 ) => {
   try {
     const provider = new ethers.providers.JsonRpcBatchProvider(rpc);
-    const response = [];
-    for (const tokenAddress of tokenAddresses) {
+    const callPromise = tokenAddresses.map(async (tokenAddress) => {
       const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
       const [balanceOf, symbol, name, decimal] = await Promise.all([
         contract.balanceOf(walletAddress),
@@ -17,7 +16,7 @@ export const getBalanceByBatch = async (
         contract.callStatic.name(),
         contract.callStatic.decimals(),
       ]);
-      response.push({
+      return {
         address: walletAddress,
         amount: {
           value: ethers.BigNumber.from(balanceOf._hex).toString(),
@@ -29,9 +28,9 @@ export const getBalanceByBatch = async (
           name,
           symbol,
         },
-      });
-    }
-    return [...response];
+      };
+    });
+    return Promise.all(callPromise);
   } catch (error) {
     throw error;
   }
