@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.7
+
+### Patch Changes
+
+- d97d68f: Fix: getBalance method with empty tokenAddresses
+
 ## 2.0.6
 
 ### Patch Changes

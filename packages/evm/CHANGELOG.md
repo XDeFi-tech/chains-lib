@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.11
+
+### Patch Changes
+
+- d97d68f: Fix: getBalance method with empty tokenAddresses
+- Updated dependencies [d97d68f]
+  - @xdefi-tech/chains-core@2.0.7
+
 ## 2.0.10
 
 ### Patch Changes
