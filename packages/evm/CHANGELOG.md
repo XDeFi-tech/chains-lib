@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.9
+
+### Patch Changes
+
+- 6051dff: Feat: rpc batch call
+
 ## 2.0.8
 
 ### Patch Changes
