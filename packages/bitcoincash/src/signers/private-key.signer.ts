@@ -1,7 +1,7 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { secp256k1 } from '@noble/curves/secp256k1';
-import * as btc from '@scure/btc-signer';
+import { UTXO } from '@xdefi-tech/chains-utxo';
+import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import coininfo from 'coininfo';
 import * as bchaddr from 'bchaddrjs';
 
@@ -18,63 +18,60 @@ export class PrivateKeySigner extends Signer.Provider {
     }
   }
 
-  async getPrivateKey(_derivation?: string): Promise<string> {
-    if (!this.key) {
-      throw new Error('Private key not set!');
-    }
-
+  async getPrivateKey(_derivation: string): Promise<string> {
     return this.key;
   }
 
-  async getAddress(_derivation?: string): Promise<string> {
+  async getAddress(): Promise<string> {
     const network = coininfo.bitcoincash.main.toBitcoinJS();
-    const wif = await this.getPrivateKey(_derivation);
-    const privateKey = Buffer.from(btc.WIF(network).decode(wif)).toString(
-      'hex'
-    );
-    const publicKey = secp256k1.getPublicKey(privateKey, true);
-    const { address } = btc.p2pkh(publicKey, network);
+    const pk = BitcoinCash.ECPair.fromWIF(this.key, network);
+    const address = pk.getAddress();
 
     if (!address) throw new Error('BCH address is undefined');
-
-    const adddressWithPrefix = bchaddr.toCashAddress(address);
+    const adddressWithPrefix = bchaddr.toCashAddress(address); // bitcoincash:${address}
 
     return adddressWithPrefix.replace(/(bchtest:|bitcoincash:)/, '');
   }
 
-  private toLegacy(address: string): string {
+  private toLegacy(address: string) {
     return bchaddr.toLegacyAddress(address);
   }
 
-  async sign(message: ChainMsg, _derivation?: string) {
+  async sign(message: ChainMsg) {
+    const { inputs, outputs, compiledMemo, from } = await message.buildTx();
     const network = coininfo.bitcoincash.main.toBitcoinJS();
+    const builder = new BitcoinCash.TransactionBuilder(network);
 
-    const { inputs, outputs, from } = await message.buildTx();
-    const txP2WPKH = new btc.Transaction();
-    for (const input of inputs) {
-      txP2WPKH.addInput({
-        txid: input.hash,
-        index: input.index,
-        nonWitnessUtxo: input.txHex,
-      });
-    }
-    for (const output of outputs) {
-      if (!output.address) {
-        output.address = from;
-      }
-      txP2WPKH.addOutputAddress(
-        this.toLegacy(output.address),
-        BigInt(output.value),
-        network
+    inputs.forEach((utxo: UTXO) => {
+      builder.addInput(
+        BitcoinCash.Transaction.fromBuffer(
+          Buffer.from(utxo.txHex || '', 'hex')
+        ),
+        utxo.index
       );
-    }
-    const privateKey = await this.getPrivateKey(_derivation);
-    txP2WPKH.sign(
-      new Uint8Array(Buffer.from(btc.WIF(network).decode(privateKey)))
-    );
-    txP2WPKH.finalize();
+    });
 
-    message.sign(txP2WPKH.hex);
+    outputs.forEach((output: any) => {
+      const outAddress = this.toLegacy(output.address || from);
+      const out = BitcoinCash.address.toOutputScript(outAddress, network);
+
+      if (!output.script) {
+        builder.addOutput(out, output.value);
+      } else if (compiledMemo) {
+        builder.addOutput(compiledMemo, 0);
+      }
+    });
+
+    inputs.forEach((utxo: UTXO, index: number) => {
+      builder.sign(
+        index,
+        BitcoinCash.ECPair.fromWIF(this.key, network),
+        undefined,
+        0x41,
+        utxo.witnessUtxo.value
+      );
+    });
+    message.sign(builder.build().toHex());
   }
 }
 
