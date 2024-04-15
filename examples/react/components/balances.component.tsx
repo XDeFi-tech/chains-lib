@@ -44,10 +44,18 @@ const BalancesComponent = (props: IBalancesComponent) => {
     try {
       setBalanceLoader(true);
       setBalanceError(null);
-      const balanceResponse = await props.provider.getBalance(
-        props.address,
-        props.tokenList.length > 0 ? props.tokenList : null
-      );
+      let balanceResponse;
+      if(props.tokenList.length > 0) {
+        balanceResponse = await props.provider.getBalance(
+          props.address,
+          props.tokenList,
+        );
+      } else {
+        balanceResponse = await props.provider.getBalance(
+          props.address,
+        
+        );
+      }
       const balanceData = await balanceResponse.getData();
       setLastUpdate(new Date());
       setBalances(balanceData);
@@ -69,7 +77,6 @@ const BalancesComponent = (props: IBalancesComponent) => {
       }
       const balanceResponse = await props.provider.getBalance(props.address);
       const balanceObserver = await balanceResponse.getObserver();
-
       setSubscription(
         balanceObserver.subscribe((data) => {
           // todo create and update subs list

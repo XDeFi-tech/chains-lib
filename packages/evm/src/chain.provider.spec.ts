@@ -29,7 +29,7 @@ describe('chain.provider', () => {
     );
     polygonProvider = new EvmProvider(
       new IndexerDataSource(EVM_MANIFESTS.polygon)
-    )
+    );
   });
 
   it('createMsg(): should create message with data', () => {
@@ -85,10 +85,10 @@ describe('chain.provider', () => {
       ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84']
     );
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(2);
-    expect(balanceData[1].amount.toString()).toEqual('0');
-    expect(balanceData[1].asset.symbol).toEqual('stETH');
-    expect(balanceData[1].asset.name).toEqual('Liquid staked Ether 2.0');
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0].amount.toString()).toEqual('0');
+    expect(balanceData[0].asset.symbol).toEqual('stETH');
+    expect(balanceData[0].asset.name).toEqual('Liquid staked Ether 2.0');
   });
 
   it('should throw error for a non-existant address wallet', async () => {
@@ -130,10 +130,10 @@ describe('chain.provider', () => {
       ['0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8']
     );
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(2);
-    expect(balanceData[1].amount.toString()).toEqual('0');
-    expect(balanceData[1].asset.symbol).toEqual('PENDLE');
-    expect(balanceData[1].asset.name).toEqual('Pendle');
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0].amount.toString()).toEqual('0');
+    expect(balanceData[0].asset.symbol).toEqual('PENDLE');
+    expect(balanceData[0].asset.name).toEqual('Pendle');
   });
 
   it('[Arbitrum] should throw error for a non-existant address wallet', async () => {
@@ -152,7 +152,6 @@ describe('chain.provider', () => {
     expect((await getBalancePromise).getData).rejects.toThrow();
   });
 
-  
   it('[Polygon]should get a balance', async () => {
     const balance = await polygonProvider.getBalance(
       '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6'
@@ -169,10 +168,10 @@ describe('chain.provider', () => {
       ['0x714DB550b574b3E927af3D93E26127D15721D4C2']
     );
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(2);
-    expect(balanceData[1].amount.toString()).toEqual('0');
-    expect(balanceData[1].asset.symbol).toEqual('GMT');
-    expect(balanceData[1].asset.name).toEqual('GreenMetaverseToken');
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0].amount.toString()).toEqual('0');
+    expect(balanceData[0].asset.symbol).toEqual('GMT');
+    expect(balanceData[0].asset.name).toEqual('GreenMetaverseToken');
   });
 
   it('[Polygon] should throw error for a non-existant address wallet', async () => {
@@ -190,5 +189,4 @@ describe('chain.provider', () => {
     );
     expect((await getBalancePromise).getData).rejects.toThrow();
   });
-
 });

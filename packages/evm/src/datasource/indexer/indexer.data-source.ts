@@ -34,7 +34,14 @@ import { RestEstimateGasRequest } from '../../types';
 import { getEvmBalance } from '../multicall/evm.multicall';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
-import { getFees, getStatus, getTransactions, getNFTBalance } from './queries';
+import {
+  getFees,
+  getStatus,
+  getTransactions,
+  getNFTBalance,
+  getBalance,
+} from './queries';
+import { getBalanceByBatch } from '../batch-rpc/evm.batch-call';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -57,19 +64,32 @@ export class IndexerDataSource extends DataSource {
     filter: BalanceFilter,
     tokenAddresses?: string[]
   ): Promise<Coin[]> {
+    const { address } = filter;
+    let balances;
     if (!tokenAddresses) {
       return [];
     }
-    const { address } = filter;
-    const balances = await getEvmBalance(
-      this.manifest.rpcURL,
-      this.manifest.name,
-      address,
-      tokenAddresses
-    );
+    if (tokenAddresses.length == 0) {
+      balances = await getBalance(this.manifest.chain as EVMChains, address);
+    } else {
+      if (this.manifest.multicallContractAddress) {
+        balances = balances = await getEvmBalance(
+          this.manifest.rpcURL,
+          this.manifest.name,
+          address,
+          tokenAddresses
+        );
+      } else {
+        balances = await getBalanceByBatch(
+          this.manifest.rpcURL,
+          address,
+          tokenAddresses
+        );
+      }
+    }
+
     return balances.map((balance: any): Coin => {
       const { asset, amount } = balance;
-
       return new Coin(
         new Asset({
           id: asset.id,
