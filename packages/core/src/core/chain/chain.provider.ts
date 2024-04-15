@@ -82,7 +82,7 @@ export abstract class Provider {
    * @param {string[]} tokenAddresses - The array of token address
    * @returns {Promise<Coin[]>} - A promise that resolves with an array of Coin objects representing the balances of the specified address.
    */
-  abstract getBalance(address: string, tokenAddresses: string[]): Promise<Response<Coin[], Balance[]>>;
+  abstract getBalance(address: string, tokenAddresses?: string[]): Promise<Response<Coin[], Balance[]>>;
 
   /**
    * Retrieves a list of transactions for a given address and optional block range.

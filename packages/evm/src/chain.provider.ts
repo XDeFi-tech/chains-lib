@@ -85,11 +85,7 @@ export class EvmProvider extends Chain.Provider {
     tokenList?: string[]
   ): Promise<Response<Coin[], Balance[]>> {
     return new Response(
-      () =>
-        this.dataSource.getBalance(
-          { address },
-          tokenList && tokenList.length ? tokenList : []
-        ),
+      () => this.dataSource.getBalance({ address }, tokenList),
       () => this.dataSource.subscribeBalance({ address })
     );
   }
