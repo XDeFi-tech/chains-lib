@@ -73,7 +73,7 @@ export class IndexerDataSource extends DataSource {
       balances = await getBalance(this.manifest.chain as EVMChains, address);
     } else {
       if (this.manifest.multicallContractAddress) {
-        balances = balances = await getEvmBalance(
+        balances = await getEvmBalance(
           this.manifest.rpcURL,
           this.manifest.name,
           address,
