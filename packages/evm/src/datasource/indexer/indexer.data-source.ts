@@ -67,25 +67,24 @@ export class IndexerDataSource extends DataSource {
     const { address } = filter;
     let balances;
     if (!tokenAddresses) {
-      return [];
-    }
-    if (tokenAddresses.length == 0) {
       balances = await getBalance(this.manifest.chain as EVMChains, address);
-    } else {
-      if (this.manifest.multicallContractAddress) {
-        balances = await getEvmBalance(
-          this.manifest.rpcURL,
-          this.manifest.name,
-          address,
-          tokenAddresses
-        );
-      } else {
-        balances = await getBalanceByBatch(
-          this.manifest.rpcURL,
-          address,
-          tokenAddresses
-        );
-      }
+    } else if (tokenAddresses && this.manifest.multicallContractAddress) {
+      balances = await getEvmBalance(
+        this.manifest.rpcURL,
+        this.manifest.name,
+        address,
+        tokenAddresses
+      );
+    } else if (tokenAddresses) {
+      balances = await getBalanceByBatch(
+        this.manifest.rpcURL,
+        address,
+        tokenAddresses
+      );
+    }
+
+    if (!balances) {
+      return [];
     }
 
     return balances.map((balance: any): Coin => {

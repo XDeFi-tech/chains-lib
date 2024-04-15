@@ -44,9 +44,9 @@ export class FallbackDataSource extends DataSource {
     }
   }
 
-  async getBalance(filter: BalanceFilter) {
+  async getBalance(filter: BalanceFilter, tokenAddresses?: string[]) {
     try {
-      return await this.getProvider().getBalance(filter);
+      return await this.getProvider().getBalance(filter, tokenAddresses);
     } catch (err) {
       this.attempts++;
       throw err;
