@@ -29,7 +29,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       medium: 1.25,
       low: 1,
     },
-    multicallContractAddress: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
   },
   [EVMChains.smartchain]: {
     name: 'BNB Smart Chain',
@@ -205,7 +205,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       medium: 1.25,
       low: 1,
     },
-    multicallContractAddress: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
   },
   [EVMChains.cronos]: {
     name: 'Cronos',
@@ -221,6 +221,6 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       medium: 1.25,
       low: 1,
     },
-    multicallContractAddress: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
   },
 };
