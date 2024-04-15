@@ -17,7 +17,6 @@ export const getEvmBalance = async (
       multicallAbi,
       provider
     );
-    const ethersDecimal = 18;
     const interfaces = new ethers.utils.Interface(erc20Abi);
     const balanceOfCallData = interfaces.encodeFunctionData('balanceOf', [
       walletAddress,
@@ -49,27 +48,12 @@ export const getEvmBalance = async (
       callData: symbolCallData,
     }));
 
-    const [walletBalance, balanceOfResults, decimals, names, symbols] =
-      await Promise.all([
-        provider.getBalance(walletAddress),
-        multicall.callStatic.aggregate3(balanceOfCalls),
-        multicall.callStatic.aggregate3(decimalCalls),
-        multicall.callStatic.aggregate3(nameCalls),
-        multicall.callStatic.aggregate3(symbolCalls),
-      ]);
-    const formattedWalletBalance = {
-      address: walletAddress,
-      amount: {
-        value: walletBalance.toString(),
-        scalingFactor: ethersDecimal,
-      },
-      asset: {
-        symbol: chainSymbol,
-        decimals: ethersDecimal,
-        contract: null,
-        name: chainSymbol,
-      },
-    };
+    const [balanceOfResults, decimals, names, symbols] = await Promise.all([
+      multicall.callStatic.aggregate3(balanceOfCalls),
+      multicall.callStatic.aggregate3(decimalCalls),
+      multicall.callStatic.aggregate3(nameCalls),
+      multicall.callStatic.aggregate3(symbolCalls),
+    ]);
     const formattedTokenBalances = tokenAddresses.map(
       (tokenAddress, index) => ({
         address: walletAddress,
@@ -77,7 +61,9 @@ export const getEvmBalance = async (
           value: ethers.BigNumber.from(
             balanceOfResults[index].returnData
           ).toString(),
-          scalingFactor: decimals[index],
+          scalingFactor: ethers.BigNumber.from(
+            decimals[index].returnData
+          ).toString(),
         },
         asset: {
           decimals: ethers.BigNumber.from(
@@ -90,7 +76,7 @@ export const getEvmBalance = async (
       })
     );
 
-    return [formattedWalletBalance, ...formattedTokenBalances];
+    return [...formattedTokenBalances];
   } catch (error) {
     throw error;
   }
