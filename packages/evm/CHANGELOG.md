@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.10
+
+### Patch Changes
+
+- 609e0ad: Fix: Syntax
+
 ## 2.0.9
 
 ### Patch Changes
