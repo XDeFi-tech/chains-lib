@@ -45,16 +45,13 @@ const BalancesComponent = (props: IBalancesComponent) => {
       setBalanceLoader(true);
       setBalanceError(null);
       let balanceResponse;
-      if(props.tokenList.length > 0) {
+      if (props.tokenList.length > 0) {
         balanceResponse = await props.provider.getBalance(
           props.address,
-          props.tokenList,
+          props.tokenList
         );
       } else {
-        balanceResponse = await props.provider.getBalance(
-          props.address,
-        
-        );
+        balanceResponse = await props.provider.getBalance(props.address);
       }
       const balanceData = await balanceResponse.getData();
       setLastUpdate(new Date());
