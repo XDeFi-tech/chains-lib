@@ -32,6 +32,7 @@ import {
 } from '../../constants';
 import { RestEstimateGasRequest } from '../../types';
 import { getEvmBalance } from '../multicall/evm.multicall';
+import { getBalanceByBatch } from '../batch-rpc/evm.batch-call';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
 import {
@@ -41,7 +42,6 @@ import {
   getNFTBalance,
   getBalance,
 } from './queries';
-import { getBalanceByBatch } from '../batch-rpc/evm.batch-call';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
