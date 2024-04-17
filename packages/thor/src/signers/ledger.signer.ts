@@ -1,5 +1,4 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
-import { Client } from '@xchainjs/xchain-thorchain';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
@@ -15,9 +14,8 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   verifyAddress(address: string): boolean {
-    // We need to init the client with some kind of seed phrase, even
-    // if we just want to check the address
-    return new Client({ phrase: '' }).validateAddress(address);
+    const thorchainAddressRegex = /^thor[a-z0-9]{25,39}$/i;
+    return thorchainAddressRegex.test(address);
   }
 
   async getPrivateKey(_derivation: string) {
