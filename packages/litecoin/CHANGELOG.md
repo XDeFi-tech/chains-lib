@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.8
+
+### Patch Changes
+
+- 2fc44eb: Feat: Add address generation unit test
+
 ## 2.0.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.6
+
+### Patch Changes
+
+- 2fc44eb: Feat: Add address generation unit test
+
 ## 2.0.5
 
 ### Patch Changes

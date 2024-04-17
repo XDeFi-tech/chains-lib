@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.12
+
+### Patch Changes
+
+- 2fc44eb: Feat: Add address generation unit test
+
 ## 2.0.11
 
 ### Patch Changes
