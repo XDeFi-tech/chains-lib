@@ -110,3 +110,29 @@ describe('seed-phrase.signer', () => {
     );
   });
 });
+
+describe('seed-phase.addressGeneration', () => {
+  let derivation: (index: number) => string;
+  let seedPhrase: string;
+  let signer: SeedPhraseSigner;
+  let firstAddress: string;
+  let secondAddress: string;
+
+  beforeEach(() => {
+    seedPhrase =
+      'access before split cram spoon snap secret month sphere fog embark donor';
+    derivation = (index) => `m/44'/60'/0'/0/${index}`;
+    signer = new SeedPhraseSigner(seedPhrase);
+
+    firstAddress = '0x230e9c3deE180bf702cd40852feF85eb5fa5635B';
+    secondAddress = '0x2370aDcbE0d9FBD581a0F881f2278d2EB626E8A8';
+  });
+
+  it('should get an address from the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(0))).toBe(firstAddress);
+  });
+
+  it('should get the second address form the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(1))).toBe(secondAddress);
+  });
+});
