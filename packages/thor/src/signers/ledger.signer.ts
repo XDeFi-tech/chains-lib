@@ -14,7 +14,7 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   verifyAddress(address: string): boolean {
-    const addressRegex = /^(thor|maya)[a-z0-9]{25,39}$/i;
+    const addressRegex = /^(thor|maya)1[a-z0-9]{26,38}$/i;
     return addressRegex.test(address);
   }
 
@@ -25,7 +25,7 @@ export class LedgerSigner extends Signer.Provider {
   async getAddress(derivation: string): Promise<string> {
     const app = new THORChainApp(this.transport as Transport);
     const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
-    const prefix = derivation.slice(0, 4)
+    const prefix = derivation.slice(0, 4);
     const { bech32Address } = await app.getAddressAndPubKey(
       derivationArray,
       prefix
