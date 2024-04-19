@@ -1,4 +1,3 @@
-import * as BitcoinCash from 'bitcoinjs-lib';
 import { isValidAddress } from 'bchaddrjs';
 import {
   Signer,
