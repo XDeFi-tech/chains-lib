@@ -14,8 +14,8 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   verifyAddress(address: string): boolean {
-    const thorchainAddressRegex = /^thor[a-z0-9]{25,39}$/i;
-    return thorchainAddressRegex.test(address);
+    const addressRegex = /^(thor|maya)[a-z0-9]{25,39}$/i;
+    return addressRegex.test(address);
   }
 
   async getPrivateKey(_derivation: string) {

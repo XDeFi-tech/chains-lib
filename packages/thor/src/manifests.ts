@@ -48,6 +48,7 @@ export interface ThorManifest extends Chain.Manifest {
   name: string;
   decimals: any;
   chainId: string;
+  chain: string;
   rpcURL: string;
   denom: string;
   prefix: string;
