@@ -190,37 +190,5 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  },
-  [EVMChains.klaytn]: {
-    name: 'Klaytn',
-    description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/klaytn',
-    chainSymbol: 'KLAY',
-    blockExplorerURL: 'https://klaytnscope.com',
-    chainId: '8217',
-    chain: 'klaytn',
-    decimals: 18,
-    feeGasStep: {
-      high: 1.5,
-      medium: 1.25,
-      low: 1,
-    },
-    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  },
-  [EVMChains.cronos]: {
-    name: 'Cronos',
-    description: '',
-    rpcURL: 'https://cronoscan-rpc.xdefiservices.com',
-    chainSymbol: 'CRO',
-    blockExplorerURL: 'https://cronoscan.com/',
-    chainId: '25',
-    chain: 'cronos',
-    decimals: 18,
-    feeGasStep: {
-      high: 1.5,
-      medium: 1.25,
-      low: 1,
-    },
-    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  },
+  }
 };
