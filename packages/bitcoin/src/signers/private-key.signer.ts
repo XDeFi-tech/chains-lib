@@ -2,6 +2,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
+import * as Bitcoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 

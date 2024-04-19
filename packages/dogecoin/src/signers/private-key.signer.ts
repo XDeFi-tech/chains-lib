@@ -3,6 +3,7 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import coininfo from 'coininfo';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
+import * as Dogecoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 
@@ -73,8 +74,7 @@ export class PrivateKeySigner extends Signer.Provider {
       await this.getPrivateKey(derivation ?? ''),
       network
     );
-    const psbt = Dogecoin.Psbt.fromHex(txHex, network);
-
+    const psbt = Dogecoin.Psbt.fromHex(txHex, { network });
     psbt.signAllInputs(pk);
     psbt.finalizeAllInputs();
     return psbt.extractTransaction(true).toHex();
