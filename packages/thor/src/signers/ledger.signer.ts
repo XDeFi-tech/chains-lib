@@ -3,9 +3,11 @@ import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
+import * as manifests from '../manifests';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
+  declare manifest: manifests.ThorManifest;
   private transport: Transport;
 
   constructor(transport: Transport) {
@@ -27,7 +29,7 @@ export class LedgerSigner extends Signer.Provider {
     const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
     const { bech32Address } = await app.getAddressAndPubKey(
       derivationArray,
-      'thor'
+      this.manifest.prefix
     );
 
     return bech32Address;
