@@ -5,6 +5,7 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
+import * as Dogecoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 
@@ -77,11 +78,18 @@ export class SeedPhraseSigner extends Signer.Provider {
       await this.getPrivateKey(derivation),
       network
     );
-    const psbt = Dogecoin.Psbt.fromHex(txHex, network);
+    const psbt = Dogecoin.Psbt.fromHex(txHex, { network });
 
     psbt.signAllInputs(pk);
     psbt.finalizeAllInputs();
     return psbt.extractTransaction(true).toHex();
+    // const tx = Dogecoin.Transaction.fromHex(txHex);
+    // const txb = Dogecoin.TransactionBuilder.fromTransaction(tx, network);
+    // for (let i = 0; i < tx.ins.length; i++) {
+    //   txb.sign(i, pk);
+    // }
+
+    // return txb.build().toHex();
   }
 }
 

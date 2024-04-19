@@ -4,6 +4,7 @@ import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
+import * as Bitcoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 
