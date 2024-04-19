@@ -8,7 +8,6 @@ import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
 import * as bchaddr from 'bchaddrjs';
-import * as BitcoinCashLib from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 
@@ -92,11 +91,11 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async signRawTransaction(txHex: string, derivation: string): Promise<string> {
     const network = coininfo.bitcoincash.main.toBitcoinJS();
-    const pk = BitcoinCashLib.ECPair.fromWIF(
+    const pk = Bitcoin.ECPair.fromWIF(
       await this.getPrivateKey(derivation),
       network
     );
-    const psbt = BitcoinCashLib.Psbt.fromHex(txHex, { network });
+    const psbt = Bitcoin.Psbt.fromHex(txHex, { network });
 
     psbt.signAllInputs(pk);
     psbt.finalizeAllInputs();
