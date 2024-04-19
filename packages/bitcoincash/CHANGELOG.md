@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.9
+
+### Patch Changes
+
+- 1adaef3: feat: use @psf/bitcoincashjs-lib instead of @scure/btc-signer
+
+## 2.0.8
+
+### Patch Changes
+
+- 2fc44eb: Feat: Add address generation unit test
+
 ## 2.0.7
 
 ### Patch Changes

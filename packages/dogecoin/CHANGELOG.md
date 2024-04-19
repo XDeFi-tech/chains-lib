@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.9
+
+### Patch Changes
+
+- 2fc44eb: Feat: Add address generation unit test
+
 ## 2.0.8
 
 ### Patch Changes

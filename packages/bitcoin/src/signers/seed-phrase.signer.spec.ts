@@ -62,3 +62,29 @@ describe('seed-phrase.signer', () => {
     expect(await signer.getPrivateKey(derivation)).toEqual(privateKey);
   });
 });
+
+describe('seed-phase.addressGeneration', () => {
+  let derivation: (index: number) => string;
+  let seedPhrase: string;
+  let signer: SeedPhraseSigner;
+  let firstAddress: string;
+  let secondAddress: string;
+
+  beforeEach(() => {
+    seedPhrase =
+      'access before split cram spoon snap secret month sphere fog embark donor';
+    derivation = (index) => `m/84'/0'/0'/0/${index}`;
+    signer = new SeedPhraseSigner(seedPhrase);
+
+    firstAddress = 'bc1qyfeeuvkq27fcqvpzj4ghkh0je2r8wd8tt53nfd';
+    secondAddress = 'bc1q060agetr28x693v4d2y46usd06zyrd9mvc8e95';
+  });
+
+  it('should get an address from the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(0))).toBe(firstAddress);
+  });
+
+  it('should get the second address form the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(1))).toBe(secondAddress);
+  });
+});

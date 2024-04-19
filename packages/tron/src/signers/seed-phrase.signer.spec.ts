@@ -125,3 +125,29 @@ describe('tron seed-phrase.signer', () => {
     );
   });
 });
+
+describe('seed-phase.addressGeneration', () => {
+  let derivation: (index: number) => string;
+  let seedPhrase: string;
+  let signer: SeedPhraseSigner;
+  let firstAddress: string;
+  let secondAddress: string;
+
+  beforeEach(() => {
+    seedPhrase =
+      'access before split cram spoon snap secret month sphere fog embark donor';
+    derivation = (index) => `m/44'/195'/${index}'/0/0`;
+    signer = new SeedPhraseSigner(seedPhrase, TRON_MANIFEST);
+
+    firstAddress = 'TSAmbvDjDR69Rq7zFF82wLbXSD9f7sdSDP';
+    secondAddress = 'TEDuXkSHsK7Q7c1tBw4hHBAbVNjbMt7xMt';
+  });
+
+  it('should get an address from the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(0))).toBe(firstAddress);
+  });
+
+  it('should get the second address form the seed phrase', async () => {
+    expect(await signer.getAddress(derivation(1))).toBe(secondAddress);
+  });
+});
