@@ -190,5 +190,5 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  }
+  },
 };
