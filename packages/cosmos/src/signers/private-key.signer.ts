@@ -12,7 +12,6 @@ import { utils, Wallet } from 'ethers';
 import { AccAddress, RawKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
-import { StdSignature } from '@cosmjs/amino';
 
 import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -141,7 +140,7 @@ export class PrivateKeySigner extends Signer.Provider {
     signature: Uint8Array
   ): Promise<boolean> {
     try {
-      const isValid = verifyADR36Amino(
+      const isVerified = verifyADR36Amino(
         bech32.decode(signer).prefix, // prefix
         signer, // signer
         data, // data sign message
@@ -149,7 +148,7 @@ export class PrivateKeySigner extends Signer.Provider {
         signature // signature
       );
 
-      return isValid;
+      return isVerified;
     } catch (err) {
       return false;
     }

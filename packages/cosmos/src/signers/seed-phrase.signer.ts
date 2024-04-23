@@ -150,7 +150,7 @@ export class SeedPhraseSigner extends Signer.Provider {
     signature: Uint8Array
   ): Promise<boolean> {
     try {
-      const isValid = verifyADR36Amino(
+      const isVerified = verifyADR36Amino(
         bech32.decode(signer).prefix, // prefix
         signer, // signer
         data, // data sign message
@@ -158,7 +158,7 @@ export class SeedPhraseSigner extends Signer.Provider {
         signature // signature
       );
 
-      return isValid;
+      return isVerified;
     } catch (err) {
       return false;
     }
