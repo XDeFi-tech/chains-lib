@@ -10,6 +10,9 @@ import {
 import { utils, Wallet } from 'ethers';
 import { MnemonicKey, AccAddress, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
+import { verifyADR36Amino } from '@keplr-wallet/cosmos';
+import { StdSignature } from '@cosmjs/amino';
+import { fromBase64 } from '@cosmjs/encoding';
 
 import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -138,6 +141,22 @@ export class SeedPhraseSigner extends Signer.Provider {
 
       msg.sign(Buffer.from(tx.toBytes()).toString('base64'));
     }
+  }
+
+  async verifyMessage(
+    address: string,
+    data: Uint8Array,
+    signed: StdSignature
+  ): Promise<boolean> {
+    const isValid = verifyADR36Amino(
+      bech32.decode(address).prefix, // bech32 prefix
+      bech32.encode('cosmos', bech32.decode(address).words), // signer
+      data, // data sign message
+      fromBase64(signed.pub_key.value), // pubKeyBuffer
+      fromBase64(signed.signature) // signatureBuffer
+    );
+
+    return isValid;
   }
 }
 
