@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.10
+
+### Patch Changes
+
+- 8acbcea: Fix: message amount integer value
+
 ## 2.0.9
 
 ### Patch Changes
