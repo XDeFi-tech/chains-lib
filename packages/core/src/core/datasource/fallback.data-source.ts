@@ -107,6 +107,17 @@ export class FallbackDataSource extends DataSource {
     }
   }
 
+  async getAccount(address: string) {
+    try {
+      if (this.getProvider().getAccount) {
+        return await this.getProvider().getAccount(address);
+      }
+    } catch (err) {
+      this.attempts++;
+      throw err;
+    }
+  }
+
   get name(): string {
     return `${this.constructor.name},${this.providers.map((provider) => provider.name).join(',')}`;
   }

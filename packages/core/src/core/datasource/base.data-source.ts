@@ -63,4 +63,8 @@ export abstract class DataSource {
   get name(): string {
     return this.constructor.name;
   }
+
+  async getAccount(_address: string): Promise<any> {
+    return;
+  }
 }
