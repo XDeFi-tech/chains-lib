@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.10
+
+### Patch Changes
+
+- 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
+- Updated dependencies [5b781e6]
+  - @xdefi-tech/chains-core@2.0.8
+  - @xdefi-tech/chains-utxo@2.0.5
+
 ## 2.0.9
 
 ### Patch Changes
