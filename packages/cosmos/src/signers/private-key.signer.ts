@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { fromHex } from '@cosmjs/encoding';
+import { fromBase64, fromHex } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 import {
@@ -11,6 +11,8 @@ import {
 import { utils, Wallet } from 'ethers';
 import { AccAddress, RawKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
+import { verifyADR36Amino } from '@keplr-wallet/cosmos';
+import { StdSignature } from '@cosmjs/amino';
 
 import { ChainMsg, CosmosChainType } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -130,6 +132,22 @@ export class PrivateKeySigner extends Signer.Provider {
 
       msg.sign(Buffer.from(tx.toBytes()).toString('base64'));
     }
+  }
+
+  async verifyMessage(
+    address: string,
+    data: Uint8Array,
+    signed: StdSignature
+  ): Promise<boolean> {
+    const isValid = verifyADR36Amino(
+      bech32.decode(address).prefix, // bech32 prefix
+      bech32.encode('cosmos', bech32.decode(address).words), // signer
+      data, // data sign message
+      fromBase64(signed.pub_key.value), // pubKeyBuffer
+      fromBase64(signed.signature) // signatureBuffer
+    );
+
+    return isValid;
   }
 }
 
