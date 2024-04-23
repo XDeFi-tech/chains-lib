@@ -144,19 +144,24 @@ export class SeedPhraseSigner extends Signer.Provider {
   }
 
   async verifyMessage(
-    address: string,
-    data: Uint8Array,
-    signed: StdSignature
+    signer: string,
+    data: Uint8Array | string,
+    pubKey: Uint8Array,
+    signature: Uint8Array
   ): Promise<boolean> {
-    const isValid = verifyADR36Amino(
-      bech32.decode(address).prefix, // bech32 prefix
-      bech32.encode('cosmos', bech32.decode(address).words), // signer
-      data, // data sign message
-      fromBase64(signed.pub_key.value), // pubKeyBuffer
-      fromBase64(signed.signature) // signatureBuffer
-    );
+    try {
+      const isValid = verifyADR36Amino(
+        bech32.decode(signer).prefix, // prefix
+        signer, // signer
+        data, // data sign message
+        pubKey, // pubKeyBuffer
+        signature // signature
+      );
 
-    return isValid;
+      return isValid;
+    } catch (err) {
+      return false;
+    }
   }
 }
 
