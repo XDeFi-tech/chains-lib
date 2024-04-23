@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.8
+
+### Patch Changes
+
+- 3f8a1dd: Feat: update default rpcUrl for thorchain
+
 ## 2.0.7
 
 ### Patch Changes
