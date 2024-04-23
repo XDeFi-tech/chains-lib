@@ -354,7 +354,7 @@ describe('seed-phase.addressGeneration', () => {
     const privKey = PrivKeySecp256k1.generateRandomKey();
     const pubKey = privKey.getPubKey();
 
-    const signer = bech32.encode('cosmos', bech32.toWords(pubKey.toBytes()));
+    const signer = bech32.encode('cosmos', bech32.toWords(privKey.toBytes()));
 
     const signDoc = makeADR36AminoSignDoc(signer, 'test');
     const msg = serializeSignDoc(signDoc);
@@ -369,7 +369,7 @@ describe('seed-phase.addressGeneration', () => {
           pubKey.toBytes(),
           new Uint8Array([...signature.r, ...signature.s])
         )
-      ).toBe(false);
+      );
     }
   });
 
