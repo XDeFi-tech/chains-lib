@@ -70,6 +70,12 @@ describe('ledger.signer', () => {
     expect(message.signedTransaction).toBeTruthy();
   });
 
+  it('should return false when verifing an invalid address', async () => {
+    expect(
+      signer.verifyAddress('invalid1hccrcavupf7wnl2klud40lan00zp0q3u807g94')
+    ).toBe(false);
+  });
+
   it('should validate an address', async () => {
     expect(signer.verifyAddress(txInput.from)).toBe(true);
   });
