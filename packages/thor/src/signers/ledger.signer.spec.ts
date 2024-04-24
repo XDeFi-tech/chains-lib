@@ -71,8 +71,12 @@ describe('ledger.signer', () => {
   });
 
   it('should return false when verifing an invalid address', async () => {
+    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return false when verifing an address without prefix(thor, maya)', async () => {
     expect(
-      signer.verifyAddress('invalid1hccrcavupf7wnl2klud40lan00zp0q3u807g94')
+      signer.verifyAddress('test1hccrcavupf7wnl2klud40lan00zp0q3u807g94')
     ).toBe(false);
   });
 
