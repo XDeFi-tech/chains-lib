@@ -15,9 +15,13 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   verifyAddress(address: string): boolean {
-    const prefix = bech32.decode(address).prefix;
-    if (prefix === 'thor' || prefix === 'maya') return true;
-    return false;
+    try {
+      const prefix = bech32.decode(address).prefix;
+      if (prefix === 'thor' || prefix === 'maya') return true;
+      return false;
+    } catch (error) {
+      return false;
+    }
   }
 
   async getPrivateKey(_derivation: string) {
