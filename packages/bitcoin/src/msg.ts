@@ -15,7 +15,7 @@ import type { BitcoinProvider } from './chain.provider';
 export interface MsgBody {
   amount: NumberIsh;
   to: string;
-  memo?: string;
+  memo?: string | Uint8Array;
   from: string;
   gasLimit?: NumberIsh; // ByteFee
   decimals?: number;
@@ -124,11 +124,15 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     };
   }
 
-  public compileMemo(memo: string) {
-    return UTXOLib.script.compile([
-      UTXOLib.opcodes.OP_RETURN,
-      Buffer.from(memo, 'utf8'),
-    ]);
+  public compileMemo(memo: string | Uint8Array) {
+    let formattedMemo: Buffer;
+    if (typeof memo === 'string') {
+      formattedMemo = Buffer.from(memo, 'utf8');
+    } else {
+      formattedMemo = Buffer.from(memo);
+    }
+
+    return UTXOLib.script.compile([UTXOLib.opcodes.OP_RETURN, formattedMemo]);
   }
 
   async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
