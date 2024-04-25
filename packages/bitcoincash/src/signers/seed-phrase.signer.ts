@@ -5,6 +5,7 @@ import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
+import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
 import * as bchaddr from 'bchaddrjs';
 
@@ -86,6 +87,19 @@ export class SeedPhraseSigner extends Signer.Provider {
       );
     });
     message.sign(builder.build().toHex());
+  }
+
+  async signRawTransaction(txHex: string, derivation: string): Promise<string> {
+    const network = coininfo.bitcoincash.main.toBitcoinJS();
+    const pk = Bitcoin.ECPair.fromWIF(
+      await this.getPrivateKey(derivation),
+      network
+    );
+    const psbt = Bitcoin.Psbt.fromHex(txHex, { network });
+
+    psbt.signAllInputs(pk);
+    psbt.finalizeAllInputs();
+    return psbt.extractTransaction(true).toHex();
   }
 }
 
