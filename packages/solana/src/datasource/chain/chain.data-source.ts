@@ -24,7 +24,8 @@ import {
   VersionedMessage,
 } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
-import { Metaplex } from '@metaplex-foundation/js';
+// import { Metaplex } from '@metaplex-foundation/js';
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 
 import { ChainMsg } from '../../msg';
 
@@ -76,13 +77,17 @@ export class ChainDataSource extends DataSource {
     for (const token of tokens.value) {
       const accountInfo = AccountLayout.decode(token.account.data);
 
-      const metaplex = Metaplex.make(this.rpcProvider);
-      const metadata = await metaplex
-        .nfts()
-        .findByMint({ mintAddress: accountInfo.mint });
+      // const metaplex = Metaplex.make(this.rpcProvider);
+      // const metadata = await metaplex
+      //   .nfts()
+      //   .findByMint({ mintAddress: accountInfo.mint });
+      const metadata = await Metadata.fromAccountAddress(
+        this.rpcProvider,
+        accountInfo.mint
+      );
 
-      const tokenName = metadata.name;
-      const tokenSymbol = metadata.symbol;
+      const tokenName = metadata.data.name;
+      const tokenSymbol = metadata.data.symbol;
       const mint = await this.rpcProvider.getParsedAccountInfo(
         accountInfo.mint
       );
