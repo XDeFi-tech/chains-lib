@@ -1,6 +1,5 @@
 {
   "name": "@xdefi-tech/chains",
-  // "private": true,
   "version": "1.0.0",
   "workspaces": [
     "utility-packages/*",
