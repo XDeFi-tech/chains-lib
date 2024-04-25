@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.11
+
+### Patch Changes
+
+- 4b777a0: feat: use @psf/bitcoincashjs-lib instead of @scure/btc-signer
+
 ## 2.0.10
 
 ### Patch Changes
