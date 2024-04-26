@@ -2,11 +2,15 @@ import { View, Button } from "react-native";
 import {
   SOLANA_MANIFEST,
   SolanaProvider,
+  ChainDataSource, // <=== has been changed
 } from '@xdefi-tech/chains-solana';
-import { SeedPhraseSigner } from "@xdefi-tech/chains-solana/dist/signers/react-native";
+import { Buffer } from "buffer";
+import 'react-native-get-random-values';
+// import { SeedPhraseSigner } from "@xdefi-tech/chains-solana/dist/signers/react-native";
 
 function App() {
-  const dataSource = new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST);
+  const [nft, setNft] = useState(null)
+  const dataSource =  new ChainDataSource(SOLANA_MANIFEST);
   const provider = new SolanaProvider(dataSource, {
     providerId: "solana",
   });
@@ -20,9 +24,9 @@ function App() {
 
   const signer = new SeedPhraseSigner('YOUR_SEED_PHRASE');
 
-  signer.sign(msg, derivationPath).then(() => {
-    console.log('msg.hasSignature', msg.hasSignature)
-  })
+  // signer.sign(msg, derivationPath).then(() => {
+  //   console.log('msg.hasSignature', msg.hasSignature)
+  // })
 
   const handleTestFetch = useCallback(() => {
     fetch("https://jsonplaceholder.typicode.com/todos/1")
@@ -33,6 +37,15 @@ function App() {
   return (
     <View style={{ flex: 1, paddingTop: 150 }}>
       <Button onPress={handleTestFetch} title={"Test Fetch"} />
+      {
+        nft && (
+          <FlatList
+          data={nft}
+          renderItem={({ item }) => <Text>{item.name}</Text>}
+          keyExtractor={(item, index) => index.toString()}
+        />
+        )
+      }
     </View>
   );
 }
