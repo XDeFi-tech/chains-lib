@@ -28,22 +28,22 @@ export class BitcoinProvider extends UtxoProvider {
     return new ChainMsg(data, this, encoding);
   }
 
-  async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    const result: Transaction[] = [];
-    for await (const message of messages) {
-      const { signedTransaction } = message;
+  // async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
+  //   const result: Transaction[] = [];
+  //   for await (const message of messages) {
+  //     const { signedTransaction } = message;
 
-      if (!message.hasSignature) {
-        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
-      }
+  //     if (!message.hasSignature) {
+  //       throw new Error(`Message ${JSON.stringify(message)} is not signed`);
+  //     }
 
-      const {
-        data: { txid },
-      } = await this.rest.post('/transactions', signedTransaction);
+  //     const {
+  //       data: { txid },
+  //     } = await this.rest.post('/transactions', signedTransaction);
 
-      result.push(Transaction.fromData({ hash: txid }));
-    }
+  //     result.push(Transaction.fromData({ hash: txid }));
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 }
