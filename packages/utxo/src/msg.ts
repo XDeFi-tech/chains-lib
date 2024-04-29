@@ -80,6 +80,12 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     };
   }
 
+  /**
+   * Current method in used to compile a bitcoinjs-lib script. Bitcoin scripts are used to define the conditions
+   * under which funds can be spent in a Bitcoin transaction. Mark a transaction output as unspendable
+   * @param {string | Uint8Array} memo
+   * @returns {Buffer} OP_RETURN compiled script
+   */
   public compileMemo(memo: string | Uint8Array) {
     let formattedMemo: Buffer;
     if (typeof memo === 'string') {
