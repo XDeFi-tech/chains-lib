@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.9
+
+### Patch Changes
+
+- a3479ca: Fix: return transaction hash string instead of object
+
 ## 2.0.8
 
 ### Patch Changes
