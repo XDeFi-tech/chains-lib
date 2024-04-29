@@ -1,4 +1,5 @@
-import { Injectable } from '@xdefi-tech/chains-core';
+import { Injectable, Transaction } from '@xdefi-tech/chains-core';
+import { ChainMsg } from '@xdefi-tech/chains-utxo';
 import axios, { Axios } from 'axios';
 import * as UTXOLib from 'bitcoinjs-lib';
 
@@ -198,12 +199,17 @@ export class BlockchairDataProvider implements UTXODataProvider {
     return response.data[txId].raw_transaction;
   }
 
-  async broadcast(rawTx: string) {
-    // https://api.blockchair.com/{:btc_chain}/push/transaction?data={:raw_transaction}
-    const {
-      data: { data },
-    } = await this.api.post(`/push/transaction?data=${rawTx}`);
-    return data.transaction_hash;
+  async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
+    const results: Transaction[] = [];
+    for await (const message of messages) {
+      const rawTx = message.signedTransaction;
+      // https://api.blockchair.com/{:btc_chain}/push/transaction?data={:raw_transaction}
+      const {
+        data: { data },
+      } = await this.api.post(`/push/transaction?data=${rawTx}`);
+      results.push(Transaction.fromData({ hash: data.transaction_hash }));
+    }
+    return results;
   }
 
   async scanUTXOs(address: string) {
