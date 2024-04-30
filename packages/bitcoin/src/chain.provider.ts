@@ -2,7 +2,7 @@ import {
   Chain,
   ChainDecorator,
   MsgEncoding,
-  Transaction,
+  // Transaction,
 } from '@xdefi-tech/chains-core';
 import { UtxoProvider } from '@xdefi-tech/chains-utxo';
 
