@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.14
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+
 ## 2.0.13
 
 ### Patch Changes

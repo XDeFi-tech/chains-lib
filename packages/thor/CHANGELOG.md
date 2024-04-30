@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.11
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+
 ## 2.0.10
 
 ### Patch Changes

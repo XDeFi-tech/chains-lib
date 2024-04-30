@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.9
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+
 ## 2.0.8
 
 ### Patch Changes
