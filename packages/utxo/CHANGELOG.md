@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.6
+
+### Patch Changes
+
+- a04a730: Feat: add Uint8Array support for memo field
+
 ## 2.0.5
 
 ### Patch Changes

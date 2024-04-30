@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.11
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+- a04a730: Feat: add Uint8Array support for memo field
+- Updated dependencies [a04a730]
+  - @xdefi-tech/chains-utxo@2.0.6
+
 ## 2.0.10
 
 ### Patch Changes
