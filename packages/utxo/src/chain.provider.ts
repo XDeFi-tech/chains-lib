@@ -99,31 +99,7 @@ export class UtxoProvider extends Chain.Provider {
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    const result: Transaction[] = [];
-    for await (const message of messages) {
-      const { signedTransaction } = message;
-
-      if (!message.hasSignature) {
-        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
-      }
-
-      if (this.manifest.dataProviderType === 'blockchair') {
-        const dataSource: BlockchairDataProvider = this
-          .utxoDataSource as BlockchairDataProvider;
-        const hash = await dataSource.broadcast(signedTransaction as string);
-
-        result.push(Transaction.fromData({ hash: hash }));
-      } else {
-        const { data: txid } = await this.rest.post<string>(
-          '/api/tx',
-          signedTransaction
-        );
-
-        result.push(Transaction.fromData({ hash: txid }));
-      }
-    }
-
-    return result;
+    return this.utxoDataSource.broadcast(messages);
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
