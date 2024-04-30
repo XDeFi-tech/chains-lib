@@ -15,26 +15,45 @@ Standardized RPC Interface: The library offers a consistent RPC interface for fe
 ## Supported Chains
 
 This library currently supports the following blockchain networks:
+// example for fallback data source
+// example with custom provider
 
-- Bitcoin
-- Bitcoin Cash
-- Litecoin
-- Dogecoin
-- Ethereum
-- BNB Smart Chain
-- Avalanche
-- Polygon
-- Optimism
-- Arbitrum
-- Fantom
-- Other EVM-compatible chains
-- Cosmos
-- Osmosis
-- Juno
-- Other IBC-Compatible Chains
-- THORChain
-- BNB Beacon Chain
-- Solana
+
+| Chain           | Provider                                                                        | Datasources    | Signers                                | Custom chain |
+|-----------------| ------------------------------------------------------------------------------- | -------------- | -------------------------------------- | ------------ |
+| Bitcoin         | [Bitcoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoin)         | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Polygon         | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Avalanche       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Fantom          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Arbitrum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Aurora          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Canto EVM       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Optimism        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Klaytn          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Cronos          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Binance         | [Binance](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-binance)         | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| BitcoinCash     | [BitcoinCash](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoincash) | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| Cosmos Hub      | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Osmosis         | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Axelar          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Juno            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Crescent        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Kava            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Stargaze        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Akash           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Cronos          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Kujira          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Stride          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Mars            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Terra           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
+| Dogecoin        | [Dogecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-dogecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| Litecoin        | [Litecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-litecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| Solana          | [Solana](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-solana)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger         | No           |
+| ThorChain       | [ThorChain](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-thor)          | Indexer, Chain | SeedPhrase, Ledger                     | No           |
+| MayaChain       | [ThorChain](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-thor)          | Indexer, Chain | SeedPhrase, Ledger                     | No           |
+| Tron            | [Tron](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-tron)               | Indexer, Chain | SeedPhrase, PrivateKey, Ledger         | No           |
 
 ## Installation
 
@@ -45,6 +64,20 @@ npm install @xdefi-tech/chains
 # or
 yarn add @xdefi-tech/chains
 ```
+
+## Manifest
+Each provider may have different manifests, but they share common fields. For more details, please refer to the README of the respective provider.
+
+- `name`: The name of the blockchain network. Uses only for display name to user
+- `description`: A brief description or additional information about the blockchain network.
+- `rpcURL`: The URL endpoint for the Remote Procedure Call (RPC) interface of the blockchain network.
+- `chainSymbol`: The symbol representing the blockchain network.
+- `blockExplorerURL`: The URL of a block explorer service specific to the blockchain. Block explorers allow users to view details about blocks, transactions, addresses, and other blockchain-related data.
+- `chainId`: The unique identifier of the blockchain network.
+- `chain`: The name of the blockchain network. If you are using IndexerDataSource, it must be obtained from the [registry](https://github.com/XDeFi-tech/xdefi-registry/blob/main/chains.json).
+- `decimals`: The number of decimal places used by the native currency of the blockchain network.
+- `feeGasStep`: An object containing gas step values for different fee levels (high, medium, low) used in transactions.
+  
 
 ## Usage
 
@@ -106,6 +139,30 @@ Now that the transaction is signed, you can broadcast it to the Bitcoin network 
 
 ```typescript
 await provider.broadcast([message]);
+```
+
+## Fallback datasource
+- If an error occurs while fetching data from the primary data source, the FallbackDataSource will automatically switch to one of the alternative data sources configured in the constructor.
+- The number of retry attempts and the order in which the alternative data sources are used can be customized based on the requirements and preferences of the application.
+
+```typescript
+import { FallbackDataSource } from '@xdefi-tech/chains-core';
+import { EvmProvider, EVM_MANIFESTS } from '@xdefi-tech/chains-evm';
+
+const provider = new EvmProvider(
+  new FallbackDataSource(
+    EVM_MANIFEST.ethereum,
+    {
+      attempts: 5,
+    },
+    new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFEST.ethereum),
+    new EvmProvider.dataSourceList.ChainDataSource(EVM_MANIFEST.ethereum),
+  )
+);
+
+// The same as any other provider
+const response = await provider.getBalance('0x1234567890123456789012345678901234567890');
+const data = await response.getData();
 ```
 
 ## Retrieving a Transaction
