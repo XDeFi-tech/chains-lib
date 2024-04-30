@@ -3,6 +3,7 @@ import {
   ChainDecorator,
   MsgEncoding,
   Transaction,
+  TransactionData,
 } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
 
@@ -30,5 +31,9 @@ export class DogecoinProvider extends UtxoProvider {
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
     return this.dataSource.broadcast(messages);
+  }
+
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    return this.dataSource.getTransaction(txHash);
   }
 }

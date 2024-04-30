@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { Manifest } from '../chain';
-import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction } from '../../core';
+import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction, TransactionData } from '../../core';
 import { FeeData } from '../interfaces';
 
 export interface BalanceFilter {
@@ -74,6 +74,10 @@ export abstract class DataSource {
 
   // Only for UTXO chains
   public async scanUTXOs(_address: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+
+  public async getTransaction(_txHash: string): Promise<TransactionData | null> {
     throw new Error('Method not implemented.');
   }
 }

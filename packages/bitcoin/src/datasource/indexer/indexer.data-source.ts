@@ -10,14 +10,11 @@ import {
   Balance,
   FeeData,
   DefaultFeeOptions,
+  TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import Bitcoin from 'bitcoinjs-lib';
-import {
-  UTXO,
-  UTXODataProvider,
-  UTXOManifest,
-  UTXOTransaction,
-} from '@xdefi-tech/chains-utxo';
+import { UTXO, UTXOManifest } from '@xdefi-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 
@@ -30,10 +27,11 @@ import {
   getNFTBalance,
   broadcast,
   scanUTXOs,
+  getTransactionByHash,
 } from './queries';
 
 @Injectable()
-export class IndexerDataSource extends DataSource implements UTXODataProvider {
+export class IndexerDataSource extends DataSource {
   constructor(manifest: UTXOManifest) {
     super(manifest);
   }
@@ -68,10 +66,6 @@ export class IndexerDataSource extends DataSource implements UTXODataProvider {
       };
       return utxoMapped;
     });
-  }
-
-  getTransaction(_txid: string): Promise<UTXOTransaction> {
-    throw new Error('Method not implemented.');
   }
 
   async getNFTBalance(address: string) {
@@ -144,5 +138,24 @@ export class IndexerDataSource extends DataSource implements UTXODataProvider {
 
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
+  }
+
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await getTransactionByHash(txHash);
+    let response = null;
+
+    if (tx && tx.hash) {
+      response = {
+        hash: tx.hash,
+        from: (tx.inputs && tx.inputs[0].address) || '',
+        to: (tx.outputs && tx.outputs[0].address) || '',
+        status:
+          (tx.blockNumber || 0) > 0
+            ? TransactionStatus.success
+            : TransactionStatus.pending,
+      };
+    }
+
+    return response;
   }
 }
