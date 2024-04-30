@@ -2,21 +2,21 @@
 
 ```typescript
 const tronManifest = {
-    name: 'Tron',
-    description: '',
-    rpcURL: 'https://api.trongrid.io',
-    chainSymbol: 'TRX',
-    blockExplorerURL: 'https://tronscan.org',
-    dataProviderType: 'trongrid',
-    dataProviderURL: 'https://api.trongrid.io',
-    chainId: '0x2b6653dc',
-    chain: 'tron',
-    decimals: 16,
-    feeGasStep: {
-        high: 1,
-        medium: 1,
-        low: 1,
-    },
+  name: 'Tron',
+  description: '',
+  rpcURL: 'https://api.trongrid.io',
+  chainSymbol: 'TRX',
+  blockExplorerURL: 'https://tronscan.org',
+  dataProviderType: 'trongrid',
+  dataProviderURL: 'https://api.trongrid.io',
+  chainId: '0x2b6653dc',
+  chain: 'tron',
+  decimals: 16,
+  feeGasStep: {
+    high: 1,
+    medium: 1,
+    low: 1,
+  },
 };
 ```
 
@@ -31,5 +31,6 @@ const tronManifest = {
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Tron blockchain network. In this example, all fee levels are set to 1.
 
 Tron specific fields:
+
 - `dataProviderType`: Specifies the type of data provider used for retrieving blockchain data: trongrid
 - `dataProviderURL`: The URL of the data provider used for retrieving blockchain data: getTransaction, getAccount, getBlock

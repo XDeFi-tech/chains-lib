@@ -18,9 +18,8 @@ This library currently supports the following blockchain networks:
 // example for fallback data source
 // example with custom provider
 
-
 | Chain           | Provider                                                                        | Datasources    | Signers                                | Custom chain |
-|-----------------| ------------------------------------------------------------------------------- | -------------- | -------------------------------------- | ------------ |
+| --------------- | ------------------------------------------------------------------------------- | -------------- | -------------------------------------- | ------------ |
 | Bitcoin         | [Bitcoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoin)         | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
 | Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
 | BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
@@ -66,6 +65,7 @@ yarn add @xdefi-tech/chains
 ```
 
 ## Manifest
+
 Each provider may have different manifests, but they share common fields. For more details, please refer to the README of the respective provider.
 
 - `name`: The name of the blockchain network. Uses only for display name to user
@@ -77,7 +77,6 @@ Each provider may have different manifests, but they share common fields. For mo
 - `chain`: The name of the blockchain network. If you are using IndexerDataSource, it must be obtained from the [registry](https://github.com/XDeFi-tech/xdefi-registry/blob/main/chains.json).
 - `decimals`: The number of decimal places used by the native currency of the blockchain network.
 - `feeGasStep`: An object containing gas step values for different fee levels (high, medium, low) used in transactions.
-  
 
 ## Usage
 
@@ -142,6 +141,7 @@ await provider.broadcast([message]);
 ```
 
 ## Fallback datasource
+
 - If an error occurs while fetching data from the primary data source, the FallbackDataSource will automatically switch to one of the alternative data sources configured in the constructor.
 - The number of retry attempts and the order in which the alternative data sources are used can be customized based on the requirements and preferences of the application.
 
@@ -156,12 +156,14 @@ const provider = new EvmProvider(
       attempts: 5,
     },
     new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFEST.ethereum),
-    new EvmProvider.dataSourceList.ChainDataSource(EVM_MANIFEST.ethereum),
+    new EvmProvider.dataSourceList.ChainDataSource(EVM_MANIFEST.ethereum)
   )
 );
 
 // The same as any other provider
-const response = await provider.getBalance('0x1234567890123456789012345678901234567890');
+const response = await provider.getBalance(
+  '0x1234567890123456789012345678901234567890'
+);
 const data = await response.getData();
 ```
 

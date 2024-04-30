@@ -2,21 +2,21 @@
 
 ```typescript
 const bitcoincashManifest = {
-    name: 'Bitcoin Cash',
-    description: '',
-    rpcURL: 'https://bch-mainnet.xdefiservices.com',
-    chainSymbol: 'BCH',
-    blockExplorerURL: 'https://blockchair.com/bitcoin-cash',
-    dataProviderType: 'haskoin',
-    dataProviderURL: 'https://api.haskoin.com/bch',
-    chainId: 'bitcoincash',
-    chain: 'bitcoincash',
-    decimals: 8,
-    feeGasStep: {
-        high: 1,
-        medium: 1,
-        low: 1,
-    },
+  name: 'Bitcoin Cash',
+  description: '',
+  rpcURL: 'https://bch-mainnet.xdefiservices.com',
+  chainSymbol: 'BCH',
+  blockExplorerURL: 'https://blockchair.com/bitcoin-cash',
+  dataProviderType: 'haskoin',
+  dataProviderURL: 'https://api.haskoin.com/bch',
+  chainId: 'bitcoincash',
+  chain: 'bitcoincash',
+  decimals: 8,
+  feeGasStep: {
+    high: 1,
+    medium: 1,
+    low: 1,
+  },
 };
 ```
 
@@ -31,5 +31,6 @@ const bitcoincashManifest = {
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Bitcoin Cash blockchain network. In this example, all fee levels are set to 1.
 
 UTXO Specifec fields:
+
 - `dataProviderType`: Specifies the type of data provider used for retrieving blockchain data: hascoin/blockchair
 - `dataProviderURL`: The URL of the data provider used for retrieving blockchain data: scanUTXOs, getTransaction

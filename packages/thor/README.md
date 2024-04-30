@@ -2,21 +2,21 @@
 
 ```typescript
 const thorManifest = {
-    name: 'Thor',
-    description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/thornode',
-    chainSymbol: 'RUNE',
-    blockExplorerURL: 'https://viewblock.io/thorchain',
-    chainId: 'thorchain-mainnet-v1',
-    chain: 'thorchain',
-    denom: 'rune',
-    prefix: 'thor',
-    decimals: 8,
-    feeGasStep: {
-        high: 0,
-        medium: 0,
-        low: 0,
-    },
+  name: 'Thor',
+  description: '',
+  rpcURL: 'https://rpc-proxy.xdefi.services/thornode',
+  chainSymbol: 'RUNE',
+  blockExplorerURL: 'https://viewblock.io/thorchain',
+  chainId: 'thorchain-mainnet-v1',
+  chain: 'thorchain',
+  denom: 'rune',
+  prefix: 'thor',
+  decimals: 8,
+  feeGasStep: {
+    high: 0,
+    medium: 0,
+    low: 0,
+  },
 };
 ```
 
@@ -31,6 +31,6 @@ const thorManifest = {
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Thor blockchain network. In this example, all fee levels are set to 1.
 
 Thorchain specific fields:
+
 - `denom`: The denomination of the native currency of the Thorchain blockchain network, which is "rune".
 - `prefix`: The prefix used for addresses on the Thorchain blockchain network, which is "thor".
-

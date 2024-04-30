@@ -2,22 +2,22 @@
 
 ```typescript
 const cosmosManifest = {
-    name: 'Cosmos Hub',
-    description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
-    lcdURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
-    chainSymbol: 'ATOM',
-    blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
-    chainId: 'cosmoshub-4',
-    chain: 'cosmos',
-    denom: 'uatom',
-    decimals: 6,
-    prefix: 'cosmos',
-    feeGasStep: {
-        high: 0.003,
-        medium: 0.0025,
-        low: 0.001,
-    },
+  name: 'Cosmos Hub',
+  description: '',
+  rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
+  lcdURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
+  chainSymbol: 'ATOM',
+  blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
+  chainId: 'cosmoshub-4',
+  chain: 'cosmos',
+  denom: 'uatom',
+  decimals: 6,
+  prefix: 'cosmos',
+  feeGasStep: {
+    high: 0.003,
+    medium: 0.0025,
+    low: 0.001,
+  },
 };
 ```
 
@@ -32,7 +32,7 @@ const cosmosManifest = {
 - `feeGasStep`: An object containing the gas fee steps for transactions on the Cosmos Hub blockchain. It includes three levels: high, medium, and low, each with a different gas fee value specified in "ATOM".
 
 Cosmos specific fields:
+
 - `lcdURL`: The URL of the LCD (Light Client Daemon) server used to query information from the Cosmos Hub blockchain.
 - `denom`: The denomination or name of the native currency of the Cosmos Hub blockchain, which is "uatom".
 - `prefix`: A prefix used in some contexts or operations related to the Cosmos Hub blockchain, which is "cosmos".
-
