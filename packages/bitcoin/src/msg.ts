@@ -5,6 +5,7 @@ import {
   MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
+import { UTXO } from '@xdefi-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
@@ -39,7 +40,9 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
 
   async buildTx() {
     const msgData = this.toData();
-    let utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
+    let utxos: UTXO[] = await this.provider.dataSource.scanUTXOs(
+      this.data.from
+    );
     // check is the user has ordinals to erase them from utxos
     let ordinals: any[] = [];
     try {

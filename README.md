@@ -20,35 +20,35 @@ This library currently supports the following blockchain networks:
 
 | Chain           | Provider                                                                        | Datasources    | Signers                                | Custom chain |
 | --------------- | ------------------------------------------------------------------------------- | -------------- | -------------------------------------- | ------------ |
-| Bitcoin         | [Bitcoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoin)         | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
-| Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Polygon         | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Avalanche       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Fantom          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Arbitrum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Aurora          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Canto EVM       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Optimism        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Klaytn          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Cronos          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Binance         | [Binance](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-binance)         | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
-| BitcoinCash     | [BitcoinCash](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoincash) | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
-| Cosmos Hub      | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Osmosis         | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Axelar          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Juno            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Crescent        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Kava            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Stargaze        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Akash           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Cronos          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Kujira          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Stride          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Mars            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Terra           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Tresor | Yes          |
-| Dogecoin        | [Dogecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-dogecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
-| Litecoin        | [Litecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-litecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Tresor | No           |
+| Bitcoin         | [Bitcoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoin)         | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
+| Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Polygon         | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Avalanche       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Fantom          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Arbitrum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Aurora          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Canto EVM       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Optimism        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Klaytn          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Cronos          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Binance         | [Binance](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-binance)         | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
+| BitcoinCash     | [BitcoinCash](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoincash) | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
+| Cosmos Hub      | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Osmosis         | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Axelar          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Juno            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Crescent        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Kava            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Stargaze        | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Akash           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Cronos          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Kujira          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Stride          | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Mars            | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Terra           | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Dogecoin        | [Dogecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-dogecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
+| Litecoin        | [Litecoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-litecoin)       | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
 | Solana          | [Solana](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-solana)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger         | No           |
 | ThorChain       | [ThorChain](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-thor)          | Indexer, Chain | SeedPhrase, Ledger                     | No           |
 | MayaChain       | [ThorChain](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-thor)          | Indexer, Chain | SeedPhrase, Ledger                     | No           |

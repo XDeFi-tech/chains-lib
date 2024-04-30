@@ -37,6 +37,7 @@ export class IndexerDataSource extends DataSource implements UTXODataProvider {
   constructor(manifest: UTXOManifest) {
     super(manifest);
   }
+
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
     const result: Transaction[] = [];
     for await (const message of messages) {
@@ -53,22 +54,23 @@ export class IndexerDataSource extends DataSource implements UTXODataProvider {
 
     return result;
   }
+
   async scanUTXOs(address: string): Promise<UTXO[]> {
     const utxos = await scanUTXOs(address);
     return utxos.map((utxo) => {
-      const tx = Bitcoin.Transaction.fromHex(utxo.oTxHex);
+      const tx = Bitcoin.Transaction.fromHex(utxo.oTxHex as string);
       const utxoMapped: UTXO = {
         hash: utxo.oTxHash,
         index: utxo.oIndex,
-        value: utxo.value.value,
-        txHex: utxo.oTxHex,
+        value: parseInt(utxo.value.value),
+        txHex: utxo.oTxHex as string,
         witnessUtxo: tx.outs[utxo.oIndex],
       };
       return utxoMapped;
     });
   }
 
-  getTransaction(txid: string): Promise<UTXOTransaction> {
+  getTransaction(_txid: string): Promise<UTXOTransaction> {
     throw new Error('Method not implemented.');
   }
 

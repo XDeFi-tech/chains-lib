@@ -67,4 +67,13 @@ export abstract class DataSource {
   async getAccount(_address: string): Promise<any> {
     return;
   }
+
+  public async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  // Only for UTXO chains
+  public async scanUTXOs(_address: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }
