@@ -1,5 +1,6 @@
 import { Transaction } from '@xdefi-tech/chains-core';
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
+
+import { ChainMsg } from '../../msg';
 
 export declare type Witness = {
   value: number;
