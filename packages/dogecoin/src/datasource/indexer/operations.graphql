@@ -82,3 +82,28 @@ query DogecoinScanUTXOs($address: String!, $page: Int!) {
     }
   }
 }
+
+query DogecoinGetTransactionByHash($txHash: String!) {
+  dogecoin {
+    getTransactionByHashV5(txHash: $txHash) {
+      hex
+      txid
+      hash
+      size
+      version
+      locktime
+      confirmations
+      blocktime
+      time
+      blockhash
+      blockNumber
+      sourceOfData
+      inputs {
+        address
+      }
+      outputs {
+        address
+      }
+    }
+  }
+}

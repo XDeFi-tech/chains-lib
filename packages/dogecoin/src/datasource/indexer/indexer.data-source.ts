@@ -10,6 +10,8 @@ import {
   Balance,
   FeeData,
   DefaultFeeOptions,
+  TransactionData,
+  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import type { UTXOManifest } from '@xdefi-tech/chains-utxo';
@@ -25,6 +27,7 @@ import {
   getFees,
   broadcast,
   scanUTXOs,
+  getTransactionByHash,
 } from './queries';
 
 @Injectable()
@@ -135,5 +138,24 @@ export class IndexerDataSource extends DataSource {
 
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
+  }
+
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    const tx = await getTransactionByHash(txHash);
+    let response = null;
+
+    if (tx && tx.hash) {
+      response = {
+        hash: tx.hash,
+        from: (tx.inputs && tx.inputs[0].address) || '',
+        to: (tx.outputs && tx.outputs[0].address) || '',
+        status:
+          (tx.blockNumber || 0) > 0
+            ? TransactionStatus.success
+            : TransactionStatus.pending,
+      };
+    }
+
+    return response;
   }
 }

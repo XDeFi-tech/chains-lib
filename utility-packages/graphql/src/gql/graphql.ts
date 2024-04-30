@@ -4203,6 +4203,34 @@ export type BitcoinScanUtxOsQuery = {
   };
 };
 
+export type BitcoinGetTransactionByHashQueryVariables = Exact<{
+  txHash: Scalars['String'];
+}>;
+
+export type BitcoinGetTransactionByHashQuery = {
+  __typename?: 'Query';
+  bitcoin: {
+    __typename?: 'BitcoinChain';
+    getTransactionByHashV5: {
+      __typename?: 'UtxotransactionByHashV5';
+      hex?: string | null;
+      txid?: string | null;
+      hash: string;
+      size: number;
+      version: number;
+      locktime?: number | null;
+      confirmations?: number | null;
+      blocktime?: number | null;
+      time?: number | null;
+      blockhash?: string | null;
+      blockNumber?: number | null;
+      sourceOfData: string;
+      inputs: Array<{ __typename?: 'Input'; address: string }>;
+      outputs: Array<{ __typename?: 'Output'; address: string }>;
+    };
+  };
+};
+
 export type BitcoinCashBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -4308,6 +4336,34 @@ export type BitcoinCashScanUtxOsQuery = {
       scriptHex?: string | null;
       value: { __typename?: 'Amount'; value: string };
     }>;
+  };
+};
+
+export type BitcoinCashGetTransactionByHashQueryVariables = Exact<{
+  txHash: Scalars['String'];
+}>;
+
+export type BitcoinCashGetTransactionByHashQuery = {
+  __typename?: 'Query';
+  bitcoincash: {
+    __typename?: 'BitcoincashChain';
+    getTransactionByHashV5: {
+      __typename?: 'UtxotransactionByHashV5';
+      hex?: string | null;
+      txid?: string | null;
+      hash: string;
+      size: number;
+      version: number;
+      locktime?: number | null;
+      confirmations?: number | null;
+      blocktime?: number | null;
+      time?: number | null;
+      blockhash?: string | null;
+      blockNumber?: number | null;
+      sourceOfData: string;
+      inputs: Array<{ __typename?: 'Input'; address: string }>;
+      outputs: Array<{ __typename?: 'Output'; address: string }>;
+    };
   };
 };
 
@@ -5980,6 +6036,34 @@ export type DogecoinScanUtxOsQuery = {
   };
 };
 
+export type DogecoinGetTransactionByHashQueryVariables = Exact<{
+  txHash: Scalars['String'];
+}>;
+
+export type DogecoinGetTransactionByHashQuery = {
+  __typename?: 'Query';
+  dogecoin: {
+    __typename?: 'DogeChain';
+    getTransactionByHashV5: {
+      __typename?: 'UtxotransactionByHashV5';
+      hex?: string | null;
+      txid?: string | null;
+      hash: string;
+      size: number;
+      version: number;
+      locktime?: number | null;
+      confirmations?: number | null;
+      blocktime?: number | null;
+      time?: number | null;
+      blockhash?: string | null;
+      blockNumber?: number | null;
+      sourceOfData: string;
+      inputs: Array<{ __typename?: 'Input'; address: string }>;
+      outputs: Array<{ __typename?: 'Output'; address: string }>;
+    };
+  };
+};
+
 export type EthereumBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -6112,6 +6196,34 @@ export type LitecoinScanUtxOsQuery = {
       scriptHex?: string | null;
       value: { __typename?: 'Amount'; value: string };
     }>;
+  };
+};
+
+export type LitecoinGetTransactionByHashQueryVariables = Exact<{
+  txHash: Scalars['String'];
+}>;
+
+export type LitecoinGetTransactionByHashQuery = {
+  __typename?: 'Query';
+  litecoin: {
+    __typename?: 'LitecoinChain';
+    getTransactionByHashV5: {
+      __typename?: 'UtxotransactionByHashV5';
+      hex?: string | null;
+      txid?: string | null;
+      hash: string;
+      size: number;
+      version: number;
+      locktime?: number | null;
+      confirmations?: number | null;
+      blocktime?: number | null;
+      time?: number | null;
+      blockhash?: string | null;
+      blockNumber?: number | null;
+      sourceOfData: string;
+      inputs: Array<{ __typename?: 'Input'; address: string }>;
+      outputs: Array<{ __typename?: 'Output'; address: string }>;
+    };
   };
 };
 
@@ -7389,6 +7501,127 @@ export const BitcoinScanUtxOsDocument = {
   BitcoinScanUtxOsQuery,
   BitcoinScanUtxOsQueryVariables
 >;
+export const BitcoinGetTransactionByHashDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BitcoinGetTransactionByHash' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'txHash' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'bitcoin' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'getTransactionByHashV5' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'txHash' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'txHash' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'hex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'txid' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'size' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'version' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'locktime' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'confirmations' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blocktime' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'time' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockhash' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'sourceOfData' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'inputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'outputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  BitcoinGetTransactionByHashQuery,
+  BitcoinGetTransactionByHashQueryVariables
+>;
 export const BitcoinCashBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -7922,6 +8155,127 @@ export const BitcoinCashScanUtxOsDocument = {
 } as unknown as DocumentNode<
   BitcoinCashScanUtxOsQuery,
   BitcoinCashScanUtxOsQueryVariables
+>;
+export const BitcoinCashGetTransactionByHashDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BitcoinCashGetTransactionByHash' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'txHash' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'bitcoincash' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'getTransactionByHashV5' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'txHash' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'txHash' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'hex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'txid' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'size' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'version' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'locktime' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'confirmations' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blocktime' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'time' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockhash' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'sourceOfData' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'inputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'outputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  BitcoinCashGetTransactionByHashQuery,
+  BitcoinCashGetTransactionByHashQueryVariables
 >;
 export const GetAssetsWithFilterDocument = {
   kind: 'Document',
@@ -16039,6 +16393,127 @@ export const DogecoinScanUtxOsDocument = {
   DogecoinScanUtxOsQuery,
   DogecoinScanUtxOsQueryVariables
 >;
+export const DogecoinGetTransactionByHashDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'DogecoinGetTransactionByHash' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'txHash' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'dogecoin' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'getTransactionByHashV5' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'txHash' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'txHash' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'hex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'txid' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'size' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'version' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'locktime' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'confirmations' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blocktime' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'time' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockhash' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'sourceOfData' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'inputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'outputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DogecoinGetTransactionByHashQuery,
+  DogecoinGetTransactionByHashQueryVariables
+>;
 export const EthereumBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -16695,6 +17170,127 @@ export const LitecoinScanUtxOsDocument = {
 } as unknown as DocumentNode<
   LitecoinScanUtxOsQuery,
   LitecoinScanUtxOsQueryVariables
+>;
+export const LitecoinGetTransactionByHashDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'LitecoinGetTransactionByHash' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'txHash' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'litecoin' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'getTransactionByHashV5' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'txHash' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'txHash' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'hex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'txid' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'size' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'version' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'locktime' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'confirmations' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blocktime' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'time' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockhash' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blockNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'sourceOfData' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'inputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'outputs' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'address' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  LitecoinGetTransactionByHashQuery,
+  LitecoinGetTransactionByHashQueryVariables
 >;
 export const GetSolanaBalanceDocument = {
   kind: 'Document',

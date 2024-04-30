@@ -4,3 +4,4 @@ export * from './fees.query';
 export * from './nfts.query';
 export * from './broadcast.query';
 export * from './scanUTXOs.query';
+export * from './getTransactionByHash.query';
