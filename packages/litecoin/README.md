@@ -2,21 +2,21 @@
 
 ```typescript
 const litecoinManifest = {
-    name: 'Litecoin',
-    description: '',
-    rpcURL: 'https://blockstream.info',
-    chainSymbol: 'LTC',
-    blockExplorerURL: 'https://blockchair.com/litecoin',
-    dataProviderType: 'blockchair',
-    dataProviderURL: 'https://rpc-proxy.xdefi.services/blockchair/litecoin',
-    chainId: 'litecoin',
-    chain: 'litecoin',
-    decimals: 8,
-    feeGasStep: {
-        high: 1,
-        medium: 1,
-        low: 1,
-    },
+  name: 'Litecoin',
+  description: '',
+  rpcURL: 'https://blockstream.info',
+  chainSymbol: 'LTC',
+  blockExplorerURL: 'https://blockchair.com/litecoin',
+  dataProviderType: 'blockchair',
+  dataProviderURL: 'https://rpc-proxy.xdefi.services/blockchair/litecoin',
+  chainId: 'litecoin',
+  chain: 'litecoin',
+  decimals: 8,
+  feeGasStep: {
+    high: 1,
+    medium: 1,
+    low: 1,
+  },
 };
 ```
 
@@ -31,5 +31,6 @@ const litecoinManifest = {
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Litecoin blockchain network. In this example, all fee levels are set to 1.
 
 UTXO Specifec fields:
+
 - `dataProviderType`: Specifies the type of data provider used for retrieving blockchain data: hascoin/blockchair
 - `dataProviderURL`: The URL of the data provider used for retrieving blockchain data: scanUTXOs, getTransaction
