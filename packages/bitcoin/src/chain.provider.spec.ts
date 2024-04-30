@@ -69,4 +69,34 @@ describe('chain.provider', () => {
       )
     ).rejects.toThrow();
   });
+
+  it('should create message with memo as string', async () => {
+    const memo = 'Test string memo';
+    const msg = provider.createMsg({
+      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      amount: 0.000001,
+      memo: memo,
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+    expect(msg.toData().memo).toEqual(memo);
+  });
+
+  it('should create message with memo as Uint8Array', async () => {
+    const memo = 'Test string memo';
+    const encodedMemo = new TextEncoder().encode(memo);
+    const msg = provider.createMsg({
+      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      amount: 0.000001,
+      memo: encodedMemo,
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+    expect(msg.toData().memo).toEqual(encodedMemo);
+    expect(new TextDecoder().decode(msg.toData().memo as Uint8Array)).toEqual(
+      memo
+    );
+  });
 });
