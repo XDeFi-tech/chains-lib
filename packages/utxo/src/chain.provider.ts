@@ -38,6 +38,7 @@ export class UtxoProvider extends Chain.Provider {
     this.rest = axios.create({
       baseURL: manifest.rpcURL,
     });
+
     if (manifest.dataProviderType === 'haskoin') {
       this.utxoDataSource = new HaskoinDataProvider(manifest.dataProviderURL);
     } else if (manifest.dataProviderType === 'blockchair') {

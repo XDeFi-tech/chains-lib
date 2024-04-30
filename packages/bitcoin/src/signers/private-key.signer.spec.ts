@@ -21,14 +21,16 @@ describe('private-key.signer', () => {
   let message: Msg;
 
   beforeEach(() => {
-    privateKey = 'KyaowqfYE7mJmTYEpxPJmAXwErQQY6KdDRynbg7SQPTAvC3bLNmF';
+    privateKey = 'L1nvuM997ysJ7izhBwr8SCpnKKPtpZDGrr3fuC8E6dgXfUkE9Ub4';
     signer = new PrivateKeySigner(privateKey);
 
-    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
+    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST), {
+      apiKey: '',
+    });
 
     txInput = {
-      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
-      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      from: 'bc1qlmywh0zkz0xlc9rkfjy5haqerjlzf4rrwpxd9m',
+      to: 'bc1qlmywh0zkz0xlc9rkfjy5haqerjlzf4rrwpxd9m',
       amount: 0.000001,
     };
 
@@ -65,5 +67,13 @@ describe('private-key.signer', () => {
 
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey('')).toEqual(privateKey);
+  });
+
+  it('should broadcast the thansaction to blockchain', async () => {
+    const msg = provider.createMsg(txInput);
+    await signer.sign(msg as ChainMsg);
+
+    const tx = await provider.broadcast([msg]);
+    expect(tx).toBeTruthy();
   });
 });

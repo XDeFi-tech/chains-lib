@@ -29,28 +29,6 @@ export class BitcoinCashProvider extends UtxoProvider {
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    const result: Transaction[] = [];
-    for await (const message of messages) {
-      const { signedTransaction } = message;
-
-      if (!message.hasSignature) {
-        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
-      }
-
-      const { data: response } = await this.rest.post('', {
-        jsonrpc: '2.0',
-        method: 'sendrawtransaction',
-        params: [signedTransaction],
-        id: '',
-      });
-
-      if (response.error) {
-        throw new Error(response.error);
-      }
-
-      result.push(Transaction.fromData({ hash: response.result }));
-    }
-
-    return result;
+    return this.dataSource.broadcast(messages);
   }
 }

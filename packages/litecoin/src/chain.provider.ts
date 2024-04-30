@@ -1,4 +1,4 @@
-import { Chain, ChainDecorator, MsgEncoding } from '@xdefi-tech/chains-core';
+import { Chain, ChainDecorator, MsgEncoding, Transaction } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
 
 import { IndexerDataSource } from './datasource';
@@ -21,5 +21,9 @@ export class LitecoinProvider extends UtxoProvider {
     return {
       IndexerDataSource: IndexerDataSource,
     };
+  }
+
+  async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
+    return this.dataSource.broadcast(messages);
   }
 }

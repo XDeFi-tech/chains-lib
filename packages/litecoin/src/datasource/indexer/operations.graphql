@@ -59,3 +59,25 @@ query GetLitecoinTransactions($address: String!, $pageSize: Int!, $pageNumber: I
     }
   }
 }
+
+query LitecoinBroadcastTransaction($rawHex: String!) {
+  litecoin {
+    broadcastTransaction(rawHex: $rawHex)
+  }
+}
+
+query LitecoinScanUTXOs($address: String!, $page: Int!) {
+  litecoin {
+    unspentTxOutputsV5(address: $address, page: $page) {
+      oTxHash
+      oIndex
+      value {
+        value
+      }
+      oTxHex
+      address
+      isCoinbase
+      scriptHex
+    }
+  }
+}

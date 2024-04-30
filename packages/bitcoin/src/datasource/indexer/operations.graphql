@@ -59,3 +59,25 @@ query GetBitcoinTransactions($address: String!, $pageSize: Int!, $pageNumber: In
     }
   }
 }
+
+query BitcoinBroadcastTransaction($rawHex: String!) {
+  bitcoin {
+    broadcastTransaction(rawHex: $rawHex)
+  }
+}
+
+query BitcoinScanUTXOs($address: String!, $page: Int!) {
+  bitcoin {
+    unspentTxOutputsV5(address: $address, page: $page) {
+      oTxHash
+      oIndex
+      value {
+        value
+      }
+      oTxHex
+      address
+      isCoinbase
+      scriptHex
+    }
+  }
+}
