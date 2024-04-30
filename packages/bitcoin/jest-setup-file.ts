@@ -1,3 +1,3 @@
 import 'reflect-metadata';
-import { TextEncoder } from 'util';
-global.TextEncoder = TextEncoder;
+import { TextEncoder, TextDecoder } from 'util';
+Object.assign(global, { TextDecoder, TextEncoder });
