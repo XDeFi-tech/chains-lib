@@ -1,8 +1,8 @@
 import { Injectable, Transaction } from '@xdefi-tech/chains-core';
-import { ChainMsg } from '@xdefi-tech/chains-utxo';
 import axios, { Axios } from 'axios';
 import * as UTXOLib from 'bitcoinjs-lib';
 
+import { ChainMsg } from '../../msg';
 import {
   UTXODataProvider,
   UTXOTransaction,
