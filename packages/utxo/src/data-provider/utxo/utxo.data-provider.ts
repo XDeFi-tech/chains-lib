@@ -1,3 +1,7 @@
+import { Transaction } from '@xdefi-tech/chains-core';
+
+import { ChainMsg } from '../../msg';
+
 export declare type Witness = {
   value: number;
   script: Buffer;
@@ -47,4 +51,6 @@ export abstract class UTXODataProvider {
   abstract scanUTXOs(address: string): Promise<UTXO[]>;
 
   abstract getTransaction(txid: string): Promise<UTXOTransaction>;
+
+  abstract broadcast(messages: ChainMsg[]): Promise<Transaction[]>;
 }

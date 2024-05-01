@@ -1,6 +1,8 @@
 overwrite: true
-schema: https://gql-router.dev.xdefiservices.com/graphql
-documents: ../../**/*.graphql
+schema: https://gql-router.xdefi.services/graphql
+documents:
+  - '!../../node_modules/**/*.graphql'
+  - ../../**/*.graphql
 generates:
   src/gql/:
     preset: client

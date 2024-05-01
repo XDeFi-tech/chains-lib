@@ -7,8 +7,6 @@ const litecoinManifest = {
   rpcURL: 'https://blockstream.info',
   chainSymbol: 'LTC',
   blockExplorerURL: 'https://blockchair.com/litecoin',
-  dataProviderType: 'blockchair',
-  dataProviderURL: 'https://rpc-proxy.xdefi.services/blockchair/litecoin',
   chainId: 'litecoin',
   chain: 'litecoin',
   decimals: 8,
@@ -29,8 +27,3 @@ const litecoinManifest = {
 - `chain`: The name of the blockchain network. If you are using IndexerDataSource, it must be obtained from the [registry](https://github.com/XDeFi-tech/xdefi-registry/blob/main/chains.json).
 - `decimals`: The number of decimal places used for representing token amounts on the Litecoin blockchain. In this case, it is set to 8.
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Litecoin blockchain network. In this example, all fee levels are set to 1.
-
-UTXO Specifec fields:
-
-- `dataProviderType`: Specifies the type of data provider used for retrieving blockchain data: hascoin/blockchair
-- `dataProviderURL`: The URL of the data provider used for retrieving blockchain data: scanUTXOs, getTransaction
