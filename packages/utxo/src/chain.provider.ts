@@ -10,12 +10,12 @@ import {
   Response,
   Transaction,
   TransactionData,
-  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 
 import { ChainMsg, MsgBody } from './msg';
 import { UTXOManifest } from './manifests';
+import { UTXO } from './data-provider';
 
 export interface UtxoProviderOptions extends Chain.IOptions {
   apiKey?: string;
@@ -81,20 +81,22 @@ export class UtxoProvider extends Chain.Provider {
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
-    const tx = await this.dataSource.getTransaction(txHash);
-    if (!tx) {
-      return null;
-    }
-
-    return {
-      hash: tx.hash,
-      status: TransactionStatus.success,
-      from: '',
-      to: tx.outputs[0].address,
-    };
+    return this.dataSource.getTransaction(txHash);
   }
 
   public get manifest(): UTXOManifest {
     return this.dataSource.manifest as UTXOManifest;
+  }
+
+  /**
+   * Scans for UTXOs associated with a given address. This method should be overridden in subclasses
+   * that handle UTXO-based chains, providing a specific implementation for scanning UTXOs.
+   *
+   * @param {string} _address The address for which to scan UTXOs.
+   * @returns A promise that resolves to the scanned UTXOs.
+   * @throws {Error} Throws an error if the method is not implemented.
+   */
+  public async scanUTXOs(_address: string): Promise<UTXO[]> {
+    throw new Error('Method not implemented.');
   }
 }

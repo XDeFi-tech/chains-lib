@@ -16,6 +16,8 @@ import { ChainMsg } from './msg';
   features: [Chain.ChainFeatures.TOKENS],
 })
 export class DogecoinProvider extends UtxoProvider {
+  declare dataSource: IndexerDataSource;
+
   createMsg(
     data: MsgBody,
     encoding: MsgEncoding = MsgEncoding.object
@@ -35,5 +37,9 @@ export class DogecoinProvider extends UtxoProvider {
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
     return this.dataSource.getTransaction(txHash);
+  }
+
+  public async scanUTXOs(address: string) {
+    return this.dataSource.scanUTXOs(address);
   }
 }

@@ -40,9 +40,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
 
   async buildTx() {
     const msgData = this.toData();
-    let utxos: UTXO[] = await this.provider.dataSource.scanUTXOs(
-      this.data.from
-    );
+    let utxos: UTXO[] = await this.provider.scanUTXOs(this.data.from);
     // check is the user has ordinals to erase them from utxos
     let ordinals: any[] = [];
     try {
