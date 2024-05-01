@@ -12,7 +12,7 @@ export const getTransactionByHash = async (txHash: string) => {
 
     return response.data.bitcoincash.getTransactionByHashV5 || null;
   } catch (error) {
-    console.error('Error fetching transaction by hash', error);
+    console.error(`Error fetching transaction by hash for ${txHash}:`, error);
     return null;
   }
 };
