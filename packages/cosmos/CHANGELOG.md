@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.10
+
+### Patch Changes
+
+- 3b42f94: Feat: temporary remove osmojs lib
+
 ## 2.0.9
 
 ### Patch Changes
