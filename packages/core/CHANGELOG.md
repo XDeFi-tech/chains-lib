@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.9
+
+### Patch Changes
+
+- 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
+
 ## 2.0.8
 
 ### Patch Changes

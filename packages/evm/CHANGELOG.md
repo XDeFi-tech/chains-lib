@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.15
+
+### Patch Changes
+
+- 7de45e1: Feat: make signatureType optional field
+- Updated dependencies [7de45e1]
+  - @xdefi-tech/chains-graphql@1.2.11
+  - @xdefi-tech/chains-core@2.0.9
+
 ## 2.0.14
 
 ### Patch Changes
