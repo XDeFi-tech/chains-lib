@@ -76,7 +76,7 @@ export class HaskoinDataProvider implements UTXODataProvider {
     this.api = axios.create({ baseURL });
   }
 
-  broadcast(messages: ChainMsg[]): Promise<Transaction<TransactionData>[]> {
+  broadcast(_messages: ChainMsg[]): Promise<Transaction<TransactionData>[]> {
     throw new Error('Method not implemented.');
   }
 
