@@ -13,7 +13,7 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import Bitcoin from 'bitcoinjs-lib';
+import * as Bitcoin from 'bitcoinjs-lib';
 import { UTXO, UTXOManifest } from '@xdefi-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';

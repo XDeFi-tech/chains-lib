@@ -1,12 +1,7 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import {
-  BitcoinCashGetTransactionByHashDocument,
-  UtxotransactionByHashV5,
-} from '@xdefi-tech/chains-graphql';
+import { BitcoinCashGetTransactionByHashDocument } from '@xdefi-tech/chains-graphql';
 
-export const getTransactionByHash = async (
-  txHash: string
-): Promise<Partial<UtxotransactionByHashV5> | null> => {
+export const getTransactionByHash = async (txHash: string) => {
   try {
     const response = await gqlClient.query({
       query: BitcoinCashGetTransactionByHashDocument,

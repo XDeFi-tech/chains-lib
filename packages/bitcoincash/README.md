@@ -7,8 +7,6 @@ const bitcoincashManifest = {
   rpcURL: 'https://bch-mainnet.xdefiservices.com',
   chainSymbol: 'BCH',
   blockExplorerURL: 'https://blockchair.com/bitcoin-cash',
-  dataProviderType: 'haskoin',
-  dataProviderURL: 'https://api.haskoin.com/bch',
   chainId: 'bitcoincash',
   chain: 'bitcoincash',
   decimals: 8,
@@ -29,8 +27,3 @@ const bitcoincashManifest = {
 - `chain`: The name of the blockchain network. If you are using IndexerDataSource, it must be obtained from the [registry](https://github.com/XDeFi-tech/xdefi-registry/blob/main/chains.json).
 - `decimals`: The number of decimal places used for representing token amounts on the Bitcoin Cash blockchain. In this case, it is set to 8.
 - `feeGasStep`: An object specifying the gas steps for different fee levels (high, medium, and low) used for transactions on the Bitcoin Cash blockchain network. In this example, all fee levels are set to 1.
-
-UTXO Specifec fields:
-
-- `dataProviderType`: Specifies the type of data provider used for retrieving blockchain data: hascoin/blockchair
-- `dataProviderURL`: The URL of the data provider used for retrieving blockchain data: scanUTXOs, getTransaction

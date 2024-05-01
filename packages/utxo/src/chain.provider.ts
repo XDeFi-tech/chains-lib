@@ -16,21 +16,14 @@ import axios, { Axios } from 'axios';
 
 import { ChainMsg, MsgBody } from './msg';
 import { UTXOManifest } from './manifests';
-import {
-  HaskoinDataProvider,
-  UTXODataProvider,
-  BlockchairDataProvider,
-} from './data-provider';
 
 export interface UtxoProviderOptions extends Chain.IOptions {
   apiKey?: string;
-  customDataProvider?: UTXODataProvider;
 }
 
 export class UtxoProvider extends Chain.Provider {
   public rpcProvider = null;
   public rest: Axios;
-  public utxoDataSource: UTXODataProvider;
 
   constructor(dataSource: DataSource, options?: UtxoProviderOptions) {
     super(dataSource, options);
@@ -38,22 +31,6 @@ export class UtxoProvider extends Chain.Provider {
     this.rest = axios.create({
       baseURL: manifest.rpcURL,
     });
-
-    if (manifest.dataProviderType === 'haskoin') {
-      this.utxoDataSource = new HaskoinDataProvider(manifest.dataProviderURL);
-    } else if (manifest.dataProviderType === 'blockchair') {
-      this.utxoDataSource = new BlockchairDataProvider(
-        manifest.dataProviderURL,
-        options?.apiKey || ''
-      );
-    } else if (
-      manifest.dataProviderType === 'custom' &&
-      options?.customDataProvider
-    ) {
-      this.utxoDataSource = options.customDataProvider;
-    } else {
-      throw new Error('Invalid data source type');
-    }
   }
 
   createMsg(
@@ -100,11 +77,15 @@ export class UtxoProvider extends Chain.Provider {
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    return this.utxoDataSource.broadcast(messages);
+    return this.dataSource.broadcast(messages);
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
-    const tx = await this.utxoDataSource.getTransaction(txHash);
+    const tx = await this.dataSource.getTransaction(txHash);
+    if (!tx) {
+      return null;
+    }
+
     return {
       hash: tx.hash,
       status: TransactionStatus.success,

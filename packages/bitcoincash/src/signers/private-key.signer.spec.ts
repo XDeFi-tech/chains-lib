@@ -13,6 +13,39 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('../datasource/indexer/queries/scanUTXOs.query', () => ({
+  scanUTXOs: () => {
+    return [
+      {
+        oTxHash:
+          '9536a4f3efc4c4db7e88cda0e3668038678cba5d34ed80c2e9a6adaf33973386',
+        oIndex: 0,
+        oTxHex:
+          '0100000001a0f1ebe12602a226d5fd7407b5aceece2ad220c9121222cb0e800e97eec27c2a000000006b483045022100fb8e3eee81f80107de496f21635c35e86063947363f735ba30fc28b153f7629102204d899df15b0410c6dbab3149c58c7eceb7a1aec05a6e2b215ebf6a4697a9867541210340b6f9fa321f12bab6dcf264f44e2a644fd1d3cc7512a57ca3d2c99ee3bfa7d4ffffffff0210270000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688accc5d0100000000001976a914e26ef4edfcff06b0ad42ed42efa8af1ee5684b7b88ac00000000',
+        address: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+        scriptHex: '76a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac',
+        isCoinbase: null,
+        value: {
+          value: '10000',
+        },
+      },
+      {
+        oTxHash:
+          '1f92f48e5a61dfb616b34ebeefb2fce1480b6ecb3e4e8eeeb34fe89ee7a5df2e',
+        oIndex: 0,
+        oTxHex:
+          '0100000001c07daebf83cf9164494c63f26e399d25202c7f2407fd62a5050812feaf8ae461010000006b4830450221009d07e0e1b465d494d73e4deecda2fe3552d75bd28975f0f2c548c1d0e6616f0202205fd9afcb792a78470873fe224e642c86855a1e0d305590cdd5310fb8bd0e7cfb412103712c13f60c49c5211ebec518a17f4648112b4c0b2628a4fd787649002cdbe8b0000000000210270000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688acea910d00000000001976a914f2b1d800f92299c107a366ff4ac62eb70ea597e488ac00000000',
+        address: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+        scriptHex: '76a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac',
+        isCoinbase: null,
+        value: {
+          value: '10000',
+        },
+      },
+    ];
+  },
+}));
+
 describe('private-key.signer', () => {
   let privateKey: string;
   let signer: PrivateKeySigner;
