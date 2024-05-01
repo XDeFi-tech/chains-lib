@@ -1,13 +1,13 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { DogecoinBroadcastTransactionDocument } from '@xdefi-tech/chains-graphql';
+import { BitcoinBroadcastTransactionDocument } from '@xdefi-tech/chains-graphql';
 
 export const broadcast = async (rawHex: string): Promise<string> => {
   const response = await gqlClient.query({
-    query: DogecoinBroadcastTransactionDocument,
+    query: BitcoinBroadcastTransactionDocument,
     variables: {
       rawHex,
     },
   });
 
-  return response.data.dogecoin.broadcastTransaction;
+  return response.data.bitcoin.broadcastTransaction;
 };

@@ -68,15 +68,26 @@ export abstract class DataSource {
     return;
   }
 
+  /**
+   * Broadcasts a list of messages. Subclasses should override this method to implement
+   * specific logic for broadcasting messages based on the underlying blockchain technology.
+   *
+   * @param {Msg[]} _msgs Array of messages to be broadcasted.
+   * @returns {Promise<Transaction[]>} A promise that resolves to an array of transactions.
+   * @throws {Error} Will throw an error if the method is not implemented.
+   */
   public async broadcast(_msgs: Msg[]): Promise<Transaction[]> {
     throw new Error('Method not implemented.');
   }
 
-  // Only for UTXO chains
-  public async scanUTXOs(_address: string): Promise<any> {
-    throw new Error('Method not implemented.');
-  }
-
+  /**
+   * Retrieves transaction data based on the transaction hash.
+   * This method should be overridden in subclasses to provide specific implementation details.
+   *
+   * @param {string} _txHash - The hash of the transaction to retrieve.
+   * @returns {Promise<TransactionData | null>} The transaction data or null if not found.
+   * @throws {Error} Throws an error if the method is not implemented.
+   */
   public async getTransaction(_txHash: string): Promise<TransactionData | null> {
     throw new Error('Method not implemented.');
   }

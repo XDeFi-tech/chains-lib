@@ -16,6 +16,8 @@ import { ChainMsg, MsgBody } from './msg';
   features: [Chain.ChainFeatures.TOKENS],
 })
 export class BitcoinProvider extends UtxoProvider {
+  declare dataSource: IndexerDataSource;
+
   static get dataSourceList() {
     return {
       IndexerDataSource: IndexerDataSource,
@@ -35,5 +37,9 @@ export class BitcoinProvider extends UtxoProvider {
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
     return this.dataSource.getTransaction(txHash);
+  }
+
+  public async scanUTXOs(address: string) {
+    return this.dataSource.scanUTXOs(address);
   }
 }
