@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.11
+
+### Patch Changes
+
+- 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
+- Updated dependencies [7de45e1]
+  - @xdefi-tech/chains-core@2.0.9
+
 ## 1.2.10
 
 ### Patch Changes
