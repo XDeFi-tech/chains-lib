@@ -19,7 +19,6 @@ import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';
 import {
   Connection,
-  ParsedAccountData,
   PublicKey,
   VersionedMessage,
 } from '@solana/web3.js';
