@@ -6,8 +6,6 @@ export const BITCOINCASH_MANIFEST: UTXOManifest = {
   rpcURL: 'https://bch-mainnet.xdefiservices.com',
   chainSymbol: 'BCH',
   blockExplorerURL: 'https://blockchair.com/bitcoin-cash',
-  dataProviderType: 'haskoin',
-  dataProviderURL: 'https://api.haskoin.com/bch',
   chainId: 'bitcoincash',
   chain: 'bitcoincash',
   decimals: 8,

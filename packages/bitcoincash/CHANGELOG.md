@@ -1,5 +1,30 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.13
+
+### Patch Changes
+
+- 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
+- Updated dependencies [7de45e1]
+  - @xdefi-tech/chains-graphql@1.2.11
+  - @xdefi-tech/chains-core@2.0.9
+  - @xdefi-tech/chains-utxo@2.0.7
+
+## 2.0.12
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+- a04a730: Feat: add Uint8Array support for memo field
+- Updated dependencies [a04a730]
+  - @xdefi-tech/chains-utxo@2.0.6
+
+## 2.0.11
+
+### Patch Changes
+
+- 4b777a0: feat: use @psf/bitcoincashjs-lib instead of @scure/btc-signer
+
 ## 2.0.10
 
 ### Patch Changes

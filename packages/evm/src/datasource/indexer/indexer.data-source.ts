@@ -86,7 +86,6 @@ export class IndexerDataSource extends DataSource {
     if (!balances) {
       return [];
     }
-
     return balances.map((balance: any): Coin => {
       const { asset, amount } = balance;
       return new Coin(

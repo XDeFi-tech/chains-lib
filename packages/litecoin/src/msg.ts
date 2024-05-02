@@ -14,7 +14,7 @@ import type { LitecoinProvider } from './chain.provider';
 export interface MsgBody {
   amount: NumberIsh;
   to: string;
-  memo?: string;
+  memo?: string | Uint8Array;
   from: string;
   gasLimit?: NumberIsh; // ByteFee
   decimals?: number;
@@ -37,7 +37,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
 
   async buildTx() {
     const msgData = this.toData();
-    const utxos = await this.provider.utxoDataSource.scanUTXOs(this.data.from);
+    const utxos = await this.provider.scanUTXOs(this.data.from);
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
@@ -79,11 +79,21 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     };
   }
 
-  public compileMemo(memo: string) {
-    return UTXOLib.script.compile([
-      UTXOLib.opcodes.OP_RETURN,
-      Buffer.from(memo, 'utf8'),
-    ]);
+  /**
+   * Current method in used to compile a bitcoinjs-lib script. Bitcoin scripts are used to define the conditions
+   * under which funds can be spent in a Bitcoin transaction. Mark a transaction output as unspendable
+   * @param {string | Uint8Array} memo
+   * @returns {Buffer} OP_RETURN compiled script
+   */
+  public compileMemo(memo: string | Uint8Array) {
+    let formattedMemo: Buffer;
+    if (typeof memo === 'string') {
+      formattedMemo = Buffer.from(memo, 'utf8');
+    } else {
+      formattedMemo = Buffer.from(memo);
+    }
+
+    return UTXOLib.script.compile([UTXOLib.opcodes.OP_RETURN, formattedMemo]);
   }
 
   async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {

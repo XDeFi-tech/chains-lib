@@ -60,3 +60,50 @@ query GetDogecoinTransactions($address: String!, $pageSize: Int!, $pageNumber: I
     }
   }
 }
+
+query DogecoinBroadcastTransaction($rawHex: String!) {
+  dogecoin {
+    broadcastTransaction(rawHex: $rawHex)
+  }
+}
+
+query DogecoinScanUTXOs($address: String!, $page: Int!) {
+  dogecoin {
+    unspentTxOutputsV5(address: $address, page: $page) {
+      oTxHash
+      oIndex
+      value {
+        value
+      }
+      oTxHex
+      address
+      isCoinbase
+      scriptHex
+    }
+  }
+}
+
+query DogecoinGetTransactionByHash($txHash: String!) {
+  dogecoin {
+    getTransactionByHashV5(txHash: $txHash) {
+      hex
+      txid
+      hash
+      size
+      version
+      locktime
+      confirmations
+      blocktime
+      time
+      blockhash
+      blockNumber
+      sourceOfData
+      inputs {
+        address
+      }
+      outputs {
+        address
+      }
+    }
+  }
+}

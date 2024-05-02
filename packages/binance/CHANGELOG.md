@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.8
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+
 ## 2.0.7
 
 ### Patch Changes

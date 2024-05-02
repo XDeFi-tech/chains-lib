@@ -6,8 +6,6 @@ export const BITCOIN_MANIFEST: UTXOManifest = {
   rpcURL: 'https://btc-haskoin.xdefiservices.com',
   chainSymbol: 'BTC',
   blockExplorerURL: 'https://blockchair.com/bitcoin',
-  dataProviderType: 'haskoin',
-  dataProviderURL: 'https://api.haskoin.com/btc',
   chainId: 'bitcoin',
   chain: 'bitcoin',
   decimals: 8,

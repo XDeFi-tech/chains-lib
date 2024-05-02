@@ -6,8 +6,6 @@ export const LITECOIN_MANIFEST: UTXOManifest = {
   rpcURL: 'https://blockstream.info',
   chainSymbol: 'LTC',
   blockExplorerURL: 'https://blockchair.com/litecoin',
-  dataProviderType: 'blockchair',
-  dataProviderURL: 'https://rpc-proxy.xdefi.services/blockchair/litecoin',
   chainId: 'litecoin',
   chain: 'litecoin',
   decimals: 8,

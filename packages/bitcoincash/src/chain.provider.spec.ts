@@ -71,4 +71,34 @@ describe('chain.provider', () => {
       )
     ).rejects.toThrow();
   });
+
+  it('should create message with memo as string', async () => {
+    const memo = 'Test string memo';
+    const msg = provider.createMsg({
+      to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      amount: 0.000001,
+      memo: memo,
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+    expect(msg.toData().memo).toEqual(memo);
+  });
+
+  it('should create message with memo as Uint8Array', async () => {
+    const memo = 'Test string memo';
+    const encodedMemo = new TextEncoder().encode(memo);
+    const msg = provider.createMsg({
+      to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
+      amount: 0.000001,
+      memo: encodedMemo,
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+    expect(msg.toData().memo).toEqual(encodedMemo);
+    expect(new TextDecoder().decode(msg.toData().memo as Uint8Array)).toEqual(
+      memo
+    );
+  });
 });
