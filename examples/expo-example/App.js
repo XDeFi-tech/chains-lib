@@ -1,68 +1,51 @@
-import "@ethersproject/shims";
-import { useCallback } from "react";
 import { View, Button } from "react-native";
-
-import { Chain } from "@xdefi-tech/chains-core";
 import {
-  EVM_MANIFESTS,
-  EvmProvider,
-  IndexerDataSource as EvmDataSource,
-} from "@xdefi-tech/chains-evm";
-import { ethers } from "ethers";
-import { ChainController } from "@xdefi-tech/chains-controller";
-import { TrustWalletSigner } from "./trust-wallet.signer";
-
-// const provider = new ethers.providers.StaticJsonRpcProvider(
-//   "https://polygon-rpc.com"
-// );
-
-// const somweting = async () => {
-//   // const balance = await provider.getBalance(
-//   //   "0xd0972E2312518Ca15A2304D56ff9cc0b7ea0Ea37"
-//   // );
-//   // const result = await evmProvider.getTransactions(
-//   //   "0xb4D24357404C35A62b8B9228155FE9e77BDE4F53"
-//   // );
-//   // const txs = await result.getData();
-//   // console.log(txs);
-//   chains.addProvider(evmProvider);
-//   // fetch("https://jsonplaceholder.typicode.com/todos/1")
-//   //   .then((response) => response.json())
-//   //   .then((json) => console.log(json));
-// };
-// somweting();
+  SOLANA_MANIFEST,
+  SolanaProvider,
+  ChainDataSource, // <=== has been changed
+} from '@xdefi-tech/chains-solana';
+import { Buffer } from "buffer";
+import 'react-native-get-random-values';
+// import { SeedPhraseSigner } from "@xdefi-tech/chains-solana/dist/signers/react-native";
 
 function App() {
-  const evmDatasource = new EvmDataSource(EVM_MANIFESTS.polygon);
-  const evmProvider = new EvmProvider(evmDatasource, {
-    providerId: "polygon",
-    signers: [TrustWalletSigner],
+  const [nft, setNft] = useState(null)
+  const dataSource =  new ChainDataSource(SOLANA_MANIFEST);
+  const provider = new SolanaProvider(dataSource, {
+    providerId: "solana",
   });
 
-  const msg = evmProvider.createMsg({
-    from: '0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff',
-    to: '0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff',
-    amount: 0.00001,
+  const derivationPath = "m/44'/501'/0'/0'";
+  const msg = provider.createMsg({
+    from: 'YOUR_ADDRESS',
+    to: 'YOUR_ADDRESS',
+    amount: 0.001,
   })
 
-  console.log('msg', msg);
+  const signer = new SeedPhraseSigner('YOUR_SEED_PHRASE');
 
-  const signers = evmProvider.getSigners();
-  console.log('signers', signers[0]);
-  const trustWalletSigner = new signers[0]();
-
-  trustWalletSigner.sign('', msg).then(() => {
-    console.log('msg.hasSignature', msg.hasSignature)
-  })
+  // signer.sign(msg, derivationPath).then(() => {
+  //   console.log('msg.hasSignature', msg.hasSignature)
+  // })
 
   const handleTestFetch = useCallback(() => {
     fetch("https://jsonplaceholder.typicode.com/todos/1")
       .then((response) => response.json())
       .then((json) => console.log(json));
   }, []);
+
   return (
     <View style={{ flex: 1, paddingTop: 150 }}>
       <Button onPress={handleTestFetch} title={"Test Fetch"} />
+      {
+        nft && (
+          <FlatList
+          data={nft}
+          renderItem={({ item }) => <Text>{item.name}</Text>}
+          keyExtractor={(item, index) => index.toString()}
+        />
+        )
+      }
     </View>
   );
 }
