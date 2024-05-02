@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.11
+
+### Patch Changes
+
+- 38ef280: Fix: metaplex issue for mobile app
+
 ## 2.0.10
 
 ### Patch Changes
