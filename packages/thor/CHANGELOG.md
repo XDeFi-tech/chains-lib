@@ -1,5 +1,31 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.11
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+
+## 2.0.10
+
+### Patch Changes
+
+- 8acbcea: Fix: message amount integer value
+
+## 2.0.9
+
+### Patch Changes
+
+- 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
+- Updated dependencies [5b781e6]
+  - @xdefi-tech/chains-core@2.0.8
+
+## 2.0.8
+
+### Patch Changes
+
+- 3f8a1dd: Feat: update default rpcUrl for thorchain
+
 ## 2.0.7
 
 ### Patch Changes

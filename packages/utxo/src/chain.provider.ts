@@ -10,27 +10,20 @@ import {
   Response,
   Transaction,
   TransactionData,
-  TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 
 import { ChainMsg, MsgBody } from './msg';
 import { UTXOManifest } from './manifests';
-import {
-  HaskoinDataProvider,
-  UTXODataProvider,
-  BlockchairDataProvider,
-} from './data-provider';
+import { UTXO } from './data-provider';
 
 export interface UtxoProviderOptions extends Chain.IOptions {
   apiKey?: string;
-  customDataProvider?: UTXODataProvider;
 }
 
 export class UtxoProvider extends Chain.Provider {
   public rpcProvider = null;
   public rest: Axios;
-  public utxoDataSource: UTXODataProvider;
 
   constructor(dataSource: DataSource, options?: UtxoProviderOptions) {
     super(dataSource, options);
@@ -38,21 +31,6 @@ export class UtxoProvider extends Chain.Provider {
     this.rest = axios.create({
       baseURL: manifest.rpcURL,
     });
-    if (manifest.dataProviderType === 'haskoin') {
-      this.utxoDataSource = new HaskoinDataProvider(manifest.dataProviderURL);
-    } else if (manifest.dataProviderType === 'blockchair') {
-      this.utxoDataSource = new BlockchairDataProvider(
-        manifest.dataProviderURL,
-        options?.apiKey || ''
-      );
-    } else if (
-      manifest.dataProviderType === 'custom' &&
-      options?.customDataProvider
-    ) {
-      this.utxoDataSource = options.customDataProvider;
-    } else {
-      throw new Error('Invalid data source type');
-    }
   }
 
   createMsg(
@@ -99,44 +77,26 @@ export class UtxoProvider extends Chain.Provider {
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    const result: Transaction[] = [];
-    for await (const message of messages) {
-      const { signedTransaction } = message;
-
-      if (!message.hasSignature) {
-        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
-      }
-
-      if (this.manifest.dataProviderType === 'blockchair') {
-        const dataSource: BlockchairDataProvider = this
-          .utxoDataSource as BlockchairDataProvider;
-        const hash = await dataSource.broadcast(signedTransaction as string);
-
-        result.push(Transaction.fromData({ hash: hash }));
-      } else {
-        const { data: txid } = await this.rest.post<string>(
-          '/api/tx',
-          signedTransaction
-        );
-
-        result.push(Transaction.fromData({ hash: txid }));
-      }
-    }
-
-    return result;
+    return this.dataSource.broadcast(messages);
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
-    const tx = await this.utxoDataSource.getTransaction(txHash);
-    return {
-      hash: tx.hash,
-      status: TransactionStatus.success,
-      from: '',
-      to: tx.outputs[0].address,
-    };
+    return this.dataSource.getTransaction(txHash);
   }
 
   public get manifest(): UTXOManifest {
     return this.dataSource.manifest as UTXOManifest;
+  }
+
+  /**
+   * Scans for UTXOs associated with a given address. This method should be overridden in subclasses
+   * that handle UTXO-based chains, providing a specific implementation for scanning UTXOs.
+   *
+   * @param {string} _address The address for which to scan UTXOs.
+   * @returns A promise that resolves to the scanned UTXOs.
+   * @throws {Error} Throws an error if the method is not implemented.
+   */
+  public async scanUTXOs(_address: string): Promise<UTXO[]> {
+    throw new Error('Method not implemented.');
   }
 }

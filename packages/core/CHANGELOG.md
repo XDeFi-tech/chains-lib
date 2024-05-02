@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-core
 
+## 2.0.9
+
+### Patch Changes
+
+- 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
+
+## 2.0.8
+
+### Patch Changes
+
+- 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
+
 ## 2.0.7
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.11
+
+### Patch Changes
+
+- 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
+- Updated dependencies [7de45e1]
+  - @xdefi-tech/chains-graphql@1.2.11
+  - @xdefi-tech/chains-core@2.0.9
+  - @xdefi-tech/chains-utxo@2.0.7
+
+## 2.0.10
+
+### Patch Changes
+
+- 62105c4: Feat: update README.md
+- a04a730: Feat: add Uint8Array support for memo field
+- Updated dependencies [a04a730]
+  - @xdefi-tech/chains-utxo@2.0.6
+
+## 2.0.9
+
+### Patch Changes
+
+- 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
+- Updated dependencies [5b781e6]
+  - @xdefi-tech/chains-core@2.0.8
+  - @xdefi-tech/chains-utxo@2.0.5
+
 ## 2.0.8
 
 ### Patch Changes
