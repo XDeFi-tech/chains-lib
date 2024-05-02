@@ -52,9 +52,14 @@ export class ChainDataSource extends DataSource {
       `/cosmos/bank/v1beta1/balances/${address}`
     );
 
+    const chain =
+      this.manifest.chain === 'thorchain'
+        ? ('THORChain' as AddressChain)
+        : ('MAYAChain' as AddressChain);
+
     const cryptoAssetsInput = resp.balances.map<CryptoAssetArgs>(
       ({ denom }) => ({
-        chain: this.manifest.chain as AddressChain,
+        chain: chain,
         contract: this.manifest.denom === denom ? null : denom,
       })
     );
