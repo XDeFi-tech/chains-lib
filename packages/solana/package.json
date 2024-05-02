@@ -26,7 +26,7 @@
     "@metaplex-foundation/js": "0.20.1",
     "@metaplex-foundation/mpl-token-metadata": "3.2.1",
     "@solana/spl-token": "0.3.8",
-    "@solana/web3.js": "1.78.5",
+    "@solana/web3.js": "1.78.8",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "9.1.2",
