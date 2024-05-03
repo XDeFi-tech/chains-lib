@@ -6489,38 +6489,6 @@
   dependencies:
     tslib "^2.3.0"
 
-"@xchainjs/xchain-client@0.14.2":
-  version "0.14.2"
-  resolved "https://registry.npmjs.org/@xchainjs/xchain-client/-/xchain-client-0.14.2.tgz"
-  integrity sha512-uYnKLU5qcDixNizIGtyt7K4FYHkWCEq2PNKSv/8mApjIVjsYvt2TnzFCazj0kK0tOxhlFZUzELCHbvQpF+ugDg==
-
-"@xchainjs/xchain-cosmos@0.21.3":
-  version "0.21.3"
-  resolved "https://registry.npmjs.org/@xchainjs/xchain-cosmos/-/xchain-cosmos-0.21.3.tgz"
-  integrity sha512-njvhvsb8OLIWAsxRHMEQ1oyLUug9vg8xoentItysbKw5dXJmusRtTMdNHpvzpGGc911w1dOQ0/EA9se9g8UOug==
-
-"@xchainjs/xchain-crypto@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@xchainjs/xchain-crypto/-/xchain-crypto-0.3.0.tgz"
-  integrity sha512-ZM36UEQaad3D6DOdhUOcpFyMUr5HQs7yBmrdi4AnYFLQzSYmYABgxvFo+DSgpuQkq2zrcMU6lIfsBX0r5LdCFw==
-  dependencies:
-    bech32 "^2.0.0"
-    bip39 "^3.1.0"
-    crypto-js "^4.1.1"
-    foundry-primitives-xchainjs "github:xchainjs/foundry-primitives-js#master"
-    hdkey "^2.1.0"
-    uuid "^9.0.0"
-
-"@xchainjs/xchain-thorchain@0.28.7":
-  version "0.28.7"
-  resolved "https://registry.npmjs.org/@xchainjs/xchain-thorchain/-/xchain-thorchain-0.28.7.tgz"
-  integrity sha512-jQ2fCuBRvhsev7lcTfLpU+k/+j6gUiHmGPKpxAxmuGrsLukoamJWMBoQ4Hxp9zm+9Ky4gxtUbWsBqeHHNExebQ==
-
-"@xchainjs/xchain-util@0.13.2":
-  version "0.13.2"
-  resolved "https://registry.npmjs.org/@xchainjs/xchain-util/-/xchain-util-0.13.2.tgz"
-  integrity sha512-rhaF22ZT1JugTDMnJ4UiB971jj9oF887WOvG1hMVmc750JFmldpbESiM1PkY1bjFwTRX699Njzx6u88ax4xWVA==
-
 "@xmldom/xmldom@^0.8.8":
   version "0.8.10"
   resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.10.tgz"
@@ -7410,11 +7378,6 @@ bignumber.js@9.1.2, bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.1.
   resolved "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.1.2.tgz"
   integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
 
-bignumber.js@^7.2.1:
-  version "7.2.1"
-  resolved "https://registry.npmjs.org/bignumber.js/-/bignumber.js-7.2.1.tgz"
-  integrity sha512-S4XzBk5sMB+Rcb/LNcpzXr57VRTxgAvaAEDAl1AwRx27j00hT84O6OkteE7u8UB3NuaaygCRrEpqox4uDOrbdQ==
-
 binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
@@ -7462,24 +7425,6 @@ bip32@^2.0.4, bip32@^2.0.5, bip32@^2.0.6:
     tiny-secp256k1 "^1.1.3"
     typeforce "^1.11.5"
     wif "^2.0.6"
-
-bip39-light@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/bip39-light/-/bip39-light-1.0.7.tgz#06a72f251b89389a136d3f177f29b03342adc5ba"
-  integrity sha512-WDTmLRQUsiioBdTs9BmSEmkJza+8xfJmptsNJjxnoq3EydSa/ZBXT6rm66KoT3PJIRYMnhSKNR7S9YL1l7R40Q==
-  dependencies:
-    create-hash "^1.1.0"
-    pbkdf2 "^3.0.9"
-
-bip39@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/bip39/-/bip39-3.0.2.tgz#2baf42ff3071fc9ddd5103de92e8f80d9257ee32"
-  integrity sha512-J4E1r2N0tUylTKt07ibXvhpT2c5pyAFgvuA5q1H9uDy6dEGpjV8jmymh3MTYJDLCNbIVClSB9FbND49I6N24MQ==
-  dependencies:
-    "@types/node" "11.11.6"
-    create-hash "^1.1.0"
-    pbkdf2 "^3.0.9"
-    randombytes "^2.0.1"
 
 bip39@3.1.0, bip39@^3.0.2, bip39@^3.0.3, bip39@^3.0.4:
   version "3.1.0"
@@ -8634,7 +8579,8 @@ crypto-browserify@3.12.0, crypto-browserify@^3.12.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-crypto-js@4.2.0, crypto-js@^4.0.0, crypto-js@^4.1.1, crypto-js@^4.2.0:
+
+crypto-js@4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
@@ -10504,22 +10450,6 @@ form-data@^4.0.0:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
-
-"foundry-primitives-xchainjs@github:xchainjs/foundry-primitives-js#master":
-  version "0.2.1"
-  resolved "https://codeload.github.com/xchainjs/foundry-primitives-js/tar.gz/bec0f5594b5feeacf294d0c5e161f457119b0113"
-  dependencies:
-    bignumber.js "^7.2.1"
-    blakejs "^1.1.0"
-    bn.js "^4.11.8"
-    buffer "^5.2.1"
-    crypto-js "4.2.0"
-    elliptic "^6.4.1"
-    hmac-drbg "^1.0.1"
-    lodash "^4.17.21"
-    node-forge "^1.3.1"
-    rlp "^2.1.0"
-    tweetnacl "^1.0.3"
 
 freeport-async@2.0.0:
   version "2.0.0"
@@ -15585,13 +15515,6 @@ ripple-lib@^1.10.1:
     ripple-lib-transactionparser "0.8.2"
     ws "^7.2.0"
 
-rlp@^2.1.0:
-  version "2.2.7"
-  resolved "https://registry.npmjs.org/rlp/-/rlp-2.2.7.tgz"
-  integrity sha512-d5gdPmgQ0Z+AklL2NVXr/IoSjNZFfTVvQWzL/AM2AOcSzYP2xjlb0AC8YyCLc41MSNf6P6QVtjgPdmVtzb+4lQ==
-  dependencies:
-    bn.js "^5.2.0"
-
 rollup-plugin-inject@^3.0.0:
   version "3.0.2"
   resolved "https://registry.npmjs.org/rollup-plugin-inject/-/rollup-plugin-inject-3.0.2.tgz"
@@ -17580,11 +17503,6 @@ uuid@^8.0.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
-uuid@^9.0.0:
-  version "9.0.1"
-  resolved "https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 v8-compile-cache-lib@^3.0.0:
   version "3.0.1"
