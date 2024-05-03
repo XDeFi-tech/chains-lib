@@ -3,6 +3,7 @@ import {
   ChainDecorator,
   MsgEncoding,
   Transaction,
+  TransactionData,
 } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
 
@@ -15,6 +16,8 @@ import { ChainMsg } from './msg';
   features: [Chain.ChainFeatures.TOKENS],
 })
 export class BitcoinCashProvider extends UtxoProvider {
+  declare dataSource: IndexerDataSource;
+
   createMsg(
     data: MsgBody,
     encoding: MsgEncoding = MsgEncoding.object
@@ -29,28 +32,14 @@ export class BitcoinCashProvider extends UtxoProvider {
   }
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
-    const result: Transaction[] = [];
-    for await (const message of messages) {
-      const { signedTransaction } = message;
+    return this.dataSource.broadcast(messages);
+  }
 
-      if (!message.hasSignature) {
-        throw new Error(`Message ${JSON.stringify(message)} is not signed`);
-      }
+  async getTransaction(txHash: string): Promise<TransactionData | null> {
+    return this.dataSource.getTransaction(txHash);
+  }
 
-      const { data: response } = await this.rest.post('', {
-        jsonrpc: '2.0',
-        method: 'sendrawtransaction',
-        params: [signedTransaction],
-        id: '',
-      });
-
-      if (response.error) {
-        throw new Error(response.error);
-      }
-
-      result.push(Transaction.fromData({ hash: response.result }));
-    }
-
-    return result;
+  public async scanUTXOs(address: string) {
+    return this.dataSource.scanUTXOs(address);
   }
 }

@@ -24,7 +24,7 @@ export class SeedPhraseSigner extends Signer.Provider {
   async sign(
     msg: ChainMsg,
     derivation: string,
-    signatureType: SignatureType
+    signatureType: SignatureType = SignatureType.Transaction
   ): Promise<void> {
     const wallet = Wallet.fromMnemonic(this.key, derivation);
     const txData = await msg.buildTx();

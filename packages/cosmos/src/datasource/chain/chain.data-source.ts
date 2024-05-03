@@ -220,7 +220,7 @@ export class ChainDataSource extends DataSource {
               },
               multi: void 0,
             },
-            sequence: account.sequence.toString(),
+            sequence: BigInt(account.sequence),
           }),
         ],
         fee: Fee.fromPartial({

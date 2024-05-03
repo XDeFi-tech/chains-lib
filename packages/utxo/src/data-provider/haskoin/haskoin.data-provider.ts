@@ -1,7 +1,12 @@
-import { Injectable } from '@xdefi-tech/chains-core';
+import {
+  Injectable,
+  Transaction,
+  TransactionData,
+} from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 import * as UTXOLib from 'bitcoinjs-lib';
 
+import { ChainMsg } from '../../msg';
 import {
   UTXODataProvider,
   UTXOTransaction,
@@ -69,6 +74,10 @@ export class HaskoinDataProvider implements UTXODataProvider {
 
   constructor(baseURL: string) {
     this.api = axios.create({ baseURL });
+  }
+
+  broadcast(_messages: ChainMsg[]): Promise<Transaction<TransactionData>[]> {
+    throw new Error('Method not implemented.');
   }
 
   async getAccount(address: string): Promise<HaskoinAddressBalance> {

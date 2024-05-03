@@ -70,9 +70,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       amount: [
         {
           denom: amountData.denom,
-          amount: String(
-            messageData.amount * Math.pow(10, amountData.decimals)
-          ),
+          amount: new BigNumber(messageData.amount)
+            .multipliedBy(10 ** this.provider.manifest.decimals)
+            .integerValue()
+            .toString(),
         },
       ],
     };
@@ -105,6 +106,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       from: msgData.from,
       value: new BigNumber(msgData.amount)
         .multipliedBy(10 ** this.provider.manifest.decimals)
+        .integerValue()
         .toNumber(),
       chainId: this.provider.manifest.chainId,
       memo: msgData.memo || '',

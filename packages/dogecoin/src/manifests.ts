@@ -6,8 +6,6 @@ export const DOGECOIN_MANIFEST: UTXOManifest = {
   rpcURL: 'https://blockstream.info',
   chainSymbol: 'DOGE',
   blockExplorerURL: 'https://blockchair.com/dogecoin',
-  dataProviderType: 'blockchair',
-  dataProviderURL: 'https://rpc-proxy.xdefi.services/blockchair/dogecoin',
   chainId: 'dogecoin',
   chain: 'dogecoin',
   decimals: 8,

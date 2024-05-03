@@ -4,6 +4,7 @@ import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
+import * as Bitcoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
 
@@ -67,6 +68,15 @@ export class SeedPhraseSigner extends Signer.Provider {
     txP2WPKH.finalize();
 
     message.sign(txP2WPKH.hex);
+  }
+
+  async signRawTransaction(txHex: string, derivation: string): Promise<string> {
+    const pk = Bitcoin.ECPair.fromWIF(await this.getPrivateKey(derivation));
+    const psbt = Bitcoin.Psbt.fromHex(txHex);
+
+    psbt.signAllInputs(pk);
+    psbt.finalizeAllInputs();
+    return psbt.extractTransaction(true).toHex();
   }
 }
 

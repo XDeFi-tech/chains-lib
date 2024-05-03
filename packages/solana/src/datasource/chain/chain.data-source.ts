@@ -17,14 +17,9 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';
-import {
-  Connection,
-  ParsedAccountData,
-  PublicKey,
-  VersionedMessage,
-} from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
-import { Metaplex } from '@metaplex-foundation/js';
+import { Connection, PublicKey, VersionedMessage } from '@solana/web3.js';
+import { TOKEN_PROGRAM_ID, AccountLayout, getMint } from '@solana/spl-token';
+import { Metadata, PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 import { ChainMsg } from '../../msg';
 
@@ -75,19 +70,24 @@ export class ChainDataSource extends DataSource {
 
     for (const token of tokens.value) {
       const accountInfo = AccountLayout.decode(token.account.data);
-
-      const metaplex = Metaplex.make(this.rpcProvider);
-      const metadata = await metaplex
-        .nfts()
-        .findByMint({ mintAddress: accountInfo.mint });
-
-      const tokenName = metadata.name;
-      const tokenSymbol = metadata.symbol;
-      const mint = await this.rpcProvider.getParsedAccountInfo(
-        accountInfo.mint
+      const metadataPDA = PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('metadata'),
+          PROGRAM_ID.toBuffer(),
+          accountInfo.mint.toBuffer(),
+        ],
+        PROGRAM_ID
       );
-      const tokenDecimals =
-        (mint.value?.data as ParsedAccountData).parsed ?? 18;
+
+      const metadata = await Metadata.fromAccountAddress(
+        this.rpcProvider,
+        metadataPDA[0]
+      );
+
+      const tokenName = metadata.data.name;
+      const tokenSymbol = metadata.data.symbol;
+      const mint = await getMint(this.rpcProvider, accountInfo.mint);
+      const tokenDecimals = mint.decimals;
       const tokenBalance = accountInfo.amount;
 
       const coin = new Coin(
@@ -97,7 +97,7 @@ export class ChainDataSource extends DataSource {
           symbol: tokenSymbol,
           address: accountInfo.mint.toBase58(),
           decimals: tokenDecimals,
-          native: accountInfo.isNativeOption === 1 ? true : false,
+          native: accountInfo.isNativeOption === 1,
           icon: null,
           id: '',
           price: undefined,
