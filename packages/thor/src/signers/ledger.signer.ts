@@ -1,7 +1,7 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
-import { Client } from '@xchainjs/xchain-thorchain';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
 
@@ -15,9 +15,13 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   verifyAddress(address: string): boolean {
-    // We need to init the client with some kind of seed phrase, even
-    // if we just want to check the address
-    return new Client({ phrase: '' }).validateAddress(address);
+    try {
+      const prefix = bech32.decode(address).prefix;
+      if (prefix === 'thor' || prefix === 'maya') return true;
+      return false;
+    } catch (error) {
+      return false;
+    }
   }
 
   async getPrivateKey(_derivation: string) {
@@ -27,9 +31,10 @@ export class LedgerSigner extends Signer.Provider {
   async getAddress(derivation: string): Promise<string> {
     const app = new THORChainApp(this.transport as Transport);
     const derivationArray = derivation.replace(/'/g, '').split('/').map(Number);
+    const prefix = derivation.slice(0, 4);
     const { bech32Address } = await app.getAddressAndPubKey(
       derivationArray,
-      'thor'
+      prefix
     );
 
     return bech32Address;
