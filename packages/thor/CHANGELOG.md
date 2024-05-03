@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.12
+
+### Patch Changes
+
+- f41bfb4: - feat: Implement methods for maya on thor chain
+
 ## 2.0.11
 
 ### Patch Changes
