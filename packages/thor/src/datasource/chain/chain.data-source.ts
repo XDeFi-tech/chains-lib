@@ -51,7 +51,12 @@ export class ChainDataSource extends DataSource {
     const { data: resp } = await this.rest.get<{ balances: Array<any> }>(
       `/cosmos/bank/v1beta1/balances/${address}`
     );
-    const chain = 'THORChain' as AddressChain;
+
+    const chain =
+      this.manifest.chain === 'thorchain'
+        ? ('THORChain' as AddressChain)
+        : ('MAYAChain' as AddressChain);
+
     const cryptoAssetsInput = resp.balances.map<CryptoAssetArgs>(
       ({ denom }) => ({
         chain: chain,
