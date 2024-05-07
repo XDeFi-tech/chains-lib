@@ -5,6 +5,8 @@ import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { bech32 } from 'bech32';
+import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 
 import { ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
@@ -76,6 +78,27 @@ export class LedgerSigner extends Signer.Provider {
     const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
     const rawTx = Buffer.from(txBytes).toString('base64');
     msg.sign(rawTx);
+  }
+
+  async verifyMessage(
+    signer: string,
+    data: Uint8Array | string,
+    pubKey: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> {
+    try {
+      const isVerified = verifyADR36Amino(
+        bech32.decode(signer).prefix, // prefix
+        signer, // signer
+        data, // data sign message
+        pubKey, // pubKeyBuffer
+        signature // signature
+      );
+
+      return isVerified;
+    } catch (err) {
+      return false;
+    }
   }
 }
 

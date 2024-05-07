@@ -1,5 +1,8 @@
 import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
+import { bech32 } from 'bech32';
+import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
+import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -107,5 +110,45 @@ describe('cosmos::ledger.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should return status of verify message', async () => {
+    // Define test data
+    const privKey = PrivKeySecp256k1.generateRandomKey();
+    const pubKey = privKey.getPubKey();
+
+    const sign = bech32.encode('cosmos', bech32.toWords(pubKey.toBytes()));
+
+    const signDoc = makeADR36AminoSignDoc(sign, 'test');
+    const msg = serializeSignDoc(signDoc);
+    const signature = privKey.signDigest32(Hash.sha256(msg));
+
+    const result = await signer.verifyMessage(
+      sign,
+      'test',
+      pubKey.toBytes(),
+      new Uint8Array([...signature.r, ...signature.s])
+    );
+    expect(result);
+  });
+
+  it('should return false when unmatched/invalid signer', async () => {
+    // Define test data
+    const privKey = PrivKeySecp256k1.generateRandomKey();
+    const pubKey = privKey.getPubKey();
+
+    const sign = 'osmo1ymk637a7wljvt4w7q9lnrw95mg9sr37yatxd9h'; // unmatched signer
+
+    const signDoc = makeADR36AminoSignDoc(sign, 'test');
+    const msg = serializeSignDoc(signDoc);
+    const signature = privKey.signDigest32(Hash.sha256(msg));
+
+    const result = await signer.verifyMessage(
+      sign,
+      'test',
+      pubKey.toBytes(),
+      new Uint8Array([...signature.r, ...signature.s])
+    );
+    expect(result).toBe(false);
   });
 });
