@@ -73,7 +73,7 @@ export const COSMOS_MANIFESTS: {
     chain: 'axelar',
     denom: 'uaxl',
     decimals: 6,
-    prefix: 'alexar',
+    prefix: 'axelar',
     feeGasStep: {
       high: 0.007,
       medium: 0.007,
