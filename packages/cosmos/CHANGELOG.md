@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.11
+
+### Patch Changes
+
+- faa6dba: - feat: Implement ADR 036 - Arbitrary Signature for Cosmos Chain
+
 ## 2.0.10
 
 ### Patch Changes
