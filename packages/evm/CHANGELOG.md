@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.16
+
+### Patch Changes
+
+- cebc1dc: chore: update optimism default rpc url
+
 ## 2.0.15
 
 ### Patch Changes
