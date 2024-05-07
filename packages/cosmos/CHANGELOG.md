@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.12
+
+### Patch Changes
+
+- 90b77f2: fix(XDEFI-7720): bech32 axelar typo
+
 ## 2.0.11
 
 ### Patch Changes
