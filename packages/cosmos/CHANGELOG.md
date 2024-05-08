@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.13
+
+### Patch Changes
+
+- 3abb2c1: Feat: add osmojs lib and types/converters in esm
+
 ## 2.0.12
 
 ### Patch Changes
