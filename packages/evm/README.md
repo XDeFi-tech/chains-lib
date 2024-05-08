@@ -71,3 +71,19 @@ const response = await provider.getBalance(
 );
 const data = await response.getData();
 ```
+
+## Usage ethers provides
+
+The library allows to use the JsonRpcProvider methods of [ethers](https://docs.ethers.org/v5/api/providers/jsonrpc-provider).
+
+### Example using ethers provider
+
+```typescript
+import { EvmProvider, IndexerDataSource } from '@xdefi-tech/chains-evm';
+
+const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
+
+const etherProvider = provider.rpcProvider;
+// Send raw message to the provider
+const data = await etherProvider.send(method, params);
+```

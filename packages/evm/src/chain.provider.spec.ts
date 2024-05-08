@@ -1,3 +1,5 @@
+import { providers } from 'ethers';
+
 import { ChainMsg } from './msg';
 import { EvmProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
@@ -112,6 +114,12 @@ describe('chain.provider', () => {
       '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     );
     expect(txData).toEqual(null);
+  });
+
+  it('should get a ethereum provider', async () => {
+    const provider = evmProvider.rpcProvider;
+    expect(provider).toBeInstanceOf(providers.StaticJsonRpcProvider);
+    expect(provider.connection.url).toEqual(EVM_MANIFESTS.ethereum.rpcURL);
   });
 
   it('[Arbitrum]should get a balance', async () => {
