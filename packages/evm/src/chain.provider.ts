@@ -32,7 +32,7 @@ import { decryptParams, paramToString } from './utils';
   ],
 })
 export class EvmProvider extends Chain.Provider {
-  rpcProvider: providers.StaticJsonRpcProvider;
+  public readonly rpcProvider: providers.StaticJsonRpcProvider;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
