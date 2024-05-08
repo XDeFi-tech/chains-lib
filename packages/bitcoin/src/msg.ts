@@ -77,9 +77,6 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
           })
       );
     }
-    if (ordinalToSend) {
-      utxos.unshift(ordinalToSend);
-    }
 
     const { fee } = await this.getFee();
     if (!fee)
@@ -88,30 +85,33 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
-    let valueToSend = new BigNumber(msgData.amount?.toString()) // ? - for nfts, but still required
+    const valueToSend = new BigNumber(msgData.amount?.toString()) // ? - for nfts, but still required
       .multipliedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
       .toNumber();
 
-    if (ordinalToSend) {
-      valueToSend = ordinalToSend.value;
+    if (valueToSend > 0) {
+      targetOutputs.push({
+        address: msgData.to,
+        value: valueToSend,
+      });
     }
-
-    targetOutputs.push({
-      address: msgData.to,
-      value: valueToSend,
-    });
 
     if (compiledMemo) {
       targetOutputs.push({ script: compiledMemo, value: 0 });
     }
-    const { inputs, outputs } = accumulative(
-      utxos,
-      targetOutputs,
-      feeRateWhole
-    );
+    let { inputs, outputs } = accumulative(utxos, targetOutputs, feeRateWhole);
 
     if (!inputs || !outputs) {
       throw new Error('Insufficient Balance for transaction');
+    }
+
+    if (ordinalToSend) {
+      inputs = [ordinalToSend, ...inputs];
+      outputs = [
+        { address: msgData.to, value: ordinalToSend.value },
+        ...outputs,
+      ];
+      utxos.unshift(ordinalToSend);
     }
 
     return {
