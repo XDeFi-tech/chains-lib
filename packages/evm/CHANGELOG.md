@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.17
+
+### Patch Changes
+
+- c7526da: feat: expose provider so that extension can calls `send()` to the provider for dapps
+
 ## 2.0.16
 
 ### Patch Changes

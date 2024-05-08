@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.12
+
+### Patch Changes
+
+- 26197f7: Feat: add Ordinals integration. Add tests
+
 ## 2.0.11
 
 ### Patch Changes
