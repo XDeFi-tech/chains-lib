@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.13
+
+### Patch Changes
+
+- fca5a7f: Feat: update `legacyNFTs` query with collectionV3 fields
+- Updated dependencies [fca5a7f]
+  - @xdefi-tech/chains-core@2.0.10
+
 ## 2.0.12
 
 ### Patch Changes
