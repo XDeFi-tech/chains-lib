@@ -193,5 +193,5 @@ export const getNFTBalance = async (chain: string, address: string) => {
     },
   });
 
-  return response[chainName].nfts;
+  return response[chainName].legacyNFTs;
 };
