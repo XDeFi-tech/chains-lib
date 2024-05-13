@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.19
+
+### Patch Changes
+
+- 3afec9a: feat: Add missing methods for EVM signers
+
+  - [x] added `recover` method
+  - [x] added `recoverPublicKey` method
+  - [x] added `encryptWithPublicKey` method
+
 ## 2.0.18
 
 ### Patch Changes
