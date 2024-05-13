@@ -101,4 +101,8 @@ describe('trezor.signer', () => {
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
   });
+
+  it('should fail if public key is requested', async () => {
+    expect(signer.getPublicKey(derivationPath)).rejects.toThrowError();
+  });
 });
