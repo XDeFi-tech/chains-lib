@@ -21,6 +21,10 @@ export class TrezorSigner extends Signer.TrezorProvider {
     throw new Error('Cannot extract private key from Trezor device');
   }
 
+  async getPublicKey(derivation: string) {
+    throw new Error('Cannot extract public key from Trezor device');
+  }
+
   @IsTrezorInitialized
   async getAddress(derivation: string): Promise<string> {
     const address = await TrezorConnect.ethereumGetAddress({
