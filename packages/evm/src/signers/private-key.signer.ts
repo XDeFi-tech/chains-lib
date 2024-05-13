@@ -1,7 +1,8 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils, Wallet } from 'ethers';
+import EthCrypto from 'eth-crypto';
 
-import { ChainMsg, EvmTypedData, SignatureType } from '../msg';
+import { ChainMsg, EvmTypedData, SignatureType, EncryptedObject } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -16,6 +17,11 @@ export class PrivateKeySigner extends Signer.Provider {
   async getAddress(): Promise<string> {
     const wallet = new Wallet(this.key);
     return wallet.address;
+  }
+
+  async getPublicKey(): Promise<string> {
+    const wallet = new Wallet(this.key);
+    return wallet.publicKey;
   }
 
   async sign(
@@ -61,6 +67,35 @@ export class PrivateKeySigner extends Signer.Provider {
     }
 
     msg.sign(signature);
+  }
+
+  // EIP 1024: Public Key Management
+
+  // recover signature: Recovers the signers address from the signature.
+  async recover(signature: string, message: string): Promise<string> {
+    const signer = EthCrypto.recover(
+      signature,
+      EthCrypto.hash.keccak256(message)
+    ); // signed message hash
+    return signer;
+  }
+
+  // recoverPublicKey: Recovers the signers publicKey from the signature.
+  async recoverPublicKey(signature: string, message: string): Promise<string> {
+    const signer = EthCrypto.recoverPublicKey(
+      signature,
+      EthCrypto.hash.keccak256(message)
+    ); // signed message hash
+    return signer;
+  }
+
+  // encryptWithPublicKey: Encrypts a message using the provided public key. Returns (async) the encrypted data as object with hex-strings.
+  async encryptWithPublicKey(
+    pubKey: string, // The public key used for encryption.
+    message: string // The message to be encrypted.
+  ): Promise<EncryptedObject> {
+    const encrypted = EthCrypto.encryptWithPublicKey(pubKey, message);
+    return encrypted;
   }
 }
 
