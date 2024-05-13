@@ -36,6 +36,7 @@ describe('ledger.signer', () => {
   let txInput: MsgBody;
   let message: Msg;
   let externalTransport: any;
+  let signature: string;
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
@@ -52,6 +53,9 @@ describe('ledger.signer', () => {
       chainId: 1,
       decimals: 18,
     };
+
+    signature =
+      '0x41d9578d76d6460e125a783418c644de2663e585d59f507e7a86697a58d9bba24307fdad5f9647dba44b5ed5ac54741b3959fb8838c8a2b33afaa88d8d8c15571b';
 
     message = provider.createMsg(txInput);
   });
@@ -80,5 +84,25 @@ describe('ledger.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should get a public key from the ledger device', async () => {
+    expect(await signer.getPublicKey(derivationPath)).toBe('PUBKEY');
+  });
+
+  it('should get recover signers address from the signature', async () => {
+    const message = 'test';
+    const recoveredAddress = await signer.recover(signature, message);
+
+    expect(recoveredAddress).not.toBe(
+      '0x62e4f988d231E16c9A666DD9220865934a347900'
+    );
+  });
+
+  it('should get recover signers publicKey from the signature', async () => {
+    const message = 'test';
+    const recoveredPubKey = await signer.recoverPublicKey(signature, message);
+
+    expect(recoveredPubKey).not.toBe('PUBKEY');
   });
 });

@@ -89,6 +89,13 @@ export interface TxData {
   type?: number; // ethers type
 }
 
+export interface EncryptedObject {
+  iv: string;
+  ephemPublicKey: string;
+  ciphertext: string;
+  mac: string;
+}
+
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
   declare provider: EvmProvider;
