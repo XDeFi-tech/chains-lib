@@ -15,6 +15,7 @@ query CosmosBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -113,6 +114,7 @@ query OsmosisBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -211,6 +213,7 @@ query AxelarBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -309,6 +312,7 @@ query CrescentBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -407,6 +411,7 @@ query KavaBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -505,6 +510,7 @@ query AkashBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -604,6 +610,7 @@ query CronosBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -702,6 +709,7 @@ query KujiraBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -800,6 +808,7 @@ query StrideBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -898,6 +907,7 @@ query MarsBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -996,6 +1006,7 @@ query JunoBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }
@@ -1094,6 +1105,7 @@ query StargazeBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
         symbol
       }

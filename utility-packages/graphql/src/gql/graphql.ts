@@ -222,6 +222,14 @@ export type AddressType = {
   chain: ChainType;
 };
 
+export type AddressV0 = {
+  __typename?: 'AddressV0';
+  /** Crypto currency address */
+  address?: Maybe<Scalars['String']>;
+  /** Chain name */
+  chain?: Maybe<Scalars['String']>;
+};
+
 export type AllAssetsFilter = {
   assetTypes?: InputMaybe<Array<AssetInternalType>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
@@ -1790,6 +1798,14 @@ export type FilterArgs = {
   pool?: InputMaybe<Pool>;
 };
 
+export type FloorPrice = {
+  __typename?: 'FloorPrice';
+  marketplaceId: Scalars['String'];
+  paymentToken: PaymentToken;
+  value?: Maybe<Scalars['String']>;
+  valueUsdCents?: Maybe<Scalars['String']>;
+};
+
 export type GetTokensArgs = {
   address?: InputMaybe<Array<Scalars['String']>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
@@ -1956,6 +1972,17 @@ export type LitecoinChainTestNet = {
   name: Scalars['String'];
 };
 
+export type Marketplace = {
+  __typename?: 'Marketplace';
+  collectionUrl: Scalars['String'];
+  logoUrl?: Maybe<Scalars['String']>;
+  marketplaceCollectionId: Scalars['String'];
+  marketplaceId: Scalars['String'];
+  marketplaceName: Scalars['String'];
+  nftUrl: Scalars['String'];
+  verified: Scalars['Boolean'];
+};
+
 export type MayaChain = {
   __typename?: 'MayaChain';
   /** Native (always present) and token balances for address */
@@ -2079,6 +2106,18 @@ export type NftCollectionV2 = {
   symbol: Scalars['String'];
 };
 
+export type NftCollectionV3 = {
+  __typename?: 'NFTCollectionV3';
+  address: Scalars['String'];
+  collectionItemsAmount?: Maybe<Scalars['String']>;
+  collectionItemsOwnersAmount?: Maybe<Scalars['String']>;
+  floorPrices: Array<FloorPrice>;
+  marketplaces: Array<Marketplace>;
+  media?: Maybe<MediaV2>;
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
 export type NftLastSale = {
   __typename?: 'NFTLastSale';
   cryptoPrice: Amount;
@@ -2111,7 +2150,9 @@ export type NfTv3 = {
   __typename?: 'NFTv3';
   attributes: Array<NftAttribute>;
   balance: Amount;
+  /** @deprecated NFTCollectionV2 is deprecated. Please move to the NFTCollectionV3 */
   collection?: Maybe<NftCollectionV2>;
+  collectionV3?: Maybe<NftCollectionV3>;
   contractType?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -2287,6 +2328,15 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']>;
+};
+
+export type PaymentToken = {
+  __typename?: 'PaymentToken';
+  address?: Maybe<Scalars['String']>;
+  decimals?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  paymentTokenId: Scalars['String'];
+  symbol?: Maybe<Scalars['String']>;
 };
 
 export type PickObjectType = {
@@ -4012,6 +4062,7 @@ export type GetBinanceBalancesQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -4119,7 +4170,11 @@ export type BitcoinBalanceQuery = {
         image?: string | null;
         name?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -4252,7 +4307,11 @@ export type BitcoinCashBalanceQuery = {
         image?: string | null;
         name?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -4432,6 +4491,7 @@ export type CosmosBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -4559,6 +4619,7 @@ export type OsmosisBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -4686,6 +4747,7 @@ export type AxelarBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -4813,6 +4875,7 @@ export type CrescentBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -4940,6 +5003,7 @@ export type KavaBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5067,6 +5131,7 @@ export type AkashBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5194,6 +5259,7 @@ export type CronosBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5321,6 +5387,7 @@ export type KujiraBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5448,6 +5515,7 @@ export type StrideBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5575,6 +5643,7 @@ export type MarsBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5702,6 +5771,7 @@ export type JunoBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5829,6 +5899,7 @@ export type StargazeBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -5952,7 +6023,11 @@ export type DogecoinBalanceQuery = {
         image?: string | null;
         name?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -6088,6 +6163,7 @@ export type EthereumBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
     }>;
@@ -6115,7 +6191,11 @@ export type LitecoinBalanceQuery = {
         image?: string | null;
         name?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -6248,7 +6328,11 @@ export type GetSolanaBalanceQuery = {
         name?: string | null;
         image?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -6357,6 +6441,7 @@ export type GetTronBalanceQuery = {
           __typename?: 'AssetAmountType';
           amount: string;
           scalingFactor: number;
+          dayPriceChange?: string | null;
         } | null;
       };
       amount: {
@@ -6565,6 +6650,13 @@ export const GetBinanceBalancesDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -7077,6 +7169,13 @@ export const BitcoinBalanceDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
@@ -7726,6 +7825,13 @@ export const BitcoinCashBalanceDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
@@ -8579,6 +8685,13 @@ export const CosmosBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -9193,6 +9306,13 @@ export const OsmosisBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -9811,6 +9931,13 @@ export const AxelarBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -10425,6 +10552,13 @@ export const CrescentBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -11049,6 +11183,13 @@ export const KavaBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -11662,6 +11803,13 @@ export const AkashBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -12273,6 +12421,13 @@ export const CronosBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -12891,6 +13046,13 @@ export const KujiraBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -13505,6 +13667,13 @@ export const StrideBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -14123,6 +14292,13 @@ export const MarsBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -14736,6 +14912,13 @@ export const JunoBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -15347,6 +15530,13 @@ export const StargazeBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
@@ -15963,6 +16153,13 @@ export const DogecoinBalanceDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
@@ -16617,6 +16814,13 @@ export const EthereumBalanceDocument = {
                                       value: 'scalingFactor',
                                     },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -16741,6 +16945,13 @@ export const LitecoinBalanceDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
@@ -17397,6 +17608,13 @@ export const GetSolanaBalanceDocument = {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
                                   },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -17910,6 +18128,13 @@ export const GetTronBalanceDocument = {
                                     name: {
                                       kind: 'Name',
                                       value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
                                     },
                                   },
                                 ],
