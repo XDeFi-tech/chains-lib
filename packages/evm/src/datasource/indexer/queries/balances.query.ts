@@ -20,6 +20,7 @@ query GetBalance($address: String!) {
         price {
           amount
           scalingFactor
+          dayPriceChange
         }
       }
       amount {
