@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.12
+
+### Patch Changes
+
+- fdbbdd7: Feat: add price.dayPriceChange field for getting balances
+- Updated dependencies [fdbbdd7]
+  - @xdefi-tech/chains-graphql@1.2.12
+
 ## 2.0.11
 
 ### Patch Changes
