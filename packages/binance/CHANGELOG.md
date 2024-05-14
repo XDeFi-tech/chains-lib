@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.9
+
+### Patch Changes
+
+- fdbbdd7: Feat: add price.dayPriceChange field for getting balances
+- Updated dependencies [fdbbdd7]
+  - @xdefi-tech/chains-graphql@1.2.12
+
 ## 2.0.8
 
 ### Patch Changes
