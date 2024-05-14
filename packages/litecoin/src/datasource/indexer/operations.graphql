@@ -14,6 +14,7 @@ query LitecoinBalance($address: String!) {
         name
         price {
           amount
+          dayPriceChange
         }
         symbol
       }
