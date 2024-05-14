@@ -14,6 +14,7 @@ query GetSolanaBalance($address: String!) {
         image
         price {
           amount
+          dayPriceChange
         }
         symbol
       }
