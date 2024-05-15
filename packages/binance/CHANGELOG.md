@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.10
+
+### Patch Changes
+
+- 74a48b0: Feat: update legacyNFTs franment in core lib
+- Updated dependencies [74a48b0]
+  - @xdefi-tech/chains-core@2.0.11
+
 ## 2.0.9
 
 ### Patch Changes
