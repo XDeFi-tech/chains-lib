@@ -10,12 +10,11 @@ export const LEGACY_NFTS_FRAGMENT = gql`
     description
     id
     name
-    owner
     symbol
     isNftSpam
-    location
     contractType
     spamScore
+    owner
     collectionV3 {
       name
       address
@@ -34,12 +33,20 @@ export const LEGACY_NFTS_FRAGMENT = gql`
           decimals
         }
       }
+      media {
+        type
+        url
+      }
+      marketplaces {
+        collectionUrl
+        marketplaceName
+        nftUrl
+        logoUrl
+      }
     }
     media {
       type
       url
-      contentType
-      blurHash
     }
     lastSale {
       quantity {
