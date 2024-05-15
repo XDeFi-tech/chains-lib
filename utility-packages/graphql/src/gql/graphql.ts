@@ -1108,6 +1108,16 @@ export type BlowfishEvmTxPayload = {
   value?: InputMaybe<Scalars['String']>;
 };
 
+/**  Solana Transaction Input object for risk analysis by Blowfish. */
+export type BlowfishSolanaTxPayload = {
+  dappDomain?: InputMaybe<Scalars['String']>;
+  decodeInstructions?: InputMaybe<Scalars['Boolean']>;
+  simulateExpired?: InputMaybe<Scalars['Boolean']>;
+  simulationTimeoutMs?: InputMaybe<Scalars['Int']>;
+  transactions: Array<Scalars['String']>;
+  userAccount: Scalars['String'];
+};
+
 export type BridgeTokenInput = {
   address: Scalars['String'];
   name: Scalars['String'];
@@ -1698,6 +1708,25 @@ export type ExplainedTransactionV4 = {
   inputAssets: Array<AssetV3>;
   outputAssets: Array<AssetV3>;
   type: TxClassifierTxType;
+};
+
+export type ExplainedTransactionV5 = {
+  __typename?: 'ExplainedTransactionV5';
+  args: Array<TransactionCallArg>;
+  confidence: Scalars['Float'];
+  inputAssets: Array<AssetV3>;
+  outputAssets: Array<AssetV3>;
+  type: Scalars['String'];
+};
+
+export type ExplainedTxWithRiskAnalysisV1 = {
+  __typename?: 'ExplainedTxWithRiskAnalysisV1';
+  args: Array<TransactionCallArg>;
+  confidence: Scalars['Float'];
+  inputAssets: Array<AssetV3>;
+  outputAssets: Array<AssetV3>;
+  riskAnalysis?: Maybe<TxAnalysisV3>;
+  type: Scalars['String'];
 };
 
 export type Fantom = {
@@ -3770,16 +3799,38 @@ export type TxAnalysisV3 = {
 
 export type TxClassifier = {
   __typename?: 'TxClassifier';
+  analyzeEVMTxBlowfish: TxAnalysisV3;
+  analyzeSolanaTxBlowfish: TxAnalysisV3;
+  /** @deprecated use analyzeEVMTxBlowfish for EVMs and analyzeSolanaTxBlowfish for Solana */
   analyzeTxBlowfish: TxAnalysisV3;
+  /** @deprecated no api key is provided at the moment for this service use analyzeTxBlowfish instead */
   analyzeTxV1Hexagate: TxAnalysisV1;
+  /** @deprecated no api key is provided at the moment for this service use analyzeTxBlowfish instead */
   analyzeTxV2Hexagate: TxAnalysisV2;
   decodeTransactionV2?: Maybe<DecodedTransaction>;
+  explainEVMTxWithRiskAnalysisV1?: Maybe<ExplainedTxWithRiskAnalysisV1>;
+  /** @deprecated it is not reasonable to use static enum values for tx type use explainTransactionV5 instead */
   explainTransactionV3?: Maybe<ExplainedTransactionV3>;
+  /** @deprecated only for test, be sure not to use this endpoint */
   explainTransactionV3DebugTraceCall?: Maybe<ExplainedTransactionV3>;
+  /** @deprecated only for test, be sure not to use this endpoint */
   explainTransactionV3Tenderly?: Maybe<ExplainedTransactionV3>;
+  /** @deprecated only for test, be sure not to use this endpoint */
   explainTransactionV3TenderlyBundled?: Maybe<ExplainedTransactionV3>;
+  /** @deprecated only for test, be sure not to use this endpoint */
   explainTransactionV4Tenderly?: Maybe<ExplainedTransactionV4>;
+  /** @deprecated use explainEVMTxWithRiskAnalysisV1 since it also returns the risk analysis for EVM txs */
+  explainTransactionV5?: Maybe<ExplainedTransactionV5>;
+  /** @deprecated only for tests please do not use this endpoint at all */
   getBlockchairTxsByQuery: Scalars['String'];
+};
+
+export type TxClassifierAnalyzeEvmTxBlowfishArgs = {
+  payload: BlowfishEvmTxPayload;
+};
+
+export type TxClassifierAnalyzeSolanaTxBlowfishArgs = {
+  payload: BlowfishSolanaTxPayload;
 };
 
 export type TxClassifierAnalyzeTxBlowfishArgs = {
@@ -3796,6 +3847,10 @@ export type TxClassifierAnalyzeTxV2HexagateArgs = {
 
 export type TxClassifierDecodeTransactionV2Args = {
   payload: EvmTransactionPayload;
+};
+
+export type TxClassifierExplainEvmTxWithRiskAnalysisV1Args = {
+  payload: EvmTransactionPayloadV2;
 };
 
 export type TxClassifierExplainTransactionV3Args = {
@@ -3815,6 +3870,10 @@ export type TxClassifierExplainTransactionV3TenderlyBundledArgs = {
 };
 
 export type TxClassifierExplainTransactionV4TenderlyArgs = {
+  payload: EvmTransactionPayloadV2;
+};
+
+export type TxClassifierExplainTransactionV5Args = {
   payload: EvmTransactionPayloadV2;
 };
 
