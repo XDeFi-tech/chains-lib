@@ -19,13 +19,11 @@ query GetBalance($address: String!) {
         decimals
         price {
           amount
-          scalingFactor
           dayPriceChange
         }
       }
       amount {
         value
-        scalingFactor
       }
     }
   }
