@@ -15,10 +15,11 @@ import {
   EIP1559FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import { utils, providers } from 'ethers';
+import { providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
+import BigNumber from 'bignumber.js';
 
 import { parseGwei } from '../../utils';
 import { EVMChains } from '../../manifests';
@@ -100,7 +101,9 @@ export class IndexerDataSource extends DataSource {
           price: asset.price?.amount,
           decimals: asset.decimals,
         }),
-        utils.formatUnits(amount.value, asset.decimals)
+        new BigNumber(amount.value)
+          .integerValue()
+          .dividedBy(Math.pow(10, asset.decimals))
       );
     });
   }
