@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.22
+
+### Patch Changes
+
+- dd93e90: Fix: getBalance calculating amount method
+
 ## 2.0.21
 
 ### Patch Changes
