@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.15
+
+### Patch Changes
+
+- dd93e90: Fix: getBalance calculating amount method
+
 ## 2.0.14
 
 ### Patch Changes
