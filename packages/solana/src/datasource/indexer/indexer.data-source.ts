@@ -14,6 +14,7 @@ import {
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
+import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from '../../msg';
 import { DEFAULT_FEE } from '../../constants';
@@ -51,9 +52,11 @@ export class IndexerDataSource extends DataSource {
           native: !Boolean(asset.contract),
           address: asset.contract,
           price: asset.price?.amount,
-          decimals: asset.price?.scalingFactor,
+          decimals: asset.decimals,
         }),
-        amount.value
+        new BigNumber(amount.value)
+          .integerValue()
+          .dividedBy(Math.pow(10, asset.decimals))
       );
     });
   }
