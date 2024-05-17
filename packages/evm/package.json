@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-evm",
-  "version": "2.0.15",
+  "version": "2.0.22",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -31,6 +31,7 @@
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
     "bignumber.js": "9.1.2",
+    "eth-crypto": "2.6.0",
     "ethers": "5.6.4",
     "lodash": "4.17.21",
     "reflect-metadata": "0.1.13",

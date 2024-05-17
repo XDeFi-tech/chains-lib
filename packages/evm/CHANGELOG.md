@@ -1,5 +1,57 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.22
+
+### Patch Changes
+
+- dd93e90: Fix: getBalance calculating amount method
+
+## 2.0.21
+
+### Patch Changes
+
+- 74a48b0: Feat: update legacyNFTs franment in core lib
+- Updated dependencies [74a48b0]
+  - @xdefi-tech/chains-core@2.0.11
+
+## 2.0.20
+
+### Patch Changes
+
+- fdbbdd7: Feat: add price.dayPriceChange field for getting balances
+- Updated dependencies [fdbbdd7]
+  - @xdefi-tech/chains-graphql@1.2.12
+
+## 2.0.19
+
+### Patch Changes
+
+- 3afec9a: feat: Add missing methods for EVM signers
+
+  - [x] added `recover` method
+  - [x] added `recoverPublicKey` method
+  - [x] added `encryptWithPublicKey` method
+
+## 2.0.18
+
+### Patch Changes
+
+- fca5a7f: Feat: update `legacyNFTs` query with collectionV3 fields
+- Updated dependencies [fca5a7f]
+  - @xdefi-tech/chains-core@2.0.10
+
+## 2.0.17
+
+### Patch Changes
+
+- c7526da: feat: expose provider so that extension can calls `send()` to the provider for dapps
+
+## 2.0.16
+
+### Patch Changes
+
+- cebc1dc: chore: update optimism default rpc url
+
 ## 2.0.15
 
 ### Patch Changes

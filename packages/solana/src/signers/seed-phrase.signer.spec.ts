@@ -69,7 +69,6 @@ describe('seed-phase.addressGeneration', () => {
   let derivation: (index: number) => string;
   let seedPhrase: string;
   let signer: SeedPhraseSigner;
-  let provider: SolanaProvider;
   let firstAddress: string;
   let secondAddress: string;
 
@@ -78,9 +77,6 @@ describe('seed-phase.addressGeneration', () => {
       'access before split cram spoon snap secret month sphere fog embark donor';
     derivation = (index) => `m/44'/501'/${index}'/0'`;
     signer = new SeedPhraseSigner(seedPhrase);
-    provider = new SolanaProvider(
-      new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
-    );
 
     firstAddress = '4ddtNdH4V2Rvwvzkg8nrMMNjauxB4fAjMk8JS5VYnHGi';
     secondAddress = 'AgSByikto3D5ZN5EimEBxfLT73qwbB4rTs7Ep7ZSLtRk';

@@ -146,7 +146,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
   [EVMChains.optimism]: {
     name: 'Optimism',
     description: '',
-    rpcURL: 'https://optimistic-scan.xdefiservices.com',
+    rpcURL: 'https://rpc-proxy.xdefi.services/optimism',
     chainSymbol: 'ETH',
     blockExplorerURL: 'https://optimistic.etherscan.io',
     chainId: '10',

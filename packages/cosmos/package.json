@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-cosmos",
-  "version": "2.0.10",
+  "version": "2.0.15",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "@cosmjs/stargate": "0.32.3",
     "@cosmjs/tendermint-rpc": "0.32.3",
     "@cosmos-client/core": "0.47.1",
+    "@keplr-wallet/cosmos": "0.12.82",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@terra-money/feather.js": "2.1.0-beta.3",

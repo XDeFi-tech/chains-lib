@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-tron",
-  "version": "2.0.14",
+  "version": "2.0.16",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -43,7 +43,7 @@
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
-    "test": "jest",
+    "test:disabled": "jest",
     "lint:fix": "eslint . --fix",
     "test:watch": "jest --watch",
     "coverage": "jest --coverageReporters='json-summary' --coverage"

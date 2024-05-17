@@ -180,8 +180,14 @@ const txData = await provider.getTransaction(txHash);
 
 The `txData` object will contain transaction details, including the transaction hash.
 
-## Disclaimer
+## Contribution
 
-This library is provided as-is, and we make no warranties or guarantees regarding its functionality or security. Always exercise caution and proper security practices when working with blockchain assets.
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request. If you have a Chainslib-related project or feature request, feel free to open an issue.
 
-Happy blockchain development! 🚀🔗
+Thank you to all the people who already contributed to Chainslib!
+
+## License
+
+This project is licensed under the [Apache-2.0 License](LICENSE).
+
+Copyright © 2024 XDEFI

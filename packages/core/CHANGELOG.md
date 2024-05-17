@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-core
 
+## 2.0.11
+
+### Patch Changes
+
+- 74a48b0: Feat: update legacyNFTs franment in core lib
+
+## 2.0.10
+
+### Patch Changes
+
+- fca5a7f: Feat: update `legacyNFTs` query with collectionV3 fields
+
 ## 2.0.9
 
 ### Patch Changes

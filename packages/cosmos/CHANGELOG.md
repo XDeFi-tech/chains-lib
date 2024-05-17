@@ -1,5 +1,39 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.15
+
+### Patch Changes
+
+- 74a48b0: Feat: update legacyNFTs franment in core lib
+- Updated dependencies [74a48b0]
+  - @xdefi-tech/chains-core@2.0.11
+
+## 2.0.14
+
+### Patch Changes
+
+- fdbbdd7: Feat: add price.dayPriceChange field for getting balances
+- Updated dependencies [fdbbdd7]
+  - @xdefi-tech/chains-graphql@1.2.12
+
+## 2.0.13
+
+### Patch Changes
+
+- 3abb2c1: Feat: add osmojs lib and types/converters in esm
+
+## 2.0.12
+
+### Patch Changes
+
+- 90b77f2: fix(XDEFI-7720): bech32 axelar typo
+
+## 2.0.11
+
+### Patch Changes
+
+- faa6dba: - feat: Implement ADR 036 - Arbitrary Signature for Cosmos Chain
+
 ## 2.0.10
 
 ### Patch Changes

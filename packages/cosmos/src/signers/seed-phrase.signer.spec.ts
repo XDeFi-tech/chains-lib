@@ -1,4 +1,7 @@
 import { Msg } from '@xdefi-tech/chains-core';
+import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
+import { bech32 } from 'bech32';
+import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -343,6 +346,54 @@ describe('seed-phase.addressGeneration', () => {
       expect(await signer.getAddress(derivations.ethermint(0), 'dym')).toBe(
         firstAddress.dymension
       );
+    }
+  });
+
+  it('should return status of verify message', async () => {
+    // Define test data
+    const privKey = PrivKeySecp256k1.generateRandomKey();
+    const pubKey = privKey.getPubKey();
+
+    const signer = bech32.encode('cosmos', bech32.toWords(pubKey.toBytes()));
+
+    const signDoc = makeADR36AminoSignDoc(signer, 'test');
+    const msg = serializeSignDoc(signDoc);
+    const signature = privKey.signDigest32(Hash.sha256(msg));
+
+    for (let i = 0; i < signers.length; i++) {
+      const signerSeed = signers[i];
+      expect(
+        await signerSeed.verifyMessage(
+          signer,
+          'test',
+          pubKey.toBytes(),
+          new Uint8Array([...signature.r, ...signature.s])
+        )
+      );
+    }
+  });
+
+  it('should return false when unmatched/invalid signer', async () => {
+    // Define test data
+    const privKey = PrivKeySecp256k1.generateRandomKey();
+    const pubKey = privKey.getPubKey();
+
+    const signer = 'osmo1ymk637a7wljvt4w7q9lnrw95mg9sr37yatxd9h'; // unmatched signer
+
+    const signDoc = makeADR36AminoSignDoc(signer, 'test');
+    const msg = serializeSignDoc(signDoc);
+    const signature = privKey.signDigest32(Hash.sha256(msg));
+
+    for (let i = 0; i < signers.length; i++) {
+      const signerSeed = signers[i];
+      expect(
+        await signerSeed.verifyMessage(
+          signer,
+          'test',
+          pubKey.toBytes(),
+          new Uint8Array([...signature.r, ...signature.s])
+        )
+      ).toBe(false);
     }
   });
 });

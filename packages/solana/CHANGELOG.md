@@ -1,5 +1,41 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.15
+
+### Patch Changes
+
+- dd93e90: Fix: getBalance calculating amount method
+
+## 2.0.14
+
+### Patch Changes
+
+- 74a48b0: Feat: update legacyNFTs franment in core lib
+- Updated dependencies [74a48b0]
+  - @xdefi-tech/chains-core@2.0.11
+
+## 2.0.13
+
+### Patch Changes
+
+- fdbbdd7: Feat: add price.dayPriceChange field for getting balances
+- Updated dependencies [fdbbdd7]
+  - @xdefi-tech/chains-graphql@1.2.12
+
+## 2.0.12
+
+### Patch Changes
+
+- fca5a7f: Feat: update `legacyNFTs` query with collectionV3 fields
+- Updated dependencies [fca5a7f]
+  - @xdefi-tech/chains-core@2.0.10
+
+## 2.0.11
+
+### Patch Changes
+
+- 38ef280: Fix: metaplex issue for mobile app
+
 ## 2.0.10
 
 ### Patch Changes

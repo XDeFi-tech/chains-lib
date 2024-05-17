@@ -14,6 +14,7 @@ query DogecoinBalance($address: String!) {
         name
         price {
           amount
+          dayPriceChange
         }
         symbol
       }
