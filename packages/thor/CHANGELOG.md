@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.14
+
+### Patch Changes
+
+- 87bcf06: Feat: add private key signer
+
 ## 2.0.13
 
 ### Patch Changes
