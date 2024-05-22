@@ -1,19 +1,12 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
-import * as bip39 from 'bip39';
-import * as bip32 from 'bip32';
 import Long from 'long';
-import { Secp256k1HdWallet } from '@cosmjs/launchpad';
-import {
-  stringToPath,
-  HdPath,
-} from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 
 import { ChainMsg } from '../msg';
 
-@SignerDecorator(Signer.SignerType.SEED_PHRASE)
-export class SeedPhraseSigner extends Signer.Provider {
+@SignerDecorator(Signer.SignerType.PRIVATE_KEY)
+export class PrivateKeySigner extends Signer.Provider {
   verifyAddress(address: string, prefix?: string): boolean {
     if (!prefix) {
       prefix = 'thor';
@@ -26,47 +19,38 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
   }
 
-  async getPrivateKey(derivation: string) {
-    const cosmosPrivateKey = await this.getCosmosPrivateKey(derivation);
-    return Buffer.from(cosmosPrivateKey.key).toString('hex');
+  async getPrivateKey(_derivation?: string | null) {
+    return this.key;
   }
 
-  async getCosmosPrivateKey(
-    derivation: string
-  ): Promise<cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey> {
-    if (!bip39.validateMnemonic(this.key)) {
-      throw new Error('Invalid phrase');
-    }
-    const seed = await bip39.mnemonicToSeed(this.key);
-    const node = bip32.fromSeed(seed);
-    const child = node.derivePath(derivation);
-
-    if (!child.privateKey) {
-      throw new Error('Invalid child');
-    }
-
+  async getCosmosPrivateKey(): Promise<cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey> {
     return new cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey({
-      key: child.privateKey,
+      key: Buffer.from(this.key, 'hex'),
     });
   }
 
-  async getAddress(derivation: string, prefix?: string): Promise<string> {
-    const path: readonly HdPath[] = [stringToPath(derivation)];
-    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-      hdPaths: path,
-      prefix: prefix ?? 'thor',
-    });
-    const [{ address }] = await wallet.getAccounts();
-    return address;
+  async getAddress(
+    _derivation?: string | null,
+    prefix?: string
+  ): Promise<string> {
+    if (!prefix) {
+      prefix = 'thor';
+    }
+    this._setPrefix(prefix);
+
+    const privateKey = await this.getCosmosPrivateKey();
+    return cosmosclient.AccAddress.fromPublicKey(
+      privateKey.pubKey()
+    ).toString();
   }
 
-  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+  async sign(msg: ChainMsg, _derivation?: string | null): Promise<void> {
     const { txBody, accountNumber, account, gasPrice, gasLimit } =
       await msg.buildTx();
     if (!txBody) {
       return;
     }
-    const privKey = await this.getCosmosPrivateKey(derivation);
+    const privKey = await this.getCosmosPrivateKey();
     const authInfo = new cosmosclient.proto.cosmos.tx.v1beta1.AuthInfo({
       signer_infos: [
         {
@@ -99,6 +83,17 @@ export class SeedPhraseSigner extends Signer.Provider {
     tx.addSignature(privKey.sign(signDocBytes));
     msg.sign(tx.txBytes());
   }
+
+  _setPrefix(prefix: string): void {
+    cosmosclient.config.setBech32Prefix({
+      accAddr: prefix,
+      accPub: prefix + 'pub',
+      valAddr: prefix + 'valoper',
+      valPub: prefix + 'valoperpub',
+      consAddr: prefix + 'valcons',
+      consPub: prefix + 'valconspub',
+    });
+  }
 }
 
-export default SeedPhraseSigner;
+export default PrivateKeySigner;
