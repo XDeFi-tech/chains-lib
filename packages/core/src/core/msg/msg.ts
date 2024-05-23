@@ -65,4 +65,10 @@ export abstract class Msg<OutData extends object = object, TxData extends object
   public sign(signedTx: unknown): void {
     this.signedTransaction = signedTx;
   }
+
+  /**
+   * Get maximum amount of token that can be sent
+   * @param contract contract address (optional), if not provided native token will be used
+   */
+  public abstract getMaxAmountToSend(contract?: string): Promise<string>;
 }

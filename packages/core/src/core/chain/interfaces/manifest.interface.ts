@@ -15,4 +15,5 @@ export interface Manifest {
     low: number;
   };
   multicallContractAddress?: string;
+  maxGapAmount?: number;
 }

@@ -4,6 +4,7 @@ import {
   Msg as BaseMsg,
   MsgEncoding,
   NumberIsh,
+  Coin,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
@@ -118,5 +119,41 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     }
 
     return feeEstimation;
+  }
+
+  async getMaxAmountToSend(contract?: string) {
+    const msgData = this.toData();
+    const balances = await this.provider.getBalance(msgData.from);
+    const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
+
+    let balance: Coin | undefined;
+
+    if (!contract) {
+      balance = (await balances.getData()).find(
+        (b) =>
+          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
+      );
+    } else {
+      balance = (await balances.getData()).find(
+        (b) =>
+          b.asset.chainId === this.provider.manifest.chainId &&
+          b.asset.address === contract
+      );
+    }
+
+    if (!balance) throw new Error('No balance found');
+
+    let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
+
+    if (balance.asset.native) {
+      const feeEstimation = await this.getFee();
+      maxAmount = maxAmount.minus(feeEstimation.fee || 0);
+    }
+
+    if (maxAmount.isLessThan(0)) {
+      return '0';
+    }
+
+    return maxAmount.toString();
   }
 }
