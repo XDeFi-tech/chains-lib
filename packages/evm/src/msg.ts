@@ -70,6 +70,7 @@ export interface MsgBody {
   gasPrice?: NumberIsh; // wei
   maxFeePerGas?: NumberIsh;
   maxPriorityFeePerGas?: NumberIsh;
+  baseFeePerGas?: NumberIsh;
   tokenType?: TokenType;
   nftId?: string;
   contractAddress?: string;
@@ -178,13 +179,15 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       gasPrice: this.data.gasPrice,
       maxFeePerGas: this.data.maxFeePerGas,
       maxPriorityFeePerGas: this.data.maxPriorityFeePerGas,
+      baseFeePerGas: this.data.baseFeePerGas,
     };
 
     if (
       this.data.contractAddress ||
       !feeOptions.maxFeePerGas ||
       !feeOptions.gasLimit ||
-      !feeOptions.maxPriorityFeePerGas
+      !feeOptions.maxPriorityFeePerGas ||
+      !feeOptions.baseFeePerGas
     ) {
       const contractFeeEstimation = await this.provider?.estimateFee(
         [this],
@@ -195,8 +198,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         feeOptions.gasLimit = contractFeeEstimation[0].gasLimit;
         feeOptions.gasPrice = contractFeeEstimation[0].gasPrice;
         feeOptions.maxFeePerGas = contractFeeEstimation[0].maxFeePerGas;
-        feeOptions.maxPriorityFeePerGas =
+        feeOptions.baseFeePerGas =
           contractFeeEstimation[0].maxPriorityFeePerGas;
+        feeOptions.maxPriorityFeePerGas =
+          contractFeeEstimation[0].baseFeePerGas;
       }
     }
 
@@ -204,12 +209,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       this.data.txType !== TransactionType.Legacy &&
       feeOptions.maxFeePerGas
     ) {
-      const maxFee = new BigNumber(feeOptions.maxFeePerGas);
+      const baseFeePerGas = new BigNumber(feeOptions.baseFeePerGas);
       const priorityFee = new BigNumber(feeOptions.maxPriorityFeePerGas);
-      const maxFeeWithPriority = maxFee.plus(priorityFee);
+      const maxFeeWithPriority = baseFeePerGas.plus(priorityFee);
       estimation.fee = ethers.utils
         .formatUnits(
-          maxFee.multipliedBy(feeOptions.gasLimit).toString(),
+          baseFeePerGas.multipliedBy(feeOptions.gasLimit).toString(),
           'ether'
         )
         .toString();
@@ -246,6 +251,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       gasLimit: this.data?.gasLimit,
       gasPrice: this.data?.gasPrice,
       maxFeePerGas: this.data?.maxFeePerGas,
+      baseFeePerGas: this.data?.baseFeePerGas,
       maxPriorityFeePerGas: this.data?.maxPriorityFeePerGas,
       tokenType: this.data?.tokenType,
       contractAddress: this.data?.contractAddress,
