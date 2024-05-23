@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-core
 
+## 2.0.12
+
+### Patch Changes
+
+- db8e556: feat: add getMaxAmountToSend method
+
+  - [x] binance
+  - [x] bitcoin
+  - [x] bitcoincash
+  - [x] cosmos
+  - [x] dogecoin
+  - [x] evm
+  - [x] litecoin
+  - [x] solana
+  - [x] thor
+  - [x] utxo
+  - [x] tron
+
 ## 2.0.11
 
 ### Patch Changes
