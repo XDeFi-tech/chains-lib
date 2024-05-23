@@ -15,11 +15,18 @@
   },
   "scripts": {
     "build": "tsup --minify --clean",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules"
   },
   "devDependencies": {
+    "jest": "27.5.1",
+    "jest-environment-jsdom": "27.5.1",
+    "jest-watch-typeahead": "1.0.0",
+    "ts-jest": "27.1.4",
     "eslint-config-custom": "*",
     "prettier": "2.5.1",
     "typescript": "4.8.3"
@@ -57,5 +64,26 @@
       "@xdefi-tech/chains-cosmos",
       "@xdefi-tech/chains-btc"
     ]
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest",
+    "transform": {
+      ".+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
+    "testEnvironment": "jsdom",
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "testTimeout": 15000
   }
 }
