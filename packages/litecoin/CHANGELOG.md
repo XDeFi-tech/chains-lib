@@ -1,5 +1,27 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.14
+
+### Patch Changes
+
+- db8e556: feat: add getMaxAmountToSend method
+
+  - [x] binance
+  - [x] bitcoin
+  - [x] bitcoincash
+  - [x] cosmos
+  - [x] dogecoin
+  - [x] evm
+  - [x] litecoin
+  - [x] solana
+  - [x] thor
+  - [x] utxo
+  - [x] tron
+
+- Updated dependencies [db8e556]
+  - @xdefi-tech/chains-core@2.0.12
+  - @xdefi-tech/chains-utxo@2.0.8
+
 ## 2.0.13
 
 ### Patch Changes
