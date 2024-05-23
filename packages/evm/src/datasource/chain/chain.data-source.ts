@@ -294,6 +294,7 @@ export class ChainDataSource extends DataSource {
         gasPrice: undefined,
         maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
         maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
+        baseFeePerGas: (fee[speed] as EIP1559Fee).baseFeePerGas,
       };
       feeData.push(msgFeeData);
     }
