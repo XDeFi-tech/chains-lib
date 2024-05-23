@@ -1,5 +1,26 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.23
+
+### Patch Changes
+
+- db8e556: feat: add getMaxAmountToSend method
+
+  - [x] binance
+  - [x] bitcoin
+  - [x] bitcoincash
+  - [x] cosmos
+  - [x] dogecoin
+  - [x] evm
+  - [x] litecoin
+  - [x] solana
+  - [x] thor
+  - [x] utxo
+  - [x] tron
+
+- Updated dependencies [db8e556]
+  - @xdefi-tech/chains-core@2.0.12
+
 ## 2.0.22
 
 ### Patch Changes
