@@ -6,6 +6,7 @@ export interface FeeData {
   gasLimit: NumberIsh;
   gasPrice?: NumberIsh;
   maxFeePerGas?: NumberIsh;
+  baseFeePerGas?: NumberIsh;
   maxPriorityFeePerGas?: NumberIsh;
 }
 

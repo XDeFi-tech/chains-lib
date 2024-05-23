@@ -285,12 +285,14 @@ export class IndexerDataSource extends DataSource {
             gasPrice: undefined,
             maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
             maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
+            baseFeePerGas: (fee[speed] as EIP1559Fee).baseFeePerGas,
           }
         : {
             gasLimit,
             gasPrice: fee[speed],
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
+            baseFeePerGas: undefined,
           };
       feeData.push(msgFeeData as FeeData);
     }
