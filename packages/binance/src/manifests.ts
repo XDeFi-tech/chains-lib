@@ -14,4 +14,5 @@ export const BINANCE_MANIFEST: Chain.Manifest = {
     medium: 1,
     low: 1,
   },
+  maxGapAmount: 0,
 };

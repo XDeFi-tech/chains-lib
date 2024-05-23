@@ -1,4 +1,5 @@
 import { MsgEncoding } from '@xdefi-tech/chains-core';
+import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';
 
@@ -63,7 +64,43 @@ describe('msg', () => {
           medium: 228000,
         })
       ),
-      manifest: { decimals: 8 },
+      getBalance: jest.fn(() =>
+        Promise.resolve({
+          getData: jest.fn(() =>
+            Promise.resolve([
+              {
+                asset: {
+                  chainId: 'bitcoin',
+                  name: 'Bitcoin',
+                  symbol: 'BTC',
+                  icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png',
+                  native: true,
+                  id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                  price: '65000.00',
+                  decimals: 8,
+                },
+                amount: '100',
+              },
+            ])
+          ),
+        })
+      ),
+      manifest: {
+        name: 'Bitcoin',
+        description: '',
+        rpcURL: 'https://btc-haskoin.xdefiservices.com',
+        chainSymbol: 'BTC',
+        blockExplorerURL: 'https://blockchair.com/bitcoin',
+        chainId: 'bitcoin',
+        chain: 'bitcoin',
+        decimals: 8,
+        feeGasStep: {
+          high: 1,
+          medium: 1,
+          low: 1,
+        },
+        maxGapAmount: 0.0001,
+      },
     };
   });
 
@@ -168,5 +205,46 @@ describe('msg', () => {
     } catch (error) {
       expect(error).toMatchObject(new Error('Cannot find ordinal to send'));
     }
+  });
+
+  it('getMaxAmountToSend should throw an error with invalid token', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        amount: 0.000001,
+      },
+      mockBitcoinProvider,
+      MsgEncoding.object
+    );
+
+    const response = chainMsg.getMaxAmountToSend('invalid');
+
+    await expect(response).rejects.toThrowError();
+  });
+
+  it('should return MaxAmountToSend with native token', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        amount: 0.000001,
+      },
+      mockBitcoinProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.getMaxAmountToSend();
+
+    const feeEstimation = await chainMsg.getFee();
+    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
+
+    expect(response);
+    expect(response).toEqual(
+      new BigNumber('100')
+        .minus(feeEstimation.fee || 0)
+        .minus(gap)
+        .toString()
+    );
   });
 });

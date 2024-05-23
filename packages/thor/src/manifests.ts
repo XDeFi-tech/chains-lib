@@ -24,6 +24,7 @@ export const THORCHAIN_MANIFESTS: {
       medium: 0,
       low: 0,
     },
+    maxGapAmount: 0,
   },
   [ThorChains.mayachain]: {
     name: 'Maya',
@@ -41,6 +42,7 @@ export const THORCHAIN_MANIFESTS: {
       medium: 0,
       low: 0,
     },
+    maxGapAmount: 0,
   },
 };
 

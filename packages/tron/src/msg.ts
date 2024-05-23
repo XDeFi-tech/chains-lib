@@ -1,7 +1,9 @@
-import { Msg as BaseMsg } from '@xdefi-tech/chains-core';
+import { Msg as BaseMsg, Coin } from '@xdefi-tech/chains-core';
 import TronWeb, { TronTransaction } from 'tronweb';
 import { parseUnits } from 'ethers';
+import BigNumber from 'bignumber.js';
 
+import { TronProvider } from './chain.provider';
 import { TRON_MANIFEST } from './manifests';
 
 export enum TokenType {
@@ -34,6 +36,8 @@ export interface MsgBody {
 
 export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
   signedTransaction: unknown;
+  declare provider: TronProvider;
+
   public toData(): MsgBody {
     return {
       to: this.data?.to,
@@ -104,5 +108,36 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
   }
   getFee() {
     return this.data;
+  }
+
+  async getMaxAmountToSend(contract?: string) {
+    const msgData = this.toData();
+    const balances = await this.provider.getBalance(msgData.from);
+    const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
+
+    let balance: Coin | undefined;
+
+    if (!contract) {
+      balance = (await balances.getData()).find(
+        (b) =>
+          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
+      );
+    } else {
+      balance = (await balances.getData()).find(
+        (b) =>
+          b.asset.chainId === this.provider.manifest.chainId &&
+          b.asset.address === contract
+      );
+    }
+
+    if (!balance) throw new Error('No balance found');
+
+    const maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
+
+    if (maxAmount.isLessThan(0)) {
+      return '0';
+    }
+
+    return maxAmount.toString();
   }
 }

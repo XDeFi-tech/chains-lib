@@ -108,7 +108,7 @@ export class IndexerDataSource extends DataSource {
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
     const { data } = await getFees();
-    const sendFeeEntity = data.binance.fee.find(
+    const sendFeeEntity = data.binance?.fee.find(
       (f: any) => f.fixedFeeParams && f.fixedFeeParams.msgType === 'send'
     );
 

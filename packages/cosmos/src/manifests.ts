@@ -43,6 +43,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.0025,
       low: 0.001,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.osmosis]: {
     name: 'Osmosis',
@@ -61,6 +62,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.025,
       low: 0.01,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.axelar]: {
     name: 'Axelar',
@@ -79,6 +81,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.007,
       low: 0.01,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.juno]: {
     name: 'JUNO',
@@ -97,6 +100,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.1,
       low: 0.125,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.crescent]: {
     name: 'Crescent',
@@ -115,6 +119,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.025,
       low: 0.03,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.kava]: {
     name: 'Kava',
@@ -133,6 +138,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.01,
       low: 0.25,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.stargaze]: {
     name: 'Stargaze',
@@ -151,6 +157,7 @@ export const COSMOS_MANIFESTS: {
       medium: 1.1,
       low: 1.2,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.akash]: {
     name: 'Akash',
@@ -169,6 +176,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.01,
       low: 0.01,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.cronos]: {
     name: 'Crypto.Org',
@@ -187,6 +195,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.03,
       low: 0.04,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.kujira]: {
     name: 'Kujira',
@@ -205,6 +214,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.025,
       low: 0.03,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.stride]: {
     name: 'Stride',
@@ -223,6 +233,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0.001,
       low: 0.002,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.mars]: {
     name: 'Mars',
@@ -241,6 +252,7 @@ export const COSMOS_MANIFESTS: {
       medium: 0,
       low: 0.01,
     },
+    maxGapAmount: 0,
   },
   [CosmosHubChains.terra]: {
     name: 'Terra',
@@ -259,5 +271,6 @@ export const COSMOS_MANIFESTS: {
       medium: 0.0025,
       low: 0.001,
     },
+    maxGapAmount: 0,
   },
 };

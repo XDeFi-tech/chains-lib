@@ -14,4 +14,5 @@ export const BITCOIN_MANIFEST: UTXOManifest = {
     medium: 1,
     low: 1,
   },
+  maxGapAmount: 0,
 };
