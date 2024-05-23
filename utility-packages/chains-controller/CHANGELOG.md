@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.4
+
+### Patch Changes
+
+- d160e89: Add test coverage for chains controller
+
 ## 2.0.3
 
 ### Patch Changes
