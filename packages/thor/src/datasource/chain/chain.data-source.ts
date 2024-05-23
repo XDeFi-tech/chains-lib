@@ -190,11 +190,10 @@ export class ChainDataSource extends DataSource {
           authInfo
         );
         tx.addSignature(new Uint8Array(64));
-        const { data } = await this.rest.post('/cosmos/tx/v1beta1/simulate', {
-          txBytes: tx.txBytes(),
-        });
+        const { data } = await this.rest.get('/thorchain/network');
+
         result.push({
-          gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 1.4),
+          gasLimit: Math.ceil(parseInt(data.native_outbound_fee_rune) * 1.4),
           gasPrice: this.manifest.feeGasStep[speed],
         });
       } catch (err) {

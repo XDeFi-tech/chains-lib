@@ -123,21 +123,32 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     };
   }
 
-  async getFee() {
-    const fee = await this.provider.gasFeeOptions();
-    const feeEstimation: FeeEstimation = {
+  async getFee(speed?: GasFeeSpeed) {
+    const data = this.toData();
+    const estimation: FeeEstimation = {
       fee: null,
       maxFee: null,
     };
 
-    if (!fee) {
-      return feeEstimation;
+    if (!data.gasLimit && !data.gasPrice && this.provider) {
+      const [feeEstimation] = await this.provider.estimateFee(
+        [this],
+        speed || GasFeeSpeed.medium
+      );
+      if (feeEstimation.gasPrice && feeEstimation.gasLimit) {
+        estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
+          .multipliedBy(feeEstimation.gasPrice.toString())
+          .dividedBy(10 ** this.provider.manifest.decimals)
+          .toString();
+      }
+    } else if (data.gasLimit && data.gasPrice) {
+      estimation.fee = new BigNumber(data.gasLimit)
+        .multipliedBy(data.gasPrice)
+        .dividedBy(10 ** this.provider.manifest.decimals)
+        .toString();
     }
 
-    feeEstimation.fee = new BigNumber(fee[GasFeeSpeed.medium] as number)
-      .dividedBy(10 ** this.provider.manifest.decimals)
-      .toString();
-    return feeEstimation;
+    return estimation;
   }
 
   async getMaxAmountToSend(contract?: string) {
