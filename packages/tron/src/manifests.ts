@@ -21,4 +21,5 @@ export const TRON_MANIFEST: TronManifest = {
     medium: 1,
     low: 1,
   },
+  maxGapAmount: 0,
 };

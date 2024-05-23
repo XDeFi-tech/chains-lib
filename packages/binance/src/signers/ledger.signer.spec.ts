@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BinanceProvider } from '../chain.provider';
@@ -81,5 +81,10 @@ describe('binance::ledger.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should return FeeEstimation', async () => {
+    const feeEstimation = await message.getFee(GasFeeSpeed.medium);
+    expect(feeEstimation);
   });
 });

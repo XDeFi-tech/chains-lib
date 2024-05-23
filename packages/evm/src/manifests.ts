@@ -30,6 +30,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.smartchain]: {
     name: 'BNB Smart Chain',
@@ -46,6 +47,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.polygon]: {
     name: 'Polygon',
@@ -62,6 +64,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.avalanche]: {
     name: 'Avalanche',
@@ -78,6 +81,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.fantom]: {
     name: 'Fantom',
@@ -94,6 +98,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 3,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.arbitrum]: {
     name: 'Arbitrum',
@@ -110,6 +115,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.aurora]: {
     name: 'Aurora',
@@ -126,6 +132,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.cantoevm]: {
     name: 'Canto EVM',
@@ -142,6 +149,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.optimism]: {
     name: 'Optimism',
@@ -158,6 +166,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.klaytn]: {
     name: 'Klaytn',
@@ -174,6 +183,7 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
   [EVMChains.cronos]: {
     name: 'Cronos',
@@ -190,5 +200,6 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
       low: 1,
     },
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
   },
 };

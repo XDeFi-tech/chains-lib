@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
 
 import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -57,5 +57,10 @@ describe('private-key.signer', () => {
 
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey('')).toEqual(privateKey);
+  });
+
+  it('should return FeeEstimation', async () => {
+    const feeEstimation = await message.getFee(GasFeeSpeed.medium);
+    expect(feeEstimation);
   });
 });
