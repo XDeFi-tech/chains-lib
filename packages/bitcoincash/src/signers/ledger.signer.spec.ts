@@ -32,7 +32,28 @@ jest.mock('@ledgerhq/hw-app-btc', () => {
 
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
-    return [];
+    return [
+      {
+        address: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+        amount: {
+          value: '200000',
+        },
+        asset: {
+          chain: 'BitcoinCash',
+          contract: null,
+          id: '2570e861-d543-4ccf-a9a8-105f77dd746a',
+          name: 'Bitcoin Cash',
+          symbol: 'BCH',
+          image:
+            'https://assets.coingecko.com/coins/images/780/large/bitcoin-cash-circle.png?1594689492',
+          decimals: 8,
+          price: {
+            amount: '493.5',
+          },
+          type: 'CRYPTOCURRENCY',
+        },
+      },
+    ];
   },
 }));
 
