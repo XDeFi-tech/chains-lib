@@ -50,10 +50,11 @@ describe('msg', () => {
       estimateFee: jest.fn(() =>
         Promise.resolve([
           {
+            baseFeePerGas: 22000000000,
             gasLimit: 31500,
             gasPrice: undefined,
-            maxFeePerGas: 5390000000,
-            maxPriorityFeePerGas: 560000000,
+            maxFeePerGas: 28330000000,
+            maxPriorityFeePerGas: 70000000,
           },
         ])
       ),

@@ -1,7 +1,11 @@
 import Solana from '@ledgerhq/hw-app-solana';
-import { PublicKey, Transaction as SolanaTransaction } from '@solana/web3.js';
+import {
+  PublicKey,
+  Transaction as SolanaTransaction,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import Transport from '@ledgerhq/hw-transport';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 
@@ -35,20 +39,32 @@ export class LedgerSigner extends Signer.Provider {
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const app = new Solana(this.transport as Transport);
-    const { tx } = await msg.buildTx();
-    const transaction = tx as SolanaTransaction;
-    const signedTx = await app.signTransaction(
-      derivation,
-      transaction.serializeMessage()
-    );
+    const { tx, encoding } = await msg.buildTx();
+
+    let signedTx;
+    switch (encoding) {
+      case MsgEncoding.object:
+        const transaction = tx as SolanaTransaction;
+        signedTx = await app.signTransaction(
+          derivation,
+          transaction.serializeMessage()
+        );
+        break;
+      case MsgEncoding.base64:
+        const versionedTransaction = tx as VersionedTransaction;
+        signedTx = await app.signTransaction(
+          derivation,
+          Buffer.from(versionedTransaction.serialize())
+        );
+        break;
+      default:
+        throw new Error('Invalid encoding for solana transaction');
+    }
 
     const addressBuffer = await app.getAddress(derivation);
-    transaction.addSignature(
-      new PublicKey(addressBuffer.address),
-      signedTx.signature
-    );
+    tx.addSignature(new PublicKey(addressBuffer.address), signedTx.signature);
 
-    msg.sign(transaction.serialize());
+    msg.sign(tx.serialize());
   }
 }
 

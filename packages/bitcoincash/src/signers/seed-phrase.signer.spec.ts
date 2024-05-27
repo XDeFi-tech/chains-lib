@@ -8,7 +8,48 @@ import { SeedPhraseSigner } from './seed-phrase.signer';
 
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
-    return [];
+    return [
+      {
+        address: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+        amount: {
+          value: '200000',
+        },
+        asset: {
+          chain: 'BitcoinCash',
+          contract: null,
+          id: '2570e861-d543-4ccf-a9a8-105f77dd746a',
+          name: 'Bitcoin Cash',
+          symbol: 'BCH',
+          image:
+            'https://assets.coingecko.com/coins/images/780/large/bitcoin-cash-circle.png?1594689492',
+          decimals: 8,
+          price: {
+            amount: '493.5',
+          },
+          type: 'CRYPTOCURRENCY',
+        },
+      },
+    ];
+  },
+}));
+
+jest.mock('../datasource/indexer/queries/scanUTXOs.query', () => ({
+  scanUTXOs: () => {
+    return [
+      {
+        oTxHash:
+          '03e07fa6aa9bde48745999f686b7b6b3dfb43903262a96bb82865231eb31792e',
+        oIndex: 0,
+        oTxHex:
+          '0200000001596ed74610073ad1af7bb973361037e7534ab1a9d615cd155c808120c431447a000000006b483045022100ef73ef0302dcf3f89c07bedc71fcdfcc68e726db2112c25a8be8f740135ea7b5022074eb7d88ea62d9c346728672ed49161cb3f8f6f8b6aac49cf61e7c6edc8b9ed4412103ab6ac7a9d5ab5d88a6cc58f513c13ed44cbe34174e41c9db2e9b66e104c47b6dffffffff02400d0300000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac3ee02600000000001976a91474ec213ab150f5c5b80914b9cc0ba4d84aa7c9ba88ac00000000',
+        address: 'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad',
+        scriptHex: '76a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac',
+        isCoinbase: null,
+        value: {
+          value: '200000',
+        },
+      },
+    ];
   },
 }));
 
@@ -50,7 +91,9 @@ describe('seed-phrase.signer', () => {
   it('should sign a transaction using the seed phrase', async () => {
     await signer.sign(message as ChainMsg, derivation);
 
-    expect(message.signedTransaction).toBeTruthy();
+    expect(message.signedTransaction).toEqual(
+      '02000000012e7931eb31528682bb962a260339b4dfb3b6b786f699597448de9baaa67fe003000000006a47304402200419e6bc0222af2adff260c92c4330935804d7bafc6442afca3c5384723a5b0602207a383d7e8587481c12a4ad7152cc630aff62210374fe2b869234063f17c85d7041210398c7d1ac211564fa1243fa250debac08f822a0e98490ac365d528918b019da1bffffffff0264000000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688acfa0b0300000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac00000000'
+    );
   });
 
   it('should sign a raw transaction using a seed phrase', async () => {

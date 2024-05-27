@@ -44,20 +44,27 @@ export class SeedPhraseSigner extends Signer.Provider {
     const account = Keypair.fromSecretKey(
       Buffer.from(await this.getPrivateKey(derivation), 'hex')
     );
+    let serializedTx = null;
     switch (encoding) {
       case MsgEncoding.object:
         const transaction = tx as SolanaTransaction;
         transaction.sign(account);
+        serializedTx = transaction.serialize();
         break;
       case MsgEncoding.base64:
         const versionedTransaction = tx as VersionedTransaction;
         versionedTransaction.sign([account]);
+        serializedTx = Buffer.from(versionedTransaction.serialize());
         break;
       default:
         throw new Error('Invalid encoding for solana transaction');
     }
 
-    msg.sign(tx.serialize());
+    if (!serializedTx) {
+      throw new Error('Failed to serialize transaction');
+    }
+
+    msg.sign(serializedTx);
   }
 }
 

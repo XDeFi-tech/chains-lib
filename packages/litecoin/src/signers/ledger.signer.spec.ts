@@ -32,7 +32,28 @@ jest.mock('@ledgerhq/hw-app-btc', () => {
 
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
-    return [];
+    return [
+      {
+        address: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+        amount: {
+          value: '10000',
+        },
+        asset: {
+          chain: 'Litecoin',
+          contract: null,
+          id: 'f8e964b8-2df8-4039-8e6d-013e84dc8d07',
+          name: 'Litecoin',
+          symbol: 'LTC',
+          image:
+            'https://assets.coingecko.com/coins/images/2/large/litecoin.png?1547033580',
+          decimals: 8,
+          price: {
+            amount: '84.87',
+          },
+          type: 'CRYPTOCURRENCY',
+        },
+      },
+    ];
   },
 }));
 
