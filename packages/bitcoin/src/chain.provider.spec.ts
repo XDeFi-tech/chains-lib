@@ -1,3 +1,5 @@
+import { Coin } from '@xdefi-tech/chains-core';
+
 import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
@@ -5,7 +7,28 @@ import { BITCOIN_MANIFEST } from './manifests';
 
 jest.mock('./datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
-    return [];
+    return [
+      {
+        address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        amount: {
+          value: '0',
+        },
+        asset: {
+          chain: 'Bitcoin',
+          contract: null,
+          id: 'bcafa2bf-d442-483a-96a4-0199f4371678',
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          image:
+            'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579',
+          decimals: 8,
+          price: {
+            amount: '67310',
+          },
+          type: 'CRYPTOCURRENCY',
+        },
+      },
+    ];
   },
 }));
 
@@ -18,8 +41,8 @@ describe('chain.provider', () => {
 
   it('createMsg(): should create message with data', () => {
     const msg = provider.createMsg({
-      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
-      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
     });
 
@@ -28,8 +51,8 @@ describe('chain.provider', () => {
 
   it('should throw an error when broadcasting an unsigned tx', async () => {
     const msg = provider.createMsg({
-      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
-      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
     });
 
@@ -55,11 +78,12 @@ describe('chain.provider', () => {
 
   it('should get a balance', async () => {
     const balance = await provider.getBalance(
-      'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz'
+      'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
     );
 
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(0);
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0]).toBeInstanceOf(Coin);
   });
 
   it('should throw for a non-existant transaction on the blockchain', async () => {
@@ -73,8 +97,8 @@ describe('chain.provider', () => {
   it('should create message with memo as string', async () => {
     const memo = 'Test string memo';
     const msg = provider.createMsg({
-      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
-      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
       memo: memo,
     });
@@ -87,8 +111,8 @@ describe('chain.provider', () => {
     const memo = 'Test string memo';
     const encodedMemo = new TextEncoder().encode(memo);
     const msg = provider.createMsg({
-      to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
-      from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+      to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       amount: 0.000001,
       memo: encodedMemo,
     });
