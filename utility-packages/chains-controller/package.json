@@ -36,6 +36,7 @@
     "@xdefi-tech/chains-solana": "*",
     "@xdefi-tech/chains-cosmos": "*",
     "@xdefi-tech/chains-graphql": "*",
+    "@xdefi-tech/chains-dash": "*",
     "rimraf": "4.4.0"
   },
   "type": "commonjs",

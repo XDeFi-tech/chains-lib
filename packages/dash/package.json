@@ -1,0 +1,88 @@
+{
+  "name": "@xdefi-tech/chains-dash",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/XDeFi-tech/chains/",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "devDependencies": {
+    "jest": "27.5.1",
+    "jest-environment-jsdom": "27.5.1",
+    "jest-watch-typeahead": "1.0.0",
+    "ts-jest": "27.1.4",
+    "tsup": "6.6.3",
+    "typescript": "4.8.3"
+  },
+  "dependencies": {
+    "@trezor/connect-web": "9.1.4",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-graphql": "*",
+    "@xdefi-tech/chains-utxo": "*",
+    "axios": "1.3.4",
+    "bip32": "2.0.4",
+    "bip39": "3.1.0",
+    "coinselect": "3.1.13",
+    "dashcore-lib": "^8.2.3",
+    "eslint-config-custom": "*",
+    "reflect-metadata": "0.1.13",
+    "rimraf": "4.4.0",
+    "rxjs": "7.8.0",
+    "ts-node": "10.7.0"
+  },
+  "scripts": {
+    "build": "tsup --minify --clean",
+    "publish:packages": "npm publish --tag $GITHUB_REF",
+    "watch": "tsup --watch",
+    "coverage": "jest --coverageReporters='json-summary' --coverage",
+    "test": "jest src/signers/trezor.signer.spec.ts",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rimraf dist .turbo node_modules"
+  },
+  "type": "commonjs",
+  "tsup": {
+    "entry": [
+      "src/signers/web.ts",
+      "src/signers/react-native.ts",
+      "src/index.ts"
+    ],
+    "format": "cjs",
+    "splitting": false,
+    "dts": true,
+    "shims": true,
+    "types": [
+      "./dist/signers/web.d.ts",
+      "./dist/signers/react-native.d.ts",
+      "./dist/index.d.ts"
+    ],
+    "platform": "browser",
+    "target": "ES6"
+  },
+  "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
+    "preset": "ts-jest/presets/js-with-ts",
+    "transform": {
+      ".+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
+    "testTimeout": 15000
+  }
+}
