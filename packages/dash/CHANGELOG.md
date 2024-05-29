@@ -1,14 +1,7 @@
 # @xdefi-tech/chains-dash
 
-
 ## 1.0.0
 
 ### Major Changes
 
-- 35b848f: Add UTXO chains, update GQL schemas
-
-### Patch Changes
-
-- Updated dependencies [35b848f]
-  - @xdefi-tech/chains-utxo@1.0.0
-  - @xdefi-tech/chains-graphql@1.1.6
+- f7d5fa77: Add Dash chain initial commit
