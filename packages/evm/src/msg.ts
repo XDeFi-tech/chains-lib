@@ -98,6 +98,27 @@ export interface EncryptedObject {
   mac: string;
 }
 
+export interface EIP712Data {
+  domain: {
+    name?: string;
+    version?: string;
+    chainId?: number | undefined;
+    verifyingContract?: string | undefined;
+  };
+  types: {
+    EIP712Domain: Array<TypedDataField>;
+    [key: string]: Array<TypedDataField>;
+  };
+  primaryType: string | any;
+  message: Record<string, any>;
+}
+
+export interface Signature {
+  r: string;
+  s: string;
+  v: number;
+}
+
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   signedTransaction: string | undefined;
   declare provider: EvmProvider;

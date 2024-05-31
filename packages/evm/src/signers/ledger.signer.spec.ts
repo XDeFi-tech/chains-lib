@@ -4,7 +4,7 @@ import Transport from '@ledgerhq/hw-transport-webhid';
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, MsgBody, EIP712Data, Signature } from '../msg';
 
 import LedgerSigner from './ledger.signer';
 
@@ -26,6 +26,11 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
       publicKey: 'PUBKEY',
       chainCode: '1',
     }),
+    signEIP712Message: jest.fn().mockResolvedValue({
+      v: '1',
+      r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
+      s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+    }),
   }));
 });
 
@@ -36,7 +41,6 @@ describe('ledger.signer', () => {
   let txInput: MsgBody;
   let message: Msg;
   let externalTransport: any;
-  let signature: string;
 
   beforeEach(async () => {
     externalTransport = await Transport.create();
@@ -54,9 +58,6 @@ describe('ledger.signer', () => {
       decimals: 18,
     };
 
-    signature =
-      '0x41d9578d76d6460e125a783418c644de2663e585d59f507e7a86697a58d9bba24307fdad5f9647dba44b5ed5ac54741b3959fb8838c8a2b33afaa88d8d8c15571b';
-
     message = provider.createMsg(txInput);
   });
 
@@ -70,7 +71,6 @@ describe('ledger.signer', () => {
 
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
-
     expect(message.signedTransaction).toBeTruthy();
   });
 
@@ -91,18 +91,76 @@ describe('ledger.signer', () => {
   });
 
   it('should get recover signers address from the signature', async () => {
+    const signature =
+      '0x41d9578d76d6460e125a783418c644de2663e585d59f507e7a86697a58d9bba24307fdad5f9647dba44b5ed5ac54741b3959fb8838c8a2b33afaa88d8d8c15571b';
     const message = 'test';
+    const address = '0xFD7dD7e26593227A23BAFA6560c3B8C0b9DE952b';
+
     const recoveredAddress = await signer.recover(signature, message);
 
-    expect(recoveredAddress).not.toBe(
-      '0x62e4f988d231E16c9A666DD9220865934a347900'
-    );
+    expect(recoveredAddress).toBe(address);
   });
 
   it('should get recover signers publicKey from the signature', async () => {
+    const signature =
+      '0x41d9578d76d6460e125a783418c644de2663e585d59f507e7a86697a58d9bba24307fdad5f9647dba44b5ed5ac54741b3959fb8838c8a2b33afaa88d8d8c15571b';
     const message = 'test';
+    const publicKey =
+      '43816f07212517ee8f38757fc2d576109f688a371ba839e158dae9b02f1ce5556420f1b3166c776b235fd308aa7293fe86bb1276f8cca2d23111df273160fa34';
+
     const recoveredPubKey = await signer.recoverPublicKey(signature, message);
 
-    expect(recoveredPubKey).not.toBe('PUBKEY');
+    expect(recoveredPubKey).toBe(publicKey);
+  });
+
+  it('should return ledger signature', async () => {
+    const eip712Data = {
+      domain: {
+        name: 'MyDApp',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Transfer: [
+          { name: 'from', type: 'address' },
+          { name: 'to', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+        ],
+      },
+      primaryType: 'Transfer',
+      message: {
+        from: '0x62e4f988d231E16c9A666DD9220865934a347900',
+        to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+        amount: 0.000001,
+        nonce: 0,
+      },
+    } as EIP712Data;
+
+    const signature = await signer.signTypedData(
+      derivationPath,
+      eip712Data.domain,
+      eip712Data.types,
+      eip712Data.primaryType,
+      eip712Data.message
+    );
+
+    const { v, r, s } = signature as Signature;
+
+    expect(signature).not.toBeNull();
+    expect(v).toBe('1');
+    expect(r).toBe(
+      '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c'
+    );
+    expect(s).toBe(
+      '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421'
+    );
   });
 });
