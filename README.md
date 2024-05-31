@@ -21,6 +21,7 @@ This library currently supports the following blockchain networks:
 | Chain           | Provider                                                                        | Datasources    | Signers                                | Custom chain |
 | --------------- | ------------------------------------------------------------------------------- | -------------- | -------------------------------------- | ------------ |
 | Bitcoin         | [Bitcoin](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoin)         | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
+| Dash            | [Dash](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-dash)               | Chain          | SeedPhrase, PrivateKey, Trezor         | No           |
 | Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Polygon         | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
