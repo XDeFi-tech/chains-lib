@@ -4,7 +4,7 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 import EthCrypto from 'eth-crypto';
 
-import { ChainMsg, EncryptedObject } from '../msg';
+import { ChainMsg, EncryptedObject, EIP712Data, Signature } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
@@ -93,6 +93,25 @@ export class LedgerSigner extends Signer.Provider {
   ): Promise<EncryptedObject> {
     const encrypted = EthCrypto.encryptWithPublicKey(pubKey, message);
     return encrypted;
+  }
+
+  // signTypedData (v4): Signs a typed data message. Returns (async) the signature as v, r, s object.
+  async signTypedData(
+    derivation: string,
+    domain: EIP712Data['domain'],
+    types: EIP712Data['types'],
+    primaryType: EIP712Data['primaryType'],
+    message: EIP712Data['message']
+  ): Promise<Signature> {
+    const app = new App(this.transport as Transport);
+    const typedData = {
+      types,
+      domain,
+      primaryType,
+      message,
+    };
+    const signature = await app.signEIP712Message(derivation, typedData);
+    return signature;
   }
 }
 

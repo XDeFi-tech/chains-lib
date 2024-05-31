@@ -9,7 +9,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import { utils } from 'ethers';
 
-import { ChainMsg } from '../msg';
+import { ChainMsg, EIP712Data, Signature } from '../msg';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
@@ -87,6 +87,32 @@ export class TrezorSigner extends Signer.TrezorProvider {
       );
 
       msg.sign(signedTransaction);
+    }
+  }
+
+  // signTypedData (v4): Signs a typed data message. Returns (async) the signature as v, r, s object.
+  async signTypedData(
+    derivation: string,
+    domain: EIP712Data['domain'],
+    types: EIP712Data['types'],
+    primaryType: EIP712Data['primaryType'],
+    message: EIP712Data['message']
+  ): Promise<Signature | any> {
+    const result = await TrezorConnect.ethereumSignTypedData({
+      path: derivation,
+      data: {
+        domain,
+        types,
+        primaryType,
+        message,
+      },
+      metamask_v4_compat: true,
+    });
+
+    if (result.success) {
+      return result.payload;
+    } else {
+      throw new Error(result.payload.error);
     }
   }
 }

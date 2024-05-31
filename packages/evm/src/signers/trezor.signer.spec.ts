@@ -9,7 +9,7 @@ import {
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, MsgBody, EIP712Data, Signature } from '../msg';
 
 import TrezorSigner from './trezor.signer';
 jest.mock('@trezor/connect-web', () => ({
@@ -39,6 +39,16 @@ jest.mock('@trezor/connect-web', () => ({
 
       return addressResponse;
     }),
+  ethereumSignTypedData: jest.fn().mockImplementation(() => {
+    return {
+      success: true,
+      payload: {
+        v: '1',
+        r: '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c',
+        s: '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421',
+      },
+    };
+  }),
 }));
 
 describe('trezor.signer', () => {
@@ -104,5 +114,56 @@ describe('trezor.signer', () => {
 
   it('should fail if public key is requested', async () => {
     expect(signer.getPublicKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should return ledger signature', async () => {
+    const eip712Data = {
+      domain: {
+        name: 'MyDApp',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Transfer: [
+          { name: 'from', type: 'address' },
+          { name: 'to', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+        ],
+      },
+      primaryType: 'Transfer',
+      message: {
+        from: '0x62e4f988d231E16c9A666DD9220865934a347900',
+        to: '0x62e4f988d231E16c9A666DD9220865934a347900',
+        amount: 0.000001,
+        nonce: 0,
+      },
+    } as EIP712Data;
+
+    const signature = await signer.signTypedData(
+      derivationPath,
+      eip712Data.domain,
+      eip712Data.types,
+      eip712Data.primaryType,
+      eip712Data.message
+    );
+
+    const { v, r, s } = signature as Signature;
+
+    expect(signature).not.toBeNull();
+    expect(v).toBe('1');
+    expect(r).toBe(
+      '0x2284d1273433b82201150965837d843b4978d50a26f1a93be3ee686c7f36ee6c'
+    );
+    expect(s).toBe(
+      '0x40aafc22ba5cb3d5147e953af0acf45d768d8976dd61d8917118814302680421'
+    );
   });
 });
