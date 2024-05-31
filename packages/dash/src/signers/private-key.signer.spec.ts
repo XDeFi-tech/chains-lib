@@ -31,15 +31,15 @@ describe('private-key.signer', () => {
     jest.spyOn(provider.dataSource.api, 'get').mockResolvedValue({
       data: [
         {
-          "address": "Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB",
-          "txid": "c32aa8c22a13cc0bdb77d1f9ae7af459dfb47ea0ed391d90fe1eaf3abdd051ff",
-          "vout": 0,
-          "scriptPubKey": "76a91400f9ea56c1f6f81effae1a4d0e816df86b4b460c88ac",
-          "amount": 0.0002,
-          "satoshis": 20000,
-          "height": 2078732,
-          "confirmations": 1600
-        }
+          address: 'Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB',
+          txid: 'c32aa8c22a13cc0bdb77d1f9ae7af459dfb47ea0ed391d90fe1eaf3abdd051ff',
+          vout: 0,
+          scriptPubKey: '76a91400f9ea56c1f6f81effae1a4d0e816df86b4b460c88ac',
+          amount: 0.0002,
+          satoshis: 20000,
+          height: 2078732,
+          confirmations: 1600,
+        },
       ],
     });
 
@@ -58,15 +58,15 @@ describe('private-key.signer', () => {
     jest.spyOn(provider.dataSource.api, 'get').mockResolvedValue({
       data: [
         {
-          "address": "Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB",
-          "txid": "c32aa8c22a13cc0bdb77d1f9ae7af459dfb47ea0ed391d90fe1eaf3abdd051ff",
-          "vout": 0,
-          "scriptPubKey": "76a91400f9ea56c1f6f81effae1a4d0e816df86b4b460c88ac",
-          "amount": 0.0002,
-          "satoshis": 20000,
-          "height": 2078732,
-          "confirmations": 1600
-        }
+          address: 'Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB',
+          txid: 'c32aa8c22a13cc0bdb77d1f9ae7af459dfb47ea0ed391d90fe1eaf3abdd051ff',
+          vout: 0,
+          scriptPubKey: '76a91400f9ea56c1f6f81effae1a4d0e816df86b4b460c88ac',
+          amount: 0.0002,
+          satoshis: 20000,
+          height: 2078732,
+          confirmations: 1600,
+        },
       ],
     });
 
