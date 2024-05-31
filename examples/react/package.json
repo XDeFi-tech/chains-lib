@@ -13,6 +13,7 @@
     "@mui/material": "5.11.12",
     "@xdefi-tech/chains-binance": "*",
     "@xdefi-tech/chains-bitcoin": "*",
+    "@xdefi-tech/chains-dash": "*",
     "@xdefi-tech/chains-bitcoincash": "*",
     "@xdefi-tech/chains-dogecoin": "*",
     "@xdefi-tech/chains-litecoin": "*",

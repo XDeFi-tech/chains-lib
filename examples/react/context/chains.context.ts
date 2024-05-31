@@ -6,6 +6,7 @@ import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
 import { THORCHAIN_MANIFESTS, ThorProvider } from '@xdefi-tech/chains-thor';
 import { BITCOIN_MANIFEST, BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
+import { DASH_MANIFEST, DashProvider } from '@xdefi-tech/chains-dash';
 import {
   LITECOIN_MANIFEST,
   LitecoinProvider,
@@ -217,6 +218,11 @@ export const initDefaultProviders = () => {
       {
         providerId: 'bitcoin',
       }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
+    new DashProvider(
+      new DashProvider.dataSourceList.ChainDataSource(DASH_MANIFEST),
     )
   );
   ChainsContextDefaultValue.addProvider(
