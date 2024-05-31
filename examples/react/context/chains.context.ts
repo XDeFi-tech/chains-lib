@@ -222,7 +222,10 @@ export const initDefaultProviders = () => {
   );
   ChainsContextDefaultValue.addProvider(
     new DashProvider(
-      new DashProvider.dataSourceList.ChainDataSource(DASH_MANIFEST)
+      new DashProvider.dataSourceList.ChainDataSource(DASH_MANIFEST),
+      {
+        providerId: 'dash',
+      }
     )
   );
   ChainsContextDefaultValue.addProvider(

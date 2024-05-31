@@ -7,7 +7,12 @@ import {
   Transaction,
   TransactionData,
 } from '@xdefi-tech/chains-core';
-import { UtxoProvider, ChainMsg, UTXO } from '@xdefi-tech/chains-utxo';
+import {
+  UtxoProvider,
+  ChainMsg,
+  UTXO,
+  UtxoProviderOptions,
+} from '@xdefi-tech/chains-utxo';
 
 import { ChainDataSource } from './datasource';
 import { MsgBody } from './msg';
@@ -20,8 +25,8 @@ import { MsgBody } from './msg';
 export class DashProvider extends UtxoProvider {
   declare dataSource: ChainDataSource;
 
-  constructor(dataSource: DataSource) {
-    super(dataSource);
+  constructor(dataSource: DataSource, options?: UtxoProviderOptions) {
+    super(dataSource, options);
   }
 
   static get dataSourceList() {
