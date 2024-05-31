@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
 import { providers } from 'ethers';
 import axios, { Axios } from 'axios';
 import { UTXO } from '@xdefi-tech/chains-utxo';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -38,14 +39,13 @@ export class ChainDataSource extends DataSource {
   }
 
   estimateFee(msg: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    const feeOptions = this.gasFeeOptions();
-    return Promise.resolve([]);
+    throw new MethodNotImplementedException();
   }
 
   gasFeeOptions(): Promise<FeeOptions | null> {
     const defaultFee: DefaultFeeOptions = {
-      high: 5,
-      medium: 1,
+      high: 10,
+      medium: 5,
       low: 0,
     };
 
@@ -58,7 +58,7 @@ export class ChainDataSource extends DataSource {
     filter: BalanceFilter,
     tokenAddresses?: string[]
   ): Promise<Coin[]> {
-    const { address, afterBlock } = filter;
+    const { address } = filter;
 
     const response = await this.api.get(`addr/${address}/balance`);
 
@@ -67,12 +67,14 @@ export class ChainDataSource extends DataSource {
         ? [
             new Coin(
               new Asset({
-                chainId: 'dash',
-                name: 'DASH',
-                symbol: 'DASH',
+                chainId: this.manifest.chainId,
+                name: this.manifest.name,
+                symbol: this.manifest.chainSymbol,
                 native: true,
               }),
-              response.data
+              new BigNumber(response.data)
+                .integerValue()
+                .dividedBy(Math.pow(10, this.manifest.decimals))
             ),
           ]
         : []
@@ -90,19 +92,22 @@ export class ChainDataSource extends DataSource {
   }
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    // return Promise.resolve([{
-    //   hash: string;
-    //   to: string;
-    //   from: string;
-    //   status: TransactionStatus;
-    //   data?: string;
-    //   action?: TransactionAction;
-    //   date?: number;
-    //   amount?: string;
-    //   contractAddress?: string;
-    // }]);
+    const transactions = [];
 
-    return Promise.resolve([]);
+    let page = 1;
+    let response;
+
+    do {
+      response = await this.api.get(
+        `/txs/?address=${filter.address}&pageNum=${page}`
+      );
+
+      transactions.push(...response.data.txs);
+
+      page++;
+    } while (page < response.data.pagesTotal);
+
+    return Promise.resolve(transactions);
   }
 
   async getUnspentOutputs(address: string): Promise<UTXO[]> {

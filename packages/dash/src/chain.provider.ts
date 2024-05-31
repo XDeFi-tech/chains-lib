@@ -3,6 +3,7 @@ import {
   ChainDecorator,
   DataSource,
   MsgEncoding,
+  Response,
   Transaction,
   TransactionData,
 } from '@xdefi-tech/chains-core';
@@ -38,6 +39,16 @@ export class DashProvider extends UtxoProvider {
 
   async broadcast(messages: ChainMsg[]): Promise<Transaction[]> {
     return this.dataSource.broadcast(messages);
+  }
+
+  async getTransactions(
+    address: string,
+    afterBlock?: number | string
+  ): Promise<Response<Transaction[], Transaction>> {
+    return new Response(
+      () => this.dataSource.getTransactions({ address, afterBlock }),
+      () => this.dataSource.subscribeTransactions({ address })
+    );
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {
