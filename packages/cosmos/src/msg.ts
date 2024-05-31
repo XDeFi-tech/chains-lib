@@ -72,7 +72,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     let msgs;
     let typeUrl = msgData.typeUrl;
 
-    if (msgData.contractAddress && msgData.nftId) {
+    if (typeUrl && typeUrl === '/ibc.applications.transfer.v1.MsgTransfer') {
+      // transferring IBC token
+      msgs = msgData.msgs;
+    } else if (msgData.contractAddress && msgData.nftId) {
       // sending nft
       typeUrl = msgData.typeUrl || '/cosmwasm.wasm.v1.MsgExecuteContract';
       msgs = [
@@ -183,7 +186,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const acc = await this.provider.getAccount(msgData.from);
 
     return {
-      msgs: msgData.msgs || msgs,
+      msgs:
+        typeUrl === '/ibc.applications.transfer.v1.MsgTransfer'
+          ? msgs
+          : msgData.msgs || msgs,
       ...(msgData.memo && { memo: msgData.memo }),
       fee,
       ...(acc && {

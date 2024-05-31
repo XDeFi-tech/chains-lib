@@ -25,6 +25,7 @@ import {
 } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
@@ -132,6 +133,15 @@ export class IndexerDataSource extends DataSource {
     const _msgs = msgs.map((m) => {
       const messageData = m.toData();
       fromAddress = messageData.from;
+      if (messageData.typeUrl === '/ibc.applications.transfer.v1.MsgTransfer') {
+        const msgTransfer = messageData.msgs[0];
+        return {
+          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+          value: MsgTransfer.encode(
+            MsgTransfer.fromPartial(msgTransfer.value)
+          ).finish(),
+        };
+      }
       return {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: MsgSend.encode({
