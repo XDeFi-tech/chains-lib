@@ -29,6 +29,23 @@ import { ChainMsg } from './msg';
 import * as manifests from './manifests';
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import type { CosmosManifest } from './manifests';
+import {
+  createIBCTransferMsg,
+  getIBCDestAsset,
+  getIBCTokenInfo,
+  getIBCTransferRouter,
+  skipAxiosClient,
+} from './utils';
+
+export interface ChannelData {
+  channelId: string;
+  portId: string;
+}
+
+export interface IBCData {
+  path: string;
+  originDenom: string;
+}
 
 @ChainDecorator('CosmosProvider', {
   deps: [],
@@ -155,6 +172,55 @@ export class CosmosProvider extends Chain.Provider {
     return this.dataSource.getAccount(address);
   }
 
+  /**
+   *
+   * @param denom the denom of IBC token
+   * @returns information about the IBC token
+   */
+  async getIBCTransferInfo(denom: string): Promise<null | IBCData> {
+    if (denom.startsWith('ibc/')) {
+      return null;
+    }
+
+    const {
+      data: { denom_traces },
+    } = await this.lcdAxiosClient.get(
+      `/ibc/apps/transfer/v1/denom_traces/${denom}`
+    );
+
+    if (!denom_traces) {
+      return null;
+    }
+
+    return { path: denom_traces.path, originDenom: denom_traces.base_denom };
+  }
+
+  /**
+   *
+   * @param chanelId the ID of the channel
+   * @param portId the port ID - defaults to 'transfer'
+   * @returns information about the counterparty of a specific IBC channel
+   */
+  async getChannelCounterPatty(
+    chanelId: `channel-${number}`,
+    portId = 'transfer'
+  ): Promise<null | ChannelData> {
+    const {
+      data: { channel },
+    } = await this.lcdAxiosClient.get(
+      `/ibc/core/channel/v1/channels/${chanelId}/port/${portId}`
+    );
+
+    if (channel) {
+      return null;
+    }
+
+    return {
+      portId: channel.counterparty.port_id,
+      channelId: channel.counterparty.channel_id,
+    };
+  }
+
   public get manifest(): CosmosManifest {
     return this.dataSource.manifest as CosmosManifest;
   }
@@ -163,6 +229,16 @@ export class CosmosProvider extends Chain.Provider {
     return {
       IndexerDataSource: IndexerDataSource,
       ChainDataSource: ChainDataSource,
+    };
+  }
+
+  static get utils() {
+    return {
+      skipAxiosClient,
+      getIBCTokenInfo,
+      getIBCTransferRouter,
+      createIBCTransferMsg,
+      getIBCDestAsset,
     };
   }
 }

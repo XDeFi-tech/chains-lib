@@ -5,7 +5,7 @@ import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
-import { COSMOS_MANIFESTS } from '../manifests';
+import { COSMOS_MANIFESTS, CosmosHubChains } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
@@ -395,5 +395,61 @@ describe('seed-phase.addressGeneration', () => {
         )
       ).toBe(false);
     }
+  });
+});
+
+describe('IBC token transfer', () => {
+  let mnemonic: string;
+  let signer: SeedPhraseSigner;
+  let sourceChain: CosmosHubChains;
+  let sourceAssetDenom: string;
+  let destChain: CosmosHubChains;
+  let destAssetDenom: string;
+  let derivations: string;
+  let prefix: { [key: string]: string };
+  const { getIBCTransferRouter, createIBCTransferMsg } = CosmosProvider.utils;
+
+  beforeEach(async () => {
+    jest.setTimeout(60 * 1000);
+    mnemonic =
+      'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
+    signer = new SeedPhraseSigner(mnemonic);
+
+    derivations = "m/44'/118'/0'/0/0";
+
+    sourceChain = CosmosHubChains.osmosis;
+    destChain = CosmosHubChains.akash;
+    sourceAssetDenom =
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'; // uatom on osmosis
+    destAssetDenom =
+      'ibc/2E5D0AC026AC1AFA65A23023BA4F24BB8DDF94F118EDC0BAD6F625BFC557CDED'; // uatom on akash
+    prefix = {
+      [COSMOS_MANIFESTS[sourceChain].chainId]:
+        COSMOS_MANIFESTS[sourceChain].prefix,
+      [COSMOS_MANIFESTS[destChain].chainId]: COSMOS_MANIFESTS[destChain].prefix,
+    };
+  });
+
+  it('Create success tx to transfer uatom from osmosis to akash', async () => {
+    const route = await getIBCTransferRouter(
+      // Get route to transfer from osmosis to akash
+      '1',
+      sourceAssetDenom,
+      sourceChain,
+      destAssetDenom,
+      destChain
+    );
+    const userAddresses = await Promise.all(
+      (route.chain_ids as string[]).map((chainId) =>
+        signer.getAddress(derivations, prefix[chainId])
+      )
+    );
+    const msgBody = await createIBCTransferMsg(route, userAddresses);
+    const provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+    const message = provider.createMsg(msgBody);
+    await signer.sign(message as ChainMsg, derivations);
+    expect(message.signedTransaction).toBeTruthy();
   });
 });
