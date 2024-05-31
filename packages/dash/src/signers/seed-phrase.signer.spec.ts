@@ -40,6 +40,21 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using the seed phrase', async () => {
+    jest.spyOn(provider.dataSource.api, 'get').mockResolvedValue({
+      data: [
+        {
+          "address": "XurgKr82Ys7reuJxAYq5X5G2mbAvWAxvkX",
+          "txid": "da59fe9b43d87301b084a145a1b1154a4bd9ee0dc05bb83c08d22024310066c3",
+          "vout": 0,
+          "scriptPubKey": "76a914d2469d0c589f9ca695e71278edf923cba781a42688ac",
+          "amount": 0.0001,
+          "satoshis": 10000,
+          "height": 2079424,
+          "confirmations": 908
+        }
+      ]
+    });
+
     await signer.sign(message as ChainMsg, derivation);
 
     expect(message.signedTransaction).toBeTruthy();
