@@ -97,6 +97,18 @@ export class PrivateKeySigner extends Signer.Provider {
     const encrypted = EthCrypto.encryptWithPublicKey(pubKey, message);
     return encrypted;
   }
+
+  // signTypedData (v4): Signs a typed data message. Returns (async) the signature as string
+  async signTypedData(
+    domain: EvmTypedData['domain'],
+    types: EvmTypedData['fields'],
+    value: EvmTypedData['values']
+  ): Promise<string> {
+    const wallet = new Wallet(this.key);
+    const signature = await wallet._signTypedData(domain, types, value);
+
+    return signature;
+  }
 }
 
 export default PrivateKeySigner;
