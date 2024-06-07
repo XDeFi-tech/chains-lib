@@ -1,6 +1,8 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
+import { DEFAULT_FEE } from './constants';
 import { ChainMsg } from './msg';
 
 describe('msg', () => {
@@ -65,6 +67,28 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('getFee should return fee estimation', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+        to: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+        amount: 0.000001,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.getFee();
+    const feeOptions = await mockProvider.gasFeeOptions();
+
+    expect(response.fee).toEqual(
+      new BigNumber(feeOptions[GasFeeSpeed.medium] as number)
+        .dividedBy(LAMPORTS_PER_SOL)
+        .toString()
+    );
+    expect(response.maxFee).toBeNull();
   });
 
   it('getMaxAmountToSend should throw an error with invalid token', async () => {

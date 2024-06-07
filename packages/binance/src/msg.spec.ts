@@ -1,4 +1,4 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';
@@ -65,6 +65,30 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('getFee should return fee estimation', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        amount: 0.000001,
+        denom: 'bnb',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.getFee();
+
+    const fee = await mockProvider.gasFeeOptions();
+
+    expect(response.fee).toEqual(
+      new BigNumber(fee[GasFeeSpeed.medium] as number)
+        .dividedBy(10 ** mockProvider.manifest.decimals)
+        .toString()
+    );
+    expect(response.maxFee).toBeNull();
   });
 
   it('getMaxAmountToSend should throw an error with invalid token', async () => {
