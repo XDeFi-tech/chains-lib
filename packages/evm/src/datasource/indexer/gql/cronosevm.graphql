@@ -1,0 +1,97 @@
+query GetCronosEVMBalance($address: String!) {
+  cronosEVM {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query CronosEVMEIP1559GasFees {
+  cronosEVM {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}
+
+query GetCronosEVMTransactions($address: String!, $first: Int) {
+  cronosEVM {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetCronosEVMStatus {
+  cronosEVM {
+    status {
+      lastBlock
+    }
+  }
+}

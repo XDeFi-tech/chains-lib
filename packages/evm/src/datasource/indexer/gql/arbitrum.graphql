@@ -1,0 +1,85 @@
+query GetArbitrumBalance($address: String!) {
+  arbitrum {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query ArbitrumDefaultGasFees {
+  arbitrum {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetArbitrumTransactions($address: String!, $first: Int) {
+  arbitrum {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetArbitrumStatus {
+  arbitrum {
+    status {
+      lastBlock
+    }
+  }
+}
