@@ -1,4 +1,4 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';
@@ -52,7 +52,7 @@ describe('msg', () => {
         Promise.resolve([
           {
             gasLimit: 2000000,
-            gasPrice: undefined,
+            gasPrice: 1,
             maxFeePerGas: 2000000,
             maxPriorityFeePerGas: 2000000,
           },
@@ -77,6 +77,30 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('getFee should return fee estimation', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        to: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        amount: 0.000001,
+        decimals: 8,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.getFee();
+    const [estimateFee] = await mockProvider.estimateFee();
+
+    expect(response.fee).toEqual(
+      new BigNumber(estimateFee.gasLimit.toString())
+        .multipliedBy(estimateFee.gasPrice)
+        .dividedBy(10 ** mockProvider.manifest.decimals)
+        .toString()
+    );
+    expect(response.maxFee).toBeNull();
   });
 
   it('getMaxAmountToSend should throw an error with invalid token', async () => {

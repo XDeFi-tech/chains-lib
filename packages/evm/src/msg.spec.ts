@@ -1,5 +1,6 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import { ethers } from 'ethers';
 
 import { ChainMsg } from './msg';
 
@@ -52,7 +53,7 @@ describe('msg', () => {
           {
             baseFeePerGas: 22000000000,
             gasLimit: 31500,
-            gasPrice: undefined,
+            gasPrice: 100,
             maxFeePerGas: 28330000000,
             maxPriorityFeePerGas: 70000000,
           },
@@ -76,6 +77,54 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('getFee should return fee estimation', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        amount: 0.000001,
+        nonce: 0,
+        decimals: 18,
+        chainId: 1,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.getFee(GasFeeSpeed.medium);
+
+    const [feeEstimation] = await mockProvider.estimateFee(
+      [chainMsg],
+      GasFeeSpeed.medium
+    );
+
+    expect(response.fee).toEqual(
+      ethers.utils
+        .formatUnits(
+          new BigNumber(feeEstimation.baseFeePerGas)
+            .multipliedBy(feeEstimation.gasLimit)
+            .toString(),
+          'ether'
+        )
+        .toString()
+    );
+
+    const maxFeeWithPriority = new BigNumber(feeEstimation.baseFeePerGas).plus(
+      feeEstimation.maxPriorityFeePerGas
+    );
+
+    expect(response.maxFee).toEqual(
+      ethers.utils
+        .formatUnits(
+          new BigNumber(maxFeeWithPriority)
+            .multipliedBy(feeEstimation.gasLimit)
+            .toString(),
+          'ether'
+        )
+        .toString()
+    );
   });
 
   it('getMaxAmountToSend should throw an error with invalid token', async () => {

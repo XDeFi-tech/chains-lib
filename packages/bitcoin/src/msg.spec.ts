@@ -1,13 +1,13 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';
 
 describe('msg', () => {
-  let mockBitcoinProvider: any;
+  let mockProvider: any;
 
   beforeEach(() => {
-    mockBitcoinProvider = {
+    mockProvider = {
       scanUTXOs: jest.fn(() =>
         Promise.resolve([
           {
@@ -104,17 +104,39 @@ describe('msg', () => {
     };
   });
 
-  it('builds transaction with sufficient funds and no NFT', async () => {
-    const chaigMsg = new ChainMsg(
+  it('getFee should return fee estimation', async () => {
+    const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         amount: 0.000001,
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
-    const { inputs, outputs, utxos } = await chaigMsg.buildTx();
+
+    const response = await chainMsg.getFee();
+    const feeOptions = await mockProvider.gasFeeOptions();
+
+    expect(response.fee).toEqual(
+      new BigNumber(feeOptions[GasFeeSpeed.medium] as number)
+        .dividedBy(10 ** mockProvider.manifest.decimals)
+        .toString()
+    );
+    expect(response.maxFee).toBeNull();
+  });
+
+  it('builds transaction with sufficient funds and no NFT', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+        to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
+        amount: 0.000001,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+    const { inputs, outputs, utxos } = await chainMsg.buildTx();
     expect(inputs.length).toEqual(1);
     expect(inputs[0].hash).toEqual(
       'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d'
@@ -126,17 +148,17 @@ describe('msg', () => {
   });
 
   it('builds transaction with insufficient funds and no NFT', async () => {
-    const chaigMsg = new ChainMsg(
+    const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         amount: 0.01,
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
     try {
-      await chaigMsg.buildTx();
+      await chainMsg.buildTx();
     } catch (error) {
       expect(error).toMatchObject(
         new Error('Insufficient Balance for transaction')
@@ -145,7 +167,7 @@ describe('msg', () => {
   });
 
   it('builds a transaction with nft and sufficient balance for paying the fee', async () => {
-    const chaigMsg = new ChainMsg(
+    const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -153,10 +175,10 @@ describe('msg', () => {
         nftId:
           'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d:0:0',
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
-    const { inputs, outputs, utxos } = await chaigMsg.buildTx();
+    const { inputs, outputs, utxos } = await chainMsg.buildTx();
     expect(inputs.length).toEqual(2);
     expect(inputs[0].hash).toEqual(
       'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d'
@@ -167,7 +189,7 @@ describe('msg', () => {
   });
 
   it('builds a transaction with nft and insufficient balance for paying the fee', async () => {
-    const chaigMsg = new ChainMsg(
+    const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -176,11 +198,11 @@ describe('msg', () => {
           'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d:0:0',
         gasLimit: 100_000_000_000,
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
     try {
-      await chaigMsg.buildTx();
+      await chainMsg.buildTx();
     } catch (error) {
       expect(error).toMatchObject(
         new Error('Insufficient Balance for transaction')
@@ -189,7 +211,7 @@ describe('msg', () => {
   });
 
   it('builds a transaction with non-owned nft ', async () => {
-    const chaigMsg = new ChainMsg(
+    const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
         to: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -197,11 +219,11 @@ describe('msg', () => {
         nftId:
           '86681fb16190a28e563380bb53ad3c47fecd05bb878bc2da2d77d78c16c46b4e:0:0',
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
     try {
-      await chaigMsg.buildTx();
+      await chainMsg.buildTx();
     } catch (error) {
       expect(error).toMatchObject(new Error('Cannot find ordinal to send'));
     }
@@ -214,7 +236,7 @@ describe('msg', () => {
         to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
         amount: 0.000001,
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
 
@@ -230,7 +252,7 @@ describe('msg', () => {
         to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
         amount: 0.000001,
       },
-      mockBitcoinProvider,
+      mockProvider,
       MsgEncoding.object
     );
 
