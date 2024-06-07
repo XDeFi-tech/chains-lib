@@ -1,115 +1,73 @@
-import { gql } from 'graphql-tag';
 import { gqlClient } from '@xdefi-tech/chains-core';
-import capitalize from 'lodash/capitalize';
 import map from 'lodash/map';
+import {
+  GetArbitrumTransactionsDocument,
+  GetAuroraTransactionsDocument,
+  GetAvalancheTransactionsDocument,
+  GetCantoEvmTransactionsDocument,
+  GetCronosTransactionsDocument,
+  GetEthereumTransactionsDocument,
+  GetFantomTransactionsDocument,
+  GetOptimismTransactionsDocument,
+  GetPolygonTransactionsDocument,
+  GetSmartChainTransactionsDocument,
+} from '@xdefi-tech/chains-graphql';
 
 import { EVMChains } from '../../../manifests';
-
-export const GET_TRANSACTION_WITH_PAGINATION = (chain: string) => gql`
-query Get${capitalize(chain)}Transactions($address: String!, $first: Int) {
-  ${chain} {
-    transactions(address: $address, first: $first) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-      edges {
-        node {
-          hash
-          blockIndex
-          blockNumber
-          status
-          value
-          timestamp
-          fromAddress
-          transfers {
-            amount {
-              value
-            }
-            asset {
-              ... on CryptoAsset {
-                chain
-                contract
-                decimals
-                id
-                image
-                name
-                price {
-                  amount
-                  scalingFactor
-                }
-                symbol
-              }
-            }
-            fromAddress
-            toAddress
-          }
-        }
-      }
-    }
-  }
-}
-`;
-
-export const GET_TRANSACTION = (chain: string) => gql`
-query GetTransactions($address: String!) {
-  ${chain} {
-    transactions(address: $address) {
-      fee
-      hash
-      fromAddress
-      status
-      timestamp
-      toAddress
-      transfers {
-        amount {
-          value
-          scalingFactor
-        }
-        asset {
-          id
-          name
-          symbol
-          image
-          chain
-          contract
-          price {
-            amount
-            scalingFactor
-          }
-        }
-        fromAddress
-        toAddress
-      }
-    }
-  }
-}
-`;
-
-export interface BlockRange {
-  from: number;
-  to: number;
-}
 
 export const getTransactions = async (
   chain: EVMChains,
   address: string,
-  blockRange: BlockRange | null
+  first = 100
 ) => {
+  let query: any;
   let indexerChain: string = chain;
+
   switch (chain) {
+    case EVMChains.ethereum:
+      query = GetEthereumTransactionsDocument;
+      break;
     case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
+      query = GetSmartChainTransactionsDocument;
+      break;
+    case EVMChains.polygon:
+      query = GetPolygonTransactionsDocument;
+      break;
+    case EVMChains.avalanche:
+      query = GetAvalancheTransactionsDocument;
+      break;
+    case EVMChains.fantom:
+      query = GetFantomTransactionsDocument;
+      break;
+    case EVMChains.arbitrum:
+      query = GetArbitrumTransactionsDocument;
+      break;
+    case EVMChains.aurora:
+      query = GetAuroraTransactionsDocument;
       break;
     case EVMChains.cantoevm:
       indexerChain = 'cantoEVM';
+      query = GetCantoEvmTransactionsDocument;
       break;
+    case EVMChains.optimism:
+      query = GetOptimismTransactionsDocument;
+      break;
+    case EVMChains.cronos:
+      indexerChain = 'cronosEVM';
+      query = GetCronosTransactionsDocument;
+      break;
+    default:
+      throw new Error(
+        `Unsupported chain: ${chain}. Please check the configuration.`
+      );
   }
+
   const response = await gqlClient.query({
-    query: GET_TRANSACTION_WITH_PAGINATION(indexerChain),
+    query: query,
     variables: {
       address,
-      ...(blockRange && { blockRange }),
+      first: first,
     },
   });
 

@@ -36,13 +36,7 @@ import { getEvmBalance } from '../multicall/evm.multicall';
 import { getBalanceByBatch } from '../batch-rpc/evm.batch-call';
 
 import { subscribeBalances, subscribeTransactions } from './subscriptions';
-import {
-  getFees,
-  getStatus,
-  getTransactions,
-  getNFTBalance,
-  getBalance,
-} from './queries';
+import { getFees, getTransactions, getNFTBalance, getBalance } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -125,21 +119,11 @@ export class IndexerDataSource extends DataSource {
   }
 
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
-    const { afterBlock, address } = filter;
-    let blockRange = null;
-
-    if (typeof afterBlock === 'number' || typeof afterBlock === 'string') {
-      const status = await getStatus(this.manifest.chain);
-      blockRange = {
-        from: parseInt(String(afterBlock)),
-        to: status.lastBlock,
-      };
-    }
+    const { address } = filter;
 
     const transactions = await getTransactions(
       this.manifest.chain as EVMChains,
-      address,
-      blockRange
+      address
     );
 
     return transactions.map((transaction: any) => {

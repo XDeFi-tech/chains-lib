@@ -1,75 +1,61 @@
-import { gql } from 'graphql-tag';
 import { gqlClient } from '@xdefi-tech/chains-core';
+import {
+  ArbitrumDefaultGasFeesDocument,
+  AuroraDefaultGasFeesDocument,
+  AvalancheEip1559GasFeesDocument,
+  CantoEvmeip1559GasFeesDocument,
+  CronosEvmeip1559GasFeesDocument,
+  EthereumEip1559GasFeesDocument,
+  FantomEip1559GasFeesDocument,
+  OptimismEip1559GasFeesDocument,
+  PolygonEip1559GasFeesDocument,
+  SmartChainDefaultGasFeesDocument,
+} from '@xdefi-tech/chains-graphql';
 
 import { EVMChains } from '../../../manifests';
 
-export const EIP1559_GAS_FEES = (chain: string) => gql`
-query EIP1559GasFees {
-  ${chain} {
-    fee {
-      high {
-        baseFeePerGas
-        maxFeePerGas
-        priorityFeePerGas
-      }
-      low {
-        baseFeePerGas
-        maxFeePerGas
-        priorityFeePerGas
-      }
-      medium {
-        baseFeePerGas
-        maxFeePerGas
-        priorityFeePerGas
-      }
-    }
-  }
-}
-`;
-
-export const DEFAULT_GAS_FEES = (chain: string) => gql`
-query DefaultGasFees {
-  ${chain} {
-    fee {
-      high
-      low
-      medium
-    }
-  }
-}
-`;
-
 export const getFees = async (chain: string) => {
-  let query;
   let indexerChain = chain;
+  let query: any;
+
   switch (chain) {
     case EVMChains.ethereum:
-    case EVMChains.polygon:
-    case EVMChains.avalanche:
-    case EVMChains.optimism:
-      query = EIP1559_GAS_FEES(indexerChain);
+      query = EthereumEip1559GasFeesDocument;
       break;
     case EVMChains.smartchain:
       indexerChain = 'binanceSmartChain';
-      query = DEFAULT_GAS_FEES(indexerChain);
+      query = SmartChainDefaultGasFeesDocument;
+      break;
+    case EVMChains.polygon:
+      query = PolygonEip1559GasFeesDocument;
+      break;
+    case EVMChains.avalanche:
+      query = AvalancheEip1559GasFeesDocument;
       break;
     case EVMChains.fantom:
-      query = DEFAULT_GAS_FEES(indexerChain);
+      query = FantomEip1559GasFeesDocument;
       break;
     case EVMChains.arbitrum:
-      query = DEFAULT_GAS_FEES(indexerChain);
+      query = ArbitrumDefaultGasFeesDocument;
       break;
     case EVMChains.aurora:
-      query = DEFAULT_GAS_FEES(indexerChain);
+      query = AuroraDefaultGasFeesDocument;
       break;
     case EVMChains.cantoevm:
       indexerChain = 'cantoEVM';
-      query = DEFAULT_GAS_FEES(indexerChain);
+      query = CantoEvmeip1559GasFeesDocument;
       break;
-  }
-
-  if (!query) {
-    throw new Error('Invalid chain');
+    case EVMChains.optimism:
+      query = OptimismEip1559GasFeesDocument;
+      break;
+    case EVMChains.cronos:
+      indexerChain = 'cronosEVM';
+      query = CronosEvmeip1559GasFeesDocument;
+      break;
+    default:
+      throw new Error(
+        `Unsupported chain: ${chain}. Please check the configuration.`
+      );
   }
 
   const response = await gqlClient.query({

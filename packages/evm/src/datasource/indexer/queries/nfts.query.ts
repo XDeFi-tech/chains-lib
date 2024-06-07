@@ -2,7 +2,7 @@ import { gql } from 'graphql-tag';
 import { gqlClient, LEGACY_NFTS_FRAGMENT } from '@xdefi-tech/chains-core';
 
 export const ARBITRUM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query ArbitrumNFTS($address: String!) {
     arbitrum {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -14,7 +14,7 @@ export const ARBITRUM_NFTS_QUERY = gql`
 `;
 
 export const AURORA_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query AuroraNFTS($address: String!) {
     aurora {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -26,7 +26,7 @@ export const AURORA_NFTS_QUERY = gql`
 `;
 
 export const AVALANCHE_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query AvalancheNFTS($address: String!) {
     avalanche {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -38,7 +38,7 @@ export const AVALANCHE_NFTS_QUERY = gql`
 `;
 
 export const FANTOM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query FantomNFTS($address: String!) {
     fantom {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -50,7 +50,7 @@ export const FANTOM_NFTS_QUERY = gql`
 `;
 
 export const BINANCE_SMART_CHAIN_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query SmartChainNFTS($address: String!) {
     binanceSmartChain {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -62,7 +62,7 @@ export const BINANCE_SMART_CHAIN_NFTS_QUERY = gql`
 `;
 
 export const CRONOS_EVM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query CronosNFTS($address: String!) {
     cronosEVM {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -74,7 +74,7 @@ export const CRONOS_EVM_NFTS_QUERY = gql`
 `;
 
 export const ETHEREUM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query EthereumNFTS($address: String!) {
     ethereum {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -86,7 +86,7 @@ export const ETHEREUM_NFTS_QUERY = gql`
 `;
 
 export const POLYGON_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query PolygonNFTS($address: String!) {
     polygon {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -98,7 +98,7 @@ export const POLYGON_NFTS_QUERY = gql`
 `;
 
 export const CANTO_EVM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query CantoNFTS($address: String!) {
     cantoEVM {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -110,7 +110,7 @@ export const CANTO_EVM_NFTS_QUERY = gql`
 `;
 
 export const OPTIMISM_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query OptimismNFTS($address: String!) {
     optimism {
       legacyNFTs(address: $address) {
         ...LegacyNftData
@@ -122,7 +122,7 @@ export const OPTIMISM_NFTS_QUERY = gql`
 `;
 
 export const GNOSIS_NFTS_QUERY = gql`
-  query NFTS($address: String!) {
+  query GnosisNFTS($address: String!) {
     gnosis {
       legacyNFTs(address: $address) {
         ...LegacyNftData
