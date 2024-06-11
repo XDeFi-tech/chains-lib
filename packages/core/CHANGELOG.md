@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.13
+
+### Patch Changes
+
+- 8c60d66: Feat: add baseFeePerGas for evm fees, update getFee method calculation
+
 ## 2.0.12
 
 ### Patch Changes
