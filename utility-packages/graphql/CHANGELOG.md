@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.13
+
+### Patch Changes
+
+- 6661742: Feat: add separate queries for each EVM chain. Fix caching issue
+- Updated dependencies [8c60d66]
+  - @xdefi-tech/chains-core@2.0.13
+
 ## 1.2.12
 
 ### Patch Changes

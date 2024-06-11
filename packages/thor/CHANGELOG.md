@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.16
+
+### Patch Changes
+
+- 32eb057: fix: update endpoint for estimateFee on Thorchain
+- Updated dependencies [6661742]
+- Updated dependencies [8c60d66]
+  - @xdefi-tech/chains-graphql@1.2.13
+  - @xdefi-tech/chains-core@2.0.13
+
 ## 2.0.15
 
 ### Patch Changes
