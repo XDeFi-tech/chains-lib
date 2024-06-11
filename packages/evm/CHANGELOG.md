@@ -1,5 +1,17 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.24
+
+### Patch Changes
+
+- 9794deb: feat: implement signTypedData method (v4)
+- 6661742: Feat: add separate queries for each EVM chain. Fix caching issue
+- 8c60d66: Feat: add baseFeePerGas for evm fees, update getFee method calculation
+- Updated dependencies [6661742]
+- Updated dependencies [8c60d66]
+  - @xdefi-tech/chains-graphql@1.2.13
+  - @xdefi-tech/chains-core@2.0.13
+
 ## 2.0.23
 
 ### Patch Changes
