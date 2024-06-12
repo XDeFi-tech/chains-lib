@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.14
+
+### Patch Changes
+
+- 89956d2: Fix TypeScript type errors with abstract provider class
+
 ## 2.0.13
 
 ### Patch Changes

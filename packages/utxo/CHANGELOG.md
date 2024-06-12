@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.9
+
+### Patch Changes
+
+- 89956d2: Fix TypeScript type errors with abstract provider class
+- Updated dependencies [89956d2]
+  - @xdefi-tech/chains-core@2.0.14
+
 ## 2.0.8
 
 ### Patch Changes
