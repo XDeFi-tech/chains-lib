@@ -23,6 +23,9 @@ import { providers } from 'ethers';
 import axios, { Axios } from 'axios';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
+import * as Dash from 'dashcore-lib';
+
+import { DASH_MANIFEST } from '../../manifests';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -38,14 +41,46 @@ export class ChainDataSource extends DataSource {
     this.etherscanProvider = new providers.EtherscanProvider();
   }
 
-  estimateFee(msg: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new MethodNotImplementedException();
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
+    const feeOptions = await this.gasFeeOptions();
+
+    if (!feeOptions) {
+      throw new Error(`Could not find fee options for speed ${speed}`);
+    }
+
+    const feeOption = feeOptions[speed] as number;
+
+    const tx = new Dash.Transaction();
+
+    for (const msg of msgs) {
+      const utxos = await this.getUnspentOutputs(msg.data.from);
+
+      tx.from(
+        utxos.map(
+          (input: any) =>
+            new Dash.Transaction.UnspentOutput({
+              txId: input.hash,
+              outputIndex: input.index,
+              satoshis: input.value,
+              script: Dash.Script.fromBuffer(input.witnessUtxo.script),
+            })
+        )
+      );
+
+      tx.to(msg.data.to, msg.data.amount * 10e8);
+    }
+
+    tx.feePerKb(feeOption);
+
+    const fee = tx.getFee();
+
+    return Promise.resolve([{ gasLimit: Math.abs(fee), gasPrice: feeOption }]);
   }
 
   gasFeeOptions(): Promise<FeeOptions | null> {
     const defaultFee: DefaultFeeOptions = {
       high: 10,
-      medium: 5,
+      medium: 1,
       low: 0,
     };
 
@@ -99,11 +134,30 @@ export class ChainDataSource extends DataSource {
 
     do {
       response = await this.api.get(
-        `/txs/?address=${filter.address}&pageNum=${page}`
+        `/txs/?address=${filter.address}${page > 1 ? `&pageNum=${page}` : ''}`
       );
 
-      transactions.push(...response.data.txs);
-
+      transactions.push(
+        ...response.data.txs.map((tx: any) => ({
+          hash: tx.txid,
+          from: (tx.vin.length && tx.vin[0].addr) || '',
+          to:
+            (tx.vout.length &&
+              tx.vout[0].scriptPubKey?.addresses?.length &&
+              tx.vout[0].scriptPubKey.addresses[0]) ||
+            '',
+          status: TransactionStatus.success,
+          action: TransactionAction.SEND,
+          date: tx.blocktime * 1000,
+          data: {
+            msgs: [],
+            fee: {
+              value: tx.valueIn - tx.valueOut,
+              asset: { ...DASH_MANIFEST, price: { amount: 1 } },
+            },
+          },
+        }))
+      );
       page++;
     } while (page < response.data.pagesTotal);
 

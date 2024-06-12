@@ -1,5 +1,9 @@
 import { ChainMsg } from '@xdefi-tech/chains-utxo';
-import { TransactionAction, TransactionStatus } from '@xdefi-tech/chains-core';
+import {
+  GasFeeSpeed,
+  TransactionAction,
+  TransactionStatus,
+} from '@xdefi-tech/chains-core';
 
 import { DashProvider } from './chain.provider';
 import { ChainDataSource } from './datasource';
@@ -483,5 +487,33 @@ describe('chain.provider', () => {
     expect(new TextDecoder().decode(msg.toData().memo as Uint8Array)).toEqual(
       memo
     );
+  });
+
+  it.only('should be able to estimateFee', async () => {
+    jest.spyOn(provider.dataSource.api, 'get').mockResolvedValue({
+      data: [
+        {
+          address: 'Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB',
+          txid: 'c32aa8c22a13cc0bdb77d1f9ae7af459dfb47ea0ed391d90fe1eaf3abdd051ff',
+          vout: 0,
+          scriptPubKey: '76a91400f9ea56c1f6f81effae1a4d0e816df86b4b460c88ac',
+          amount: 0.0002,
+          satoshis: 20000,
+          height: 2078732,
+          confirmations: 1600,
+        },
+      ],
+    });
+
+    const msg = provider.createMsg({
+      to: 'Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB',
+      from: 'Xan1DgL9LeJrUpzwhf9so6B4oDyuLxgZNB',
+      amount: 0.0001,
+    });
+
+    const fee = await provider.estimateFee([msg], GasFeeSpeed.medium);
+
+    expect(fee[0].gasLimit).toEqual(80000);
+    expect(fee[0].gasPrice).toEqual(1);
   });
 });
