@@ -15,6 +15,10 @@ export interface IOptions {
   providerId?: string;
 }
 
+export interface ISignerProvider {
+  new (key?: string): SignerProvider;
+}
+
 export interface DataSourceList<T extends DataSource> {
   [key: string]: T;
 }
@@ -172,7 +176,7 @@ export abstract class Provider {
    *
    * @returns {SignerProvider[]} array of `SignerProvider` instances
    */
-  public getSigners(): SignerProvider[] {
+  public getSigners(): ISignerProvider[] {
     const options = Reflect.getMetadata(METADATA_KEY.CHAIN_OPTIONS, this.constructor);
     const deps = options?.deps;
 
@@ -187,13 +191,13 @@ export abstract class Provider {
    *
    * @returns {SignerProvider} `SignerProvider` instance
    */
-  public getSigner(type: any): SignerProvider {
+  public getSigner(type: any): ISignerProvider {
     const signers = this.getSigners();
 
-    return signers.find((signer) => {
-      const _type = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, signer);
+    return signers.find((Signer) => {
+      const _type = Reflect.getMetadata(METADATA_KEY.SIGNER_TYPE, new Signer());
       return _type === type;
-    }) as SignerProvider;
+    }) as ISignerProvider;
   }
 
   /**
