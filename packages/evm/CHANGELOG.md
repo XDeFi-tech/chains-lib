@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.25
+
+### Patch Changes
+
+- 89956d2: Fix TypeScript type errors with abstract provider class
+- Updated dependencies [89956d2]
+  - @xdefi-tech/chains-core@2.0.14
+  - @xdefi-tech/chains-graphql@1.2.14
+
 ## 2.0.24
 
 ### Patch Changes

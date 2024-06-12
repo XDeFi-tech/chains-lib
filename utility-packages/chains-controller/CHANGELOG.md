@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.5
+
+### Patch Changes
+
+- 89956d2: Fix TypeScript type errors with abstract provider class
+- Updated dependencies [89956d2]
+  - @xdefi-tech/chains-core@2.0.14
+  - @xdefi-tech/chains-binance@2.0.12
+  - @xdefi-tech/chains-bitcoin@2.0.17
+  - @xdefi-tech/chains-bitcoincash@2.0.17
+  - @xdefi-tech/chains-cosmos@2.0.17
+  - @xdefi-tech/chains-dogecoin@2.0.16
+  - @xdefi-tech/chains-evm@2.0.25
+  - @xdefi-tech/chains-litecoin@2.0.15
+  - @xdefi-tech/chains-solana@2.0.18
+  - @xdefi-tech/chains-thor@2.0.17
+  - @xdefi-tech/chains-graphql@1.2.14
+
 ## 2.0.4
 
 ### Patch Changes
