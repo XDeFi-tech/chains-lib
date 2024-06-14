@@ -1,27 +1,28 @@
 import {
+  Coin,
   FeeEstimation,
   GasFeeSpeed,
   Msg as BasMsg,
   MsgEncoding,
   NumberIsh,
-  Coin,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import {
+  ComputeBudgetProgram,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   Transaction as SolanaTransaction,
   TransactionInstruction,
-  LAMPORTS_PER_SOL,
   VersionedTransaction,
-  ComputeBudgetProgram,
 } from '@solana/web3.js';
 import {
-  TOKEN_PROGRAM_ID,
-  getMint,
   createTransferInstruction,
   getAssociatedTokenAddress,
+  getMint,
+  TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
+import bs58 from 'bs58';
 
 import type { SolanaProvider } from './chain.provider';
 import { DEFAULT_FEE } from './constants';
@@ -51,6 +52,13 @@ export interface TxBody {
   fromTokenAddress?: string;
   memo?: string;
   encoding?: MsgEncoding;
+  txType?: TransactionType;
+}
+
+export enum TransactionType {
+  Message = 0,
+  Legacy = 1,
+  Versioned = 2,
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
@@ -71,10 +79,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     let gasPrice = msgData.gasPrice;
     let programId;
 
-    if (this.encoding === MsgEncoding.base64) {
-      const versionedTransaction = VersionedTransaction.deserialize(
-        Buffer.from(msgData.data, 'base64')
-      );
+    if (
+      this.encoding === MsgEncoding.base64 ||
+      this.encoding === MsgEncoding.base58
+    ) {
+      let buffer;
+      if (this.encoding === MsgEncoding.base64) {
+        buffer = Buffer.from(msgData.data, 'base64');
+      } else {
+        buffer = bs58.decode(msgData.data);
+      }
+
+      const versionedTransaction = VersionedTransaction.deserialize(buffer);
 
       return {
         tx: versionedTransaction,
