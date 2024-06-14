@@ -5,8 +5,11 @@ import {
   Transaction as SolanaTransaction,
   VersionedTransaction,
 } from '@solana/web3.js';
+import bs58 from 'bs58';
+import nacl from 'tweetnacl';
 
 import { ChainMsg } from '../msg';
+import { SolanaSignature } from '../types';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
@@ -39,6 +42,7 @@ export class PrivateKeySigner extends Signer.Provider {
         serializedTx = transaction.serialize();
         break;
       case MsgEncoding.base64:
+      case MsgEncoding.base58:
         const versionedTransaction = tx as VersionedTransaction;
         versionedTransaction.sign([account]);
         serializedTx = Buffer.from(versionedTransaction.serialize());
@@ -52,6 +56,18 @@ export class PrivateKeySigner extends Signer.Provider {
     }
 
     msg.sign(serializedTx);
+  }
+
+  async signMessage(msg: ChainMsg): Promise<SolanaSignature> {
+    const message = msg.toData();
+    const account = Keypair.fromSecretKey(Buffer.from(this.key, 'hex'));
+    const decoded = bs58.decode(message.data);
+    const signature = nacl.sign.detached(decoded, account.secretKey);
+
+    return {
+      pubKey: account.publicKey.toString(),
+      sig: bs58.encode(signature),
+    };
   }
 }
 

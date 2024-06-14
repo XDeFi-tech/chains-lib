@@ -80,4 +80,15 @@ describe('private-key.signer', () => {
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });
+
+  it('should return signature for solana message', async () => {
+    const message = provider.createMsg({
+      data: '726eSG6YzuM2gGVRSbGZptsMzM17zPZP5KAv8GM96CxdtDX4BkZBVV4JbRQgrdGs83mqFBPh2j7XiFsQVhskmq7cEd3TS561e1VPTw84Z9LnXPTxJHZTgucPkmmUrDQTgtGeYMw1BiKyHYg4j9aPAULMwihHVvmjMzYwVKQVqr3PNMeYcLcw8oYNWkWfBddzoL2gJL8W8pAHGhrV46F3me4hJLxU59VU1GBKThv6LHo5frUcS3j15YFkWVaFipVQeoemiKQgjfL3q21ziEkaA8LvvoFfJmaXfAKAoyhKhrzWTzDzfk1t2UPX5qxgzXy5K7Qcst6hG1w3MSTtEbenDDLjNgmrspFw83hNftzeU2pdKQ2wjwjCAnLgzSLZBtrLNUcU9fqf5EbXYernV8qtZvRxChnzvt7ekyoyuDktVY8rk3JJDGNoyMqDF9zkrrA625eUWjSC9fedgfBACys1Q8gjBj3ET1qrj5Q9ZAst1yQtwKhzuC3tfJBtevjRByu9dgLVhW4n76DbgEPgSDjqwsGEymP6gtfbFJT8ZhhyW8yrxKASv44zkpEo3EqQuVFjteDHs3GtpP4qoMQwYHQbomccPtcv2KoDCLj45ueRsF4gsQS8QgVWS664zgPvBBqKdHqxA4gmuQpH7kL6T3w3BiTRGCZ4zZMHWbbssiDfrouYsxGJ518FfL7pMPiDvzGiJsAiDzU7mnpJpc52SmREH3ahjqf4DEiBMhorrjxKYPJ6KB5KuZv8BVmmpDgsdkt1wPbNBjJK13qmGzaueW9GVb7W1kq8wRCMhRqb6uHuofRMGZ9awcN5TKKeSCGaN68H2mHKMWbzgj7CVLAHstgTWcaqEauHxnTjfZT7njnA3WjG5vE46BSDKwBvXQcctjDEDUkGBqadKfFyvECoTF5uVwg3NizpoCEg43YJ2ACsJmkobmvsNPirnFCkY19h8FWe8fp3X2T4f4tTVeeSE3wQr6JqffZjZ4b5qzTYWLvtXoB9z5sqaJ3HoQthEvQzExByj2PLvuNGFcPZeMy7DStysnmZVb1WJhWGwA4374iQpR5Vi7Sa6yQyFhRbv2ZFE66PXziH4AKgKTQs3CKikV7cwwq5LqktFFoonr2g9EPz536zcBka4rdan6SbrVo2gTzgYDusJRjU9Yf9XRscMmx6nt246wDvVCrHdBdukCyiajzngKkJrQY9SMfh7VHhq34YtVjS6dDtLqCJmw6vnhFvjspTSoJ8czZjsadfcnki7B7fJbBjPY6iL8fFSyZtsHdu21NQxttqCQiBGk1mFj1ohwTr7a3rCLpHsn8yyaJ66iGXHruBX2CZeL61gX8wuDM',
+    });
+    const signature = await signer.signMessage(message as ChainMsg);
+    expect(signature).toEqual({
+      pubKey: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+      sig: 'LvYxkcdz3E2NmhwAX2EAnPgudhaWyGRkxkNdEu7ZnPaBcyU4giu8VjCM7TMyYPmVn2rsvJvWfYpmhLK5HL7GPiE',
+    });
+  });
 });
