@@ -1,7 +1,6 @@
 import Transport from '@ledgerhq/hw-transport';
 import Trx from '@ledgerhq/hw-app-trx';
-import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import TronWeb from 'tronweb';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 
@@ -12,14 +11,6 @@ export class LedgerSigner extends Signer.Provider {
   constructor(transport: Transport) {
     super();
     this.transport = transport;
-  }
-
-  verifyAddress(address: string, manifest: Chain.Manifest): boolean {
-    const tronWeb = new TronWeb({
-      fullHost: manifest.rpcURL,
-    });
-
-    return tronWeb.isAddress(address);
   }
 
   async getAddress(derivation: string): Promise<string> {

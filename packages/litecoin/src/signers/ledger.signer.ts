@@ -28,15 +28,6 @@ export class LedgerSigner extends Signer.Provider {
     wif: 0xb0,
   };
 
-  verifyAddress(address: string): boolean {
-    try {
-      Litecoin.address.toOutputScript(address, this.network);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getAddress(derivation: string): Promise<string> {
     const app = new BtcOld({
       transport: this.transport as Transport,

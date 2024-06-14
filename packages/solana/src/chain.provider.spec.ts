@@ -83,4 +83,16 @@ describe('chain.provider', () => {
       )
     ).rejects.toThrow();
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(SolanaProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid address', () => {
+    expect(
+      SolanaProvider.verifyAddress(
+        'BujFXMX9ZmniuJCM2VRKQqe1enmcoFxfUBmRqCMqKGic'
+      )
+    ).toBe(true);
+  });
 });

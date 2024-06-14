@@ -83,24 +83,4 @@ describe('private-key.signer', () => {
       'ClAKTgoOL3R5cGVzLk1zZ1NlbmQSPAoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGg4KBWNhY2FvEgUxMDAwMBJiClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIOCgoKBWNhY2FvEgEwEAAaQCz7DsyqQcbgDK9007gTSz++N38eLd+ghHCBEyzm9bJtKSWnHwiKLBNHFMLc42GfBv8VSqHwxu/6bKthgrgE+m8='
     );
   });
-
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(
-      signer.verifyAddress(
-        txInputs.thorchain.from,
-        THORCHAIN_MANIFESTS.thorchain.prefix
-      )
-    ).toBe(true);
-
-    expect(
-      signer.verifyAddress(
-        txInputs.mayachain.from,
-        THORCHAIN_MANIFESTS.mayachain.prefix
-      )
-    ).toBe(true);
-  });
 });

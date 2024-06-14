@@ -4,7 +4,7 @@ import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator, utils } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
-import { isValidAddress, toLegacyAddress } from 'bchaddrjs';
+import { toLegacyAddress } from 'bchaddrjs';
 
 import { ChainMsg } from '../msg';
 
@@ -50,10 +50,6 @@ export class LedgerSigner extends Signer.Provider {
     dustThreshold: null,
     bech32: 'bch',
   };
-
-  verifyAddress(address: string): boolean {
-    return isValidAddress(address);
-  }
 
   async getAddress(
     derivation: string,

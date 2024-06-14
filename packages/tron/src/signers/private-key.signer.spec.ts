@@ -28,14 +28,6 @@ describe('tron private-key.signer', () => {
     provider = new TronProvider(new IndexerDataSource(TRON_MANIFEST));
   });
 
-  it('should return true for a valid address', () => {
-    expect(signer.verifyAddress(txInput.from, TRON_MANIFEST)).toBe(true);
-  });
-
-  it('should return false for an invalid address', () => {
-    expect(signer.verifyAddress('invalid-address', TRON_MANIFEST)).toBe(false);
-  });
-
   it('should return the correct address for a valid private key', async () => {
     const address = await signer.getAddress();
     expect(address).toBe(txInput.from);

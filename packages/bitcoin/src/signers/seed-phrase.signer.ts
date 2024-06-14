@@ -10,18 +10,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      if (btc.Address().decode(address)) {
-        return true;
-      }
-
-      return false;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
       throw new Error('Seed phrase not set!');

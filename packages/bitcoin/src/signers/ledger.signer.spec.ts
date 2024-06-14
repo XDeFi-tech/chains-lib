@@ -98,14 +98,6 @@ describe('ledger.signer', () => {
     );
   });
 
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
-  });
-
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
   });

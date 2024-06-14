@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import TronWeb from 'tronweb';
-import XMLHttpRequest from 'xhr2';
 
 import { ChainMsg, TokenType } from './msg';
 import { TronProvider } from './chain.provider';
@@ -287,5 +286,15 @@ describe('chain.providers.chain', () => {
     expect(balanceData.length).toBeGreaterThanOrEqual(1);
     expect(balanceData[0].amount.toNumber()).toBeGreaterThanOrEqual(0);
     expect(balanceData[0].asset.name).toEqual('Tron');
+  });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(TronProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid address', () => {
+    expect(
+      TronProvider.verifyAddress('THBrvgLEVC9uR6CWfZn792qqze7A7RSpuk')
+    ).toBe(true);
   });
 });

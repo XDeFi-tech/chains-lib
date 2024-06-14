@@ -123,4 +123,36 @@ describe('chain.provider', () => {
       memo
     );
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(BitcoinProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid address starts with "bc1" and 39 characters', () => {
+    expect(
+      BitcoinProvider.verifyAddress(
+        'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+      )
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid address starts with "bc1" and 59 characters', () => {
+    expect(
+      BitcoinProvider.verifyAddress(
+        'bc1qgdjqv0av3q56jvd82tkdjpy7gdp9ut8tlqmgrpmv24sq90ecnvqqjwvw97'
+      )
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid address starts with "1"', () => {
+    expect(
+      BitcoinProvider.verifyAddress('1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF')
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid address starts with "3"', () => {
+    expect(
+      BitcoinProvider.verifyAddress('34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo')
+    ).toBe(true);
+  });
 });

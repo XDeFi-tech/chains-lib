@@ -69,14 +69,6 @@ describe('private-key.signer', () => {
     );
   });
 
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
-  });
-
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });

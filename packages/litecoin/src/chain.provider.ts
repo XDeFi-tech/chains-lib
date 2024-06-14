@@ -6,6 +6,8 @@ import {
   TransactionData,
 } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+import * as Litecoin from 'bitcoinjs-lib';
+import coininfo from 'coininfo';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
@@ -41,5 +43,17 @@ export class LitecoinProvider extends UtxoProvider {
 
   public async scanUTXOs(address: string) {
     return this.dataSource.scanUTXOs(address);
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      Litecoin.address.toOutputScript(
+        address,
+        coininfo.litecoin.main.toBitcoinJS()
+      );
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }

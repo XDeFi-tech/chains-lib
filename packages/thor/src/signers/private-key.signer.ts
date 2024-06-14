@@ -1,24 +1,11 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
-import { bech32 } from 'bech32';
 import Long from 'long';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string, prefix?: string): boolean {
-    if (!prefix) {
-      prefix = 'thor';
-    }
-    try {
-      const result = bech32.decode(address);
-      return result.prefix === prefix && result.words.length === 32;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation?: string | null) {
     return this.key;
   }

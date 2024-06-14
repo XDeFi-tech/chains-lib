@@ -31,15 +31,6 @@ export abstract class Provider {
     throw new Error('Method not implemented.');
   }
 
-  /**
-   * Verifies if the given address is valid.
-   *
-   * @param {string} address - The address to verify.
-   * @param {any} rest - rest props for custom signer
-   * @returns {boolean} True if the address is valid, false otherwise.
-   */
-  abstract verifyAddress(address: string, ...rest: any): boolean;
-
   get key(): string {
     if (!this._key) {
       throw new Error('key is required');

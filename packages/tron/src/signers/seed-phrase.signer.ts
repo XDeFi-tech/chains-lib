@@ -1,4 +1,4 @@
-import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import TronWeb from 'tronweb';
 import type { TronManifest } from 'src/manifests';
 
@@ -12,14 +12,6 @@ export class SeedPhraseSigner extends Signer.Provider {
     super(key);
 
     this.manifest = manifest;
-  }
-
-  verifyAddress(address: string, manifest: Chain.Manifest): boolean {
-    const tronWeb = new TronWeb({
-      fullHost: manifest.rpcURL,
-    });
-
-    return tronWeb.isAddress(address);
   }
 
   async getPrivateKey(derivation: string): Promise<string> {

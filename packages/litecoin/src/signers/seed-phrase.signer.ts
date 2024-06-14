@@ -11,16 +11,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      return btc.Address(coininfo.litecoin.main.toBitcoinJS()).decode(address)
-        ? true
-        : false;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
       throw new Error('Private key not set!');

@@ -108,41 +108,6 @@ describe('seed-phrase.signer', () => {
 
     expect(message.signedTransaction).toBeTruthy();
   });
-
-  // it('should sign a terra transaction using a seed phrase', async () => {
-  //   const terraProvider = new CosmosProvider(
-  //     new IndexerDataSource(COSMOS_MANIFESTS.terra)
-  //   );
-
-  //   const terraMessage = terraProvider.createMsg(txInput);
-
-  //   await signer.sign(
-  //     terraMessage as ChainMsg,
-  //     derivations.terra,
-  //     CosmosChainType.Terra
-  //   );
-
-  //   expect(message.signedTransaction).toBeTruthy();
-  // });
-
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF', 'cosmos')).toBe(false);
-  });
-
-  it('should return false when verifing an invalid address with no prefix specified', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from, 'cosmos')).toBe(true);
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
-    expect(
-      signer.verifyAddress('0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d')
-    ).toBe(true);
-    expect(
-      signer.verifyAddress('terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8')
-    ).toBe(true);
-  });
 });
 
 describe('seed-phase.addressGeneration', () => {

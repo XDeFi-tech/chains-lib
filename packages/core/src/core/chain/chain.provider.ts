@@ -251,4 +251,15 @@ export abstract class Provider {
   static get dataSourceList(): Record<string, typeof DataSource> {
     return {};
   }
+
+  /**
+   * Verifies if the given address is valid.
+   *
+   * @param {string} _address - The address to verify.
+   * @param {any} _rest - rest props for custom signer
+   * @returns {boolean} True if the address is valid, false otherwise.
+   */
+  static verifyAddress(_address: string, ..._rest: any): boolean {
+    throw new Error('Method not implemented.');
+  }
 }

@@ -6,6 +6,8 @@ import {
   TransactionData,
 } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+import coininfo from 'coininfo';
+import * as btc from '@scure/btc-signer';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
@@ -41,5 +43,16 @@ export class DogecoinProvider extends UtxoProvider {
 
   public async scanUTXOs(address: string) {
     return this.dataSource.scanUTXOs(address);
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      const _address = btc
+        .Address(coininfo.dogecoin.main.toBitcoinJS())
+        .decode(address);
+      return Boolean(_address);
+    } catch (err) {
+      return false;
+    }
   }
 }
