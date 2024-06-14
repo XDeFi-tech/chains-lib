@@ -9,16 +9,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      return btc.Address(coininfo.litecoin.main.toBitcoinJS()).decode(address)
-        ? true
-        : false;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation?: string): Promise<string> {
     if (!this.key) {
       throw new Error('Private key not set!');

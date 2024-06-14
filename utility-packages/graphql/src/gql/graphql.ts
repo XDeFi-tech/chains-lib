@@ -297,6 +297,7 @@ export type ArbitrumBalancesArgs = {
 
 export type ArbitrumLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type ArbitrumNftsArgs = {
@@ -760,6 +761,7 @@ export type AuroraBalancesArgs = {
 
 export type AuroraLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type AuroraNftsArgs = {
@@ -798,6 +800,7 @@ export type AvalancheBalancesArgs = {
 
 export type AvalancheLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type AvalancheNftsArgs = {
@@ -878,6 +881,7 @@ export type BinanceSmartChainBalancesArgs = {
 
 export type BinanceSmartChainLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type BinanceSmartChainNftsArgs = {
@@ -958,6 +962,7 @@ export type BitcoinChainGetTransactionByHashV5Args = {
 
 export type BitcoinChainLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type BitcoinChainTransactionsArgs = {
@@ -1179,6 +1184,7 @@ export type CantoEvmBalancesArgs = {
 
 export type CantoEvmLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type CantoEvmNftsArgs = {
@@ -1401,6 +1407,7 @@ export type CronosEvmBalancesArgs = {
 
 export type CronosEvmLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type CronosEvmNftsArgs = {
@@ -1705,6 +1712,7 @@ export type EthereumBalancesArgs = {
 
 export type EthereumLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type EthereumNftsArgs = {
@@ -1780,6 +1788,7 @@ export type FantomBalancesArgs = {
 
 export type FantomLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type FantomNftsArgs = {
@@ -1879,6 +1888,7 @@ export type Gnosis = {
 
 export type GnosisLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type ImageType = {
@@ -2058,7 +2068,7 @@ export type Marketplace = {
   marketplaceId: Scalars['String'];
   marketplaceName: Scalars['String'];
   nftUrl: Scalars['String'];
-  verified: Scalars['Boolean'];
+  verified?: Maybe<Scalars['Boolean']>;
 };
 
 export type MayaChain = {
@@ -2189,10 +2199,10 @@ export type NftCollectionV3 = {
   address: Scalars['String'];
   collectionItemsAmount?: Maybe<Scalars['String']>;
   collectionItemsOwnersAmount?: Maybe<Scalars['String']>;
-  floorPrices: Array<FloorPrice>;
-  marketplaces: Array<Marketplace>;
+  floorPrices?: Maybe<Array<FloorPrice>>;
+  marketplaces?: Maybe<Array<Marketplace>>;
   media?: Maybe<MediaV2>;
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   symbol: Scalars['String'];
 };
 
@@ -2412,6 +2422,7 @@ export type OptimismBalancesArgs = {
 
 export type OptimismLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type OptimismNftsArgs = {
@@ -2494,6 +2505,7 @@ export type PolygonBalancesArgs = {
 
 export type PolygonLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type PolygonNftsArgs = {
@@ -3528,6 +3540,7 @@ export type SolanaChainBalancesArgs = {
 
 export type SolanaChainLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type SolanaChainNftsArgs = {
@@ -3642,6 +3655,7 @@ export type TerraChainBalancesArgs = {
 
 export type TerraChainLegacyNfTsArgs = {
   address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type ThorChain = {
@@ -6175,6 +6189,63 @@ export type GetStargazeStatusQuery = {
   __typename?: 'Query';
   stargaze: {
     __typename?: 'StargazeChain';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type TerraBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type TerraBalanceQuery = {
+  __typename?: 'Query';
+  terra: {
+    __typename?: 'TerraChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      amount: { __typename?: 'Amount'; value: string };
+      asset: {
+        __typename?: 'CryptoAsset';
+        chain?: string | null;
+        contract?: string | null;
+        decimals?: number | null;
+        id?: string | null;
+        image?: string | null;
+        name?: string | null;
+        symbol?: string | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          scalingFactor: number;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+    }>;
+  };
+};
+
+export type GetTerraFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTerraFeesQuery = {
+  __typename?: 'Query';
+  terra: {
+    __typename?: 'TerraChain';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
+  };
+};
+
+export type GetTerraStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTerraStatusQuery = {
+  __typename?: 'Query';
+  terra: {
+    __typename?: 'TerraChain';
     status: { __typename?: 'Status'; lastBlock: number };
   };
 };
@@ -17440,6 +17511,222 @@ export const GetStargazeStatusDocument = {
   GetStargazeStatusQuery,
   GetStargazeStatusQueryVariables
 >;
+export const TerraBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'TerraBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'terra' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TerraBalanceQuery, TerraBalanceQueryVariables>;
+export const GetTerraFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTerraFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'terra' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTerraFeesQuery, GetTerraFeesQueryVariables>;
+export const GetTerraStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTerraStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'terra' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTerraStatusQuery, GetTerraStatusQueryVariables>;
 export const DogecoinBalanceDocument = {
   kind: 'Document',
   definitions: [

@@ -12,6 +12,7 @@ import {
   KujiraBalanceDocument,
   StrideBalanceDocument,
   MarsBalanceDocument,
+  TerraBalanceDocument,
   Balance,
 } from '@xdefi-tech/chains-graphql';
 
@@ -76,6 +77,10 @@ const getChainParams = (chain: string): CosmosChainParams => {
     case CosmosHubChains.mars:
       params.query = MarsBalanceDocument;
       params.queryName = 'mars';
+      break;
+    case CosmosHubChains.terra:
+      params.query = TerraBalanceDocument;
+      params.queryName = 'terra';
       break;
   }
 

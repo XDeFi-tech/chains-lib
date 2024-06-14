@@ -1,15 +1,15 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { fromBase64, fromHex } from '@cosmjs/encoding';
+import { fromHex } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 import {
   stringToPath,
   pathToString,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
-import { utils, Wallet } from 'ethers';
-import { AccAddress, RawKey, LCDClient } from '@terra-money/feather.js';
+import { Wallet } from 'ethers';
+import { RawKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 
@@ -18,23 +18,6 @@ import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string, prefix?: string): boolean {
-    try {
-      if (address.substring(0, 2) === '0x') {
-        return utils.isAddress(address);
-      } else if (address.substring(0, 5) === 'terra') {
-        return AccAddress.validate(address);
-      } else {
-        const result = bech32.decode(address);
-        return (
-          result.prefix === (prefix ?? 'cosmos') && result.words.length === 32
-        );
-      }
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation?: string) {
     return this.key;
   }
@@ -60,13 +43,7 @@ export class PrivateKeySigner extends Signer.Provider {
 
       return key.accAddress('terra');
     } else {
-      if (!prefix) {
-        prefix = 'cosmos';
-      }
       const [{ address }] = await wallet.getAccounts();
-      if (!this.verifyAddress(address, prefix)) {
-        throw new Error('Invalid address');
-      }
       return address;
     }
   }

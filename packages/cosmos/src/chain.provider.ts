@@ -24,6 +24,9 @@ import { BroadcastTxError, Account } from '@cosmjs/stargate';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
+import { bech32 } from 'bech32';
+import { utils } from 'ethers';
+import { AccAddress } from '@terra-money/feather.js';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
@@ -240,5 +243,20 @@ export class CosmosProvider extends Chain.Provider {
       createIBCTransferMsg,
       getIBCDestAsset,
     };
+  }
+
+  static verifyAddress(address: string, prefix = 'cosmos'): boolean {
+    try {
+      if (address.substring(0, 2) === '0x') {
+        return utils.isAddress(address);
+      } else if (address.substring(0, 5) === 'terra') {
+        return AccAddress.validate(address);
+      } else {
+        const result = bech32.decode(address);
+        return result.prefix === prefix && result.words.length === 32;
+      }
+    } catch (err) {
+      return false;
+    }
   }
 }

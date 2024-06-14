@@ -12,6 +12,7 @@ import {
   GetKujiraFeesDocument,
   GetStrideFeesDocument,
   GetMarsFeesDocument,
+  GetTerraFeesDocument,
   DefaultGasFee,
 } from '@xdefi-tech/chains-graphql';
 
@@ -76,6 +77,10 @@ const getChainParams = (chain: string): CosmosChainParams => {
     case CosmosHubChains.mars:
       params.query = GetMarsFeesDocument;
       params.queryName = 'mars';
+      break;
+    case CosmosHubChains.terra:
+      params.query = GetTerraFeesDocument;
+      params.queryName = 'terra';
       break;
   }
 

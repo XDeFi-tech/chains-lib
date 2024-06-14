@@ -15,7 +15,7 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { providers } from 'ethers';
+import { providers, utils } from 'ethers';
 import { some } from 'lodash';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
@@ -138,5 +138,13 @@ export class EvmProvider extends Chain.Provider {
       paramToString,
       decryptParams,
     };
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      return utils.isAddress(address);
+    } catch (e) {
+      return false;
+    }
   }
 }

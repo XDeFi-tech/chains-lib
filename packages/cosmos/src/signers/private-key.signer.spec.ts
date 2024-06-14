@@ -139,25 +139,6 @@ describe('private-key.signer', () => {
     expect(message.signedTransaction).toBeTruthy();
   });
 
-  it('should return false when verifing an invalid address', async () => {
-    expect(cosmosSigner.verifyAddress('0xDEADBEEF', 'cosmos')).toBe(false);
-  });
-
-  it('should return false when verifing an invalid address with no prefix specified', async () => {
-    expect(cosmosSigner.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(cosmosSigner.verifyAddress(txInput.from, 'cosmos')).toBe(true);
-    expect(cosmosSigner.verifyAddress(txInput.from)).toBe(true);
-    expect(
-      cosmosSigner.verifyAddress('0xcD558EBF5E7D94CB08BD34FFf7674aC95E3EBd9d')
-    ).toBe(true);
-    expect(
-      cosmosSigner.verifyAddress('terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8')
-    ).toBe(true);
-  });
-
   it('should create msg from raw msg and sign it with private key', async () => {
     const msg = await provider.createMsg(
       { data: backendSwapTransaction.unsignedStdTx },

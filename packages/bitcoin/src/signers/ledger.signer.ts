@@ -16,15 +16,6 @@ export class LedgerSigner extends Signer.Provider {
     this.transport = transport;
   }
 
-  verifyAddress(address: string): boolean {
-    try {
-      Bitcoin.address.toOutputScript(address);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getAddress(
     derivation: string,
     type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'legacy'
