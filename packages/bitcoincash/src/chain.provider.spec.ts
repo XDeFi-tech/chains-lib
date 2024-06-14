@@ -101,4 +101,30 @@ describe('chain.provider', () => {
       memo
     );
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(BitcoinCashProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid address with network prefix', () => {
+    expect(
+      BitcoinCashProvider.verifyAddress(
+        'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
+      )
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid address without network prefix', () => {
+    expect(
+      BitcoinCashProvider.verifyAddress(
+        'qq8s9kmuyl9avm5ef7jlgsnv9x80ygj7scyzcr6vad'
+      )
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid legacy address', () => {
+    expect(
+      BitcoinCashProvider.verifyAddress('1B9UNtBfkkpgt8kVbwLN9ktE62QKnMbDzR')
+    ).toBe(true);
+  });
 });

@@ -1,6 +1,5 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
-import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import Long from 'long';
@@ -14,18 +13,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string, prefix?: string): boolean {
-    if (!prefix) {
-      prefix = 'thor';
-    }
-    try {
-      const result = bech32.decode(address);
-      return result.prefix === prefix && result.words.length === 32;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(derivation: string) {
     const cosmosPrivateKey = await this.getCosmosPrivateKey(derivation);
     return Buffer.from(cosmosPrivateKey.key).toString('hex');

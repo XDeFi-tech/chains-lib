@@ -7,10 +7,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string, prefix = 'bnb'): boolean {
-    return crypto.checkAddress(address, prefix);
-  }
-
   async getPrivateKey(_derivation: string) {
     return this.key;
   }
@@ -66,9 +62,6 @@ export class PrivateKeySigner extends Signer.Provider {
         },
       ],
     };
-    /* eslint-enable */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const tx = new Transaction({
       accountNumber: txData.accountNumber,
       chainId: txData.chainId,

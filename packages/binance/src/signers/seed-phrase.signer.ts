@@ -7,10 +7,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string, prefix = 'bnb'): boolean {
-    return crypto.checkAddress(address, prefix);
-  }
-
   async getPrivateKey(derivation: string) {
     let index = 0;
     if (derivation) {

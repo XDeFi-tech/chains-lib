@@ -13,15 +13,11 @@ import { ChainMsg, EIP712Data, Signature } from '../msg';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
-  verifyAddress(address: string): boolean {
-    return utils.isAddress(address);
-  }
-
   async getPrivateKey(_derivation: string) {
     throw new Error('Cannot extract private key from Trezor device');
   }
 
-  async getPublicKey(derivation: string) {
+  async getPublicKey(_derivation: string) {
     throw new Error('Cannot extract public key from Trezor device');
   }
 

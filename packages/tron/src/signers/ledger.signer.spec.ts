@@ -60,14 +60,6 @@ describe('ledger.signer', () => {
     expect(message.signedTransaction).toBeTruthy();
   });
 
-  it('should return true for a valid address', () => {
-    expect(signer.verifyAddress(txInput.from, TRON_MANIFEST)).toBe(true);
-  });
-
-  it('should return false for an invalid address', () => {
-    expect(signer.verifyAddress('invalid-address', TRON_MANIFEST)).toBe(false);
-  });
-
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
   });

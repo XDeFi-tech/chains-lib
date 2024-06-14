@@ -44,14 +44,6 @@ describe('seed-phrase.signer', () => {
     expect(message.signedTransaction).toBeTruthy();
   });
 
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
-  });
-
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey(derivation)).toEqual(
       '0c72be62d9433a853a7bdbf0455a69ded80669f7a7e9ce05d12e02adf353cf51'

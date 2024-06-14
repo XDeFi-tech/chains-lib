@@ -6,6 +6,7 @@ import {
   TransactionData,
 } from '@xdefi-tech/chains-core';
 import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+import bchaddr from 'bchaddrjs';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
@@ -41,5 +42,14 @@ export class BitcoinCashProvider extends UtxoProvider {
 
   public async scanUTXOs(address: string) {
     return this.dataSource.scanUTXOs(address);
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      const _address = bchaddr.toCashAddress(address);
+      return bchaddr.isValidAddress(_address);
+    } catch (err) {
+      return false;
+    }
   }
 }

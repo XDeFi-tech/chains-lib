@@ -14,6 +14,7 @@ import {
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import { BncClient } from '@binance-chain/javascript-sdk/lib/client';
+import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 import axios, { Axios } from 'axios';
 
 import { IndexerDataSource } from './datasource';
@@ -129,6 +130,10 @@ export class BinanceProvider extends Chain.Provider {
           ? TransactionStatus.success
           : TransactionStatus.failure,
     };
+  }
+
+  static verifyAddress(address: string, prefix = 'bnb'): boolean {
+    return crypto.checkAddress(address, prefix);
   }
 
   static get dataSourceList() {

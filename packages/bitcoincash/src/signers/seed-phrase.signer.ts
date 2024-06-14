@@ -3,7 +3,6 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
-/*eslint import/namespace: [2, { allowComputed: true }]*/
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
@@ -13,15 +12,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      const _address = bchaddr.toCashAddress(address);
-      return bchaddr.isValidAddress(_address);
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
       throw new Error('Seed phrase not set!');

@@ -2,7 +2,6 @@ import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
-import { DEFAULT_FEE } from './constants';
 import { ChainMsg } from './msg';
 
 describe('msg', () => {

@@ -15,10 +15,6 @@ export class LedgerSigner extends Signer.Provider {
     this.transport = transport;
   }
 
-  verifyAddress(address: string): boolean {
-    return utils.isAddress(address);
-  }
-
   async getPrivateKey(_derivation: string) {
     throw new Error('Cannot extract private key from Ledger device');
   }

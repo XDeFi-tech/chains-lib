@@ -6,6 +6,7 @@ import {
   TransactionData,
 } from '@xdefi-tech/chains-core';
 import { UtxoProvider } from '@xdefi-tech/chains-utxo';
+import * as Bitcoin from 'bitcoinjs-lib';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg, MsgBody } from './msg';
@@ -41,5 +42,14 @@ export class BitcoinProvider extends UtxoProvider {
 
   public async scanUTXOs(address: string) {
     return this.dataSource.scanUTXOs(address);
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      Bitcoin.address.toOutputScript(address);
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }

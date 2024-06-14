@@ -97,4 +97,24 @@ describe('chain.provider', () => {
       memo
     );
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(LitecoinProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid litecoin address', () => {
+    expect(
+      LitecoinProvider.verifyAddress(
+        'ltc1qldh5lt4kw63rl9s8d6wfm438ekwswf6d2ucrat'
+      )
+    ).toBe(true);
+  });
+
+  it('should return false when verifying a valid bitcoin address', () => {
+    expect(
+      LitecoinProvider.verifyAddress(
+        'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+      )
+    ).toBe(false);
+  });
 });

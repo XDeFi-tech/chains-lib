@@ -19,8 +19,7 @@ import TronWeb, { TronTransaction, TronTransactionRawData } from 'tronweb';
 import { AbiCoder } from 'ethers';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
-import { ChainDataSource } from './datasource/chain/chain.data-source';
-import { IndexerDataSource } from './datasource';
+import { IndexerDataSource, ChainDataSource } from './datasource';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -164,6 +163,14 @@ export class TronProvider extends Chain.Provider {
     }
 
     return transactions;
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      return TronWeb.isAddress(address);
+    } catch (e) {
+      return false;
+    }
   }
 
   async getTransaction(txHash: string): Promise<TransactionData | null> {

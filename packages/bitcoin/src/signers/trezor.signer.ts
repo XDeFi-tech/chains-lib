@@ -1,4 +1,3 @@
-import * as Bitcoin from 'bitcoinjs-lib';
 import {
   Signer,
   SignerDecorator,
@@ -9,15 +8,6 @@ import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
-  verifyAddress(address: string): boolean {
-    try {
-      Bitcoin.address.toOutputScript(address);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation: string) {
     throw new Error('Cannot extract private key from Trezor device');
   }
