@@ -51,6 +51,7 @@ export class LedgerSigner extends Signer.Provider {
         );
         break;
       case MsgEncoding.base64:
+      case MsgEncoding.base58:
         const versionedTransaction = tx as VersionedTransaction;
         signedTx = await app.signTransaction(
           derivation,
