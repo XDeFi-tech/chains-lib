@@ -8,46 +8,10 @@ import {
 } from 'gridplus-sdk';
 import * as Bitcoin from 'bitcoinjs-lib';
 
-import { ChainMsg } from '../msg';
+import type { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LATTICE)
-export class LatticeSigner extends Signer.Provider {
-  private client!: string;
-  public isPaired: boolean;
-
-  constructor(client: string, isPaired: boolean) {
-    super();
-    this.client = client;
-    this.isPaired = isPaired;
-  }
-
-  static async create({
-    deviceId,
-    password,
-    name,
-  }: {
-    deviceId: string;
-    password: string;
-    name: string;
-  }): Promise<LatticeSigner> {
-    let clientData = '';
-
-    const getStoredClient = () => clientData;
-    const setStoredClient = (newClientData: string | null) => {
-      clientData = newClientData ?? '';
-    };
-
-    const isPaired = await setup({
-      deviceId,
-      password,
-      name,
-      getStoredClient,
-      setStoredClient,
-    });
-
-    return new LatticeSigner(clientData, isPaired);
-  }
-
+export class LatticeSigner extends Signer.LatticeProvider {
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);
@@ -59,7 +23,8 @@ export class LatticeSigner extends Signer.Provider {
 
   async getAddress(derivation: string): Promise<string> {
     const addresses = await fetchAddresses({
-      startPath: convertDerivationPathToArray(derivation),
+      startPath:
+        Signer.LatticeProvider.convertDerivationPathToArray(derivation),
       n: 1,
     });
     return addresses[0];
@@ -73,33 +38,8 @@ export class LatticeSigner extends Signer.Provider {
   }
 }
 
-export function convertDerivationPathToArray(path: string): number[] {
-  // Validate input path
-  if (!path.startsWith('m')) {
-    throw new Error('Invalid derivation path. Must start with "m".');
-  }
-
-  // Split the path into components, skipping the first element ('m')
-  const components = path.split('/').slice(1);
-
-  // Convert each component to the corresponding number
-  const result = components.map((component) => {
-    // Check if the component is hardened (ends with a single quote)
-    const isHardened = component.endsWith("'");
-
-    // Parse the number, removing the single quote if it is hardened
-    const number = parseInt(isHardened ? component.slice(0, -1) : component);
-
-    // Add the hardened offset if necessary
-    return isHardened ? HARDENED_OFFSET + number : number;
-  });
-
-  return result;
-}
-
-const HARDENED_OFFSET = 0x80000000; // Hardened offset
-const BTC_PURPOSE_P2SH_P2WPKH = 49 + HARDENED_OFFSET; // Example constant for a specific purpose
-const BTC_TESTNET_COIN = 1 + HARDENED_OFFSET; // Example constant for testnet
+const BTC_PURPOSE_P2SH_P2WPKH = 49 + Signer.LatticeConst.HARDENED_OFFSET; // Example constant for a specific purpose
+const BTC_TESTNET_COIN = 1 + Signer.LatticeConst.HARDENED_OFFSET; // Example constant for testnet
 
 // Type definitions for transaction structures
 interface Input {
@@ -137,7 +77,8 @@ function convertTransactionToBtcTxData(
   transaction: Transaction,
   derivation: string
 ): BtcTxData {
-  const signerPath = convertDerivationPathToArray(derivation);
+  const signerPath =
+    Signer.LatticeProvider.convertDerivationPathToArray(derivation);
   const prevOuts = transaction.inputs.map((input, index) => ({
     txHash: input.hash,
     value: input.value,
@@ -156,7 +97,7 @@ function convertTransactionToBtcTxData(
   );
   const recipient = recipientOutput?.address || '';
   const value = recipientOutput?.value || 0;
-  const feeSatoshis = parseFloat(transaction.fee) * 100000000; // Convert BTC to satoshis
+  const feeSatoshis = Number.parseFloat(transaction.fee) * 100000000; // Convert BTC to satoshis
 
   const changeOutput = transaction.outputs.find((output) => !output.address);
   const changePathIndex = transaction.outputs.indexOf(
@@ -172,7 +113,7 @@ function convertTransactionToBtcTxData(
     changePath: [
       BTC_PURPOSE_P2SH_P2WPKH,
       BTC_TESTNET_COIN,
-      HARDENED_OFFSET,
+      Signer.LatticeConst.HARDENED_OFFSET,
       1,
       changePathIndex,
     ],

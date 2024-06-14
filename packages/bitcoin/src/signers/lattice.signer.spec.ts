@@ -1,10 +1,10 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import type { Msg } from '@xdefi-tech/chains-core';
 import fetch from 'cross-fetch';
 
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BITCOIN_MANIFEST } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import type { ChainMsg, MsgBody } from '../msg';
 
 import LatticeSigner from './lattice.signer';
 globalThis.fetch = fetch;

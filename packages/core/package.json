@@ -11,11 +11,7 @@
       "import": "./dist/index.js"
     }
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md",
-    "README.md"
-  ],
+  "files": ["dist", "CHANGELOG.md", "README.md"],
   "devDependencies": {
     "@types/lodash": "4.14.182",
     "@types/uuid": "9.0.1",
@@ -36,6 +32,7 @@
     "@next/bundle-analyzer": "12.3.0",
     "@trezor/connect-web": "9.1.4",
     "bignumber.js": "9.1.2",
+    "gridplus-sdk": "^2.5.2",
     "graphql": "16.6.0",
     "graphql-ws": "5.11.1",
     "inversify": "6.0.1",
@@ -62,18 +59,12 @@
   },
   "type": "commonjs",
   "tsup": {
-    "entry": [
-      "src/index.ts",
-      "!src/**/*.spec.*",
-      "!src/custom.d.ts"
-    ],
+    "entry": ["src/index.ts", "!src/**/*.spec.*", "!src/custom.d.ts"],
     "outDir": "dist",
     "format": "cjs",
     "splitting": false,
     "dts": true,
-    "types": [
-      "./dist/index.d.ts"
-    ],
+    "types": ["./dist/index.d.ts"],
     "platform": "browser",
     "target": "ES6"
   },
@@ -83,14 +74,9 @@
     "transform": {
       ".+\\.(t|j)s$": "ts-jest"
     },
-    "modulePathIgnorePatterns": [
-      "<rootDir>/dist/"
-    ],
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"],
     "testEnvironment": "jsdom",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ],
+    "watchPlugins": ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
     "testTimeout": 15000
   }
 }
