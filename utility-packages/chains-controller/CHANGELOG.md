@@ -1,5 +1,23 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.6
+
+### Patch Changes
+
+- 3d8f054: Feat: move verifyAddress to provider, make it static
+- Updated dependencies [3d8f054]
+  - @xdefi-tech/chains-graphql@1.2.15
+  - @xdefi-tech/chains-bitcoincash@2.0.18
+  - @xdefi-tech/chains-dogecoin@2.0.17
+  - @xdefi-tech/chains-litecoin@2.0.16
+  - @xdefi-tech/chains-binance@2.0.13
+  - @xdefi-tech/chains-bitcoin@2.0.18
+  - @xdefi-tech/chains-cosmos@2.0.18
+  - @xdefi-tech/chains-solana@2.0.20
+  - @xdefi-tech/chains-core@2.0.16
+  - @xdefi-tech/chains-thor@2.0.18
+  - @xdefi-tech/chains-evm@2.0.26
+
 ## 2.0.5
 
 ### Patch Changes

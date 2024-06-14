@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.16
+
+### Patch Changes
+
+- 3d8f054: Feat: move verifyAddress to provider, make it static
+
 ## 2.0.15
 
 ### Patch Changes
