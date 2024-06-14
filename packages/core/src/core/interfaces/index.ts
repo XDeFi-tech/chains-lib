@@ -14,6 +14,7 @@ export enum MsgEncoding {
   buffer = 'buffer',
   object = 'object',
   base64 = 'base64',
+  base58 = 'base58',
   string = 'string',
   unsigned = 'unsigned',
 }
