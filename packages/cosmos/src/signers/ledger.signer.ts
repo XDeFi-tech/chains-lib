@@ -1,6 +1,5 @@
 import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
-import { fromBech32 } from '@cosmjs/encoding';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
@@ -18,18 +17,6 @@ export class LedgerSigner extends Signer.Provider {
   constructor(transport: Transport) {
     super();
     this.transport = transport;
-  }
-
-  verifyAddress(address: string, requiredPrefix: string): boolean {
-    try {
-      const { prefix, data } = fromBech32(address);
-      if (prefix !== requiredPrefix) {
-        return false;
-      }
-      return data.length === 20;
-    } catch {
-      return false;
-    }
   }
 
   async getPrivateKey(_derivation: string) {

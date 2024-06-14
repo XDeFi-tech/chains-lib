@@ -68,17 +68,19 @@
     "target": "ES6"
   },
   "jest": {
-    "setupFiles": [],
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
     "preset": "ts-jest",
     "transform": {
       ".+\\.(t|j)s$": "ts-jest"
     },
-    "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
-    },
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"

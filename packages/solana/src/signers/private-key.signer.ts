@@ -1,7 +1,6 @@
 import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import {
   Keypair,
-  PublicKey,
   Transaction as SolanaTransaction,
   VersionedTransaction,
 } from '@solana/web3.js';
@@ -13,15 +12,6 @@ import { SolanaSignature } from '../types';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      const publicKey = new PublicKey(address);
-      return publicKey.toBase58() === address;
-    } catch (error) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation: string): Promise<string> {
     return this.key;
   }

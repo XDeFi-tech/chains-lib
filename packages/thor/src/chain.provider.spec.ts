@@ -133,4 +133,26 @@ describe('chain.provider', () => {
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(0);
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(ThorProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid thorchain address', () => {
+    expect(
+      ThorProvider.verifyAddress(
+        'thor1x843445a6z2e3edem9se22hnekurl7tauza6ft',
+        'thor'
+      )
+    ).toBe(true);
+  });
+
+  it('should return true when verifying a valid mayachain address', () => {
+    expect(
+      ThorProvider.verifyAddress(
+        'maya1x843445a6z2e3edem9se22hnekurl7tau4rklm',
+        'maya'
+      )
+    ).toBe(true);
+  });
 });

@@ -1,0 +1,42 @@
+query TerraBalance($address: String!) {
+  terra {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+          dayPriceChange
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetTerraFees {
+  terra {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetTerraStatus {
+  terra {
+    status {
+      lastBlock
+    }
+  }
+}

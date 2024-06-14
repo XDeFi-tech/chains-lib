@@ -1,15 +1,11 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { utils, Wallet } from 'ethers';
+import { Wallet } from 'ethers';
 import EthCrypto from 'eth-crypto';
 
 import { ChainMsg, EvmTypedData, SignatureType, EncryptedObject } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    return utils.isAddress(address);
-  }
-
   async getPrivateKey(): Promise<string> {
     return this.key;
   }

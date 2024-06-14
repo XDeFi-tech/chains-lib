@@ -15,6 +15,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 import { some } from 'lodash';
+import { bech32 } from 'bech32';
 
 import { ChainMsg, MsgBody } from './msg';
 import { ThorManifest } from './manifests';
@@ -139,5 +140,14 @@ export class ThorProvider extends Chain.Provider {
     return {
       ChainDataSource: ChainDataSource,
     };
+  }
+
+  static verifyAddress(address: string, prefix = 'thor'): boolean {
+    try {
+      const result = bech32.decode(address);
+      return result.prefix === prefix && result.words.length === 32;
+    } catch (err) {
+      return false;
+    }
   }
 }

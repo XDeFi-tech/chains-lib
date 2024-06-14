@@ -1,5 +1,4 @@
 import { Msg } from '@xdefi-tech/chains-core';
-import { utils } from 'ethers';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -105,14 +104,6 @@ describe('seed-phrase.signer', () => {
     );
 
     expect(chainMsg.signedTransaction).toEqual(signature);
-  });
-
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
   });
 
   it('should get a private key', async () => {

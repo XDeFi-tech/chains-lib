@@ -6,10 +6,6 @@ import { ChainMsg, EvmTypedData, SignatureType, EncryptedObject } from '../msg';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    return utils.isAddress(address);
-  }
-
   async getPrivateKey(derivation: string) {
     const wallet = Wallet.fromMnemonic(this.key, derivation);
     return utils.isHexString(wallet.privateKey)

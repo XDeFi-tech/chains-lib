@@ -1,4 +1,4 @@
-import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';

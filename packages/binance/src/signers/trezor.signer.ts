@@ -4,16 +4,11 @@ import {
   IsTrezorInitialized,
 } from '@xdefi-tech/chains-core';
 import TrezorConnect, * as connectWeb from '@trezor/connect-web';
-import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 
 import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
-  verifyAddress(address: string, prefix = 'bnb'): boolean {
-    return crypto.checkAddress(address, prefix);
-  }
-
   async getPrivateKey(_derivation: string) {
     throw new Error('Cannot extract private key from Trezor device');
   }

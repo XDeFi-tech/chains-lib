@@ -1,4 +1,3 @@
-import { isValidAddress } from 'bchaddrjs';
 import {
   Signer,
   SignerDecorator,
@@ -13,14 +12,6 @@ import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
-  verifyAddress(address: string): boolean {
-    if (isValidAddress(address)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation: string) {
     throw new Error('Cannot extract private key from Trezor device');
   }

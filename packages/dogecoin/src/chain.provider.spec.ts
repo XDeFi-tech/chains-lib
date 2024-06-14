@@ -98,4 +98,22 @@ describe('chain.provider', () => {
       memo
     );
   });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(DogecoinProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid dogecoin address', () => {
+    expect(
+      DogecoinProvider.verifyAddress('D9z79s25depHTjWpFRt9X3S5KD7ivPze3e')
+    ).toBe(true);
+  });
+
+  it('should return false when verifying a valid bitcoin address', () => {
+    expect(
+      DogecoinProvider.verifyAddress(
+        'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+      )
+    ).toBe(false);
+  });
 });

@@ -73,6 +73,7 @@ export class ProviderFactory {
     const ProviderClass = this.providerList[className as ProviderNames];
     const { dataSourceClassName, ...providerOptions } = options;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const dataSource = new ProviderClass.dataSourceList[dataSourceClassName](
       manifest

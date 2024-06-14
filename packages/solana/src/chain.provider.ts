@@ -15,7 +15,7 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { some } from 'lodash';
 
 import { IndexerDataSource } from './datasource';
@@ -119,5 +119,14 @@ export class SolanaProvider extends Chain.Provider {
     return {
       IndexerDataSource: IndexerDataSource,
     };
+  }
+
+  static verifyAddress(address: string): boolean {
+    try {
+      const publicKey = new PublicKey(address);
+      return publicKey.toBase58() === address;
+    } catch (error) {
+      return false;
+    }
   }
 }

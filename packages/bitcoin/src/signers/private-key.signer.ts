@@ -8,18 +8,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      if (btc.Address().decode(address)) {
-        return true;
-      }
-
-      return false;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation?: string): Promise<string> {
     if (!this.key) {
       throw new Error('Private key not set!');

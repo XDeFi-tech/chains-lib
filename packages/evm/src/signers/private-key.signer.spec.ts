@@ -1,5 +1,4 @@
 import { Msg } from '@xdefi-tech/chains-core';
-import { utils } from 'ethers';
 
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -10,7 +9,6 @@ import {
   MsgBody,
   SignatureType,
   TypedDataField,
-  EIP712Data,
 } from '../msg';
 
 import PrivateKeySigner from './private-key.signer';
@@ -91,14 +89,6 @@ describe('private-key.signer', () => {
     await signer.sign(chainMsg as ChainMsg, '', SignatureType.SignTypedData);
 
     expect(chainMsg.signedTransaction).toEqual(signature);
-  });
-
-  it('should return false when verifing an invalid address', async () => {
-    expect(signer.verifyAddress('0xDEADBEEF')).toBe(false);
-  });
-
-  it('should validate an address', async () => {
-    expect(signer.verifyAddress(txInput.from)).toBe(true);
   });
 
   it('should get a private key', async () => {

@@ -1,7 +1,6 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';
 
@@ -12,16 +11,6 @@ export class LedgerSigner extends Signer.Provider {
   constructor(transport: Transport) {
     super();
     this.transport = transport;
-  }
-
-  verifyAddress(address: string): boolean {
-    try {
-      const prefix = bech32.decode(address).prefix;
-      if (prefix === 'thor' || prefix === 'maya') return true;
-      return false;
-    } catch (error) {
-      return false;
-    }
   }
 
   async getPrivateKey(_derivation: string) {

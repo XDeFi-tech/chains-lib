@@ -1,7 +1,6 @@
 import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import {
   Keypair,
-  PublicKey,
   Transaction as SolanaTransaction,
   VersionedTransaction,
 } from '@solana/web3.js';
@@ -15,15 +14,6 @@ import { SolanaSignature } from '../types';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      const publicKey = new PublicKey(address);
-      return publicKey.toBase58() === address;
-    } catch (error) {
-      return false;
-    }
-  }
-
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
       throw new Error('No seed phrase set!');

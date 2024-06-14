@@ -10,15 +10,6 @@ import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
-  verifyAddress(address: string): boolean {
-    try {
-      const _address = bchaddr.toCashAddress(address);
-      return bchaddr.isValidAddress(_address);
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getPrivateKey(_derivation: string): Promise<string> {
     return this.key;
   }

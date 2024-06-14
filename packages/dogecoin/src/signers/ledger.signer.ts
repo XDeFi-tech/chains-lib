@@ -41,15 +41,6 @@ export class LedgerSigner extends Signer.Provider {
     bech32: '',
   };
 
-  verifyAddress(address: string): boolean {
-    try {
-      Dogecoin.address.toOutputScript(address, this.network);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getAddress(derivation: string): Promise<string> {
     const app = new BtcOld({
       transport: this.transport as Transport,

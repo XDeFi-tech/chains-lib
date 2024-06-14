@@ -7,8 +7,8 @@ import {
   stringToPath,
   pathToString,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
-import { utils, Wallet } from 'ethers';
-import { MnemonicKey, AccAddress, LCDClient } from '@terra-money/feather.js';
+import { Wallet } from 'ethers';
+import { MnemonicKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 
@@ -17,23 +17,6 @@ import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
 export class SeedPhraseSigner extends Signer.Provider {
-  verifyAddress(address: string, prefix?: string): boolean {
-    try {
-      if (address.substring(0, 2) === '0x') {
-        return utils.isAddress(address);
-      } else if (address.substring(0, 5) === 'terra') {
-        return AccAddress.validate(address);
-      } else {
-        const result = bech32.decode(address);
-        return (
-          result.prefix === (prefix ?? 'cosmos') && result.words.length === 32
-        );
-      }
-    } catch (err) {
-      return false;
-    }
-  }
-
   async getAddress(derivation: string, prefix?: string): Promise<string> {
     const hdPath = stringToPath(derivation);
 
@@ -62,14 +45,7 @@ export class SeedPhraseSigner extends Signer.Provider {
 
       return wallet.accAddress('terra');
     } else {
-      if (!prefix) {
-        prefix = 'cosmos';
-      }
-
       const [{ address }] = await wallet.getAccounts();
-      if (!this.verifyAddress(address, prefix)) {
-        throw new Error('Invalid address');
-      }
       return address;
     }
   }
