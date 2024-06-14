@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.19
+
+### Patch Changes
+
+- 5a5b9ef: feat: add base58 to msg encoding for solana chain
+  feat: add signMessage for solana signers
+- Updated dependencies [5a5b9ef]
+  - @xdefi-tech/chains-core@2.0.15
+
 ## 2.0.18
 
 ### Patch Changes
