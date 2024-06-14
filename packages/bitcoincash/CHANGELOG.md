@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.18
+
+### Patch Changes
+
+- 3d8f054: Feat: move verifyAddress to provider, make it static
+- Updated dependencies [3d8f054]
+  - @xdefi-tech/chains-graphql@1.2.15
+  - @xdefi-tech/chains-core@2.0.16
+
 ## 2.0.17
 
 ### Patch Changes
