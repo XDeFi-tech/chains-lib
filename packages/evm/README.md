@@ -62,12 +62,23 @@ const provider = new EvmProvider(
       medium: 1.25,
       low: 1,
     },
+    // Provide multicall contract to use multicall for fetching balance,
+    // otherwise use batch call
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
   })
 );
 
 // The same as any other provider
 const response = await provider.getBalance(
   '0x1234567890123456789012345678901234567890'
+);
+const data = await response.getData();
+
+// Fetches balance with multicall or batch calls
+// Add list token addresses. Use zero address to fetch the native token amount
+const response = await provider.getBalance(
+  '0x1234567890123456789012345678901234567890',
+  ['0x0000000000000000000000000000000000000000'] // List token addresses
 );
 const data = await response.getData();
 ```
