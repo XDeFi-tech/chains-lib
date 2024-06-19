@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.28
+
+### Patch Changes
+
+- b340836e: fix: add the logic to fetch native token balance using multicall and batch call
+
 ## 2.0.27
 
 ### Patch Changes
