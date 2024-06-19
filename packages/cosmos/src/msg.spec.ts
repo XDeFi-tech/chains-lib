@@ -1,144 +1,85 @@
-import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import { Asset, Coin } from '@xdefi-tech/chains-core';
 
-import { ChainMsg } from './msg';
+import { ChainDataSource } from './datasource';
+import { COSMOS_MANIFESTS } from './manifests';
+import { CosmosProvider } from './chain.provider';
+
+jest.mock('./chain.provider', () => {
+  const originModule = jest.requireActual('./chain.provider');
+
+  return {
+    __esModule: true,
+    ...originModule,
+  };
+});
 
 describe('msg', () => {
-  let mockProvider: any;
+  let provider: CosmosProvider;
 
   beforeEach(() => {
-    mockProvider = {
-      getBalance: jest.fn(() =>
-        Promise.resolve({
-          getData: jest.fn(() =>
-            Promise.resolve([
-              {
-                asset: {
-                  chainId: 'cosmoshub-4',
-                  name: 'Cosmos Hub',
-                  symbol: 'ATOM',
-                  icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/cosmos/info/logo.png',
-                  native: true,
-                  id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
-                  price: '443.21',
-                  decimals: 18,
-                },
-                amount: '1000',
-              },
-              {
-                asset: {
-                  chainId: 'cosmoshub-4',
-                  name: 'Neutron',
-                  symbol: 'NTRN',
-                  icon: null,
-                  native: false,
-                  address: '0xf2f6671173363577a07ff3cb1e1e082f68bc2a48',
-                  decimals: 18,
-                },
-                amount: '1000',
-              },
-            ])
-          ),
-        })
-      ),
-      getFee: jest.fn(() =>
-        Promise.resolve({
-          high: 0.033,
-          low: 0.011,
-          medium: 0.0275,
-        })
-      ),
-      estimateFee: jest.fn(() =>
-        Promise.resolve([
-          {
-            gasLimit: 31500,
-            gasPrice: 0.1,
-            maxFeePerGas: 5390000000,
-            maxPriorityFeePerGas: 560000000,
-          },
-        ])
-      ),
-      manifest: {
-        name: 'Cosmos Hub',
-        description: '',
-        rpcURL: 'https://rpc-proxy.xdefi.services/cosmos/rpc/mainnet',
-        lcdURL: 'https://rpc-proxy.xdefi.services/cosmos/lcd/mainnet',
-        chainSymbol: 'ATOM',
-        blockExplorerURL: 'https://www.mintscan.io/cosmos/account',
-        chainId: 'cosmoshub-4',
-        chain: 'cosmos',
-        denom: 'uatom',
-        decimals: 6,
-        prefix: 'cosmos',
-        feeGasStep: {
-          high: 0.003,
-          medium: 0.0025,
-          low: 0.001,
-        },
-        maxGapAmount: 0.0001,
-      },
-    };
-  });
-
-  it('getFee should return fee estimation', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        amount: '0.000001',
-      },
-      mockProvider,
-      MsgEncoding.object
+    provider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.osmosis)
     );
 
-    const response = await chainMsg.getFee(GasFeeSpeed.medium);
-
-    const [feeEstimation] = await mockProvider.estimateFee(
-      [chainMsg],
-      GasFeeSpeed.medium
-    );
-
-    expect(response.fee).toEqual(
-      new BigNumber(feeEstimation.gasLimit.toString())
-        .multipliedBy(feeEstimation.gasPrice.toString())
-        .dividedBy(10 ** mockProvider.manifest.decimals)
-        .toString()
-    );
-
-    expect(response.maxFee).toBeNull();
+    CosmosProvider.prototype.getBalance = jest.fn().mockResolvedValue({
+      getData: () =>
+        new Promise((resolve) =>
+          resolve([
+            new Coin(
+              new Asset({
+                chainId: 'osmosis-1',
+                name: 'Cosmos Hub',
+                symbol: 'ATOM',
+                icon: 'https://assets.coingecko.com/coins/images/1481/large/cosmos_hub.png?1555657960',
+                native: false,
+                id: 'ffd6b64f-ce52-455b-8eb5-250e76d8fc4c',
+                address:
+                  'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+                price: '8.33',
+              }),
+              new BigNumber(1000)
+            ),
+            new Coin(
+              new Asset({
+                chainId: 'osmosis-1',
+                name: 'Osmosis',
+                symbol: 'OSMO',
+                icon: 'https://raw.githubusercontent.com/cosmostation/cosmostation_token_resource/master/coin_image/tokens/token-osmosis.svg',
+                native: true,
+                id: '77c3401d-f6e2-41dd-8747-75afbbcaa477',
+                price: '0.817933',
+              }),
+              new BigNumber(1000)
+            ),
+          ])
+        ),
+    });
   });
 
   it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        amount: '0.000001',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
+    const chainMsg = provider.createMsg({
+      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+    });
 
     const response = chainMsg.getMaxAmountToSend('invalid');
 
-    await expect(response).rejects.toThrowError();
+    await expect(response).rejects.toThrowError('No balance found');
   });
 
   it('should return MaxAmountToSend with native token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        amount: '0.000001',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
+    const chainMsg = provider.createMsg({
+      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+    });
 
     const response = await chainMsg.getMaxAmountToSend();
 
     const feeEstimation = await chainMsg.getFee();
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
+    const gap = provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(
       new BigNumber('1000')
@@ -148,21 +89,68 @@ describe('msg', () => {
     );
   });
 
-  it('should return MaxAmountToSend with non-native-token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        amount: '0.000001',
+  it('should return MaxAmountToSend with ibc token as fee', async () => {
+    const chainMsg = provider.createMsg({
+      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+      feeOptions: {
+        gasAdjustment: 1,
+        gasFee: {
+          denom:
+            'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+        },
       },
-      mockProvider,
-      MsgEncoding.object
-    );
+    });
 
     const response = await chainMsg.getMaxAmountToSend(
-      '0xf2f6671173363577a07ff3cb1e1e082f68bc2a48'
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'
     );
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
+
+    const feeEstimation = await chainMsg.getFee();
+    const gap = provider.manifest?.maxGapAmount || 0;
+
+    expect(response).toEqual(
+      new BigNumber('1000')
+        .minus(feeEstimation.fee || 0)
+        .minus(gap)
+        .toString()
+    );
+  });
+
+  it('should reject if not hold token', async () => {
+    const chainMsg = provider.createMsg({
+      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+      feeOptions: {
+        gasAdjustment: 1,
+        gasFee: {
+          denom:
+            'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+        },
+      },
+    });
+
+    await expect(
+      chainMsg.getMaxAmountToSend(
+        'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518'
+      )
+    ).rejects.toThrowError('No balance found');
+  });
+
+  it('should return the full amount', async () => {
+    const chainMsg = provider.createMsg({
+      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+    });
+
+    const response = await chainMsg.getMaxAmountToSend(
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'
+    );
+
+    const gap = provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });

@@ -27,6 +27,7 @@ import 'reflect-metadata';
 import { bech32 } from 'bech32';
 import { utils } from 'ethers';
 import { AccAddress } from '@terra-money/feather.js';
+import { osmosis } from 'osmojs';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
@@ -89,6 +90,37 @@ export class CosmosProvider extends Chain.Provider {
 
   async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
+  }
+
+  async getFeeTokens() {
+    try {
+      const { createRPCQueryClient } = osmosis.ClientFactory;
+      const client = await createRPCQueryClient({
+        rpcEndpoint: this.manifest.rpcURL,
+      });
+      const { feeTokens } = await client.osmosis.txfees.v1beta1.feeTokens();
+      return feeTokens;
+    } catch (error) {
+      throw new Error('Abstraction fee not available for this chain');
+    }
+  }
+
+  async calculateFeeAbs(nativeFee: FeeData, denom: string) {
+    try {
+      const { createRPCQueryClient } = osmosis.ClientFactory;
+      const client = await createRPCQueryClient({
+        rpcEndpoint: this.manifest.rpcURL,
+      });
+      if (!nativeFee.gasPrice) return nativeFee;
+      const { spotPrice: twap } =
+        await client.osmosis.txfees.v1beta1.denomSpotPrice({ denom });
+      return {
+        gasLimit: nativeFee.gasLimit,
+        gasPrice: Number(nativeFee.gasPrice) / Number(twap),
+      };
+    } catch (error) {
+      throw new Error('Abstraction fee not available for this chain');
+    }
   }
 
   async getNFTBalance(address: string) {
