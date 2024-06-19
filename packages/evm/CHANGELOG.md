@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.27
+
+### Patch Changes
+
+- 0a8c0a56: feat: gasFeeOptions for chain and indexer on EVM should default to getting data from RPC
+- Updated dependencies [0a8c0a56]
+  - @xdefi-tech/chains-core@2.0.17
+
 ## 2.0.26
 
 ### Patch Changes
