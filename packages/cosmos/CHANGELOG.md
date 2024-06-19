@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.19
+
+### Patch Changes
+
+- 6fc03319: feat: implement fee abstraction on osmosis chain
+
 ## 2.0.18
 
 ### Patch Changes
