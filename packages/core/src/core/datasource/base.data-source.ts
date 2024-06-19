@@ -54,7 +54,7 @@ export abstract class DataSource {
 
   abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
 
-  abstract gasFeeOptions(): Promise<FeeOptions | null>;
+  abstract gasFeeOptions(options?: { useFeeService: boolean }): Promise<FeeOptions | null>;
 
   async getNonce(_address: string): Promise<number> {
     return 0;

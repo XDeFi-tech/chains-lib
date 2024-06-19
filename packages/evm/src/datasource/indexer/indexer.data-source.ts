@@ -20,6 +20,7 @@ import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
 import BigNumber from 'bignumber.js';
+import { formatFixed } from '@ethersproject/bignumber';
 
 import { parseGwei } from '../../utils';
 import { EVMChains } from '../../manifests';
@@ -284,7 +285,16 @@ export class IndexerDataSource extends DataSource {
     return feeData;
   }
 
-  async gasFeeOptions(): Promise<FeeOptions | null> {
+  async gasFeeOptions(options?: {
+    useFeeService: boolean;
+  }): Promise<FeeOptions | null> {
+    if (options?.useFeeService) {
+      return this._getFeeOptionsByFeeService();
+    }
+    return this._getFeeOptionsFromRpc();
+  }
+
+  private async _getFeeOptionsByFeeService(): Promise<FeeOptions | null> {
     const fee = await getFees(this.manifest.chain); // fee in gwei
     let result: FeeOptions | null = null;
 
@@ -313,6 +323,72 @@ export class IndexerDataSource extends DataSource {
     }
 
     return result;
+  }
+
+  private async _getFeeOptionsFromRpc(): Promise<FeeOptions> {
+    const fee = await this.rpcProvider.getFeeData();
+    if (!fee.gasPrice || !fee.maxFeePerGas || !fee.maxPriorityFeePerGas) {
+      const gasPrice = await this.rpcProvider.getGasPrice();
+      return {
+        [GasFeeSpeed.high]: new BigNumber(formatFixed(gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        [GasFeeSpeed.medium]: new BigNumber(formatFixed(gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        [GasFeeSpeed.low]: new BigNumber(formatFixed(gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+      };
+    }
+
+    return {
+      [GasFeeSpeed.high]: {
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.high)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+      },
+      [GasFeeSpeed.medium]: {
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+      },
+      [GasFeeSpeed.low]: {
+        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        maxFeePerGas: new BigNumber(formatFixed(fee.maxFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+          .multipliedBy(this.manifest.feeGasStep.low)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+      },
+    };
   }
 
   async getNonce(address: string): Promise<number> {

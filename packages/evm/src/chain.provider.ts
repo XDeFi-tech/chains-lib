@@ -41,6 +41,10 @@ export class EvmProvider extends Chain.Provider {
     );
   }
 
+  public get manifest(): Chain.Manifest & { maxGapAmount?: number } {
+    return this.dataSource.manifest;
+  }
+
   createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
     return new ChainMsg(data, this, encoding);
   }
@@ -90,8 +94,10 @@ export class EvmProvider extends Chain.Provider {
     );
   }
 
-  async gasFeeOptions(): Promise<FeeOptions | null> {
-    return this.dataSource.gasFeeOptions();
+  async gasFeeOptions(options?: {
+    useFeeService: boolean;
+  }): Promise<FeeOptions | null> {
+    return this.dataSource.gasFeeOptions(options);
   }
 
   async getNonce(address: string): Promise<number> {
