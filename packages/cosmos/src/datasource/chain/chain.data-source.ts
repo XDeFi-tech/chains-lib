@@ -14,7 +14,7 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
-  BankBalancesResponse,
+  Coin as CosmosCoin,
   LcdClient,
   setupBankExtension,
 } from '@cosmjs/launchpad';
@@ -48,13 +48,13 @@ export class ChainDataSource extends DataSource {
 
   constructor(manifest: manifests.CosmosManifest) {
     super(manifest);
-    this.rpcProvider = LcdClient.withExtensions(
-      { apiUrl: this.manifest.lcdURL },
-      setupBankExtension
-    );
     this.cosmosSDK = new cosmosclient.CosmosSDK(
       this.manifest.lcdURL,
       this.manifest.chainId
+    );
+    this.rpcProvider = LcdClient.withExtensions(
+      { apiUrl: this.manifest.lcdURL },
+      setupBankExtension
     );
     this.lcdAxiosClient = axios.create({
       baseURL: this.manifest.lcdURL,
@@ -72,24 +72,22 @@ export class ChainDataSource extends DataSource {
     const { address } = filter;
 
     const response = await this.lcdAxiosClient.get(
-      `/bank/balances/${address}?timestamp=${new Date().getTime()}`
+      `cosmos/bank/v1beta1/balances/${address}?timestamp=${new Date().getTime()}`
     );
 
-    const balances = response.data as BankBalancesResponse;
+    const balances = response.data.balances as CosmosCoin[];
     const chain = capitalize(this.manifest.chain) as AddressChain;
-    const cryptoAssetsInput = balances.result.map<CryptoAssetArgs>(
-      ({ denom }) => ({
-        chain: chain,
-        contract: this.manifest.denom === denom ? null : denom,
-      })
-    );
+    const cryptoAssetsInput = balances.map<CryptoAssetArgs>(({ denom }) => ({
+      chain: chain,
+      contract: this.manifest.denom === denom ? null : denom,
+    }));
     const {
       data: {
         assets: { cryptoAssets: assets },
       },
     } = await getCryptoAssets(cryptoAssetsInput);
 
-    return balances.result.reduce((result: Coin[], { amount }, index) => {
+    return balances.reduce((result: Coin[], { amount }, index) => {
       const asset = assets && assets[index];
       if (!asset) {
         return result;
@@ -195,6 +193,24 @@ export class ChainDataSource extends DataSource {
       };
     });
 
+    const _feeAmount = msgs.map((m) => {
+      const messageData = m.toData();
+      if (messageData.feeOptions) {
+        return {
+          denom: messageData.feeOptions.gasFee.denom,
+          amount: new BigNumber(this.manifest.feeGasStep[speed])
+            .multipliedBy(10 ** this.manifest.decimals)
+            .toString(),
+        };
+      }
+      return {
+        denom: this.manifest.denom,
+        amount: new BigNumber(this.manifest.feeGasStep[speed])
+          .multipliedBy(10 ** this.manifest.decimals)
+          .toString(),
+      };
+    });
+
     const account = await this.getAccount(fromAddress);
     if (!account) {
       return [
@@ -224,7 +240,7 @@ export class ChainDataSource extends DataSource {
           }),
         ],
         fee: Fee.fromPartial({
-          amount: [],
+          amount: _feeAmount as any,
         }),
       }).finish(),
       signatures: [new Uint8Array(64)],

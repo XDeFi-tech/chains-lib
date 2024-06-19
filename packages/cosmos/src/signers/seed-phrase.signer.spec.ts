@@ -363,6 +363,56 @@ describe('seed-phase.addressGeneration', () => {
   });
 });
 
+describe('abstrction fee', () => {
+  let mnemonic: string;
+  let signer: SeedPhraseSigner;
+  let provider: CosmosProvider;
+  let derivation: string;
+
+  beforeEach(() => {
+    jest.setTimeout(15 * 1000);
+    mnemonic =
+      'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
+    signer = new SeedPhraseSigner(mnemonic);
+
+    derivation = "m/44'/118'/0'/0/0";
+
+    provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+  });
+
+  it('should sign a transaction using a seed phrase', async () => {
+    const ibcToken =
+      'ibc/B547DC9B897E7C3AA5B824696110B8E3D2C31E3ED3F02FF363DCBAD82457E07E'; // uxki;
+    const txInput = {
+      from: 'osmosis1g6qu6hm4v3s3vq7438jehn9fzxg9p720hzad6a',
+      to: 'osmosis1g6qu6hm4v3s3vq7438jehn9fzxg9p720hzad6a',
+      amount: '0.000001',
+      msgs: [],
+      feeOptions: {
+        gasAdjustment: 2,
+        gasFee: {
+          denom: ibcToken,
+        },
+      },
+    };
+    const message = provider.createMsg(txInput);
+    const { fee } = await message.getFee();
+    const gasInfo = {
+      gasLimit: 200000,
+      gasPrice: '0.025',
+    };
+    const abstractionFee = await provider.calculateFeeAbs(gasInfo, ibcToken);
+    const newInputTx = { ...txInput, ...abstractionFee };
+    const newMessage = provider.createMsg(newInputTx);
+    const buildTxData = await newMessage.buildTx();
+    await signer.sign(message as ChainMsg, derivation);
+    expect(message.signedTransaction).toBeTruthy();
+    expect((buildTxData as any).fee.amount[0].amount).toEqual(fee);
+  });
+});
+
 describe('IBC token transfer', () => {
   let mnemonic: string;
   let signer: SeedPhraseSigner;

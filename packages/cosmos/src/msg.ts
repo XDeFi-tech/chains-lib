@@ -26,6 +26,12 @@ export type MsgBody = {
   nftId?: string;
   msgs?: any[];
   data?: string;
+  feeOptions?: {
+    gasAdjustment: number;
+    gasFee: {
+      denom: string;
+    };
+  };
 };
 
 export interface TxData {
@@ -172,16 +178,24 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     }
 
     const { typeUrl, msgs } = this.getMsgToSend();
+    const feeOptions = msgData.feeOptions;
     const fee = {
       amount: [
         {
-          amount: new BigNumber(msgData.gasPrice)
-            .multipliedBy(10 ** this.provider.manifest.decimals)
-            .toString(),
-          denom: this.provider.manifest.denom,
+          amount: feeOptions
+            ? new BigNumber(msgData.gasLimit)
+                .multipliedBy(feeOptions.gasAdjustment)
+                .multipliedBy(msgData.gasPrice)
+                .toFixed(0)
+            : new BigNumber(msgData.gasPrice)
+                .multipliedBy(10 ** this.provider.manifest.decimals)
+                .toString(),
+          denom: feeOptions?.gasFee.denom ?? this.provider.manifest.denom,
         },
       ],
-      gas: new BigNumber(msgData.gasLimit).toString(),
+      gas: new BigNumber(msgData.gasLimit)
+        .multipliedBy(feeOptions?.gasAdjustment ?? 1)
+        .toString(),
     };
     const acc = await this.provider.getAccount(msgData.from);
 
@@ -213,21 +227,40 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       maxFee: null,
     };
 
+    const feeOptions = data.feeOptions;
+
     if (!data.gasLimit && !data.gasPrice && this.provider) {
       const [feeEstimation] = await this.provider.estimateFee(
         [this],
         speed || GasFeeSpeed.medium
       );
       if (feeEstimation.gasPrice && feeEstimation.gasLimit) {
-        estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
-          .multipliedBy(feeEstimation.gasPrice.toString())
-          .dividedBy(10 ** this.provider.manifest.decimals)
-          .toString();
+        if (feeOptions) {
+          const feeAbstractionEstimation = await this.provider.calculateFeeAbs(
+            feeEstimation,
+            feeOptions.gasFee.denom
+          );
+          if (!feeAbstractionEstimation.gasPrice) {
+            throw new Error('Cannot calculate fee abstraction');
+          }
+          estimation.fee = new BigNumber(
+            feeAbstractionEstimation.gasLimit.toString()
+          )
+            .multipliedBy(feeOptions.gasAdjustment)
+            .multipliedBy(feeAbstractionEstimation.gasPrice.toString())
+            .toFixed(0);
+        } else {
+          estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
+            .multipliedBy(feeEstimation.gasPrice.toString())
+            .dividedBy(10 ** this.provider.manifest.decimals)
+            .toString();
+        }
       }
     } else if (data.gasLimit && data.gasPrice) {
       estimation.fee = new BigNumber(data.gasLimit)
+        .multipliedBy(feeOptions?.gasAdjustment ?? 1)
         .multipliedBy(data.gasPrice)
-        .dividedBy(10 ** this.provider.manifest.decimals)
+        .dividedBy(10 ** (feeOptions ? 0 : this.provider.manifest.decimals))
         .toString();
     }
 
@@ -240,7 +273,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
 
     let balance: Coin | undefined;
-
     if (!contract) {
       balance = (await balances.getData()).find(
         (b) =>
@@ -253,12 +285,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           b.asset.address === contract
       );
     }
-
     if (!balance) throw new Error('No balance found');
 
     let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
 
-    if (balance.asset.native) {
+    if (
+      (balance.asset.native && contract !== this.provider.manifest.denom) ||
+      (msgData.feeOptions && msgData.feeOptions.gasFee.denom === contract)
+    ) {
       const feeEstimation = await this.getFee();
       maxAmount = maxAmount.minus(feeEstimation.fee || 0);
     }
