@@ -73,13 +73,19 @@ describe('chain.provider', () => {
   it('should get a token balance', async () => {
     const balance = await evmProvider.getBalance(
       '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACC',
-      ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84']
+      [
+        '0x0000000000000000000000000000000000000000',
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+      ]
     );
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
+    expect(balanceData.length).toEqual(2);
     expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.symbol).toEqual('stETH');
-    expect(balanceData[0].asset.name).toEqual('Liquid staked Ether 2.0');
+    expect(balanceData[0].asset.name).toEqual('Ethereum');
+    expect(balanceData[1].amount.toString()).toEqual('0');
+    expect(balanceData[1].asset.symbol).toEqual('stETH');
+    expect(balanceData[1].asset.name).toEqual('Liquid staked Ether 2.0');
   });
 
   it('should throw error for a non-existant address wallet', async () => {

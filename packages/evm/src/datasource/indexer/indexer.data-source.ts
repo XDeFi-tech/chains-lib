@@ -15,7 +15,7 @@ import {
   EIP1559FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import { providers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
@@ -64,19 +64,38 @@ export class IndexerDataSource extends DataSource {
     let balances;
     if (!tokenAddresses) {
       balances = await getBalance(this.manifest.chain as EVMChains, address);
-    } else if (tokenAddresses && this.manifest.multicallContractAddress) {
-      balances = await getEvmBalance(
-        this.manifest.rpcURL,
-        this.manifest.name,
-        address,
-        tokenAddresses
+    } else {
+      // Remove duplicate addresses
+      const uniqueAddresses = Array.from(new Set(tokenAddresses));
+
+      // Multicall contracts only call deployed contracts, so they can't query native token balances.
+      const isFetchNativeTokenBalance = uniqueAddresses.some(
+        (address) => address === ethers.constants.AddressZero
       );
-    } else if (tokenAddresses) {
-      balances = await getBalanceByBatch(
-        this.manifest.rpcURL,
-        address,
-        tokenAddresses
-      );
+      const nativeTokenInfo = {
+        name: this.manifest.name,
+        contract: null,
+        decimals: this.manifest.decimals,
+        symbol: this.manifest.chainSymbol,
+      };
+      if (
+        this.manifest.multicallContractAddress &&
+        !isFetchNativeTokenBalance
+      ) {
+        balances = await getEvmBalance(
+          this.manifest.rpcURL,
+          this.manifest.name,
+          address,
+          uniqueAddresses
+        );
+      } else {
+        balances = await getBalanceByBatch(
+          this.manifest.rpcURL,
+          address,
+          uniqueAddresses,
+          nativeTokenInfo
+        );
+      }
     }
 
     if (!balances) {
