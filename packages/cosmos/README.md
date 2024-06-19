@@ -36,3 +36,68 @@ Cosmos specific fields:
 - `lcdURL`: The URL of the LCD (Light Client Daemon) server used to query information from the Cosmos Hub blockchain.
 - `denom`: The denomination or name of the native currency of the Cosmos Hub blockchain, which is "uatom".
 - `prefix`: A prefix used in some contexts or operations related to the Cosmos Hub blockchain, which is "cosmos".
+
+## Abstraction fee
+
+This feature allows you to customize the fee for transactions using the IBC token as fee token. You can learn more about the abstraction fee in [here](https://docs.osmosis.zone/overview/features/fee-abstraction/)
+
+- To get a list of fee tokens:
+
+```typescript
+const provider = new CosmosProvider(
+  new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+);
+// Retrieve the list of fee tokens,
+// which includes the denom of the IBC token
+// and the poolID on Osmosis.
+const feeTokens = await provider.getFeeTokens();
+```
+
+- Estimate the abstract fee for a transaction:
+
+```typescript
+const provider = new CosmosProvider(
+  new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+);
+
+const txInput = {
+  // Here is the msg information
+};
+const msg = provider.createMsg(txInput);
+
+// Retrieve the gas information with native token
+const [estimationFee] = await provider.estimateFee(
+  [transferMsg],
+  GasFeeSpeed.low
+);
+
+// Calculate the abstraction fee from native token fee
+const estimateAbstractionFee = await provider.calculateFeeAbs(
+  estimationFee,
+  denom // the denom of the IBC token using for fee payments
+);
+```
+
+- Create the transaction with the IBC token as payment fee
+
+```typescript
+  const provider = new CosmosProvider(
+    new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+  );
+
+  const txInputWithAbsFee = {
+    // Here is the msg information
+    feeOptions: {
+      gasAdjustment: 1 // GasLimit = GasLimit(Gas Usage) * gasAdjustment
+      gasFee: {
+        denom: '' // the denom of IBC token
+      }
+    }
+  }
+
+  const msg = provider.createMsg(txInputWithAbsFee);
+  // Sign the tx
+  await signer.sign(msg as ChainMsg, derivation);
+  // Send tx to the chain
+  const tx = await provider.broadcast([msg as ChainMsg]);
+```

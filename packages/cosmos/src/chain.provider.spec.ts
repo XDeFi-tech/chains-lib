@@ -1,3 +1,5 @@
+import { GasFeeSpeed } from '@xdefi-tech/chains-core';
+
 import { ChainMsg } from './msg';
 import { CosmosProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
@@ -129,5 +131,49 @@ describe('chain.provider', () => {
     expect(
       CosmosProvider.verifyAddress('0x74EeF25048bA28542600804F68fBF71cCf520C59')
     ).toBe(true);
+  });
+});
+
+describe('chain.provider', () => {
+  let provider: CosmosProvider;
+
+  beforeEach(() => {
+    provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+  });
+
+  it('getFeeTokens(): should get a list of fee tokens', async () => {
+    const feeTokens = await provider.getFeeTokens();
+    expect(Array.isArray(feeTokens)).toBe(true);
+    expect(
+      feeTokens.every(
+        (token) =>
+          typeof token.denom === 'string' && typeof token.poolID === 'bigint'
+      )
+    ).toBeTruthy();
+  });
+
+  it('estimateGas(): should get a list of fee tokens', async () => {
+    const ibcToken =
+      'ibc/B547DC9B897E7C3AA5B824696110B8E3D2C31E3ED3F02FF363DCBAD82457E07E'; // uxki;
+    const txInput = {
+      from: 'osmo1tkh70hsnd44544s4gfhu0rpfrhkxd37pfueyfs',
+      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
+      amount: '0.000001',
+      msgs: [],
+      feeOptions: {
+        gasAdjustment: 2,
+        gasFee: {
+          denom: ibcToken,
+        },
+      },
+    };
+    const msg = provider.createMsg(txInput);
+    const estimateFee = await provider.estimateFee(
+      [msg as ChainMsg],
+      GasFeeSpeed.low
+    );
+    expect(estimateFee[0].gasLimit).toBeTruthy();
   });
 });
