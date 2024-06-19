@@ -158,6 +158,25 @@ export class IndexerDataSource extends DataSource {
         }).finish(),
       };
     });
+
+    const _feeAmount = msgs.map((m) => {
+      const messageData = m.toData();
+      if (messageData.feeOptions) {
+        return {
+          denom: messageData.feeOptions.gasFee.denom,
+          amount: new BigNumber(this.manifest.feeGasStep[speed])
+            .multipliedBy(10 ** this.manifest.decimals)
+            .toString(),
+        };
+      }
+      return {
+        denom: this.manifest.denom,
+        amount: new BigNumber(this.manifest.feeGasStep[speed])
+          .multipliedBy(10 ** this.manifest.decimals)
+          .toString(),
+      };
+    });
+
     const account = await this.getAccount(fromAddress);
     if (!account) {
       return [
@@ -187,7 +206,7 @@ export class IndexerDataSource extends DataSource {
           }),
         ],
         fee: Fee.fromPartial({
-          amount: [],
+          amount: _feeAmount as any,
         }),
       }).finish(),
       signatures: [new Uint8Array(64)],
