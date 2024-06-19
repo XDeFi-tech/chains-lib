@@ -1,8 +1,9 @@
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
+import { Eip1559Fee } from '@xdefi-tech/chains-graphql';
 
 import { ChainMsg } from './msg';
 import { EvmProvider } from './chain.provider';
-import { IndexerDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import { EVM_MANIFESTS } from './manifests';
 
 describe('chain.provider', () => {
@@ -194,5 +195,97 @@ describe('chain.provider', () => {
     expect(
       EvmProvider.verifyAddress('0x74EeF25048bA28542600804F68fBF71cCf520C59')
     ).toBe(true);
+  });
+});
+
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers');
+  return {
+    __esModule: true,
+    ...originalModule,
+  };
+});
+
+describe('chain.provider gas fee', () => {
+  describe('ChainDataSource get fee options', () => {
+    let provider: EvmProvider;
+    let originalGetFeeData: () => Promise<providers.FeeData>;
+
+    beforeEach(() => {
+      originalGetFeeData = providers.Provider.prototype.getFeeData;
+      provider = new EvmProvider(new ChainDataSource(EVM_MANIFESTS.ethereum));
+    });
+
+    afterEach(() => {
+      providers.Provider.prototype.getFeeData = originalGetFeeData;
+    });
+
+    it('Should return EIP-1559 transaction fee options', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(gasFeeOptions).not.toBeNull();
+      expect(gasFeeOptions?.high).toBeInstanceOf(Object);
+      expect((gasFeeOptions?.high as Eip1559Fee).baseFeePerGas).toBeTruthy();
+      expect((gasFeeOptions?.high as Eip1559Fee).maxFeePerGas).toBeTruthy();
+      expect(
+        (gasFeeOptions?.high as Eip1559Fee).priorityFeePerGas
+      ).toBeTruthy();
+    });
+
+    it('Should return legacy transaction fee options', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: null,
+        maxFeePerGas: null,
+        maxPriorityFeePerGas: null,
+        gasPrice: null,
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(gasFeeOptions).not.toBeNull();
+      expect(typeof gasFeeOptions?.high).toBe('number');
+    });
+  });
+
+  describe('IndexedDataSource get fee options', () => {
+    let provider: EvmProvider;
+    let originalGetFeeData: () => Promise<providers.FeeData>;
+
+    beforeEach(() => {
+      originalGetFeeData = providers.Provider.prototype.getFeeData;
+      provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
+    });
+
+    afterEach(() => {
+      providers.Provider.prototype.getFeeData = originalGetFeeData;
+    });
+
+    it('Should call to RPC to get fee', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(providers.Provider.prototype.getFeeData).toHaveBeenCalled();
+      expect(gasFeeOptions).not.toBeNull();
+    });
+
+    it('Should call to fee service to get fee', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      await provider.gasFeeOptions({
+        useFeeService: true,
+      });
+      expect(providers.Provider.prototype.getFeeData).not.toHaveBeenCalled();
+    });
   });
 });

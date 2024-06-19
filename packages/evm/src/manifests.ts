@@ -14,7 +14,9 @@ export enum EVMChains {
   cronos = 'cronos',
 }
 
-export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
+export const EVM_MANIFESTS: {
+  [key in EVMChains]: Chain.Manifest & { maxGapAmount?: number };
+} = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',
     description: '',
