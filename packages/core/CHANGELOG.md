@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.18
+
+### Patch Changes
+
+- b3b380fd: Upgrade version for core package of binance lib, cosmos lib, solana lib, core lib and evm lid.
+
 ## 2.0.17
 
 ### Patch Changes
