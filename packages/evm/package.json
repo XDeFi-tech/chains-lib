@@ -23,10 +23,10 @@
     "typescript": "4.8.3"
   },
   "dependencies": {
-    "@ledgerhq/cryptoassets": "9.1.0",
-    "@ledgerhq/hw-app-eth": "6.35.4",
-    "@ledgerhq/hw-transport": "6.30.3",
-    "@ledgerhq/hw-transport-webhid": "6.28.3",
+    "@ledgerhq/cryptoassets": "13.0.0",
+    "@ledgerhq/hw-app-eth": "6.36.1",
+    "@ledgerhq/hw-transport": "6.30.6",
+    "@ledgerhq/hw-transport-webhid": "6.28.6",
     "@trezor/connect-web": "9.1.4",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
