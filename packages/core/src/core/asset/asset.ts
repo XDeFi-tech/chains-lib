@@ -1,4 +1,4 @@
-import { ChainID } from 'core/chain';
+import { ChainID } from 'core/chain/interfaces/chain.interface';
 
 export interface AssetData {
   id?: string;
