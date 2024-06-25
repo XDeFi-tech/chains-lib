@@ -2014,6 +2014,22 @@
     "@cosmjs/math" "^0.32.3"
     "@cosmjs/utils" "^0.32.3"
 
+"@cosmjs/cosmwasm-stargate@0.32.3":
+  version "0.32.3"
+  resolved "https://registry.yarnpkg.com/@cosmjs/cosmwasm-stargate/-/cosmwasm-stargate-0.32.3.tgz#26a110a6bb0c15fdeef647e3433bd9553a1acd5f"
+  integrity sha512-pqkt+QsLIPNMTRh9m+igJgIpzXXgn1BxmxfAb9zlC23kvsuzY/12un9M7iAdim1NwKXDFeYw46xC2YkprwQp+g==
+  dependencies:
+    "@cosmjs/amino" "^0.32.3"
+    "@cosmjs/crypto" "^0.32.3"
+    "@cosmjs/encoding" "^0.32.3"
+    "@cosmjs/math" "^0.32.3"
+    "@cosmjs/proto-signing" "^0.32.3"
+    "@cosmjs/stargate" "^0.32.3"
+    "@cosmjs/tendermint-rpc" "^0.32.3"
+    "@cosmjs/utils" "^0.32.3"
+    cosmjs-types "^0.9.0"
+    pako "^2.0.2"
+
 "@cosmjs/crypto@0.27.1":
   version "0.27.1"
   resolved "https://registry.npmjs.org/@cosmjs/crypto/-/crypto-0.27.1.tgz"
@@ -2131,7 +2147,7 @@
     ws "^7"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@0.32.3":
+"@cosmjs/stargate@0.32.3", "@cosmjs/stargate@^0.32.3":
   version "0.32.3"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.32.3.tgz#5a92b222ada960ebecea72cc9f366370763f4b66"
   integrity sha512-OQWzO9YWKerUinPIxrO1MARbe84XkeXJAW0lyMIjXIEikajuXZ+PwftiKA5yA+8OyditVmHVLtPud6Pjna2s5w==
@@ -17296,7 +17312,7 @@ string-length@^5.0.1:
     char-regex "^2.0.0"
     strip-ansi "^7.0.1"
 
-"string-width-cjs@npm:string-width@^4.2.0":
+"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17313,15 +17329,6 @@ string-width@^1.0.1:
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
-
-"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
 
 string-width@^5.0.1, string-width@^5.1.2:
   version "5.1.2"
@@ -17420,7 +17427,7 @@ stringify-object@~0.1.7:
   resolved "https://registry.npmjs.org/stringify-object/-/stringify-object-0.1.8.tgz"
   integrity sha512-wud/ZQEJjTrbwG3x8aD4OnPoo1Tb/AYXazI4CMEerAjLhWCou3OYhyBzoqRXbDVGC6/XDuAZxIWjVOv7nzjq+g==
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -17440,13 +17447,6 @@ strip-ansi@^5.0.0, strip-ansi@^5.2.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -19066,7 +19066,7 @@ wonka@^6.3.2:
   resolved "https://registry.npmjs.org/wonka/-/wonka-6.3.4.tgz"
   integrity sha512-CjpbqNtBGNAeyNS/9W6q3kSkKE52+FjIj7AkFlLr11s/VWGUu6a2CdYSdGxocIhIVjaW/zchesBQUKPVU69Cqg==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19079,15 +19079,6 @@ wrap-ansi@^6.0.1, wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-6.2.0.tgz"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
@@ -19180,7 +19171,7 @@ xcode@^3.0.0, xcode@^3.0.1:
     simple-plist "^1.1.0"
     uuid "^7.0.3"
 
-xhr2@0.2.1:
+xhr2@0.2.1, xhr2@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.2.1.tgz#4e73adc4f9cfec9cbd2157f73efdce3a5f108a93"
   integrity sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==
