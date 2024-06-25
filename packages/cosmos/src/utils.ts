@@ -1,38 +1,19 @@
 import {
   createDefaultAminoConverters,
   defaultRegistryTypes,
-  Coin,
 } from '@cosmjs/stargate';
 import { AminoTypes } from '@cosmjs/stargate/build/aminotypes';
-import { toUtf8 } from '@cosmjs/encoding';
-import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 import { Registry } from '@cosmjs/proto-signing/build/registry';
 import {
   osmosisProtoRegistry,
   osmosisAminoConverters,
 } from 'osmojs/osmosis/client';
 import axios from 'axios';
+import { wasmTypes } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/messages';
+import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate';
 
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
 import { MsgBody } from './msg';
-
-/**
- * The Amino JSON representation of [MsgExecuteContract].
- *
- * [MsgExecuteContract]: https://github.com/CosmWasm/wasmd/blob/v0.18.0-rc1/proto/cosmwasm/wasm/v1/tx.proto#L73-L86
- */
-export interface AminoMsgExecuteContract {
-  type: 'wasm/MsgExecuteContract';
-  value: {
-    /** Bech32 account address */
-    readonly sender: string;
-    /** Bech32 account address */
-    readonly contract: string;
-    /** Execute message as JavaScript object */
-    readonly msg: any;
-    readonly funds: readonly Coin[];
-  };
-}
 
 export interface ChainAsset {
   denom: string;
@@ -104,36 +85,12 @@ export const STARGATE_CLIENT_OPTIONS = {
   registry: new Registry([
     ...defaultRegistryTypes,
     ...osmosisProtoRegistry,
-    ['/cosmwasm.wasm.v1.MsgExecuteContract', MsgExecuteContract],
+    ...wasmTypes,
   ]),
   aminoTypes: new AminoTypes({
     ...createDefaultAminoConverters(),
     ...osmosisAminoConverters,
-    '/cosmwasm.wasm.v1.MsgExecuteContract': {
-      aminoType: 'wasm/MsgExecuteContract',
-      toAmino: ({
-        sender,
-        contract,
-        msg,
-        funds,
-      }: MsgExecuteContract): AminoMsgExecuteContract['value'] => ({
-        sender: sender,
-        contract: contract,
-        msg: msg,
-        funds: funds,
-      }),
-      fromAmino: ({
-        sender,
-        contract,
-        msg,
-        funds,
-      }: AminoMsgExecuteContract['value']): MsgExecuteContract => ({
-        sender: sender,
-        contract: contract,
-        msg: toUtf8(JSON.stringify(msg)),
-        funds: [...funds],
-      }),
-    },
+    ...createWasmAminoConverters(),
   }),
 };
 

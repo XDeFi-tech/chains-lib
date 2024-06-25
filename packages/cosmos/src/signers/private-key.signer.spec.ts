@@ -10,31 +10,6 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import { PrivateKeySigner } from './private-key.signer';
 
-jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
-  return {
-    SigningStargateClient: {
-      createWithSigner: jest.fn().mockResolvedValue({
-        sign: jest.fn().mockResolvedValue({}),
-      }),
-      connectWithSigner: jest.fn().mockResolvedValue({
-        sign: jest.fn().mockResolvedValue({}),
-      }),
-    },
-    defaultRegistryTypes: [],
-    createDefaultAminoConverters: jest.fn().mockResolvedValue([]),
-  };
-});
-
-jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
-  return {
-    TxRaw: {
-      encode: jest.fn().mockImplementation(() => {
-        return { finish: jest.fn().mockReturnValue([1, 1, 1]) };
-      }),
-    },
-  };
-});
-
 type CosmosHdPathTypes = {
   cosmos: string;
   terra: string;
@@ -78,6 +53,8 @@ describe('private-key.signer', () => {
       from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       amount: '0.000001',
+      gasLimit: 200000,
+      gasPrice: COSMOS_MANIFESTS.cosmos.feeGasStep.medium,
     };
     // unsigned msg from backend
     backendSwapTransaction = {
