@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.21
+
+### Patch Changes
+
+- deeeccd0: Fix: swap and send NFT transactions
+
 ## 2.0.20
 
 ### Patch Changes
