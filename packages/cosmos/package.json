@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@cosmjs/amino": "0.32.3",
+    "@cosmjs/cosmwasm-stargate": "0.32.3",
     "@cosmjs/encoding": "0.32.3",
     "@cosmjs/launchpad": "0.27.1",
     "@cosmjs/ledger-amino": "0.32.3",
@@ -49,7 +50,8 @@
     "rimraf": "4.4.0",
     "rxjs": "7.8.0",
     "stream-browserify": "3.0.0",
-    "ts-node": "10.7.0"
+    "ts-node": "10.7.0",
+    "xhr2": "^0.2.1"
   },
   "scripts": {
     "build": "tsup --minify --clean",
