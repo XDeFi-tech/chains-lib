@@ -1,11 +1,5 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import {
-  fetchAddresses,
-  fetchBtcLegacyAddresses,
-  setup,
-  sign,
-  signBtcLegacyTx,
-} from 'gridplus-sdk';
+import { fetchAddresses, signBtcLegacyTx } from 'gridplus-sdk';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import type { ChainMsg } from '../msg';
