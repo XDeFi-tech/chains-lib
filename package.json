@@ -10,6 +10,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
+    "size-build": "yarn add --dev @size-limit/file@11.1.4 @size-limit/preset-big-lib@11.1.1 size-limit@11.1.4 --ignore-workspace-root-check && turbo run build",
     "dev": "turbo run dev",
     "publish:packages": "turbo run build && turbo run publish:packages",
     "coverage:per-package": "turbo run coverage",
