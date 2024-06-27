@@ -16,5 +16,5 @@
     }
   },
   "allowJs": true,
-  "include": ["!./src/custom.d.ts", "./src/**/*.ts", "!src/**/*.spec.*"]
+  "include": ["!./src/custom.d.ts", "./src/**/*.ts", "!src/**/*.spec.*", "./src/proto"]
 }

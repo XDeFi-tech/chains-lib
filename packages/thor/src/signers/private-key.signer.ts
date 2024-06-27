@@ -52,12 +52,7 @@ export class PrivateKeySigner extends Signer.Provider {
         },
       ],
       fee: {
-        amount: [
-          {
-            denom: msg.provider.manifest.denom,
-            amount: gasPrice,
-          },
-        ],
+        amount: [],
         gas_limit: new Long(parseInt(gasLimit)),
       },
     });
