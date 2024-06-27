@@ -190,7 +190,8 @@ export class ChainDataSource extends DataSource {
           authInfo
         );
         tx.addSignature(new Uint8Array(64));
-        const { data } = await this.rest.get('/thorchain/network');
+        const network = `/${this.manifest.chain.toLowerCase()}/network`;
+        const { data } = await this.rest.get(network);
 
         result.push({
           gasLimit: Math.ceil(parseInt(data.native_outbound_fee_rune) * 1.4),

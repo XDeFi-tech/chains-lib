@@ -63,7 +63,7 @@ describe('seed-phrase.signer', () => {
     await signer.sign(messages.thorchain as ChainMsg, derivation);
 
     expect(messages.thorchain.signedTransaction).toEqual(
-      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJhClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABINCgkKBHJ1bmUSATAQABpA01Hb6deAASNC/X3n9FPZYP3J/Dd3rAqSxkUv/OXgtHE1dYq6nmu5kOMSPdaGiAAyrVxzLT/Ihav3LN4CLEQT/g=='
+      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJjClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIPCgkKBHJ1bmUSATAQwJoMGkCcsjR8tN2XlDJIN6WBlTtcvoqP3wNNEX5icxtynFY+hReK41XbLWqDiihvzBkpyikDBz6jyvCoWXdCY9A07hYx'
     );
   });
 
@@ -71,7 +71,7 @@ describe('seed-phrase.signer', () => {
     await signer.sign(messages.mayachain as ChainMsg, derivation);
 
     expect(messages.mayachain.signedTransaction).toEqual(
-      'ClAKTgoOL3R5cGVzLk1zZ1NlbmQSPAoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGg4KBWNhY2FvEgUxMDAwMBJiClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIOCgoKBWNhY2FvEgEwEAAaQCz7DsyqQcbgDK9007gTSz++N38eLd+ghHCBEyzm9bJtKSWnHwiKLBNHFMLc42GfBv8VSqHwxu/6bKthgrgE+m8='
+      'Ck4KTAoOL3R5cGVzLk1zZ1NlbmQSOgoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgwKBWNhY2FvEgMxMDASZApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohA/C5ZHhO0v4GaeGiMT6ZF1tF/C6v15Jwjjjwq/Au6v1HEgQKAggBGAASEAoKCgVjYWNhbxIBMBDAmgwaQMLpXq11jlObzM8FMtor3iIXP5aOy3uavo6+8QDlBK9LTolUuiA7JACOAd9c+QlS0ML5lETTFpKH63nTmO8cxSQ='
     );
   });
 

@@ -21,6 +21,7 @@ import { ChainMsg, MsgBody } from './msg';
 import { ThorManifest } from './manifests';
 import { AccountInfo } from './types';
 import { ChainDataSource, IndexerDataSource } from './datasource';
+import { assetFromString } from './utils';
 
 @ChainDecorator('ThorProvider', {
   deps: [],
@@ -150,5 +151,11 @@ export class ThorProvider extends Chain.Provider {
     } catch (err) {
       return false;
     }
+  }
+
+  static get staticUtils() {
+    return {
+      assetFromString,
+    };
   }
 }
