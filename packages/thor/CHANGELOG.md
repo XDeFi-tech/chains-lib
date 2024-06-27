@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.19
+
+### Patch Changes
+
+- 1f0b3cec: chore: added msgDeposit to thor
+
 ## 2.0.18
 
 ### Patch Changes
