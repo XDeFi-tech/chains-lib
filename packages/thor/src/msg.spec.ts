@@ -61,7 +61,8 @@ describe('msg', () => {
       manifest: {
         name: 'Thor',
         description: '',
-        rpcURL: 'https://rpc-proxy.xdefi.services/thornode',
+        rpcURL: '',
+        nodeURL: 'https://rpc-proxy.xdefi.services/thornode',
         chainSymbol: 'RUNE',
         blockExplorerURL: 'https://viewblock.io/thorchain',
         chainId: 'thorchain-mainnet-v1',

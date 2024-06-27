@@ -1,0 +1,101 @@
+query GetThorchainBalances($address: String!) {
+  thorchain {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        name
+        image
+        price {
+          amount
+        }
+        symbol
+      }
+    }
+  }
+}
+
+
+query GetThorchainTransactions($address: String!, $first: Int!, $after: String) {
+  thorchain {
+    transactions(address: $address, first: $first, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          fee {
+            amount {
+              value
+            }
+            asset {
+              chain
+              contract
+              id
+              decimals
+              image
+              name
+              symbol
+              price {
+                amount
+              }
+              type
+            }
+          }
+          hash
+          status
+          timestamp
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                }
+                symbol
+                type
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetThorchainStatus {
+  thorchain {
+    status {
+      lastBlock
+    }
+  }
+}
+
+query GetThorchainFee {
+  thorchain {
+    fee {
+      outboundTransactionFee
+      nativeTransactionFee
+      tnsRegisterFee
+      tnsFeeOnSale
+      tnsFeePerBlock
+    }
+  }
+}
