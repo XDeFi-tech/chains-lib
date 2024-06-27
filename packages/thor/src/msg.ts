@@ -8,21 +8,30 @@ import {
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import cosmosclient from '@cosmos-client/core';
-import * as protobufjs from 'protobufjs';
 import * as bech32Buffer from 'bech32-buffer';
 
+import { types } from './proto';
 import type { ThorProvider } from './chain.provider';
 import { AccountInfo } from './types';
+import { assetFromString } from './utils';
+
+const MsgSend = types.MsgSend;
+const MsgDeposit = types.MsgDeposit;
+
+export enum MsgType {
+  MsgDeposit = 'MsgDeposit',
+  MsgSend = 'MsgSend',
+}
 
 export interface MsgBody {
   from: string;
   to: string;
   amount: NumberIsh;
-  decimals: number;
+  decimals?: number;
   denom?: string;
   memo?: string;
   source?: number;
-  type?: string;
+  type?: MsgType;
   gasLimit?: string;
   gasPrice?: string;
 }
@@ -47,7 +56,6 @@ export interface TxBody {
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
   declare provider: ThorProvider;
-  declare data: any;
 
   constructor(data: MsgBody, provider: ThorProvider, encoding: MsgEncoding) {
     super(data, provider, encoding);
@@ -61,30 +69,24 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
     const messageData = this.toData();
-    const amountData = {
-      denom: messageData.denom || this.provider.manifest.denom,
-      decimals: messageData.decimals || this.provider.manifest.decimals,
-    };
-    const transferMsg = {
+    const denom = messageData.denom || this.provider.manifest.denom;
+    const decimals = messageData.decimals || this.provider.manifest.decimals;
+    const amount = new BigNumber(messageData.amount)
+      .multipliedBy(10 ** decimals)
+      .integerValue()
+      .toString();
+    const transferMsg: types.IMsgSend = {
       fromAddress: bech32Buffer.decode(messageData.from).data,
       toAddress: bech32Buffer.decode(messageData.to).data,
       amount: [
         {
-          denom: amountData.denom,
-          amount: new BigNumber(messageData.amount)
-            .multipliedBy(10 ** this.provider.manifest.decimals)
-            .integerValue()
-            .toString(),
+          denom: denom.toLowerCase(),
+          amount,
         },
       ],
     };
-    const msgWriter = protobufjs.Writer.create();
-    msgWriter.uint32(10).bytes(transferMsg.fromAddress);
-    msgWriter.uint32(18).bytes(transferMsg.toAddress);
-    const amountWriter = msgWriter.uint32(26).fork();
-    amountWriter.uint32(10).string(transferMsg.amount[0].denom);
-    amountWriter.uint32(18).string(transferMsg.amount[0].amount);
-    amountWriter.ldelim();
+
+    const msgWriter = MsgSend.encode(transferMsg);
     const msgBytes = new cosmosclient.proto.google.protobuf.Any({
       type_url: '/types.MsgSend',
       value: msgWriter.finish(),
@@ -95,10 +97,55 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     });
   }
 
+  public buildDepositBody():
+    | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
+    | undefined {
+    const messageData = this.toData();
+    const denom = messageData.denom || this.provider.manifest.denom;
+    const decimals = messageData.decimals || this.provider.manifest.decimals;
+    const signer = bech32Buffer.decode(messageData.from).data;
+    const memo = messageData.memo || '';
+    const amount = new BigNumber(messageData.amount)
+      .multipliedBy(10 ** decimals)
+      .integerValue()
+      .toString();
+    const asset = assetFromString(denom);
+    const body: types.IMsgDeposit = {
+      coins: [
+        {
+          asset,
+          amount,
+          decimals: 0,
+        },
+      ],
+      memo,
+      signer,
+    };
+    const msgWriter = MsgDeposit.encode(body);
+
+    const msgBytes = new cosmosclient.proto.google.protobuf.Any({
+      type_url: '/types.MsgDeposit',
+      value: msgWriter.finish(),
+    });
+    return new cosmosclient.proto.cosmos.tx.v1beta1.TxBody({
+      messages: [msgBytes],
+      memo,
+    });
+  }
+
+  buildBody = () => {
+    const messageData: MsgBody = this.toData();
+    const builders = {
+      [MsgType.MsgDeposit]: this.buildDepositBody,
+      [MsgType.MsgSend]: this.buildTransferBody,
+    };
+    return builders[messageData.type || MsgType.MsgSend]?.call(this);
+  };
+
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
     const account = await this.provider.getAccount(msgData.from);
-    const txBody = this.buildTransferBody();
+    const txBody = this.buildBody();
 
     return {
       txBody,
@@ -106,7 +153,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       to: msgData.to,
       from: msgData.from,
       value: new BigNumber(msgData.amount)
-        .multipliedBy(10 ** this.provider.manifest.decimals)
+        .multipliedBy(
+          10 ** (msgData.decimals || this.provider.manifest.decimals)
+        )
         .integerValue()
         .toNumber(),
       chainId: this.provider.manifest.chainId,
@@ -118,7 +167,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       source: msgData.source || 0,
       denom: msgData.denom || this.provider.manifest.denom,
       decimals: msgData.decimals || this.provider.manifest.decimals,
-      gasLimit: msgData.gasLimit || '0',
+      gasLimit: msgData.gasLimit || '200000',
       gasPrice: msgData.gasPrice || '0',
     };
   }
