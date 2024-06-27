@@ -11,7 +11,8 @@ export const THORCHAIN_MANIFESTS: {
   [ThorChains.thorchain]: {
     name: 'Thor',
     description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/thornode',
+    rpcURL: '',
+    nodeURL: 'https://rpc-proxy.xdefi.services/thornode',
     chainSymbol: 'RUNE',
     blockExplorerURL: 'https://viewblock.io/thorchain',
     chainId: 'thorchain-mainnet-v1',
@@ -29,7 +30,8 @@ export const THORCHAIN_MANIFESTS: {
   [ThorChains.mayachain]: {
     name: 'Maya',
     description: '',
-    rpcURL: 'https://rpc-proxy.xdefi.services/mayachain/node',
+    rpcURL: '',
+    nodeURL: 'https://rpc-proxy.xdefi.services/mayachain/node',
     chainSymbol: 'CACAO',
     blockExplorerURL: 'https://www.mayascan.org/',
     chainId: 'mayachain-mainnet-v1',
@@ -47,11 +49,7 @@ export const THORCHAIN_MANIFESTS: {
 };
 
 export interface ThorManifest extends Chain.Manifest {
-  name: string;
-  decimals: any;
-  chainId: string;
-  chain: string;
-  rpcURL: string;
   denom: string;
   prefix: string;
+  nodeURL: string;
 }
