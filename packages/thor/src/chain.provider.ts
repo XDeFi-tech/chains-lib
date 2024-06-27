@@ -20,7 +20,7 @@ import { bech32 } from 'bech32';
 import { ChainMsg, MsgBody } from './msg';
 import { ThorManifest } from './manifests';
 import { AccountInfo } from './types';
-import { ChainDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 
 @ChainDecorator('ThorProvider', {
   deps: [],
@@ -33,7 +33,7 @@ export class ThorProvider extends Chain.Provider {
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    this.rest = axios.create({ baseURL: this.manifest.rpcURL });
+    this.rest = axios.create({ baseURL: this.manifest.nodeURL });
   }
 
   createMsg(
@@ -139,6 +139,7 @@ export class ThorProvider extends Chain.Provider {
   static get dataSourceList() {
     return {
       ChainDataSource: ChainDataSource,
+      IndexerDataSource: IndexerDataSource,
     };
   }
 

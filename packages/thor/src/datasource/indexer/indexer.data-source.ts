@@ -1,34 +1,29 @@
 import {
   Asset,
-  Balance,
-  BalanceFilter,
-  Coin,
   DataSource,
-  FeeData,
+  Coin,
   FeeOptions,
   GasFeeSpeed,
-  Injectable,
   Transaction,
+  Injectable,
   TransactionsFilter,
+  BalanceFilter,
+  Balance,
+  FeeData,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import cosmosclient from '@cosmos-client/core';
 import axios, { Axios } from 'axios';
-import BigNumber from 'bignumber.js';
-import { uniqBy } from 'lodash';
-import {
-  AddressChain,
-  CryptoAssetArgs,
-  getCryptoAssets,
-} from '@xdefi-tech/chains-graphql';
 import Long from 'long';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
 import { AccountInfo } from '../../types';
 
+import { getBalance, getTransactions } from './queries';
+
 @Injectable()
-export class ChainDataSource extends DataSource {
+export class IndexerDataSource extends DataSource {
   declare rpcProvider: cosmosclient.CosmosSDK;
   declare manifest: manifests.ThorManifest;
   public rest: Axios;
@@ -43,62 +38,35 @@ export class ChainDataSource extends DataSource {
   }
 
   async getNFTBalance(_address: string) {
-    throw new Error('Current chain do not support NFTs');
+    throw new Error('Method not implemented.');
   }
 
   async getBalance(filter: BalanceFilter): Promise<Coin[]> {
     const { address } = filter;
-    const { data: resp } = await this.rest.get<{ balances: Array<any> }>(
-      `/cosmos/bank/v1beta1/balances/${address}`
+    const balances = await getBalance(this.manifest.chain, address);
+    // cut off balances without asset
+    const filteredBalances = balances.filter(
+      (b: any) => b.asset.symbol && b.asset.id
     );
 
-    const chain =
-      this.manifest.chain === 'thorchain'
-        ? ('THORChain' as AddressChain)
-        : ('MAYAChain' as AddressChain);
+    return filteredBalances.map((balance: any): Coin => {
+      const { asset, amount } = balance;
 
-    const cryptoAssetsInput = resp.balances.map<CryptoAssetArgs>(
-      ({ denom }) => ({
-        chain: chain,
-        contract: this.manifest.denom === denom ? null : denom,
-      })
-    );
-    const {
-      data: {
-        assets: { cryptoAssets: assets },
-      },
-    } = await getCryptoAssets(cryptoAssetsInput);
-
-    return resp.balances.reduce((result: Coin[], { amount }, index) => {
-      const asset = assets && assets[index];
-      if (!asset) {
-        return result;
-      }
-
-      const coin = new Coin(
+      return new Coin(
         new Asset({
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          id: asset.id!,
+          id: asset.id,
           chainId: this.manifest.chainId,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: asset!.name!,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          symbol: asset.symbol!,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: asset.name,
+          symbol: asset.symbol,
           icon: asset.image,
           native: !Boolean(asset.contract),
           address: asset.contract,
           price: asset.price?.amount,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          decimals: asset.decimals!,
+          decimals: asset.price?.scalingFactor,
         }),
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        new BigNumber(amount).dividedBy(10 ** asset.decimals!)
+        amount.value
       );
-
-      result.push(coin);
-      return result;
-    }, []);
+    });
   }
 
   async subscribeBalance(
@@ -107,44 +75,13 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async _getTransactionEvent(
-    event: 'transfer.sender' | 'transfer.recipient',
-    address: string
-  ) {
-    return await cosmosclient.rest.tx.getTxsEvent(
-      this.rpcProvider,
-      [`${event}='${address}'`],
-      undefined,
-      undefined,
-      BigInt(10)
-    );
-  }
-
   async getTransactions(filter: TransactionsFilter): Promise<Transaction[]> {
     const { address } = filter;
-    const [sender, recipient] = await Promise.all([
-      this._getTransactionEvent('transfer.recipient', address),
-      this._getTransactionEvent('transfer.sender', address),
-    ]);
-    const formattedTransactions = uniqBy(
-      [
-        ...(sender?.data?.tx_responses || []),
-        ...(recipient?.data?.tx_responses || []),
-      ],
-      'txhash'
-    );
-    return formattedTransactions.map((tx: any) =>
-      Transaction.fromData({
-        status: 'success',
-        hash: tx.data.txhash,
-        timestamp: tx.data.timestamp,
-        msgs: [],
-        fee: {
-          value: '',
-          asset: null,
-        },
-      })
-    );
+    const transactions = await getTransactions(this.manifest.chain, address);
+
+    return transactions.map((transaction) => {
+      return Transaction.fromData(transaction);
+    });
   }
 
   async subscribeTransactions(
@@ -190,10 +127,11 @@ export class ChainDataSource extends DataSource {
           authInfo
         );
         tx.addSignature(new Uint8Array(64));
-        const { data } = await this.rest.get('/thorchain/network');
-
+        const { data } = await this.rest.post('/cosmos/tx/v1beta1/simulate', {
+          txBytes: tx.txBytes(),
+        });
         result.push({
-          gasLimit: Math.ceil(parseInt(data.native_outbound_fee_rune) * 1.4),
+          gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 1.4),
           gasPrice: this.manifest.feeGasStep[speed],
         });
       } catch (err) {
@@ -206,7 +144,7 @@ export class ChainDataSource extends DataSource {
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
-    return this.manifest.feeGasStep;
+    return this.manifest.feeGasStep as unknown as FeeOptions;
   }
 
   async getNonce(_address: string): Promise<number> {

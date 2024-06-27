@@ -1,9 +1,34 @@
-import { Response } from '@xdefi-tech/chains-core';
+import { Response, Coin } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from './msg';
 import { ThorProvider } from './chain.provider';
-import { ChainDataSource } from './datasource';
 import { THORCHAIN_MANIFESTS, ThorChains } from './manifests';
+
+jest.mock('./datasource/indexer/queries/balances.query', () => ({
+  getBalance: () => {
+    return [
+      {
+        address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+        amount: {
+          value: '100000000',
+        },
+        asset: {
+          chain: 'THORChain',
+          contract: null,
+          decimals: 8,
+          id: '3147627e-a757-4c58-b98d-dc720bf57af7',
+          name: 'Rune',
+          image:
+            'https://xdefi-prod-static.s3.eu-west-1.amazonaws.com/thorchain.png',
+          price: {
+            amount: '6.12',
+          },
+          symbol: 'RUNE',
+        },
+      },
+    ];
+  },
+}));
 
 jest.mock('axios', () => ({
   create: jest.fn().mockReturnValue({
@@ -13,16 +38,16 @@ jest.mock('axios', () => ({
           body: {
             messages: [
               {
-                from_address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
-                to_address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+                from_address: 'thor1x843445a6z2e3edem9se22hnekurl7tauza6ft',
+                to_address: 'thor1x843445a6z2e3edem9se22hnekurl7tauza6ft',
               },
             ],
           },
         },
         tx_response: {
-          height: '17932843',
+          height: '16389413',
           txhash:
-            '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0',
+            'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20',
           codespace: '',
           code: 0,
           data: '',
@@ -30,7 +55,7 @@ jest.mock('axios', () => ({
         },
         block: {
           header: {
-            height: '17932843',
+            height: '16389413',
           },
         },
       },
@@ -41,10 +66,14 @@ jest.mock('axios', () => ({
 describe('chain.provider', () => {
   const providers: Record<ThorChains, ThorProvider> = {
     [ThorChains.thorchain]: new ThorProvider(
-      new ChainDataSource(THORCHAIN_MANIFESTS[ThorChains.thorchain])
+      new ThorProvider.dataSourceList.IndexerDataSource(
+        THORCHAIN_MANIFESTS[ThorChains.thorchain]
+      )
     ),
     [ThorChains.mayachain]: new ThorProvider(
-      new ChainDataSource(THORCHAIN_MANIFESTS[ThorChains.mayachain])
+      new ThorProvider.dataSourceList.IndexerDataSource(
+        THORCHAIN_MANIFESTS[ThorChains.mayachain]
+      )
     ),
   };
 
@@ -53,7 +82,7 @@ describe('chain.provider', () => {
       to: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       from: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       amount: 0.000001,
-      decimals: 18,
+      decimals: 8,
     });
 
     expect(msg).toBeInstanceOf(ChainMsg);
@@ -61,10 +90,10 @@ describe('chain.provider', () => {
 
   it('should get a transaction from thorchain', async () => {
     const txData = await providers[ThorChains.thorchain].getTransaction(
-      '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0'
+      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
     );
     expect(txData?.hash).toEqual(
-      '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0'
+      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
     );
   });
 
@@ -77,18 +106,13 @@ describe('chain.provider', () => {
   });
 
   it('should get a balance from thorchain', async () => {
-    jest.spyOn(ThorProvider.prototype, 'getBalance').mockResolvedValue(
-      new Response(
-        jest.fn().mockImplementation(async () => []),
-        jest.fn().mockImplementation(async () => [])
-      )
-    );
     const balance = await providers[ThorChains.thorchain].getBalance(
       'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94'
     );
 
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(0);
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0]).toBeInstanceOf(Coin);
   });
 
   it('createMsg(): should create message with data for mayachain', () => {
@@ -104,10 +128,10 @@ describe('chain.provider', () => {
 
   it('should get a transaction from mayachain', async () => {
     const txData = await providers[ThorChains.mayachain].getTransaction(
-      '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0'
+      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
     );
     expect(txData?.hash).toEqual(
-      '30D580A3E1CA1D440BF2AB4081D9C0D834C833646ADE834EE52F1A255E5053B0'
+      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
     );
   });
 
