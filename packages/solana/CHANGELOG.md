@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.22
+
+### Patch Changes
+
+- 0a125235: Split Chains Lib GQL package for each chains
+- Updated dependencies [0a125235]
+  - @xdefi-tech/chains-core@2.0.19
+
 ## 2.0.21
 
 ### Patch Changes
