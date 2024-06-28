@@ -28,6 +28,13 @@
     "chain:generate": "HYGEN_TMPLS=templates hygen basic new",
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
+  "size-limit": [
+    {
+      "path": "packages/*/dist/index.js",
+      "webpack": false,
+      "limit": "50000 ms"
+    }
+  ],
   "devDependencies": {
     "@babel/core": "7.21.8",
     "@babel/plugin-proposal-class-properties": "7.18.6",
