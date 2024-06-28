@@ -1,9 +1,10 @@
+import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   GetBinanceTransactionsDocument,
   Scalars,
   OptBlockRange,
-} from '@xdefi-tech/chains-graphql';
-import { gqlClient } from '@xdefi-tech/chains-core';
+} from '../../../gql/graphql';
 
 export const getTransaction = (
   address: Scalars['String'],

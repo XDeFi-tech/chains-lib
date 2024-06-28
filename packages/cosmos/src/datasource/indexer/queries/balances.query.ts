@@ -1,4 +1,5 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   CosmosBalanceDocument,
   OsmosisBalanceDocument,
@@ -14,8 +15,7 @@ import {
   MarsBalanceDocument,
   TerraBalanceDocument,
   Balance,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { CosmosHubChains } from '../../../manifests';
 
 type CosmosChainParams = {

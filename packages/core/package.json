@@ -29,7 +29,12 @@
     "prettier": "2.6.2",
     "ts-jest": "27.1.4",
     "tsup": "6.6.3",
-    "typedoc": "0.22.15"
+    "typedoc": "0.22.15",
+    "@graphql-codegen/cli": "3.2.2",
+    "@graphql-codegen/client-preset": "2.1.1",
+    "@graphql-codegen/named-operations-object": "2.3.1",
+    "@graphql-codegen/near-operation-file-preset": "2.5.0",
+    "@graphql-codegen/typescript-document-nodes": "3.0.2"
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
@@ -58,7 +63,11 @@
     "test:watch": "jest --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typedoc": "typedoc src/index.ts"
+    "typedoc": "typedoc src/index.ts",
+    "compile": "graphql-codegen --config codegen.yml && yarn format",
+    "compile:build": "yarn compile && yarn build",
+    "compile:watch": "graphql-codegen -w",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "type": "commonjs",
   "tsup": {
