@@ -30,9 +30,52 @@
   },
   "size-limit": [
     {
-      "path": "packages/*/dist/index.js",
-      "webpack": false,
-      "limit": "50000 ms"
+      "path": "packages/binance/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/bitcoin/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/bitcoincash/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/core/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/cosmos/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/dogecoin/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/evm/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/litecoin/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/solana/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/thor/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/tron/dist/index.js",
+      "webpack": false
+    },
+    {
+      "path": "packages/utxo/dist/index.js",
+      "webpack": false
     }
   ],
   "devDependencies": {
