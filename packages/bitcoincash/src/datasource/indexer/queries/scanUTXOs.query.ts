@@ -1,8 +1,9 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   BitcoinCashScanUtxOsDocument,
   UnspentTransactionOutputV5,
-} from '@xdefi-tech/chains-graphql';
+} from '../../../gql/graphql';
 
 export const scanUTXOs = async (
   address: string

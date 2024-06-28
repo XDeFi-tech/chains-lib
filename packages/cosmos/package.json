@@ -18,7 +18,13 @@
     "jest-watch-typeahead": "1.0.0",
     "ts-jest": "27.1.4",
     "tsup": "6.6.3",
-    "typescript": "4.8.3"
+    "typescript": "4.8.3",
+    "@graphql-codegen/cli": "3.2.2",
+    "@graphql-codegen/client-preset": "2.1.1",
+    "@graphql-codegen/named-operations-object": "2.3.1",
+    "@graphql-codegen/near-operation-file-preset": "2.5.0",
+    "@graphql-codegen/typescript-document-nodes": "3.0.2",
+    "graphql": "16.6.0"
   },
   "dependencies": {
     "@cosmjs/amino": "0.32.3",
@@ -36,7 +42,6 @@
     "@terra-money/feather.js": "2.1.0-beta.3",
     "@terra-money/terra.proto": "5.3.0-beta.0",
     "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
     "axios": "1.4.0",
     "bech32": "2.0.0",
     "bech32-buffer": "0.2.1",
@@ -61,7 +66,11 @@
     "lint:fix": "eslint . --fix",
     "coverage": "jest --coverageReporters='json-summary' --coverage",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "compile": "graphql-codegen --config codegen.yml && yarn format",
+    "compile:build": "yarn compile && yarn build",
+    "compile:watch": "graphql-codegen -w",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "jest": {
     "setupFiles": [],

@@ -1,9 +1,7 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import {
-  GetSolanaTransactionsDocument,
-  Scalars,
-} from '@xdefi-tech/chains-graphql';
 import map from 'lodash/map';
+
+import { GetSolanaTransactionsDocument, Scalars } from '../../../gql/graphql';
 
 export const getTransactions = async (address: Scalars['String']) => {
   const response = await gqlClient.query({

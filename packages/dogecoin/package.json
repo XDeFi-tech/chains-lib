@@ -16,7 +16,13 @@
     "jest-watch-typeahead": "1.0.0",
     "ts-jest": "27.1.4",
     "tsup": "6.6.3",
-    "typescript": "4.8.3"
+    "typescript": "4.8.3",
+    "@graphql-codegen/cli": "3.2.2",
+    "@graphql-codegen/client-preset": "2.1.1",
+    "@graphql-codegen/named-operations-object": "2.3.1",
+    "@graphql-codegen/near-operation-file-preset": "2.5.0",
+    "@graphql-codegen/typescript-document-nodes": "3.0.2",
+    "graphql": "16.6.0"
   },
   "dependencies": {
     "@ledgerhq/hw-app-btc": "10.0.0",
@@ -26,7 +32,6 @@
     "@noble/curves": "1.3.0",
     "@scure/btc-signer": "1.2.1",
     "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
     "@xdefi-tech/chains-utxo": "*",
     "axios": "1.3.4",
     "bignumber.js": "9.1.2",
@@ -51,7 +56,11 @@
     "test:watch": "jest --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "clean": "rimraf dist .turbo node_modules"
+    "clean": "rimraf dist .turbo node_modules",
+    "compile": "graphql-codegen --config codegen.yml && yarn format",
+    "compile:build": "yarn compile && yarn build",
+    "compile:watch": "graphql-codegen -w",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "type": "commonjs",
   "tsup": {

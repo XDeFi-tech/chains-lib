@@ -10,6 +10,7 @@ import {
   Balance,
   FeeOptions,
   FeeData,
+  getCryptoAssets,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -18,11 +19,6 @@ import {
   LcdClient,
   setupBankExtension,
 } from '@cosmjs/launchpad';
-import {
-  AddressChain,
-  getCryptoAssets,
-  CryptoAssetArgs,
-} from '@xdefi-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
 import { uniqBy, capitalize } from 'lodash';
 import { Account } from '@cosmjs/stargate';
@@ -37,6 +33,7 @@ import {
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
+import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
 import { ChainMsg } from '../../msg';
 

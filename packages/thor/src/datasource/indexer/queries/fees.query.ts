@@ -1,9 +1,9 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   GetMayachainFeeDocument,
   GetThorchainFeeDocument,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { ThorChains } from '../../../manifests';
 
 type ThorchainParams = {
