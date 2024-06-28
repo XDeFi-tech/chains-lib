@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.17
+
+### Patch Changes
+
+- 0a125235: Split Chains Lib GQL package for each chains
+- Updated dependencies [0a125235]
+  - @xdefi-tech/chains-core@2.0.19
+
 ## 2.0.16
 
 ### Patch Changes
