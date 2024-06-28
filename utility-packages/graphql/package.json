@@ -17,9 +17,6 @@
     "build": "tsup --minify --clean",
     "publish:packages": "npm publish --tag $GITHUB_REF",
     "watch": "tsup --watch",
-    "compile": "graphql-codegen --config codegen.yml && yarn format",
-    "compile:build": "yarn compile && yarn build",
-    "compile:watch": "graphql-codegen -w",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {

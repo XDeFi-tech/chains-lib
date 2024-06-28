@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { BitcoinCashGetTransactionByHashDocument } from '@xdefi-tech/chains-graphql';
+
+import { BitcoinCashGetTransactionByHashDocument } from '../../../gql/graphql';
 
 export const getTransactionByHash = async (txHash: string) => {
   try {

@@ -1,0 +1,24 @@
+overwrite: true
+schema: https://gql-router.xdefi.services/graphql
+documents:
+  - './**/*.graphql'
+generates:
+  src/common/:
+    preset: client
+    presetConfig:
+      gqlTagName: gql
+      addOperationExport: false
+      namingConvention:
+        enumValues: 'keep'
+      documentMode: string
+      flattenGeneratedTypes: true
+    config:
+      flattenGeneratedTypes: true
+      namingConvention:
+        enumValues: 'keep'
+  src/common/index.ts:
+    plugins:
+      - add:
+          content: export * from './config';
+            export * from './di';
+            export * from './client';

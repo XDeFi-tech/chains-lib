@@ -1,11 +1,11 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+import map from 'lodash/map';
+
 import {
   GetMayachainTransactionsDocument,
   GetThorchainTransactionsDocument,
   Scalars,
-} from '@xdefi-tech/chains-graphql';
-import map from 'lodash/map';
-
+} from '../../../gql/graphql';
 import { ThorChains } from '../../../manifests';
 
 type ThorchainParams = {

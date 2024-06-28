@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { GetSolanaFeeDocument } from '@xdefi-tech/chains-graphql';
+
+import { GetSolanaFeeDocument } from '../../../gql/graphql';
 
 export const getFees = () => {
   return gqlClient.query({
