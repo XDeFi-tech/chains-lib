@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { DogecoinGetTransactionByHashDocument } from '@xdefi-tech/chains-graphql';
+
+import { DogecoinGetTransactionByHashDocument } from '../../../gql/graphql';
 
 export const getTransactionByHash = async (txHash: string) => {
   try {

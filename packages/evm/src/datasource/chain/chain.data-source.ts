@@ -12,16 +12,17 @@ import {
   Injectable,
   Transaction,
   TransactionsFilter,
+  getCryptoAssets,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
 import { providers } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
-import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
 import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
 
+import { AddressChain } from '../../gql/graphql';
 import { RestEstimateGasRequest } from '../../types';
 import { EVMChains } from '../../manifests';
 import { ChainMsg, TokenType } from '../../msg';

@@ -1,4 +1,5 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   GetCosmosFeesDocument,
   GetOsmosisFeesDocument,
@@ -14,8 +15,7 @@ import {
   GetMarsFeesDocument,
   GetTerraFeesDocument,
   DefaultGasFee,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { CosmosHubChains } from '../../../manifests';
 
 type CosmosChainParams = {

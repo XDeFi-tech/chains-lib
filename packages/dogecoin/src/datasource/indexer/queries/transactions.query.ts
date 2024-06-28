@@ -1,9 +1,10 @@
+import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   GetDogecoinTransactionsDocument,
   Scalars,
   UtxoTransactionV2,
-} from '@xdefi-tech/chains-graphql';
-import { gqlClient } from '@xdefi-tech/chains-core';
+} from '../../../gql/graphql';
 
 export const getTransactions = async (
   chain: string,

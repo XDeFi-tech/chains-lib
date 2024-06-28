@@ -10,19 +10,16 @@ import {
   Injectable,
   Transaction,
   TransactionsFilter,
+  getCryptoAssets,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import cosmosclient from '@cosmos-client/core';
 import axios, { Axios } from 'axios';
 import BigNumber from 'bignumber.js';
 import { uniqBy } from 'lodash';
-import {
-  AddressChain,
-  CryptoAssetArgs,
-  getCryptoAssets,
-} from '@xdefi-tech/chains-graphql';
 import Long from 'long';
 
+import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
 import { AccountInfo } from '../../types';

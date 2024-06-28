@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { GetTronBalanceDocument } from '@xdefi-tech/chains-graphql';
+
+import { GetTronBalanceDocument } from '../../../gql/graphql';
 
 export const getBalance = async (address: string) => {
   const response = await gqlClient.query({

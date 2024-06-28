@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { GetAssetsWithFilterDocument } from '@xdefi-tech/chains-graphql';
+
+import { GetAssetsWithFilterDocument } from '../../../gql/graphql';
 
 export const getAssets = (contractAddress: string[]) => {
   return gqlClient.query({

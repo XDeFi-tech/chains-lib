@@ -1,0 +1,17 @@
+query GetCryptoAssets($input: [CryptoAssetArgs!]!) {
+  assets {
+    cryptoAssets(input: $input) {
+      chain
+      contract
+      id
+      name
+      symbol
+      image
+      decimals
+      price {
+        amount
+        scalingFactor
+      }
+    }
+  }
+}
