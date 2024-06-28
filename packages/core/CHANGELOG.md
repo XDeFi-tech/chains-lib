@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.19
+
+### Patch Changes
+
+- 0a125235: Split Chains Lib GQL package for each chains
+
 ## 2.0.18
 
 ### Patch Changes
