@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.10
+
+### Patch Changes
+
+- fc541c1a: Fix: calculate fee rate to use for bitcoin dusting algorithm
+
 ## 2.0.9
 
 ### Patch Changes
