@@ -1,7 +1,42 @@
 import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import * as bitcoin from 'bitcoinjs-lib';
+import utils from 'coinselect/utils';
 
 import { ChainMsg } from './msg';
+import { BitcoinProvider } from './chain.provider';
+import { IndexerDataSource } from './datasource';
+import { BITCOIN_MANIFEST } from './manifests';
+import * as scanUtxosMoudle from './datasource/indexer/queries/scanUTXOs.query';
+import * as feeModule from './datasource/indexer/queries/fees.query';
+
+jest.mock('./datasource/indexer/queries/scanUTXOs.query', () => {
+  const originalModule = jest.requireActual(
+    './datasource/indexer/queries/scanUTXOs.query'
+  );
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    scanUTXOs: jest.fn(),
+  };
+});
+
+jest.mock('./datasource/indexer/queries/fees.query', () => {
+  const originalModule = jest.requireActual(
+    './datasource/indexer/queries/fees.query'
+  );
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    getFees: jest.fn().mockResolvedValue({
+      high: 3000,
+      medium: 3000, // 3000 sat/kvB => 3 sat/vB
+      low: 3000,
+    }),
+  };
+});
 
 describe('msg', () => {
   let mockProvider: any;
@@ -12,10 +47,10 @@ describe('msg', () => {
         Promise.resolve([
           {
             hash: 'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d',
-            value: 546,
+            value: 1000,
             index: 0,
             witnessUtxo: {
-              value: 546,
+              value: 1000,
               script: Buffer.from(
                 '5120315c668cf7eea0e451ffc7f202965d66ad624fc8a2a543754ce4f640e75e4088',
                 'hex'
@@ -26,10 +61,10 @@ describe('msg', () => {
           },
           {
             hash: 'e08df1abc9c1618ba7fe3c3652c5911263ceb75a95dcee0424e7700ac0e63a6d',
-            value: 546,
+            value: 1000,
             index: 1,
             witnessUtxo: {
-              value: 546,
+              value: 1000,
               script: Buffer.from(
                 '5120315c668cf7eea0e451ffc7f202965d66ad624fc8a2a543754ce4f640e75e4088',
                 'hex'
@@ -59,9 +94,9 @@ describe('msg', () => {
       ),
       gasFeeOptions: jest.fn(() =>
         Promise.resolve({
-          high: 1140000,
-          low: 114000,
-          medium: 228000,
+          high: 3000,
+          low: 3000,
+          medium: 3000,
         })
       ),
       getBalance: jest.fn(() =>
@@ -268,5 +303,126 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
+  });
+});
+
+describe('msg: Bitcoin dust filter', () => {
+  const address = 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw';
+  const mockFirstTx = new bitcoin.Transaction();
+  mockFirstTx.addInput(Buffer.alloc(32, 0), 0);
+  mockFirstTx.addOutput(bitcoin.address.toOutputScript(address), 1000);
+  const mockSecondTx = new bitcoin.Transaction();
+  mockSecondTx.addInput(Buffer.alloc(32, 0), 0);
+  mockSecondTx.addOutput(bitcoin.address.toOutputScript(address), 3000);
+
+  (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
+    {
+      oTxHash: mockFirstTx.getHash().toString('hex'),
+      oIndex: 0,
+      oTxHex: mockFirstTx.toHex(),
+      address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      isCoinbase: false,
+      scriptHex: mockFirstTx.outs[0].script.toString('hex'),
+      value: {
+        value: '1000',
+      },
+    },
+    {
+      oTxHash: mockSecondTx.getHash().toString('hex'),
+      oIndex: 0,
+      oTxHex: mockSecondTx.toHex(),
+      address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      isCoinbase: false,
+      scriptHex: mockSecondTx.outs[0].script.toString('hex'),
+      value: {
+        value: '3000',
+      },
+    },
+  ]);
+
+  let provider: BitcoinProvider;
+
+  beforeEach(() => {
+    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
+  });
+
+  it('should remove utxo with value 1000 sats', async () => {
+    const feeRate = 8; // 8 sat/vB
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 8000,
+      medium: 8000, // 8000 sat/kvB => 8 sat/vB
+      low: 8000,
+    });
+    const msg = provider.createMsg({
+      from: address,
+      to: address,
+      amount: 0.00000546, // 546 sat
+    });
+    const utxos = await provider.scanUTXOs(address);
+    expect(utxos[0].value).toBeGreaterThan(546); // 1000 > 546
+    const inputUtxosSize = utils.inputBytes(utxos[0]);
+    expect(inputUtxosSize * feeRate).toBeGreaterThan(utxos[0].value); // 1000 < utxo fees => bitcoin dust and shuld be removed
+
+    const { inputs, outputs } = await msg.buildTx();
+    expect(inputs.length).toBe(1);
+    expect(outputs.length).toBe(1);
+    expect(outputs[0].value).toEqual(546);
+    expect(inputs[0].value).toEqual(3000);
+    const inputSize = utils.inputBytes(inputs[0]);
+    const accumBytes = utils.transactionBytes([], outputs);
+    const fee = (inputSize + accumBytes) * feeRate;
+    const surplus = 3000 - 546 - fee; // 942 sat < 8 * 148 => bitcoin dust
+    expect(surplus).toBeLessThan(8 * inputSize);
+  });
+
+  it('Should not enough balances by fees', async () => {
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 3000,
+      medium: 3000, // 3000 sat/kvB => 3 sat/vB
+      low: 3000,
+    });
+    const msg = provider.createMsg({
+      from: address,
+      to: address,
+      amount: 0.00003, // 3000 sat
+    });
+
+    const utxos = await provider.scanUTXOs(address);
+    expect(utxos[0].value + utxos[1].value).toBeGreaterThan(3000); // 4000 sat > 3000 sat
+    const inputBytesSize =
+      utils.inputBytes(utxos[0]) + utils.inputBytes(utxos[1]);
+    const accumBytesSize = utils.transactionBytes(
+      [],
+      [{ address, value: 3000 }]
+    );
+    const fee = (inputBytesSize + accumBytesSize) * 3; // 1032
+    expect(utxos[0].value + utxos[1].value).toBeLessThan(3000 + fee);
+    await expect(msg.buildTx()).rejects.toThrowError(
+      'Insufficient Balance for transaction'
+    );
+  });
+
+  it('should contain utxo with value 1000 sats', async () => {
+    const feeRate = 3;
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 3000,
+      medium: 3000, // 3000 sat/kvB => 3 sat/vB
+      low: 3000,
+    });
+    const msg = provider.createMsg({
+      from: address,
+      to: address,
+      amount: 0.00000546, // 546 sat
+    });
+
+    const utxos = await provider.scanUTXOs(address);
+    const inputBytesSize = utils.inputBytes(utxos[0]);
+    expect(utxos[0].value).toBeGreaterThan(inputBytesSize * feeRate);
+
+    const { inputs, outputs } = await msg.buildTx();
+    expect(inputs.length).toBe(2);
+    expect(outputs.length).toBe(2);
+    expect(outputs[0].value).toEqual(546);
+    expect(inputs[0].value).toEqual(1000);
   });
 });

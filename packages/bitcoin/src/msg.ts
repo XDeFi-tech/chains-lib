@@ -79,10 +79,11 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
       );
     }
 
-    const { fee } = await this.getFee();
+    const { fee } = await this.getFee(); // unit is btc/kvB
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRateWhole = parseInt(fee);
+    const feeRate = Number(fee) * 1e5; // sat/vB
+    const feeRateWhole = parseInt(feeRate.toString());
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
