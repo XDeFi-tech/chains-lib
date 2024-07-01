@@ -57,6 +57,14 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   },
 }));
 
+jest.mock('../datasource/indexer/queries/fees.query', () => ({
+  getFees: jest.fn().mockResolvedValue({
+    low: 3000,
+    medium: 3000,
+    high: 3000,
+  }),
+}));
+
 describe('ledger.signer', () => {
   let signer: LedgerSigner;
   let derivationPath: string;
