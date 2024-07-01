@@ -39,10 +39,12 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
   async buildTx() {
     const msgData = this.toData();
     const utxos = await this.provider.scanUTXOs(this.data.from);
-    const { fee } = await this.getFee();
+    const { fee } = await this.getFee(); // unit is btc/kvB
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRateWhole = parseInt(fee) < 1 ? 1 : parseInt(fee);
+    const feeRate = Number(fee) * 1e5; // sat/vB
+    const feeRateWhole =
+      parseInt(feeRate.toString()) < 1 ? 1 : parseInt(fee.toString());
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
