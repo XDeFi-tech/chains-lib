@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "@xdefi-tech/chains-evm#build": {
+      "dependsOn": ["@xdefi-tech/chains-graphql#build"],
+      "outputs": ["dist/**"]
+    },
     "test": {
       "env": ["BLOCKCHAIR_API_KEY"]
     },
