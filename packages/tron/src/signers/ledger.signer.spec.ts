@@ -18,7 +18,16 @@ jest.mock('@ledgerhq/hw-app-trx', () => {
     getAddress: jest.fn().mockResolvedValue({
       address: 'TSDmgg8m3AfNniTzz4dyWN44fkGd7otZ4C',
     }),
-    signTransaction: jest.fn().mockResolvedValue('SIGNEDTX'),
+    signTransaction: jest
+      .fn()
+      .mockResolvedValue(
+        '0xb80601cba137745cfbb0e3507c3c22bb9465dc7d2963a51a6fcfdc5f4341b53d7faab96d26c080151e5877a8945ea9028bc0d529f11dffa79b8162c38d5bab821c'
+      ),
+    signPersonalMessage: jest
+      .fn()
+      .mockResolvedValue(
+        '0xb80601cba137745cfbb0e3507c3c22bb9465dc7d2963a51a6fcfdc5f4341b53d7faab96d26c080151e5877a8945ea9028bc0d529f11dffa79b8162c38d5bab821c'
+      ),
   }));
 });
 
@@ -62,5 +71,26 @@ describe('ledger.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should signMessage a transaction using a ledger device', async () => {
+    const { raw_data_hex } = await (message as ChainMsg).buildTx();
+    const signature = await signer.signMessageV2(raw_data_hex, derivationPath);
+
+    expect(signature).toEqual(
+      '0xb80601cba137745cfbb0e3507c3c22bb9465dc7d2963a51a6fcfdc5f4341b53d7faab96d26c080151e5877a8945ea9028bc0d529f11dffa79b8162c38d5bab821c'
+    );
+  });
+
+  it('should signTransaction a transaction using a ledger device', async () => {
+    const { raw_data_hex } = await (message as ChainMsg).buildTx();
+    const signature = await signer.signTransaction(
+      derivationPath,
+      raw_data_hex
+    );
+
+    expect(signature).toEqual(
+      '0xb80601cba137745cfbb0e3507c3c22bb9465dc7d2963a51a6fcfdc5f4341b53d7faab96d26c080151e5877a8945ea9028bc0d529f11dffa79b8162c38d5bab821c'
+    );
   });
 });

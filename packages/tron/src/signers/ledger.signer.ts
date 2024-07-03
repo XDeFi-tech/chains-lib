@@ -30,6 +30,35 @@ export class LedgerSigner extends Signer.Provider {
 
     msg.sign(tx);
   }
+
+  async signMessage() {
+    throw new Error('Ledger wallet does not support signMessage');
+  }
+
+  async signMessageV2(message: string, derivation: string) {
+    const trx = new Trx(this.transport as Transport);
+    const signature = await trx.signPersonalMessage(
+      derivation,
+      Buffer.from(message).toString('hex')
+    );
+
+    return signature;
+  }
+
+  async signTransaction(
+    derivation: string,
+    txHex: string,
+    tokenSignature = [] as string[]
+  ) {
+    const trx = new Trx(this.transport as Transport);
+    const signature = await trx.signTransaction(
+      derivation,
+      txHex,
+      tokenSignature
+    );
+
+    return signature;
+  }
 }
 
 export default LedgerSigner;

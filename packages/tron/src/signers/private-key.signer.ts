@@ -4,6 +4,8 @@ import type { TronManifest } from 'src/manifests';
 
 import { ChainMsg } from '../msg';
 
+import { Bytes } from './types';
+
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
 export class PrivateKeySigner extends Signer.Provider {
   public manifest: TronManifest;
@@ -41,6 +43,33 @@ export class PrivateKeySigner extends Signer.Provider {
     const txData = await msg.buildTx();
     const signature = await tronWeb.trx.sign(txData);
     msg.sign(signature);
+  }
+
+  async signMessage(txHex: string): Promise<string> {
+    const tronWeb = new TronWeb({
+      fullHost: this.manifest.rpcURL,
+      privateKey: this.key,
+    });
+    const signature = await tronWeb.trx.signMessage(txHex, this.key);
+    return signature;
+  }
+
+  async signMessageV2(message: Bytes | string): Promise<string> {
+    const tronWeb = new TronWeb({
+      fullHost: this.manifest.rpcURL,
+      privateKey: this.key,
+    });
+    const signature = await tronWeb.trx.signMessageV2(message, this.key);
+    return signature;
+  }
+
+  async signTransaction(txHex: string): Promise<string> {
+    const tronWeb = new TronWeb({
+      fullHost: this.manifest.rpcURL,
+      privateKey: this.key,
+    });
+    const signature = await tronWeb.trx.signTransaction(txHex, this.key);
+    return signature;
   }
 }
 
