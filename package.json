@@ -10,7 +10,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
-    "size-build": "yarn add --dev @size-limit/file@11.1.4 @size-limit/preset-big-lib@11.1.1 size-limit@11.1.4 --ignore-workspace-root-check && turbo run build",
+    "size-build": "yarn list | grep @size-limit/file || yarn add --dev @size-limit/file@11.1.4 @size-limit/preset-big-lib@11.1.4 size-limit@11.1.4 --ignore-workspace-root-check --frozen-lockfile && turbo run build",
     "dev": "turbo run dev",
     "publish:packages": "turbo run build && turbo run publish:packages",
     "coverage:per-package": "turbo run coverage",
@@ -26,55 +26,56 @@
     "clean": "turbo run clean && rimraf node_modules",
     "typedoc": "turbo run typedoc",
     "chain:generate": "HYGEN_TMPLS=templates hygen basic new",
-    "publish-packages": "turbo run build lint && changeset version && changeset publish"
+    "publish-packages": "turbo run build lint && changeset version && changeset publish",
+    "size": "yarn size-build && size-limit"
   },
   "size-limit": [
     {
-      "path": "packages/binance/dist/index.js",
+      "path": "packages/binance/dist",
       "webpack": false
     },
     {
-      "path": "packages/bitcoin/dist/index.js",
+      "path": "packages/bitcoin/dist",
       "webpack": false
     },
     {
-      "path": "packages/bitcoincash/dist/index.js",
+      "path": "packages/bitcoincash/dist",
       "webpack": false
     },
     {
-      "path": "packages/core/dist/index.js",
+      "path": "packages/core/dist",
       "webpack": false
     },
     {
-      "path": "packages/cosmos/dist/index.js",
+      "path": "packages/cosmos/dist",
       "webpack": false
     },
     {
-      "path": "packages/dogecoin/dist/index.js",
+      "path": "packages/dogecoin/dist",
       "webpack": false
     },
     {
-      "path": "packages/evm/dist/index.js",
+      "path": "packages/evm/dist",
       "webpack": false
     },
     {
-      "path": "packages/litecoin/dist/index.js",
+      "path": "packages/litecoin/dist",
       "webpack": false
     },
     {
-      "path": "packages/solana/dist/index.js",
+      "path": "packages/solana/dist",
       "webpack": false
     },
     {
-      "path": "packages/thor/dist/index.js",
+      "path": "packages/thor/dist",
       "webpack": false
     },
     {
-      "path": "packages/tron/dist/index.js",
+      "path": "packages/tron/dist",
       "webpack": false
     },
     {
-      "path": "packages/utxo/dist/index.js",
+      "path": "packages/utxo/dist",
       "webpack": false
     }
   ],
@@ -84,9 +85,12 @@
     "@babel/plugin-proposal-decorators": "7.21.0",
     "@babel/preset-env": "7.21.5",
     "@babel/preset-typescript": "7.23.3",
+    "@size-limit/file": "11.1.4",
+    "@size-limit/preset-big-lib": "11.1.4",
     "babel-loader": "9.1.2",
     "husky": "8.0.3",
     "prettier": "2.5.1",
+    "size-limit": "11.1.4",
     "terser-webpack-plugin": "5.3.7",
     "ts-loader": "9.4.2",
     "turbo": "latest",
@@ -96,7 +100,7 @@
   },
   "engines": {
     "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "packageManager": "yarn@1.22.17",
   "dependencies": {
