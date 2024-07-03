@@ -5,6 +5,15 @@ import { ChainMsg, MsgBody, TokenType } from '../msg';
 
 import { SeedPhraseSigner } from './seed-phrase.signer';
 
+jest.mock('../msg.ts', () => {
+  const orignalModule = jest.requireActual('../msg.ts');
+
+  return {
+    __esModule: true,
+    ...orignalModule,
+  };
+});
+
 describe('tron seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let txInput: MsgBody;
@@ -114,6 +123,63 @@ describe('tron seed-phrase.signer', () => {
     });
     await expect(signer.sign(msg, deriviationPath)).rejects.toThrow(
       'TRC20 Contract Address not provided'
+    );
+  });
+
+  it('should signMessage a TRC20 TX with the seed phrase', async () => {
+    const msg = new ChainMsg({
+      to: txInput.to,
+      from: txInput.from,
+      amount: 0.000001,
+      contractAddress: txInput.contractAddress,
+      decimals: txInput.decimals,
+      tokenType: TokenType.TRC20,
+      provider: provider,
+    });
+    ChainMsg.prototype.buildTx = jest.fn().mockResolvedValue({
+      raw_data_hex:
+        '0a0218c52208b2dcb6ece39c937140a886d9be87325aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541b2431e51da71cf3fbe9a0daf59b2d716213dc8f2121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000084987d218c5ae2027c419e52c95791e453493821000000000000000000000000000000000000000000000000000000e8d4a5100070cac0d5be8732900180a3c347',
+    });
+    const { raw_data_hex } = await msg.buildTx();
+    const signature = await signer.signMessage(raw_data_hex, deriviationPath);
+
+    expect(signature).toEqual(
+      '0x7605f9a707b2bc6ca6c5fc6deaf192868ef70b2c196df784c849d8734413131f67ba100590ecb931548869e771329aea8d137c339570882f3c1314c031bf75cb1c'
+    );
+  });
+
+  it('should signMessageV2 a TRC20 TX with the seed phrase', async () => {
+    const message = 'Hello, world!';
+    const signature = await signer.signMessageV2(message, deriviationPath);
+
+    expect(signature).toEqual(
+      '0xb80601cba137745cfbb0e3507c3c22bb9465dc7d2963a51a6fcfdc5f4341b53d7faab96d26c080151e5877a8945ea9028bc0d529f11dffa79b8162c38d5bab821c'
+    );
+  });
+
+  it('should signTransaction a TRC20 TX with the seed phrase', async () => {
+    const msg = new ChainMsg({
+      to: txInput.to,
+      from: txInput.from,
+      amount: 0.000001,
+      contractAddress: txInput.contractAddress,
+      decimals: txInput.decimals,
+      tokenType: TokenType.TRC20,
+      provider: provider,
+    });
+    ChainMsg.prototype.buildTx = jest.fn().mockResolvedValue({
+      raw_data_hex:
+        '0a0218c52208b2dcb6ece39c937140a886d9be87325aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541b2431e51da71cf3fbe9a0daf59b2d716213dc8f2121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000084987d218c5ae2027c419e52c95791e453493821000000000000000000000000000000000000000000000000000000e8d4a5100070cac0d5be8732900180a3c347',
+    });
+    const { raw_data_hex } = await msg.buildTx();
+
+    const signature = await signer.signTransaction(
+      raw_data_hex,
+      deriviationPath
+    );
+
+    expect(signature).toEqual(
+      '0x7605f9a707b2bc6ca6c5fc6deaf192868ef70b2c196df784c849d8734413131f67ba100590ecb931548869e771329aea8d137c339570882f3c1314c031bf75cb1c'
     );
   });
 });
