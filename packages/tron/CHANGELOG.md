@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.21
+
+### Patch Changes
+
+- e0dcc77d: Tron Signers - signMessage, signMessageV2, sign, signTransaction for all wallets types
+
 ## 2.0.20
 
 ### Patch Changes
