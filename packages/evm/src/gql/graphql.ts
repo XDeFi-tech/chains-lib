@@ -1031,6 +1031,8 @@ export type BinanceTransactionEdge = {
 
 export type BitcoinChain = {
   __typename?: 'BitcoinChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
@@ -1046,6 +1048,12 @@ export type BitcoinChain = {
   /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
   unspentTxOutputs: Array<UnspentTransactionOutputV4>;
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
+};
+
+export type BitcoinChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type BitcoinChainBalancesArgs = {
@@ -1097,6 +1105,8 @@ export type BitcoinChainUnspentTxOutputsV5Args = {
 
 export type BitcoinChainTestNet = {
   __typename?: 'BitcoinChainTestNet';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
@@ -1111,6 +1121,12 @@ export type BitcoinChainTestNet = {
   /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
   unspentTxOutputs: Array<UnspentTransactionOutputV4>;
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
+};
+
+export type BitcoinChainTestNetActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type BitcoinChainTestNetBalancesArgs = {
@@ -1157,6 +1173,8 @@ export type BitcoinChainTestNetUnspentTxOutputsV5Args = {
 
 export type BitcoincashChain = {
   __typename?: 'BitcoincashChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
@@ -1171,6 +1189,12 @@ export type BitcoincashChain = {
   /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
   unspentTxOutputs: Array<UnspentTransactionOutputV4>;
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
+};
+
+export type BitcoincashChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type BitcoincashChainBalancesArgs = {
@@ -1413,14 +1437,23 @@ export type CosmosBalanceChainBalancesArgs = {
 
 export type CosmosBasedChain = {
   __typename?: 'CosmosBasedChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee: DefaultGasFee;
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   name: Scalars['String'];
   status: Status;
+  /** @deprecated Please use activity history. This endpoint will be removed after 2024-07-31. */
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;
+};
+
+export type CosmosBasedChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type CosmosBasedChainBalancesArgs = {
@@ -1692,6 +1725,8 @@ export type DetailedActivityV0 =
 
 export type DogeChain = {
   __typename?: 'DogeChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
@@ -1706,6 +1741,12 @@ export type DogeChain = {
   /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
   unspentTxOutputs: Array<UnspentTransactionOutputV4>;
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
+};
+
+export type DogeChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type DogeChainBalancesArgs = {
@@ -2135,6 +2176,8 @@ export type InvestingTypePoolsArgs = {
 
 export type JunoChain = {
   __typename?: 'JunoChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
@@ -2142,8 +2185,15 @@ export type JunoChain = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
+  /** @deprecated Please use activity history. This endpoint will be removed after 2024-07-31. */
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;
+};
+
+export type JunoChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type JunoChainBalancesArgs = {
@@ -2202,6 +2252,8 @@ export type Linea = {
 
 export type LitecoinChain = {
   __typename?: 'LitecoinChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   balances: Array<Balance>;
   broadcastTransaction: Scalars['String'];
@@ -2216,6 +2268,12 @@ export type LitecoinChain = {
   /** @deprecated Use `unspent_tx_outputs_v5` instead. This endpoint will be removed after 31.12.2023 */
   unspentTxOutputs: Array<UnspentTransactionOutputV4>;
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
+};
+
+export type LitecoinChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type LitecoinChainBalancesArgs = {
@@ -3926,6 +3984,8 @@ export type SolanaTransactionEdge = {
 
 export type StargazeChain = {
   __typename?: 'StargazeChain';
+  /** activity history for address in descending order */
+  activityHistoryV0?: Maybe<WalletActivityV0Connection>;
   average24hFee?: Maybe<DefaultGasFee>;
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
@@ -3933,8 +3993,15 @@ export type StargazeChain = {
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
+  /** @deprecated Please use activity history. This endpoint will be removed after 2024-07-31. */
   transactions: CosmosLikeTransactionConnection;
   version: Array<Version>;
+};
+
+export type StargazeChainActivityHistoryV0Args = {
+  address: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+  first?: Scalars['Int'];
 };
 
 export type StargazeChainBalancesArgs = {
@@ -5962,6 +6029,32 @@ export type GetSmartChainStatusQuery = {
   binanceSmartChain: {
     __typename?: 'BinanceSmartChain';
     status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetCryptoAssetsQueryVariables = Exact<{
+  input: Array<CryptoAssetArgs> | CryptoAssetArgs;
+}>;
+
+export type GetCryptoAssetsQuery = {
+  __typename?: 'Query';
+  assets: {
+    __typename?: 'AssetType';
+    cryptoAssets?: Array<{
+      __typename?: 'CryptoAsset';
+      chain?: string | null;
+      contract?: string | null;
+      id?: string | null;
+      name?: string | null;
+      symbol?: string | null;
+      image?: string | null;
+      decimals?: number | null;
+      price?: {
+        __typename?: 'AssetAmountType';
+        amount: string;
+        scalingFactor: number;
+      } | null;
+    }> | null;
   };
 };
 
@@ -11526,4 +11619,105 @@ export const GetSmartChainStatusDocument = {
 } as unknown as DocumentNode<
   GetSmartChainStatusQuery,
   GetSmartChainStatusQueryVariables
+>;
+export const GetCryptoAssetsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCryptoAssets' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'CryptoAssetArgs' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'assets' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'cryptoAssets' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'input' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'input' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'contract' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'symbol' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'decimals' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'amount' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'scalingFactor' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCryptoAssetsQuery,
+  GetCryptoAssetsQueryVariables
 >;
