@@ -10,8 +10,6 @@ import { BitcoinCashProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BITCOINCASH_MANIFEST } from '../manifests';
 
-jest.setTimeout(10000);
-
 import TrezorSigner from './trezor.signer';
 jest.mock('@trezor/connect-web', () => ({
   init: jest.fn().mockImplementation(),

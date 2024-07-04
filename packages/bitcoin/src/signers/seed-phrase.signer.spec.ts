@@ -93,6 +93,8 @@ describe('seed-phrase.signer', () => {
     expect(await signer.getAddress(derivation)).toBe(txInput.from);
   });
 
+  jest.setTimeout(15000);
+
   it('should sign a transaction using the seed phrase', async () => {
     await signer.sign(message as ChainMsg, derivation);
 

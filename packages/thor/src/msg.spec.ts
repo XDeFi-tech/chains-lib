@@ -8,6 +8,7 @@ describe('msg', () => {
 
   beforeEach(() => {
     mockProvider = {
+      getAccount: jest.fn(() => Promise.resolve({})),
       getBalance: jest.fn(() =>
         Promise.resolve({
           getData: jest.fn(() =>
@@ -78,6 +79,59 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('buildTx with native token x valid amount', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        to: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        amount: 0.000001,
+        decimals: 8,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.txBody).toBeDefined();
+    expect(response.account).toBeDefined();
+    expect(response.from).toEqual(
+      'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l'
+    );
+    expect(response.to).toEqual('thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l');
+    expect(response.decimals).toEqual(8);
+    expect(response.value).toEqual(100); // 0.000001 * 10^8
+    expect(response.chainId).toEqual('thorchain-mainnet-v1');
+    expect(response.denom).toEqual('rune');
+  });
+
+  it('buildTx with non-native token x valid amount', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        to: 'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l',
+        amount: 0.000001,
+        decimals: 8,
+        denom: 'BLZ',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.txBody).toBeDefined();
+    expect(response.account).toBeDefined();
+    expect(response.from).toEqual(
+      'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l'
+    );
+    expect(response.to).toEqual('thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l');
+    expect(response.decimals).toEqual(8);
+    expect(response.value).toEqual(100); // 0.000001 * 10^8
+    expect(response.chainId).toEqual('thorchain-mainnet-v1');
+    expect(response.denom).toEqual('BLZ');
   });
 
   it('getFee should return fee estimation', async () => {

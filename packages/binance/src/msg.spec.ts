@@ -8,6 +8,20 @@ describe('msg', () => {
 
   beforeEach(() => {
     mockProvider = {
+      getAccount: jest.fn(() =>
+        Promise.resolve({
+          account_number: 7668046,
+          address: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+          balances: [],
+          flags: 0,
+          public_key: [
+            3, 116, 108, 26, 123, 130, 31, 62, 52, 209, 147, 107, 81, 93, 233,
+            182, 217, 106, 1, 172, 134, 143, 1, 89, 22, 50, 117, 0, 95, 120,
+            114, 217, 127,
+          ],
+          sequence: 2,
+        })
+      ),
       getBalance: jest.fn(() =>
         Promise.resolve({
           getData: jest.fn(() =>
@@ -33,6 +47,18 @@ describe('msg', () => {
                   icon: null,
                   native: false,
                   address: '0x1b0e27D4733b5e6499354085114F2A5D21A00C60',
+                  decimals: 8,
+                },
+                amount: '1000',
+              },
+              {
+                asset: {
+                  chainId: 'Binance-Chain-Tigris',
+                  name: 'Andy',
+                  symbol: 'ANDY',
+                  icon: null,
+                  native: false,
+                  address: 'ibc/ANDYTOKEN',
                   decimals: 8,
                 },
                 amount: '1000',
@@ -65,6 +91,73 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('buildTx with insufficient balance should throw an error', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        amount: 100000,
+        denom: 'bnb',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    try {
+      await chainMsg.buildTx();
+    } catch (error) {
+      expect(error).toMatchObject(
+        new Error('Insufficient Balance for transaction')
+      );
+    }
+  });
+
+  it('buildTx with native token x valid amount', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        amount: 0.0001,
+        denom: 'bnb',
+        memo: 'test',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k');
+    expect(response.to).toEqual('bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k');
+    expect(response).toHaveProperty('chainId');
+    expect(response.value).toEqual(10000); // 0.0001 * 10^8 (manifests decimals)
+    expect(response.memo).toEqual('test');
+    expect(response.denom).toEqual('bnb');
+  });
+
+  it('buildTx with non-native token', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
+        amount: 0.0001,
+        denom: 'andy',
+        memo: 'test',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k');
+    expect(response.to).toEqual('bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k');
+    expect(response).toHaveProperty('chainId');
+    expect(response.value).toEqual(10000); // 0.0001 * 10^8 (manifests decimals)
+    expect(response.memo).toEqual('test');
+    expect(response.denom).toEqual('andy');
   });
 
   it('getFee should return fee estimation', async () => {

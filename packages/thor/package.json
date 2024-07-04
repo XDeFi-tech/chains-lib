@@ -64,7 +64,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "jest": {
-    "setupFiles": [],
+    "setupFiles": [
+      "dotenv/config"
+    ],
     "preset": "ts-jest/presets/js-with-ts",
     "transform": {
       ".+\\.(t|j)s$": "ts-jest"

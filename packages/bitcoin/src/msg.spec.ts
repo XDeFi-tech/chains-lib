@@ -161,7 +161,7 @@ describe('msg', () => {
     expect(response.maxFee).toBeNull();
   });
 
-  it('builds transaction with sufficient funds and no NFT', async () => {
+  it('buildTx with sufficient funds and no NFT', async () => {
     const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -182,7 +182,7 @@ describe('msg', () => {
     expect(outputs[0].value).toEqual(100); // 0.000001 * 10 ** 8
   });
 
-  it('builds transaction with insufficient funds and no NFT', async () => {
+  it('buildTx with insufficient funds and no NFT', async () => {
     const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -201,7 +201,7 @@ describe('msg', () => {
     }
   });
 
-  it('builds a transaction with nft and sufficient balance for paying the fee', async () => {
+  it('buildTx with nft and sufficient balance for paying the fee', async () => {
     const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -223,7 +223,7 @@ describe('msg', () => {
     expect(outputs[0].value).toEqual(inputs[0].value);
   });
 
-  it('builds a transaction with nft and insufficient balance for paying the fee', async () => {
+  it('buildTx with nft and insufficient balance for paying the fee', async () => {
     const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
@@ -245,7 +245,7 @@ describe('msg', () => {
     }
   });
 
-  it('builds a transaction with non-owned nft ', async () => {
+  it('buildTx with non-owned nft ', async () => {
     const chainMsg = new ChainMsg(
       {
         from: 'bc1qqqszrzvw3l5437qw66df0779ycuumwhnnf5yqz',
