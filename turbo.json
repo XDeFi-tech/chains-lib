@@ -53,5 +53,7 @@
       "cache": false,
       "outputs": []
     }
-  }
+  },
+  "globalDependencies": [".env", "tsconfig.json"],
+  "globalEnv": ["NETWORKED_QUERIES"]
 }

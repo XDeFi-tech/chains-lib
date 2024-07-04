@@ -41,7 +41,7 @@ describe('chain.providers.chain', () => {
     };
   });
 
-  it('createMsg(): should create message with data', () => {
+  it('createMsg() should create a ChainMsg instance for native token', () => {
     let msg = providers.chain.createMsg({});
 
     expect(msg).toBeInstanceOf(ChainMsg);

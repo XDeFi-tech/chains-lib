@@ -98,6 +98,8 @@ describe('ledger.signer', () => {
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
+  jest.setTimeout(15000);
+
   it('should sign a transaction using a ledger device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 

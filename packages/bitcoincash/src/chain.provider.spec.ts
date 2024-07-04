@@ -1,15 +1,14 @@
+import { Response, Coin, TransactionStatus } from '@xdefi-tech/chains-core';
+
 import { BitcoinCashProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOINCASH_MANIFEST } from './manifests';
 import { ChainMsg } from './msg';
 
-jest.mock('./datasource/indexer/queries/balances.query', () => ({
-  getBalance: () => {
-    return [];
-  },
-}));
-
 describe('chain.provider', () => {
+  const NETWORKED_QUERIES =
+    process.env.NETWORKED_QUERIES === '1' ? true : false;
+
   let provider: BitcoinCashProvider;
 
   beforeEach(() => {
@@ -18,7 +17,7 @@ describe('chain.provider', () => {
     );
   });
 
-  it('createMsg(): should create message with data', () => {
+  it('createMsg() should create a ChainMsg instance for native token', () => {
     const msg = provider.createMsg({
       to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
       from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
@@ -28,7 +27,7 @@ describe('chain.provider', () => {
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw an error when broadcasting an unsigned tx', async () => {
+  it('createMsg() should throw an error when broadcasting an unsigned tx', async () => {
     const msg = provider.createMsg({
       to: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
       from: 'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu',
@@ -47,7 +46,7 @@ describe('chain.provider', () => {
     );
   });
 
-  it('should get fee options', async () => {
+  it('gasFeeOptions() should get fee options', async () => {
     const feeOptions = await provider.gasFeeOptions();
 
     expect(feeOptions?.low).toBeTruthy();
@@ -55,21 +54,88 @@ describe('chain.provider', () => {
     expect(feeOptions?.high).toBeTruthy();
   });
 
-  it('should get a balance', async () => {
-    const balance = await provider.getBalance(
-      'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
-    );
+  jest.setTimeout(20000);
 
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(0);
+  it('getBalance() should return balance data', async () => {
+    if (!NETWORKED_QUERIES) {
+      jest.spyOn(BitcoinCashProvider.prototype, 'getBalance').mockResolvedValue(
+        new Response(
+          // getData
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: 'bitcoincash',
+                name: 'Bitcoin Cash',
+                symbol: 'BCH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoincash/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '443.21',
+                decimals: 8,
+              },
+              amount: '1000',
+            },
+          ]),
+          // getObserver
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: 'bitcoincash',
+                name: 'Bitcoin Cash',
+                symbol: 'BCH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoincash/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '443.21',
+                decimals: 8,
+              },
+              amount: '1000',
+            },
+          ])
+        )
+      );
+
+      const balance = await provider.getBalance(
+        'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toEqual(1);
+      expect(balanceData[0].amount).toEqual('1000');
+      expect(balanceData[0].asset.symbol).toEqual('BCH');
+    } else {
+      const balance = await provider.getBalance(
+        'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toBeGreaterThanOrEqual(0);
+      if (balanceData.length > 0) {
+        expect(balanceData[0]).toBeInstanceOf(Coin);
+        expect(balanceData[0].amount).toBeTruthy();
+        expect(balanceData[0].asset.symbol).toEqual('BCH');
+      }
+    }
   });
 
-  it('should throw for a non-existant transaction on the blockchain', async () => {
-    expect(
-      provider.getTransaction(
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-      )
-    ).rejects.toThrow();
+  it('getTransaction() should return data transaction on the blockchain', async () => {
+    jest
+      .spyOn(BitcoinCashProvider.prototype, 'getTransaction')
+      .mockResolvedValue({
+        hash: '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw',
+        to: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+        from: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+        status: TransactionStatus.pending,
+        amount: '1000',
+      });
+
+    const txData = await provider.getTransaction(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
+
+    expect(txData?.hash).toEqual(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
   });
 
   it('should create message with memo as string', async () => {

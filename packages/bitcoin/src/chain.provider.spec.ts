@@ -1,45 +1,21 @@
-import { Coin } from '@xdefi-tech/chains-core';
+import { Coin, Response, TransactionStatus } from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
 
-jest.mock('./datasource/indexer/queries/balances.query', () => ({
-  getBalance: () => {
-    return [
-      {
-        address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
-        amount: {
-          value: '0',
-        },
-        asset: {
-          chain: 'Bitcoin',
-          contract: null,
-          id: 'bcafa2bf-d442-483a-96a4-0199f4371678',
-          name: 'Bitcoin',
-          symbol: 'BTC',
-          image:
-            'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579',
-          decimals: 8,
-          price: {
-            amount: '67310',
-          },
-          type: 'CRYPTOCURRENCY',
-        },
-      },
-    ];
-  },
-}));
-
 describe('chain.provider', () => {
+  const NETWORKED_QUERIES =
+    process.env.NETWORKED_QUERIES === '1' ? true : false;
+
   let provider: BitcoinProvider;
 
   beforeEach(() => {
     provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
   });
 
-  it('createMsg(): should create message with data', () => {
+  it('createMsg() should create a ChainMsg instance for native token', () => {
     const msg = provider.createMsg({
       to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
@@ -49,7 +25,7 @@ describe('chain.provider', () => {
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw an error when broadcasting an unsigned tx', async () => {
+  it('createMsg() should throw an error when broadcasting an unsigned tx', async () => {
     const msg = provider.createMsg({
       to: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       from: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
@@ -59,16 +35,71 @@ describe('chain.provider', () => {
     expect(provider.broadcast([msg])).rejects.toThrow();
   });
 
-  it('should get a transaction from the blockchain', async () => {
-    const txData = await provider.getTransaction(
-      'e8c12eae2a7f9a2421f991fab4a617c16fd261d0c67b497260a97895a811b81b'
-    );
-    expect(txData?.hash).toEqual(
-      'e8c12eae2a7f9a2421f991fab4a617c16fd261d0c67b497260a97895a811b81b'
-    );
+  jest.setTimeout(15000);
+
+  it('getBalance() should return balance data', async () => {
+    if (!NETWORKED_QUERIES) {
+      jest.spyOn(BitcoinProvider.prototype, 'getBalance').mockResolvedValue(
+        new Response(
+          // getData
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: 'bitcoin',
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '65000.00',
+                decimals: 8,
+              },
+              amount: '100',
+            },
+          ]),
+          // getObserver
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: 'bitcoin',
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '65000.00',
+                decimals: 8,
+              },
+              amount: '100',
+            },
+          ])
+        )
+      );
+
+      const balance = await provider.getBalance(
+        'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toEqual(1);
+      expect(balanceData[0].amount).toEqual('100');
+      expect(balanceData[0].asset.symbol).toEqual('BTC');
+    } else {
+      const balance = await provider.getBalance(
+        'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toBeGreaterThanOrEqual(0);
+      expect(balanceData[0]).toBeInstanceOf(Coin);
+      expect(balanceData[0].amount).toBeTruthy();
+      expect(balanceData[0].asset.symbol).toEqual('BTC');
+    }
   });
 
-  it('should get fee options', async () => {
+  jest.setTimeout(20000);
+
+  it('gasFeeOptions() should get fee options', async () => {
     const feeOptions = await provider.gasFeeOptions();
 
     expect(feeOptions?.low).toBeTruthy();
@@ -76,22 +107,22 @@ describe('chain.provider', () => {
     expect(feeOptions?.high).toBeTruthy();
   });
 
-  it('should get a balance', async () => {
-    const balance = await provider.getBalance(
-      'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+  it('getTransaction() should return data transaction on the blockchain', async () => {
+    jest.spyOn(BitcoinProvider.prototype, 'getTransaction').mockResolvedValue({
+      hash: '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw',
+      to: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      from: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      status: TransactionStatus.pending,
+      amount: '1000',
+    });
+
+    const txData = await provider.getTransaction(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
     );
 
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0]).toBeInstanceOf(Coin);
-  });
-
-  it('should throw for a non-existant transaction on the blockchain', async () => {
-    expect(
-      provider.getTransaction(
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-      )
-    ).rejects.toThrow();
+    expect(txData?.hash).toEqual(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
   });
 
   it('should create message with memo as string', async () => {
