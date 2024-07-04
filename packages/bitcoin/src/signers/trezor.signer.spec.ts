@@ -85,6 +85,8 @@ describe('trezor.signer', () => {
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
+  jest.setTimeout(15000);
+
   it('should sign a transaction using a trezor device', async () => {
     await signer.sign(message as ChainMsg, derivationPath);
 

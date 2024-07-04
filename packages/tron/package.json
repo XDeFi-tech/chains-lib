@@ -78,6 +78,7 @@
   },
   "jest": {
     "setupFiles": [
+      "dotenv/config",
       "./jest-setup-file.ts"
     ],
     "preset": "ts-jest",

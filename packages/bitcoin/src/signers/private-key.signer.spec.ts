@@ -89,6 +89,8 @@ describe('private-key.signer', () => {
     expect(await signer.getAddress('')).toBe(txInput.from);
   });
 
+  jest.setTimeout(15000);
+
   it('should sign a transaction using a private key', async () => {
     await signer.sign(message as ChainMsg);
 

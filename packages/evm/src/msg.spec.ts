@@ -9,6 +9,7 @@ describe('msg', () => {
 
   beforeEach(() => {
     mockProvider = {
+      getNonce: jest.fn(() => Promise.resolve(0)),
       getBalance: jest.fn(() =>
         Promise.resolve({
           getData: jest.fn(() =>
@@ -77,6 +78,117 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+  });
+
+  it('buildTx with native token', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        amount: 0.000001,
+        nonce: 0,
+        decimals: 18,
+        chainId: 1,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+  });
+
+  it('buildTx with non-native token (ERC-20)', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        amount: 0.000001,
+        nonce: 0,
+        decimals: 18,
+        chainId: 1,
+        contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT - ERC20
+        data: '0xa9059cbb000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // transfer(address,uint256)
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(
+      '0xa9059cbb000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100'
+    );
+  });
+
+  it('buildTx with non-native token (ERC-721)', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        amount: 1,
+        nonce: 0,
+        decimals: 18,
+        chainId: 1,
+        contractAddress: '0x06012c8cf97bead5deae237070f9587f8e7a266d', // CryptoKitties - ERC721
+        data: '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // transferFrom(address,address,uint256)
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(
+      '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100'
+    );
+  });
+
+  it('buildTx with non-native token (ERC-1155)', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+        amount: 1,
+        nonce: 0,
+        decimals: 18,
+        chainId: 1,
+        contractAddress: '0x0e3a2a1f2146d86a604adc220b4967a898d7fe07', // EnjinCoin - ERC1155
+        data: '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // safeTransferFrom(address,address,uint256,uint256,bytes)
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(
+      '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100'
+    );
   });
 
   it('getFee should return fee estimation', async () => {
