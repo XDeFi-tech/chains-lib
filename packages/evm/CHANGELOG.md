@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.33
+
+### Patch Changes
+
+- f549279a: fix: evm baseFeePerGas
+
 ## 2.0.32
 
 ### Patch Changes
