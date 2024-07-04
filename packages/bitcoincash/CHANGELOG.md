@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.21
+
+### Patch Changes
+
+- d76c12c3: fix: fee being 0 when creating a transaction
+
 ## 2.0.20
 
 ### Patch Changes
