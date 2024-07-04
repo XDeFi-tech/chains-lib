@@ -1,6 +1,6 @@
 import { BigNumber, providers } from 'ethers';
-import { Eip1559Fee } from '@xdefi-tech/chains-graphql';
 
+import { Eip1559Fee } from './gql/graphql';
 import { ChainMsg } from './msg';
 import { EvmProvider } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';

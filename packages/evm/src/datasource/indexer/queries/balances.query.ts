@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import filter from 'lodash/filter';
+
 import {
   GetArbitrumBalanceDocument,
   GetAuroraBalanceDocument,
@@ -11,8 +12,7 @@ import {
   GetSmartChainBalanceDocument,
   GetCronosEvmBalanceDocument,
   GetCantoEvmBalanceDocument,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
 export const getBalance = async (chain: EVMChains, address: string) => {

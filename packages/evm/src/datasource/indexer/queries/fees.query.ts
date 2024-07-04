@@ -1,4 +1,5 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   ArbitrumDefaultGasFeesDocument,
   AuroraDefaultGasFeesDocument,
@@ -10,8 +11,7 @@ import {
   OptimismEip1559GasFeesDocument,
   PolygonEip1559GasFeesDocument,
   SmartChainDefaultGasFeesDocument,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
 export const getFees = async (chain: string) => {
