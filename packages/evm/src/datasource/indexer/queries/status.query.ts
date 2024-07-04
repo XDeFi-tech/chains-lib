@@ -1,4 +1,5 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+
 import {
   GetArbitrumStatusDocument,
   GetAuroraStatusDocument,
@@ -10,8 +11,7 @@ import {
   GetOptimismStatusDocument,
   GetPolygonStatusDocument,
   GetSmartChainStatusDocument,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
 export const getStatus = async (chain: string) => {
