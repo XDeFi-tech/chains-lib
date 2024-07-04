@@ -138,16 +138,21 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           erc20ABI,
           this.provider?.rpcProvider
         );
-        populatedTx = await contract.populateTransaction.transfer(
-          msgData.to,
-          ethers.utils.parseUnits(
-            msgData.amount.toString(),
-            msgData.decimals && msgData.decimals.toString()
-          )
-        );
-        contractData.value = '0x0';
-        contractData.data = populatedTx.data;
-        contractData.to = populatedTx.to;
+        if (msgData.data) {
+          contractData.data = msgData.data;
+          contractData.to = msgData.to;
+        } else {
+          populatedTx = await contract.populateTransaction.transfer(
+            msgData.to,
+            ethers.utils.parseUnits(
+              msgData.amount.toString(),
+              msgData.decimals && msgData.decimals.toString()
+            )
+          );
+          contractData.value = '0x0';
+          contractData.data = populatedTx.data;
+          contractData.to = populatedTx.to;
+        }
         break;
       case TokenType.ERC721:
         contract = new ethers.Contract(
@@ -155,14 +160,19 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           erc721ABI,
           this.provider?.rpcProvider
         );
-        populatedTx = await contract.populateTransaction[
-          ERC721_SAFE_TRANSFER_METHOD
-        ](msgData.from, msgData.to, msgData.nftId, {
-          gasLimit: utils.toHex(msgData.gasLimit || 21000),
-        });
-        contractData.value = populatedTx.value?.toHexString();
-        contractData.data = populatedTx.data;
-        contractData.to = populatedTx.to;
+        if (msgData.data) {
+          contractData.data = msgData.data;
+          contractData.to = msgData.to;
+        } else {
+          populatedTx = await contract.populateTransaction[
+            ERC721_SAFE_TRANSFER_METHOD
+          ](msgData.from, msgData.to, msgData.nftId, {
+            gasLimit: utils.toHex(msgData.gasLimit || 21000),
+          });
+          contractData.value = populatedTx.value?.toHexString();
+          contractData.data = populatedTx.data;
+          contractData.to = populatedTx.to;
+        }
         break;
       case TokenType.ERC1155:
         contract = new ethers.Contract(
@@ -170,12 +180,17 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           erc1155ABI,
           this.provider?.rpcProvider
         );
-        populatedTx = await contract.populateTransaction[
-          ERC1155_SAFE_TRANSFER_METHOD
-        ](msgData.from, msgData.to, msgData.nftId, 1, [], {});
-        contractData.value = populatedTx.value?.toHexString();
-        contractData.data = populatedTx.data;
-        contractData.to = populatedTx.to;
+        if (msgData.data) {
+          contractData.data = msgData.data;
+          contractData.to = msgData.to;
+        } else {
+          populatedTx = await contract.populateTransaction[
+            ERC1155_SAFE_TRANSFER_METHOD
+          ](msgData.from, msgData.to, msgData.nftId, 1, [], {});
+          contractData.value = populatedTx.value?.toHexString();
+          contractData.data = populatedTx.data;
+          contractData.to = populatedTx.to;
+        }
         break;
       default:
         const decimals =
