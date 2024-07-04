@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.31
+
+### Patch Changes
+
+- 2c6c2f59: split graphql for evm chain lib
+
 ## 2.0.30
 
 ### Patch Changes
