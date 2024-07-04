@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.32
+
+### Patch Changes
+
+- 2f8a9425: fix: use data if present and not assume transfer for ERC20 tokens
+
 ## 2.0.31
 
 ### Patch Changes
