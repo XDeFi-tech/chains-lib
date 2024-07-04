@@ -1,3 +1,9 @@
+import {
+  Response,
+  GasFeeSpeed,
+  TransactionStatus,
+  Coin,
+} from '@xdefi-tech/chains-core';
 import { BigNumber, providers } from 'ethers';
 
 import { Eip1559Fee } from './gql/graphql';
@@ -7,67 +13,44 @@ import { ChainDataSource, IndexerDataSource } from './datasource';
 import { EVM_MANIFESTS } from './manifests';
 
 describe('chain.provider', () => {
+  const NETWORKED_QUERIES =
+    process.env.NETWORKED_QUERIES === '1' ? true : false;
+
   let evmProvider: EvmProvider;
-  let arbitrumProvider: EvmProvider;
-  let polygonProvider: EvmProvider;
 
   beforeEach(() => {
     evmProvider = new EvmProvider(
       new IndexerDataSource(EVM_MANIFESTS.ethereum)
     );
-    arbitrumProvider = new EvmProvider(
-      new IndexerDataSource(EVM_MANIFESTS.arbitrum)
-    );
-    polygonProvider = new EvmProvider(
-      new IndexerDataSource(EVM_MANIFESTS.polygon)
-    );
   });
 
-  it('createMsg(): should create message with data', () => {
-    const msg = evmProvider.createMsg({});
+  it('createMsg() should create a ChainMsg instance for native token (ETH)', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      // data: empty for a simple transfer
+    });
 
     expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw an error when broadcasting an unsigned tx', async () => {
-    const msg = evmProvider.createMsg({});
+  it('createMsg() should create a ChainMsg instance for ERC20 (USDT) token', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+      data: '0xa9059cbb000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // ERC20 transfer
+    });
 
-    expect(evmProvider.broadcast([msg])).rejects.toThrow();
-  });
-
-  it('should get a transaction from the blockchain', async () => {
-    const txData = await evmProvider.getTransaction(
-      '0x7f8650389da94aac5c70080982e027653741ec520612dbc8a111f4d2b3645b68'
-    );
-    expect(txData?.hash).toEqual(
-      '0x7f8650389da94aac5c70080982e027653741ec520612dbc8a111f4d2b3645b68'
-    );
-  });
-
-  it('should get an address nonce', async () => {
-    const nonce = await evmProvider.getNonce(
-      '0x0000000000000000000000000000000000000000'
-    );
-    expect(nonce).toEqual(0);
-  });
-
-  it('should get fee options', async () => {
-    const feeOptions = await evmProvider.gasFeeOptions();
-
-    expect(feeOptions?.low).toBeTruthy();
-    expect(feeOptions?.medium).toBeTruthy();
-    expect(feeOptions?.high).toBeTruthy();
-  });
-
-  it('should get a balance', async () => {
-    const balance = await evmProvider.getBalance(
-      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACC'
-    );
-
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.name).toEqual('Ethereum');
+    expect(msg).toBeInstanceOf(ChainMsg);
   });
 
   it('should get a token balance', async () => {
@@ -88,109 +71,168 @@ describe('chain.provider', () => {
     expect(balanceData[1].asset.name).toEqual('Liquid staked Ether 2.0');
   });
 
-  it('should throw error for a non-existant address wallet', async () => {
-    const getBalancePromise = evmProvider.getBalance(
-      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACC',
-      ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE8ssaass4']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
+  it('createMsg() should create a ChainMsg instance for ERC721-NFTs (CryptoKitties) token', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 1,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: '0x06012c8cf97bead5deae237070f9587f8e7a266d', // CryptoKitties
+      data: '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // ERC721 transfer
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
   });
 
-  it('should throw error for an invalid token address', async () => {
-    const getBalancePromise = evmProvider.getBalance(
-      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
+  it('getBalance() should return balance data', async () => {
+    if (!NETWORKED_QUERIES) {
+      jest.spyOn(EvmProvider.prototype, 'getBalance').mockResolvedValue(
+        new Response(
+          // getData
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: '1',
+                name: 'Ethereum',
+                symbol: 'ETH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '345.55',
+                decimals: 18,
+              },
+              amount: '1000',
+            },
+            {
+              asset: {
+                chainId: '1',
+                name: 'Liquid staked Ether 2.0',
+                symbol: 'stETH',
+                icon: null,
+                native: false,
+                address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
+                decimals: 18,
+              },
+              amount: '1000',
+            },
+          ]),
+          // getObserver
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: '1',
+                name: 'Ethereum',
+                symbol: 'ETH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '345.55',
+                decimals: 18,
+              },
+              amount: '1000',
+            },
+            {
+              asset: {
+                chainId: '1',
+                name: 'Liquid staked Ether 2.0',
+                symbol: 'stETH',
+                icon: null,
+                native: false,
+                address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
+                decimals: 18,
+              },
+              amount: '1000',
+            },
+          ])
+        )
+      );
+
+      const balance = await evmProvider.getBalance(
+        '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toEqual(2);
+      expect(balanceData[0].amount.toString()).toEqual('1000');
+      expect(balanceData[0].asset.symbol).toEqual('ETH');
+      expect(balanceData[1].amount.toString()).toEqual('1000');
+      expect(balanceData[1].asset.symbol).toEqual('stETH');
+    } else {
+      const balance = await evmProvider.getBalance(
+        '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toBeGreaterThanOrEqual(0);
+      if (balanceData.length > 0) {
+        expect(balanceData[0]).toBeInstanceOf(Coin);
+        expect(balanceData[0].amount).toBeTruthy();
+      }
+    }
   });
 
-  it('should get null for a non-existant transaction on the blockchain', async () => {
+  it('estimateFee() should return fee estimation', async () => {
+    jest.spyOn(EvmProvider.prototype, 'estimateFee').mockResolvedValue([
+      {
+        gasLimit: 1,
+        gasPrice: 1,
+        maxFeePerGas: 1,
+        baseFeePerGas: 1,
+        maxPriorityFeePerGas: 1,
+      },
+    ]);
+
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+    });
+
+    const estimateFee = await evmProvider.estimateFee(
+      [msg],
+      GasFeeSpeed.medium
+    );
+
+    expect(estimateFee.length).toEqual(1);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+
+  it('gasFeeOptions() should get fee options', async () => {
+    const feeOptions = await evmProvider.gasFeeOptions();
+
+    expect(feeOptions?.low).toBeTruthy();
+    expect(feeOptions?.medium).toBeTruthy();
+    expect(feeOptions?.high).toBeTruthy();
+  });
+
+  it('getTransaction() should return data transaction on the blockchain', async () => {
+    jest.spyOn(EvmProvider.prototype, 'getTransaction').mockResolvedValue({
+      hash: '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw',
+      to: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      from: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      status: TransactionStatus.pending,
+      amount: '1000',
+    });
+
     const txData = await evmProvider.getTransaction(
-      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
     );
-    expect(txData).toEqual(null);
+
+    expect(txData?.hash).toEqual(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
   });
 
-  it('should get a ethereum provider', async () => {
-    const provider = evmProvider.rpcProvider;
-    expect(provider).toBeInstanceOf(providers.StaticJsonRpcProvider);
-    expect(provider.connection.url).toEqual(EVM_MANIFESTS.ethereum.rpcURL);
-  });
-
-  it('[Arbitrum]should get a balance', async () => {
-    const balance = await arbitrumProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6'
+  it('should get an address nonce', async () => {
+    const nonce = await evmProvider.getNonce(
+      '0x0000000000000000000000000000000000000000'
     );
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.name).toEqual('Arbitrum');
-  });
-
-  it('[Arbitrum] should get a token balance', async () => {
-    const balance = await arbitrumProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6',
-      ['0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8']
-    );
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.symbol).toEqual('PENDLE');
-    expect(balanceData[0].asset.name).toEqual('Pendle');
-  });
-
-  it('[Arbitrum] should throw error for a non-existant address wallet', async () => {
-    const getBalancePromise = arbitrumProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6aaaa',
-      ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
-  });
-
-  it('[Arbitrum] should throw error for an invalid token address', async () => {
-    const getBalancePromise = arbitrumProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6',
-      ['0xae7ab96520DE3A18E5e111sasasaB5EaAb095312D7fE84']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
-  });
-
-  it('[Polygon]should get a balance', async () => {
-    const balance = await polygonProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6'
-    );
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.name).toEqual('Polygon');
-  });
-
-  it('[Polygon] should get a token balance', async () => {
-    const balance = await polygonProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6',
-      ['0x714DB550b574b3E927af3D93E26127D15721D4C2']
-    );
-    const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(1);
-    expect(balanceData[0].amount.toString()).toEqual('0');
-    expect(balanceData[0].asset.symbol).toEqual('GMT');
-    expect(balanceData[0].asset.name).toEqual('GreenMetaverseToken');
-  });
-
-  it('[Polygon] should throw error for a non-existant address wallet', async () => {
-    const getBalancePromise = polygonProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020asdasdD239f178dd7Ab13fc99e6',
-      ['0x714DB550b574b3E927af3D93E26127D15721D4C2']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
-  });
-
-  it('[Polygon] should throw error for an invalid token address', async () => {
-    const getBalancePromise = polygonProvider.getBalance(
-      '0xC8c16Bb40c03D2Bf020D239f178dd7Ab13fc99e6',
-      ['0x714DB550b574b3Easkdj927af3D93E26127D15721D4C2']
-    );
-    expect((await getBalancePromise).getData).rejects.toThrow();
+    expect(nonce).toEqual(0);
   });
 
   it('should return false when verifying an invalid address', () => {

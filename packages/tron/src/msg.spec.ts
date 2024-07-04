@@ -69,6 +69,66 @@ describe('msg', () => {
     };
   });
 
+  it('buildTx with native token x valid amount', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
+        to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+        amount: 1000,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response).toHaveProperty('txID');
+    expect(response).toHaveProperty('raw_data_hex');
+    expect(response).toHaveProperty('raw_data');
+  });
+
+  it('buildTx with non-native token (TRC10)', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
+        to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+        decimals: 18,
+        tokenId: '10',
+        amount: 1000,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', // USDT
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response).toHaveProperty('txID');
+    expect(response).toHaveProperty('raw_data_hex');
+    expect(response).toHaveProperty('raw_data');
+  });
+
+  it('buildTx with non-native token (TRC20)', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
+        to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
+        decimals: 18,
+        tokenId: '1002000',
+        amount: 1000,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', // USDT
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    const response = await chainMsg.buildTx();
+    expect(response).toBeDefined();
+    expect(response).toHaveProperty('txID');
+    expect(response).toHaveProperty('raw_data_hex');
+    expect(response).toHaveProperty('raw_data');
+  });
+
   it('getMaxAmountToSend should throw an error with invalid token', async () => {
     const chainMsg = new ChainMsg(
       {

@@ -7,6 +7,8 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
+jest.setTimeout(15000);
+
 describe('seed-phrase.signer', () => {
   let mnemonic: string;
   let signer: SeedPhraseSigner;

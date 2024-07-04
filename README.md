@@ -64,6 +64,10 @@ npm install @xdefi-tech/chains
 yarn add @xdefi-tech/chains
 ```
 
+## Environment Setup
+
+The `NETWORKED_QUERIES` environment variable is used to control the behavior of network requests in tests. By default, `NETWORKED_QUERIES` is set to `0`, which means that all network requests are mocked, allowing tests to run without actual network dependencies. This ensures that tests are faster, more reliable, and not affected by external factors such as network latency or availability of external services. Setting `NETWORKED_QUERIES` to `1` enables real network requests, allowing tests to interact with actual external services. This can be useful for integration tests where end-to-end verification of network interactions is required. To configure this setting, simply add `NETWORKED_QUERIES=0` or `NETWORKED_QUERIES=1` to your `.env` file as needed.
+
 ## Manifest
 
 Each provider may have different manifests, but they share common fields. For more details, please refer to the README of the respective provider.

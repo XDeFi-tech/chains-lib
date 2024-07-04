@@ -55,6 +55,20 @@ describe('msg', () => {
     };
   });
 
+  it('buildTx with insufficient balance should throw an error', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: 'DPC5kxw8hwpkYYd4dYQdKsrVUjkxtfc6Vj',
+        to: 'DPC5kxw8hwpkYYd4dYQdKsrVUjkxtfc6Vj',
+        amount: 1001,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    await expect(chainMsg.buildTx()).rejects.toThrowError();
+  });
+
   it('getFee should return fee estimation', async () => {
     const chainMsg = new ChainMsg(
       {

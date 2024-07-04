@@ -82,7 +82,8 @@
   },
   "jest": {
     "setupFiles": [
-      "./jest-setup-file.ts"
+      "./jest-setup-file.ts",
+      "dotenv/config"
     ],
     "preset": "ts-jest",
     "transform": {

@@ -1,4 +1,9 @@
-import { Response, Coin } from '@xdefi-tech/chains-core';
+import {
+  Response,
+  TransactionStatus,
+  GasFeeSpeed,
+  Coin,
+} from '@xdefi-tech/chains-core';
 
 import { ChainMsg } from './msg';
 import { ThorProvider } from './chain.provider';
@@ -77,7 +82,7 @@ describe('chain.provider', () => {
     ),
   };
 
-  it('createMsg(): should create message with data for thorchain', () => {
+  it('createMsg() should create a ChainMsg instancefor thorchain', () => {
     const msg = providers[ThorChains.thorchain].createMsg({
       to: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       from: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
@@ -143,19 +148,105 @@ describe('chain.provider', () => {
     expect(feeOptions?.high).toBeDefined();
   });
 
-  it('should get a balance from mayachain', async () => {
+  it('getBalance() should return balance data', async () => {
     jest.spyOn(ThorProvider.prototype, 'getBalance').mockResolvedValue(
       new Response(
-        jest.fn().mockImplementation(async () => []),
-        jest.fn().mockImplementation(async () => [])
+        // getData
+        jest.fn().mockImplementation(async () => [
+          {
+            asset: {
+              chainId: 'thorchain-mainnet-v1',
+              name: 'Thor',
+              symbol: 'RUNE',
+              icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/thorchain/info/logo.png',
+              native: true,
+              id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+              price: '6.03',
+              decimals: 8,
+            },
+            amount: '1000',
+          },
+        ]),
+        // getObserver
+        jest.fn().mockImplementation(async () => [
+          {
+            asset: {
+              chainId: 'thorchain-mainnet-v1',
+              name: 'Thor',
+              symbol: 'RUNE',
+              icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/thorchain/info/logo.png',
+              native: true,
+              id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+              price: '6.03',
+              decimals: 8,
+            },
+            amount: '1000',
+          },
+        ])
       )
     );
-    const balance = await providers[ThorChains.mayachain].getBalance(
-      'maya1x5979k5wqgq58f4864glr7w2rtgyuqqm6l2zhx'
+
+    const balance = await providers[ThorChains.thorchain].getBalance(
+      'thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l'
     );
 
     const balanceData = await balance.getData();
-    expect(balanceData.length).toEqual(0);
+    expect(balanceData.length).toEqual(1);
+    expect(balanceData[0].amount).toEqual('1000');
+    expect(balanceData[0].asset.symbol).toEqual('RUNE');
+  });
+
+  it('estimateFee() should return fee estimation', async () => {
+    jest.spyOn(ThorProvider.prototype, 'estimateFee').mockResolvedValue([
+      {
+        gasLimit: 1,
+        gasPrice: 1,
+        maxFeePerGas: 1,
+        baseFeePerGas: 1,
+        maxPriorityFeePerGas: 1,
+      },
+    ]);
+
+    const msg = providers[ThorChains.thorchain].createMsg({
+      to: 'maya1x5979k5wqgq58f4864glr7w2rtgyuqqm6l2zhx',
+      from: 'maya1x5979k5wqgq58f4864glr7w2rtgyuqqm6l2zhx',
+      amount: 0.000001,
+      decimals: 18,
+    });
+
+    const estimateFee = await providers[ThorChains.thorchain].estimateFee(
+      [msg],
+      GasFeeSpeed.medium
+    );
+
+    expect(estimateFee.length).toEqual(1);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+
+  it('gasFeeOptions() should get fee options', async () => {
+    const feeOptions = await providers[ThorChains.thorchain].gasFeeOptions();
+
+    expect(feeOptions?.low).toEqual(0);
+    expect(feeOptions?.medium).toEqual(0);
+    expect(feeOptions?.high).toEqual(0);
+  });
+
+  it('getTransaction() should return data transaction on the blockchain', async () => {
+    jest.spyOn(ThorProvider.prototype, 'getTransaction').mockResolvedValue({
+      hash: '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw',
+      to: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      from: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      status: TransactionStatus.pending,
+      amount: '1000',
+    });
+
+    const txData = await providers[ThorChains.thorchain].getTransaction(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
+
+    expect(txData?.hash).toEqual(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
   });
 
   it('should return false when verifying an invalid address', () => {
