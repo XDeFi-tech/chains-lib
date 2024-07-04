@@ -1,18 +1,18 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import map from 'lodash/map';
+
 import {
   GetArbitrumTransactionsDocument,
   GetAuroraTransactionsDocument,
   GetAvalancheTransactionsDocument,
   GetCantoEvmTransactionsDocument,
-  GetCronosTransactionsDocument,
+  GetCronosEvmTransactionsDocument,
   GetEthereumTransactionsDocument,
   GetFantomTransactionsDocument,
   GetOptimismTransactionsDocument,
   GetPolygonTransactionsDocument,
   GetSmartChainTransactionsDocument,
-} from '@xdefi-tech/chains-graphql';
-
+} from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
 export const getTransactions = async (
@@ -55,7 +55,7 @@ export const getTransactions = async (
       break;
     case EVMChains.cronos:
       indexerChain = 'cronosEVM';
-      query = GetCronosTransactionsDocument;
+      query = GetCronosEvmTransactionsDocument;
       break;
     default:
       throw new Error(
