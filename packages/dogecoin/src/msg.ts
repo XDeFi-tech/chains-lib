@@ -48,7 +48,7 @@ export class ChainMsg extends BaseMsg<MsgBody, any> {
     const feeRateWhole =
       parseInt(feeRate.toString()) < MINIMUM_DOGECOIN_FEE
         ? MINIMUM_DOGECOIN_FEE
-        : parseInt(fee.toString());
+        : parseInt(feeRate.toString());
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
