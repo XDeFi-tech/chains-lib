@@ -325,7 +325,9 @@ export class ChainDataSource extends DataSource {
 
     return {
       [GasFeeSpeed.high]: {
-        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+        baseFeePerGas: new BigNumber(
+          formatFixed(fee?.lastBaseFeePerGas ?? fee.gasPrice)
+        )
           .multipliedBy(this.manifest.feeGasStep.high)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
@@ -339,7 +341,9 @@ export class ChainDataSource extends DataSource {
           .toNumber(),
       },
       [GasFeeSpeed.medium]: {
-        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+        baseFeePerGas: new BigNumber(
+          formatFixed(fee?.lastBaseFeePerGas ?? fee.gasPrice)
+        )
           .multipliedBy(this.manifest.feeGasStep.medium)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
@@ -353,7 +357,9 @@ export class ChainDataSource extends DataSource {
           .toNumber(),
       },
       [GasFeeSpeed.low]: {
-        baseFeePerGas: new BigNumber(formatFixed(fee.gasPrice))
+        baseFeePerGas: new BigNumber(
+          formatFixed(fee?.lastBaseFeePerGas ?? fee.gasPrice)
+        )
           .multipliedBy(this.manifest.feeGasStep.low)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
