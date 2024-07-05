@@ -12,19 +12,20 @@
   ],
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "0.2.2",
-    "eslint-config-custom": "*",
-    "jest": "27.5.1",
-    "jest-environment-jsdom": "27.5.1",
-    "jest-watch-typeahead": "1.0.0",
-    "ts-jest": "27.1.4",
-    "tsup": "6.6.3",
-    "typescript": "4.8.3",
     "@graphql-codegen/cli": "3.2.2",
     "@graphql-codegen/client-preset": "2.1.1",
     "@graphql-codegen/named-operations-object": "2.3.1",
     "@graphql-codegen/near-operation-file-preset": "2.5.0",
     "@graphql-codegen/typescript-document-nodes": "3.0.2",
-    "graphql": "16.6.0"
+    "eslint-config-custom": "*",
+    "graphql": "16.6.0",
+    "jest": "27.5.1",
+    "jest-environment-jsdom": "27.5.1",
+    "jest-watch-typeahead": "1.0.0",
+    "ts-jest": "27.1.4",
+    "ts-proto": "^1.181.0",
+    "tsup": "6.6.3",
+    "typescript": "4.8.3"
   },
   "dependencies": {
     "@cosmjs/amino": "0.32.3",
