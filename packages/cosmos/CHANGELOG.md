@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.23
+
+### Patch Changes
+
+- ab92e93c: reduce size import osmojs
+
 ## 2.0.22
 
 ### Patch Changes
