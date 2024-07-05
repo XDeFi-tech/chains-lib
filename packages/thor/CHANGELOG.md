@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.21
+
+### Patch Changes
+
+- 5e307619: Feat: use nodeURL instead of rpcURL
+
 ## 2.0.20
 
 ### Patch Changes
