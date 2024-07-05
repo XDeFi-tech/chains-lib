@@ -1,11 +1,13 @@
-const { NodeModulesPolyfillPlugin } = require("@esbuild-plugins/node-modules-polyfill");
+const {
+  NodeModulesPolyfillPlugin,
+} = require('@esbuild-plugins/node-modules-polyfill');
 
 module.exports = {
   tsup: {
     entry: [
       'src/index.ts',
       'src/signers/web.ts',
-      'src/signers/react-native.ts'
+      'src/signers/react-native.ts',
     ],
     format: 'cjs',
     splitting: false,
@@ -14,13 +16,12 @@ module.exports = {
     types: [
       './dist/index.d.ts',
       './dist/signers/web.d.ts',
-      './dist/signers/react-native.d.ts'
+      './dist/signers/react-native.d.ts',
     ],
     platform: 'browser',
     target: 'ES6',
     external: ['crypto', 'stream', '@cosmjs'],
-    plugins: [
-      NodeModulesPolyfillPlugin(),
-    ]
-  }
+    plugins: [NodeModulesPolyfillPlugin()],
+    skipNodeModulesBundle: true,
+  },
 };
