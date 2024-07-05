@@ -1,10 +1,10 @@
 import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
+
 import erc20ABI from './consts/erc20.json';
 import erc721ABI from './consts/erc721.json';
 import erc1155ABI from './consts/erc1155.json';
-
 import { ChainMsg, MsgBody } from './msg';
 
 describe('msg', () => {
