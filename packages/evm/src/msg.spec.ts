@@ -1,8 +1,11 @@
 import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
+import erc20ABI from './consts/erc20.json';
+import erc721ABI from './consts/erc721.json';
+import erc1155ABI from './consts/erc1155.json';
 
-import { ChainMsg } from './msg';
+import { ChainMsg, MsgBody } from './msg';
 
 describe('msg', () => {
   let mockProvider: any;
@@ -305,5 +308,113 @@ describe('msg', () => {
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
+  });
+
+  it('buildTx with ERC-20 approve', async () => {
+    const contractAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'; // USDT
+    const spenderAddress = '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581';
+    const erc20Interface = new ethers.utils.Interface(erc20ABI);
+
+    const erc20ApproveData = erc20Interface.encodeFunctionData('approve', [
+      spenderAddress,
+      ethers.utils.parseUnits('1.0', 18),
+    ]);
+
+    const msgBody: MsgBody = {
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: contractAddress,
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: contractAddress,
+      data: erc20ApproveData, // approve(address,uint256)
+    };
+
+    const chainMsg = new ChainMsg(msgBody, mockProvider, MsgEncoding.object);
+
+    const response = await chainMsg.buildTx();
+
+    // Assertions
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual(contractAddress);
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(erc20ApproveData);
+  });
+
+  it('buildTx with ERC-721 approve', async () => {
+    const contractAddress = '0x06012c8cf97bead5deae237070f9587f8e7a266d'; // CryptoKitties - ERC721
+    const spenderAddress = '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581';
+    const erc721Interface = new ethers.utils.Interface(erc721ABI);
+
+    const erc721ApproveData = erc721Interface.encodeFunctionData(
+      'setApprovalForAll',
+      [spenderAddress, true]
+    );
+
+    const msgBody: MsgBody = {
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: contractAddress,
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: contractAddress,
+      data: erc721ApproveData,
+    };
+
+    const chainMsg = new ChainMsg(msgBody, mockProvider, MsgEncoding.object);
+
+    const response = await chainMsg.buildTx();
+
+    // Assertions
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual(contractAddress);
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(erc721ApproveData);
+  });
+
+  it('buildTx with ERC-1155 approve', async () => {
+    const contractAddress = '0x0e3a2a1f2146d86a604adc220b4967a898d7fe07'; // EnjinCoin - ERC1155
+    const spenderAddress = '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581';
+    const erc1155Interface = new ethers.utils.Interface(erc1155ABI);
+
+    const erc1155ApproveData = erc1155Interface.encodeFunctionData(
+      'setApprovalForAll',
+      [spenderAddress, true]
+    );
+    // Creating the data for ERC-1155 approve
+    const msgBody: MsgBody = {
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: contractAddress,
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: contractAddress,
+      data: erc1155ApproveData,
+    };
+
+    const chainMsg = new ChainMsg(msgBody, mockProvider, MsgEncoding.object);
+
+    const response = await chainMsg.buildTx();
+
+    // Assertions
+    expect(response).toBeDefined();
+    expect(response.from).toEqual('0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581');
+    expect(response.to).toEqual(contractAddress);
+    expect(response).toHaveProperty('nonce');
+    expect(response).toHaveProperty('value');
+    expect(response).toHaveProperty('chainId');
+    expect(response).toHaveProperty('maxFeePerGas');
+    expect(response.data).toEqual(erc1155ApproveData);
   });
 });
