@@ -1,7 +1,7 @@
 import {
   createDefaultAminoConverters,
   defaultRegistryTypes,
-} from '@cosmjs/stargate';
+} from '@cosmjs/stargate/build/signingstargateclient';
 import { AminoTypes } from '@cosmjs/stargate/build/aminotypes';
 import { Registry } from '@cosmjs/proto-signing/build/registry';
 import {
@@ -10,7 +10,7 @@ import {
 } from 'osmojs/osmosis/client';
 import axios from 'axios';
 import { wasmTypes } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/messages';
-import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate';
+import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/aminomessages';
 
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
 import { MsgBody } from './msg';

@@ -7,9 +7,18 @@ import {
   NumberIsh,
   Coin,
 } from '@xdefi-tech/chains-core';
-import { StdTx, Coin as AminoCoin } from '@cosmjs/amino';
+import { StdTx } from '@cosmjs/amino/build/stdtx';
+import { Coin as AminoCoin } from '@cosmjs/amino/build/coins';
 import BigNumber from 'bignumber.js';
-import { cosmos, ibc, osmosis } from 'osmojs';
+import { MsgSend } from 'osmojs/cosmos/bank/v1beta1/tx';
+import { MessageComposer as MessageComposerCosmos } from 'osmojs/cosmos/bank/v1beta1/tx.registry';
+import { AminoConverter as AminoConverterCosmos } from 'osmojs/cosmos/bank/v1beta1/tx.amino';
+import { MsgSwapExactAmountIn } from 'osmojs/osmosis/gamm/v1beta1/tx';
+import { MessageComposer as MessageComposerGamm } from 'osmojs/osmosis/gamm/v1beta1/tx.registry';
+import { AminoConverter as AminoConverterGamm } from 'osmojs/osmosis/gamm/v1beta1/tx.amino';
+import { MsgTransfer } from 'osmojs/ibc/applications/transfer/v1/tx';
+import { MessageComposer as MessageComposerIbc } from 'osmojs/ibc/applications/transfer/v1/tx.registry';
+import { AminoConverter as AminoConverterIbc } from 'osmojs/ibc/applications/transfer/v1/tx.amino';
 import Long from 'long';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 
@@ -84,12 +93,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     if (rawMsg.timeoutTimestamp) {
       rawMsg.timeoutTimestamp = Long.fromValue(rawMsg.timeoutTimestamp);
     }
-    const ibcTransfer =
-      ibc.applications.transfer.v1.MsgTransfer.fromPartial(rawMsg);
+    const ibcTransfer = MsgTransfer.fromPartial(rawMsg);
 
-    return ibc.applications.transfer.v1.MessageComposer.withTypeUrl.transfer(
-      ibcTransfer
-    );
+    return MessageComposerIbc.withTypeUrl.transfer(ibcTransfer);
   }
 
   private getSwapMsg(rawMsg: any) {
@@ -99,9 +105,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       rawMsg.tokenIn.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
     }
     rawMsg.tokenOutMinAmount = rawMsg.tokenOutMinAmount.toString();
-    const msgSwapExactAmountIn =
-      osmosis.gamm.v1beta1.MsgSwapExactAmountIn.fromPartial(rawMsg);
-    return osmosis.gamm.v1beta1.MessageComposer.withTypeUrl.swapExactAmountIn(
+    const msgSwapExactAmountIn = MsgSwapExactAmountIn.fromPartial(rawMsg);
+    return MessageComposerGamm.withTypeUrl.swapExactAmountIn(
       msgSwapExactAmountIn
     );
   }
@@ -119,8 +124,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         amount: coin.amount.toString(),
       };
     });
-    const msgSend = cosmos.bank.v1beta1.MsgSend.fromPartial(rawMsg);
-    return cosmos.bank.v1beta1.MessageComposer.withTypeUrl.send(msgSend);
+    const msgSend = MsgSend.fromPartial(rawMsg);
+    return MessageComposerCosmos.withTypeUrl.send(msgSend);
   }
 
   private getExecuteContract(rawMsg: any) {
@@ -165,7 +170,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       msgs = [
         {
           typeUrl: typeUrl,
-          value: cosmos.bank.v1beta1.MsgSend.fromPartial({
+          value: MsgSend.fromPartial({
             fromAddress: msgData.from,
             toAddress: msgData.to,
             amount: [
@@ -208,25 +213,19 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         const rawMsg = signDocMsg?.value ?? signDocMsg;
 
         const isIBCTransfer =
-          ibc.applications.transfer.v1.AminoConverter[
-            key as keyof typeof ibc.applications.transfer.v1.AminoConverter
-          ];
+          AminoConverterIbc[key as keyof typeof AminoConverterIbc];
         if (isIBCTransfer) {
           return this.getIBCTransferMsg(rawMsg);
         }
 
         const isMsgSwapExactAmountIn =
-          osmosis.gamm.v1beta1.AminoConverter[
-            key as keyof typeof osmosis.gamm.v1beta1.AminoConverter
-          ];
+          AminoConverterGamm[key as keyof typeof AminoConverterGamm];
         if (isMsgSwapExactAmountIn) {
           return this.getSwapMsg(rawMsg);
         }
 
         const isMsgSend =
-          cosmos.bank.v1beta1.AminoConverter[
-            key as keyof typeof cosmos.bank.v1beta1.AminoConverter
-          ];
+          AminoConverterCosmos[key as keyof typeof AminoConverterCosmos];
         if (isMsgSend) {
           return this.getMsgSend(rawMsg);
         }

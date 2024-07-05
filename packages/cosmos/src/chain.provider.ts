@@ -15,19 +15,18 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import {
-  LcdClient,
-  setupAuthExtension,
-  setupBankExtension,
-} from '@cosmjs/launchpad';
-import { BroadcastTxError, Account } from '@cosmjs/stargate';
+import { setupAuthExtension } from '@cosmjs/launchpad/build/lcdapi/auth';
+import { setupBankExtension } from '@cosmjs/launchpad/build/lcdapi/bank';
+import { LcdClient } from '@cosmjs/launchpad/build/lcdapi/lcdclient';
+import { Account } from '@cosmjs/stargate/build/accounts';
+import { BroadcastTxError } from '@cosmjs/stargate/build/stargateclient';
 import { some } from 'lodash';
 import axios, { AxiosInstance } from 'axios';
 import 'reflect-metadata';
 import { bech32 } from 'bech32';
 import { utils } from 'ethers';
 import { AccAddress } from '@terra-money/feather.js';
-import { osmosis } from 'osmojs';
+import { osmosis } from 'osmojs/osmosis/bundle';
 
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
