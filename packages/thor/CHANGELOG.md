@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.22
+
+### Patch Changes
+
+- 34e22132: use nodeURL instead of rpcURL && reduce size import osmojs
+
 ## 2.0.21
 
 ### Patch Changes
