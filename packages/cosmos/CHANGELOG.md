@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.24
+
+### Patch Changes
+
+- 34e22132: use nodeURL instead of rpcURL && reduce size import osmojs
+
 ## 2.0.23
 
 ### Patch Changes
