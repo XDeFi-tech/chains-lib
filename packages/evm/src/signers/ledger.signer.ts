@@ -1,7 +1,8 @@
 import App from '@ledgerhq/hw-app-eth';
+import ledgerService from '@ledgerhq/hw-app-eth/lib/services/ledger';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { utils } from 'ethers';
+import { ethers, utils, UnsignedTransaction } from 'ethers';
 import EthCrypto from 'eth-crypto';
 
 import { ChainMsg, EncryptedObject, EIP712Data, Signature } from '../msg';
@@ -36,9 +37,8 @@ export class LedgerSigner extends Signer.Provider {
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const app = new App(this.transport as Transport);
     const txData = await msg.buildTx();
-    const unsignedTx = {
+    const unsignedTx: UnsignedTransaction = {
       to: txData.to,
-      from: txData.from,
       chainId: parseInt(txData.chainId),
       nonce: Number(txData.nonce),
       gasLimit: txData.gasLimit,
@@ -51,15 +51,20 @@ export class LedgerSigner extends Signer.Provider {
       data: txData.data,
       type: txData.type,
     };
+    const rawTx = ethers.utils.serializeTransaction(unsignedTx).substring(2);
+    const resolution = await ledgerService.resolveTransaction(rawTx, {}, {});
+    const rawSig = await app.signTransaction(derivation, rawTx, resolution);
+    const sig = {
+      v: ethers.BigNumber.from('0x' + rawSig.v).toNumber(),
+      r: '0x' + rawSig.r,
+      s: '0x' + rawSig.s,
+    };
 
-    const rawTx = utils
-      .hexlify(Buffer.from(JSON.stringify(unsignedTx)))
-      .slice(2);
-    const signature = await app.signTransaction(derivation, rawTx);
-    const signedTransaction = utils.hexlify(
-      Buffer.from(JSON.stringify({ ...unsignedTx, ...signature }))
+    const signedTransaction = ethers.utils.serializeTransaction(
+      unsignedTx,
+      sig
     );
-    msg.sign('0x' + signedTransaction);
+    msg.sign(signedTransaction);
   }
 
   // EIP 1024: Public Key Management
