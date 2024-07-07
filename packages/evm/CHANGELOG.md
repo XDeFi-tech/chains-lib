@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.34
+
+### Patch Changes
+
+- 88df53e5: fix: ledger signer
+
 ## 2.0.33
 
 ### Patch Changes
