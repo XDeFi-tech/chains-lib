@@ -3,8 +3,8 @@
   "version": "0.2.2",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "start": "next start",
+    "dev": "ANALYZE=true next dev",
+    "start": "ANALYZE=true next start",
     "clean": "rimraf .next .turbo node_modules"
   },
   "dependencies": {
