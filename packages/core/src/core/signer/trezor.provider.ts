@@ -66,8 +66,8 @@ export class TrezorProvider extends Provider {
    * Initializes Trezor Connection
    *
    * @param {string} email - The email of the client app.
-   * @param {string} url - The URL of the client app
-   * @param {ConnectSettings} url - Other optional configuration parameters for the Trezor Connection
+   * @param {string} appUrl - The URL of the client app
+   * @param {ConnectSettings} options - Other optional configuration parameters for the Trezor Connection
    * @returns {void}
    */
   async initTrezor(email: string, appUrl: string, options?: ConnectSettings): Promise<void> {
