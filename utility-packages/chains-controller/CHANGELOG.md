@@ -1,5 +1,22 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.7
+
+### Patch Changes
+
+- f593f316: Feat: update builder and test cases environment
+- Updated dependencies [f593f316]
+  - @xdefi-tech/chains-bitcoincash@2.0.22
+  - @xdefi-tech/chains-dogecoin@2.0.21
+  - @xdefi-tech/chains-litecoin@2.0.19
+  - @xdefi-tech/chains-binance@2.0.16
+  - @xdefi-tech/chains-bitcoin@2.0.21
+  - @xdefi-tech/chains-cosmos@2.0.25
+  - @xdefi-tech/chains-solana@2.0.23
+  - @xdefi-tech/chains-core@2.0.20
+  - @xdefi-tech/chains-thor@2.0.23
+  - @xdefi-tech/chains-evm@2.0.35
+
 ## 2.0.6
 
 ### Patch Changes

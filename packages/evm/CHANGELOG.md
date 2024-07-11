@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.35
+
+### Patch Changes
+
+- f593f316: Feat: update builder and test cases environment
+- Updated dependencies [f593f316]
+  - @xdefi-tech/chains-core@2.0.20
+
 ## 2.0.34
 
 ### Patch Changes

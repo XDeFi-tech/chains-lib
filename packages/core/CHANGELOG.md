@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.20
+
+### Patch Changes
+
+- f593f316: Feat: update builder and test cases environment
+
 ## 2.0.19
 
 ### Patch Changes
