@@ -70,22 +70,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "type": "commonjs",
-  "tsup": {
-    "entry": [
-      "src/index.ts",
-      "!src/**/*.spec.*",
-      "!src/custom.d.ts"
-    ],
-    "outDir": "dist",
-    "format": "cjs",
-    "splitting": false,
-    "dts": true,
-    "types": [
-      "./dist/index.d.ts"
-    ],
-    "platform": "browser",
-    "target": "ES6"
-  },
   "jest": {
     "setupFiles": [],
     "preset": "ts-jest",

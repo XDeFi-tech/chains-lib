@@ -2,15 +2,15 @@ const { NodeModulesPolyfillPlugin } = require('@esbuild-plugins/node-modules-pol
 
 module.exports = {
   tsup: {
-    entry: ['src/index.ts', '!src/**/*.spec.*', '!src/custom.d.ts'],
-    outDir: 'dist',
+    entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
-    splitting: false,
+    splitting: true,
     dts: true,
     shims: true,
     types: ['./dist/index.d.ts'],
     platform: 'browser',
     target: 'ES6',
+    external: [],
     plugins: [NodeModulesPolyfillPlugin()],
     skipNodeModulesBundle: true,
   },

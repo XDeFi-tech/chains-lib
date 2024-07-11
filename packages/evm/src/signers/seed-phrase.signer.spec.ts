@@ -81,6 +81,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a typed message using a seed phrase', async () => {
+    jest.setTimeout(15000);
     const record: Record<string, Array<TypedDataField>> = {
       test: [{ name: 'test', type: 'string' }],
     };

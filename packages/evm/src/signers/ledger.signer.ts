@@ -1,8 +1,7 @@
 import App from '@ledgerhq/hw-app-eth';
-import ledgerService from '@ledgerhq/hw-app-eth/lib/services/ledger';
 import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { ethers, utils, UnsignedTransaction } from 'ethers';
+import { ethers, UnsignedTransaction } from 'ethers';
 import EthCrypto from 'eth-crypto';
 
 import { ChainMsg, EncryptedObject, EIP712Data, Signature } from '../msg';
@@ -52,8 +51,9 @@ export class LedgerSigner extends Signer.Provider {
       type: txData.type,
     };
     const rawTx = ethers.utils.serializeTransaction(unsignedTx).substring(2);
-    const resolution = await ledgerService.resolveTransaction(rawTx, {}, {});
-    const rawSig = await app.signTransaction(derivation, rawTx, resolution);
+    // const resolution = await ledgerService.resolveTransaction(rawTx, {}, {});
+    // const rawSig = await app.signTransaction(derivation, rawTx, resolution);
+    const rawSig = await app.clearSignTransaction(derivation, rawTx, {});
     const sig = {
       v: ethers.BigNumber.from('0x' + rawSig.v).toNumber(),
       r: '0x' + rawSig.r,
