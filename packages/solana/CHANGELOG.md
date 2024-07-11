@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 2.0.23
+
+### Patch Changes
+
+- f593f316: Feat: update builder and test cases environment
+- Updated dependencies [f593f316]
+  - @xdefi-tech/chains-core@2.0.20
+
 ## 2.0.22
 
 ### Patch Changes
