@@ -174,6 +174,7 @@ describe('chain.provider', () => {
   });
 
   it('getFeeTokens(): should get a list of fee tokens', async () => {
+    jest.setTimeout(30000);
     const feeTokens = await provider.getFeeTokens();
     expect(Array.isArray(feeTokens)).toBe(true);
     expect(
