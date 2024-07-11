@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.22
+
+### Patch Changes
+
+- f593f316: Feat: update builder and test cases environment
+- Updated dependencies [f593f316]
+  - @xdefi-tech/chains-core@2.0.20
+  - @xdefi-tech/chains-utxo@2.0.11
+
 ## 2.0.21
 
 ### Patch Changes
