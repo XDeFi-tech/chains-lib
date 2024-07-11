@@ -1,4 +1,10 @@
-import { GetAddress, Params, Success, PROTO } from '@trezor/connect-web';
+import {
+  GetAddress,
+  Params,
+  Success,
+  PROTO,
+  parseConnectSettings,
+} from '@trezor/connect-web';
 
 import { ChainMsg, MsgBody } from '../msg';
 import { BinanceProvider } from '../chain.provider';
@@ -32,6 +38,26 @@ jest.mock('@trezor/connect-web', () => ({
 
       return addressResponse;
     }),
+  parseConnectSettings: jest.fn().mockImplementation(() => {
+    return {
+      configSrc: './data/config.json',
+      version: '9.1.4',
+      debug: false,
+      priority: 2,
+      trustedHost: true,
+      connectSrc: undefined,
+      iframeSrc: 'https://connect.trezor.io/9/iframe.html',
+      popup: false,
+      popupSrc: 'https://connect.trezor.io/9/popup.html',
+      webusbSrc: 'https://connect.trezor.io/9/webusb.html',
+      transports: undefined,
+      pendingTransportEvent: true,
+      env: 'web',
+      lazyLoad: false,
+      timestamp: 1720698767783,
+      interactionTimeout: 600,
+    };
+  }),
 }));
 
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
@@ -78,7 +104,10 @@ describe('trezor.signer', () => {
   });
 
   it('should get an address from the trezor device', async () => {
-    await signer.initTrezor('test@test.com', 'localhost');
+    await signer.initTrezor('test@test.com', 'localhost', {
+      ...parseConnectSettings(),
+      lazyLoad: true,
+    });
 
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
