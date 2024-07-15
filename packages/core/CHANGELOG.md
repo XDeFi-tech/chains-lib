@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.21
+
+### Patch Changes
+
+- 0dbc7648: feat: Implement estimateFee for Tron provider
+
 ## 2.0.20
 
 ### Patch Changes
