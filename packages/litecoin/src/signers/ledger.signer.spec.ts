@@ -1,4 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { LitecoinProvider } from '../chain.provider';
@@ -62,7 +61,7 @@ describe('ledger.signer', () => {
   let derivationPath: string;
   let provider: LitecoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let externalTransport: any;
 
   beforeEach(async () => {
@@ -95,7 +94,7 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toEqual('SIGNEDTX');
   });

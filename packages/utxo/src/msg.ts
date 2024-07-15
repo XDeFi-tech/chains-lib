@@ -11,6 +11,7 @@ import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
 
 import type { UtxoProvider } from './chain.provider';
+import { UTXO } from './data-provider/utxo/utxo.data-provider';
 
 export interface MsgBody {
   amount: NumberIsh;
@@ -22,12 +23,22 @@ export interface MsgBody {
   nftId?: string;
 }
 
-export class ChainMsg extends BaseMsg<MsgBody, any> {
+export interface TxBody {
+  to: string;
+  from: string;
+  inputs: UTXO[];
+  outputs: { address?: string; script?: Buffer; value: number }[];
+  utxos: UTXO[];
+  fee: string;
+  compiledMemo?: '' | Buffer;
+}
+
+export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
 
   constructor(
     public readonly data: MsgBody,
-    public readonly provider: UtxoProvider,
+    public readonly provider: UtxoProvider<ChainMsg>,
     public readonly encoding: MsgEncoding
   ) {
     super(data, provider, encoding);

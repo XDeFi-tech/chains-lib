@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
@@ -18,7 +16,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: EvmProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let derivation: string;
   let signature: string;
   let pubKey: string;
@@ -59,11 +57,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(
-      message as ChainMsg,
-      derivation,
-      SignatureType.Transaction
-    );
+    await signer.sign(message, derivation, SignatureType.Transaction);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -71,11 +65,7 @@ describe('seed-phrase.signer', () => {
   it('should sign a message using a seed phrase', async () => {
     txInput.data = 'test test';
     const chainMsg = provider.createMsg(txInput);
-    await signer.sign(
-      chainMsg as ChainMsg,
-      derivation,
-      SignatureType.PersonalSign
-    );
+    await signer.sign(chainMsg, derivation, SignatureType.PersonalSign);
 
     expect(chainMsg.signedTransaction).toBeTruthy();
   });
@@ -98,11 +88,7 @@ describe('seed-phrase.signer', () => {
     txInput.typedData = testData;
     const chainMsg = provider.createMsg(txInput);
 
-    await signer.sign(
-      chainMsg as ChainMsg,
-      derivation,
-      SignatureType.SignTypedData
-    );
+    await signer.sign(chainMsg, derivation, SignatureType.SignTypedData);
 
     expect(chainMsg.signedTransaction).toEqual(signature);
   });

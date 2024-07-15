@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Manifest } from '../chain';
 import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction, TransactionData } from '../../core';
 import { FeeData } from '../interfaces';
+import { NfTv3 } from '../../common/graphql';
 
 export interface BalanceFilter {
   address: string;

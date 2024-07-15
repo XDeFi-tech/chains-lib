@@ -93,7 +93,7 @@ describe('trezor.signer', () => {
 
   it('should fail signing if trezor device is not initialized', async () => {
     expect(async () => {
-      await signer.sign(message as ChainMsg, derivationPath);
+      await signer.sign(message, derivationPath);
     }).rejects.toThrow('Trezor connection is not initialized yet!');
   });
 
@@ -113,7 +113,7 @@ describe('trezor.signer', () => {
   });
 
   it('should sign a transaction using a trezor device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toEqual('SIGNED');
   });

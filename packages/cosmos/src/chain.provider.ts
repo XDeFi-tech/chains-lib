@@ -55,7 +55,7 @@ export interface IBCData {
   providerType: 'Cosmos',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class CosmosProvider extends Chain.Provider {
+export class CosmosProvider extends Chain.Provider<ChainMsg> {
   declare rpcProvider: LcdClient;
   private readonly lcdAxiosClient: AxiosInstance;
   declare dataSource: ChainDataSource | IndexerDataSource;
@@ -73,7 +73,7 @@ export class CosmosProvider extends Chain.Provider {
     });
   }
 
-  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
   }
 
@@ -87,8 +87,8 @@ export class CosmosProvider extends Chain.Provider {
     );
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
+    return this.dataSource.estimateFee(msgs, speed);
   }
 
   async getFeeTokens() {

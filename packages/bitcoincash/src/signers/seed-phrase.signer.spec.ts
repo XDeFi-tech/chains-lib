@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { BitcoinCashProvider } from '../chain.provider';
 import { BITCOINCASH_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
@@ -60,7 +58,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: BitcoinCashProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     seedPhrase =
@@ -89,7 +87,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using the seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
 
     expect(message.signedTransaction).toEqual(
       '02000000012e7931eb31528682bb962a260339b4dfb3b6b786f699597448de9baaa67fe003000000006b483045022100d14a8a5e39396e6e12c696bf0ab72a6c366492f134427671e6802b44d5894c06022038eff7ab48600dbe7fe26baee098f0b5810f2a6d5738d471ba5984377823fadf41210398c7d1ac211564fa1243fa250debac08f822a0e98490ac365d528918b019da1bffffffff0264000000000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac180b0300000000001976a9140f02db7c27cbd66e994fa5f4426c298ef2225e8688ac00000000'
