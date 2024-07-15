@@ -1,5 +1,3 @@
-import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
-
 import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BINANCE_MANIFEST } from '../manifests';
@@ -14,7 +12,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: BinanceProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let derivation: string;
 
   beforeEach(() => {
@@ -41,7 +39,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -53,7 +51,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should return FeeEstimation', async () => {
-    const feeEstimation = await message.getFee(GasFeeSpeed.medium);
+    const feeEstimation = await message.getFee();
     expect(feeEstimation);
   });
 });

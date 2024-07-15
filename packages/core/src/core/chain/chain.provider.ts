@@ -40,7 +40,7 @@ export interface DataSourceList<T extends DataSource> {
  * ```
  */
 @Injectable()
-export abstract class Provider {
+export abstract class Provider<ChainMsg extends Msg = Msg> {
   public readonly rpcProvider: any;
   public readonly id: string;
 
@@ -119,7 +119,7 @@ export abstract class Provider {
    * @returns {Promise<Transaction[]>} - A promise that resolves with an array of Transaction objects that correspond to the broadcasted messages.
    * @throws {Error} - Throws an error if any of the messages in the input array do not have a signature.
    */
-  abstract broadcast(msgs: Msg[]): Promise<Transaction[]>;
+  abstract broadcast(msgs: ChainMsg[]): Promise<Transaction[]>;
 
   /**
    * Creates a new instance of a message.
@@ -128,7 +128,7 @@ export abstract class Provider {
    * @param encoding Type for parsing and building transacrion
    * @returns A new instance of a message.
    */
-  abstract createMsg(data: MsgData, encoding: MsgEncoding): Msg;
+  abstract createMsg(data: MsgData, encoding: MsgEncoding): ChainMsg;
 
   /**
    * Retrieves the current gas fee options for the chain, including base and priority fees per gas for EIP-1559 chains.
@@ -162,9 +162,9 @@ export abstract class Provider {
    *
    * @returns A promise that resolves to the transaction hash of the broadcasted transaction.
    */
-  public async signAndBroadcast(derivation: string, signer: SignerProvider, msgs: Msg[]) {
+  public async signAndBroadcast(derivation: string, signer: SignerProvider, msgs: ChainMsg[]) {
     for await (const msg of msgs) {
-      const signature = await signer.sign(derivation, msg.toData());
+      const signature = await signer.sign(msg, derivation);
       msg.sign(signature);
     }
 

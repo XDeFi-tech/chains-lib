@@ -1,5 +1,5 @@
 import { Injectable } from '../../common';
-import { MsgData } from '../msg';
+import { Msg } from '../msg';
 
 @Injectable()
 export abstract class Provider {
@@ -24,8 +24,8 @@ export abstract class Provider {
    * @param {any} rest - rest props for custom signer
    * @returns {Promise<any>} A promise that resolves to the signature.
    */
-  abstract sign(msg: MsgData, derivation: string, ...rest: any): Promise<void>;
-  abstract sign(msg: MsgData, ...rest: any): Promise<void>;
+  abstract sign(msg: Msg, derivation: string, ...rest: any): Promise<void>;
+  abstract sign(msg: Msg, ...rest: any): Promise<void>;
 
   async getPrivateKey(_derivation: string, ..._rest: any): Promise<string | unknown> {
     throw new Error('Method not implemented.');

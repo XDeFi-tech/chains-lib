@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { BitcoinProvider } from '../chain.provider';
 import { BITCOIN_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
@@ -68,7 +66,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: BitcoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     seedPhrase =
@@ -96,7 +94,7 @@ describe('seed-phrase.signer', () => {
   jest.setTimeout(15000);
 
   it('should sign a transaction using the seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
 
     expect(message.signedTransaction).toEqual(
       '02000000000101fb6aad3e2d000e2cde07debec31a907cc4f7420cc7ad36e7eed3261b1d16b7e40000000000ffffffff0364000000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5300000000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5399040000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5302473044022063256998af5b4eb17aab21bfe3db37fda7716561a2df0e58870c237a59a7abf10220407ad63ee39943fb5d1bfcd5808dcde4c72940202f6758f6420888b7975202a7012103e389368c5d8bd73599616a574d9b74bf77cb5aee13692e5a3855a7fd2b945f9200000000'

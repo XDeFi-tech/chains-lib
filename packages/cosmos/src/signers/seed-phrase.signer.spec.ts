@@ -1,4 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
 import { bech32 } from 'bech32';
 import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
@@ -46,7 +45,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: CosmosProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let derivations: CosmosHdPathTypes;
 
   beforeEach(() => {
@@ -104,7 +103,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivations.cosmos);
+    await signer.sign(message, derivations.cosmos);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -407,7 +406,7 @@ describe('abstrction fee', () => {
     const newInputTx = { ...txInput, ...abstractionFee };
     const newMessage = provider.createMsg(newInputTx);
     const buildTxData = await newMessage.buildTx();
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
     expect(message.signedTransaction).toBeTruthy();
     expect((buildTxData as any).fee.amount[0].amount).toEqual(fee);
   });
@@ -464,7 +463,7 @@ describe('IBC token transfer', () => {
       new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
     );
     const message = provider.createMsg(msgBody);
-    await signer.sign(message as ChainMsg, derivations);
+    await signer.sign(message, derivations);
     expect(message.signedTransaction).toBeTruthy();
   });
 });

@@ -5,11 +5,11 @@ import {
   Success,
   parseConnectSettings,
 } from '@trezor/connect-web';
-import { ChainMsg, MsgBody } from '@xdefi-tech/chains-utxo';
 
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BITCOIN_MANIFEST } from '../manifests';
+import { ChainMsg, MsgBody } from '../msg';
 
 import TrezorSigner from './trezor.signer';
 jest.mock('@trezor/connect-web', () => ({
@@ -90,7 +90,7 @@ describe('trezor.signer', () => {
 
   it('should fail signing if trezor device is not initialized', async () => {
     expect(async () => {
-      await signer.sign(message as ChainMsg, derivationPath);
+      await signer.sign(message, derivationPath);
     }).rejects.toThrow('Trezor connection is not initialized yet!');
   });
 
@@ -112,7 +112,7 @@ describe('trezor.signer', () => {
   jest.setTimeout(15000);
 
   it('should sign a transaction using a trezor device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

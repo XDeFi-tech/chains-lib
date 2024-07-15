@@ -28,7 +28,7 @@ import { assetFromString } from './utils';
   providerType: 'Thor',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class ThorProvider extends Chain.Provider {
+export class ThorProvider extends Chain.Provider<ChainMsg> {
   public rest: Axios;
   declare dataSource: any;
 
@@ -37,10 +37,7 @@ export class ThorProvider extends Chain.Provider {
     this.rest = axios.create({ baseURL: this.manifest.nodeURL });
   }
 
-  createMsg(
-    data: MsgBody,
-    encoding: MsgEncoding = MsgEncoding.object
-  ): ChainMsg {
+  createMsg(data: MsgBody, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
   }
 

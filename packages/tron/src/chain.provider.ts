@@ -25,7 +25,7 @@ import { IndexerDataSource, ChainDataSource } from './datasource';
   deps: [],
   providerType: 'Tron',
 })
-export class TronProvider extends Chain.Provider {
+export class TronProvider extends Chain.Provider<ChainMsg> {
   declare rpcProvider: any;
   declare dataSource: ChainDataSource | IndexerDataSource;
 
@@ -40,7 +40,7 @@ export class TronProvider extends Chain.Provider {
     this.rpcProvider.setAddress('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t');
   }
 
-  createMsg(data: MsgData): Msg {
+  createMsg(data: MsgData) {
     return new ChainMsg(data, this);
   }
 
