@@ -1,4 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BitcoinProvider } from '../chain.provider';
@@ -70,7 +69,7 @@ describe('ledger.signer', () => {
   let derivationPath: string;
   let provider: BitcoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let externalTransport: any;
 
   beforeEach(async () => {
@@ -101,7 +100,7 @@ describe('ledger.signer', () => {
   jest.setTimeout(15000);
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toEqual(
       '02000000000101fb6aad3e2d000e2cde07debec31a907cc4f7420cc7ad36e7eed3261b1d16b7e40000000000ffffffff0364000000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5300000000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a536c070000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a5302483045022100aebc0d5d7ae241077cb33e635ef36cf347674c0468051e5c4fab6d919d52ddf102203609428e2d61c4ab7208ab78801f45215d5a32b037be4257ca22fb85f585188f012103e389368c5d8bd73599616a574d9b74bf77cb5aee13692e5a3855a7fd2b945f9200000000'

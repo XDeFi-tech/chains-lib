@@ -1,4 +1,3 @@
-import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { BinanceProvider } from '../chain.provider';
@@ -37,7 +36,7 @@ describe('binance::ledger.signer', () => {
   let derivationPath: string;
   let provider: BinanceProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let externalTransport: any;
 
   beforeEach(async () => {
@@ -66,7 +65,7 @@ describe('binance::ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -76,7 +75,7 @@ describe('binance::ledger.signer', () => {
   });
 
   it('should return FeeEstimation', async () => {
-    const feeEstimation = await message.getFee(GasFeeSpeed.medium);
+    const feeEstimation = await message.getFee();
     expect(feeEstimation);
   });
 });

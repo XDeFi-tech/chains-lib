@@ -31,7 +31,7 @@ import { decryptParams, paramToString } from './utils';
     Chain.ChainFeatures.EIP1559,
   ],
 })
-export class EvmProvider extends Chain.Provider {
+export class EvmProvider extends Chain.Provider<ChainMsg> {
   public readonly rpcProvider: providers.StaticJsonRpcProvider;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
@@ -45,7 +45,7 @@ export class EvmProvider extends Chain.Provider {
     return this.dataSource.manifest;
   }
 
-  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
   }
 

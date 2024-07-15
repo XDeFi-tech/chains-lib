@@ -1,6 +1,6 @@
 import TrezorConnect, { ConnectSettings } from '@trezor/connect-web';
 
-import { MsgData } from '../msg';
+import { Msg } from '../msg';
 
 import { Provider } from './signer.provider';
 
@@ -43,7 +43,7 @@ export class TrezorProvider extends Provider {
    * @param {any} _rest - rest props for custom signer
    * @returns {Promise<any>} A promise that resolves to the signature.
    */
-  async sign(_msg: MsgData, ..._rest: any): Promise<void> {
+  async sign(_msg: Msg, ..._rest: any): Promise<void> {
     throw new Error('Method must be implented in an inhereted class');
   }
 

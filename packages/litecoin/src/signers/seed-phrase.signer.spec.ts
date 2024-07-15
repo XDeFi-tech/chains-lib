@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { LitecoinProvider } from '../chain.provider';
 import { LITECOIN_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
@@ -60,7 +58,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: LitecoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     seedPhrase =
@@ -86,7 +84,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
 
     expect(message.signedTransaction).toEqual(
       '02000000000101467066a38eef3daa8a2bb0e35dccfd098e505b17efa7fcee45e390446679c35c0000000000ffffffff0264000000000000001600145c62b57d49ea96f0ff6a8473c3332ec3fc501ca4ca250000000000001600145c62b57d49ea96f0ff6a8473c3332ec3fc501ca40248304502210095104f03cf04aa7e9f8516b9280dc30ad091f7a1aafb49e9e1bdd8c4513701f2022039e449e17cc4613128b320b15c6a7f2937158f0fa6b6714f8472c6f035d977c00121026d165716c33a95fbbed7c3bdfc155afc43dce53eacf059fc65aa6092f8625ad800000000'

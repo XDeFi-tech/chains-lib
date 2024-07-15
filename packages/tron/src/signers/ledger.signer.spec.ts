@@ -1,4 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { TronProvider } from '../chain.provider';
@@ -36,7 +35,7 @@ describe('ledger.signer', () => {
   let derivationPath: string;
   let provider: TronProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let externalTransport: any;
 
   beforeEach(async () => {
@@ -64,7 +63,7 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -74,7 +73,7 @@ describe('ledger.signer', () => {
   });
 
   it('should signMessage a transaction using a ledger device', async () => {
-    const { raw_data_hex } = await (message as ChainMsg).buildTx();
+    const { raw_data_hex } = await message.buildTx();
     const signature = await signer.signMessageV2(raw_data_hex, derivationPath);
 
     expect(signature).toEqual(
@@ -83,7 +82,7 @@ describe('ledger.signer', () => {
   });
 
   it('should signTransaction a transaction using a ledger device', async () => {
-    const { raw_data_hex } = await (message as ChainMsg).buildTx();
+    const { raw_data_hex } = await message.buildTx();
     const signature = await signer.signTransaction(
       derivationPath,
       raw_data_hex

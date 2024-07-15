@@ -1,5 +1,3 @@
-import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
-
 import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BINANCE_MANIFEST } from '../manifests';
@@ -18,7 +16,7 @@ describe('private-key.signer', () => {
   let signer: PrivateKeySigner;
   let provider: BinanceProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     privateKey =
@@ -42,9 +40,9 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg);
+    await signer.sign(message);
 
-    expect(message.signedTransaction.toString('hex')).toBeTruthy();
+    expect(message.signedTransaction).toBeTruthy();
   });
 
   it('should get a private key', async () => {
@@ -52,7 +50,7 @@ describe('private-key.signer', () => {
   });
 
   it('should return FeeEstimation', async () => {
-    const feeEstimation = await message.getFee(GasFeeSpeed.medium);
+    const feeEstimation = await message.getFee();
     expect(feeEstimation);
   });
 });

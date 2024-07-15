@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
 import { THORCHAIN_MANIFESTS, ThorChains } from '../manifests';
@@ -32,7 +30,7 @@ describe('private-key.signer', () => {
       decimals: 8,
     },
   };
-  const messages: Record<ThorChains, Msg> = {
+  const messages: Record<ThorChains, ChainMsg> = {
     [ThorChains.thorchain]: providers.thorchain.createMsg(txInputs.thorchain),
     [ThorChains.mayachain]: providers.mayachain.createMsg(txInputs.mayachain),
   };
@@ -69,7 +67,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key for thorchain', async () => {
-    await signer.sign(messages.thorchain as ChainMsg);
+    await signer.sign(messages.thorchain);
 
     expect(messages.thorchain.signedTransaction).toEqual(
       'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJYClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIEEMCaDBpARKIPDEXsG3U3PH+TtNqy3/qEC/a71PoAsvuAl1vZcigQBcWXF85nWL4gluaTGFJRhJQroBDWwlB4ftwB2LlKEA=='
@@ -77,7 +75,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key for mayachain', async () => {
-    await signer.sign(messages.mayachain as ChainMsg);
+    await signer.sign(messages.mayachain);
 
     expect(messages.mayachain.signedTransaction).toEqual(
       'Ck4KTAoOL3R5cGVzLk1zZ1NlbmQSOgoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgwKBWNhY2FvEgMxMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohA/C5ZHhO0v4GaeGiMT6ZF1tF/C6v15Jwjjjwq/Au6v1HEgQKAggBGAASBBDAmgwaQBbam0ygnZSKGaEHYRkpIAo/J+tK2YqCOQNJzoJonwA7bUvjj+8GX/o3dxba15QOc4o0PYKj3pRXwFzYfrf1q30='

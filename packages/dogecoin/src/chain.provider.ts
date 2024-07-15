@@ -17,7 +17,7 @@ import { ChainMsg } from './msg';
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class DogecoinProvider extends UtxoProvider {
+export class DogecoinProvider extends UtxoProvider<ChainMsg> {
   declare dataSource: IndexerDataSource;
 
   createMsg(
