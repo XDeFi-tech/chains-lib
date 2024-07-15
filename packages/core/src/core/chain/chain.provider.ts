@@ -7,7 +7,7 @@ import { Transaction, TransactionData } from 'core/transaction';
 import { ChainFeatures, Manifest } from 'core/chain/interfaces';
 import { METADATA_KEY, SIGNER_SCOPE_NAME } from 'core/constants';
 import { FeeOptions, GasFeeSpeed } from 'core/fee';
-import { Balance, DataSource, MsgEncoding, Response, FeeData } from 'core';
+import { Balance, DataSource, MsgEncoding, Response, FeeData, TronFee } from 'core';
 import { forEach } from 'lodash';
 
 export interface IOptions {
@@ -109,7 +109,7 @@ export abstract class Provider<ChainMsg extends Msg = Msg> {
    * @param {GasFeeSpeed} speed - An enumerated value indicating the speed at which the transaction should be processed. Possible values are "high", "medium", and "low".
    * @returns {Promise<Msg[]>} - A promise that resolves with an array of Msg objects representing the messages with the calculated transaction fees included.
    */
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[] | TronFee[]>;
 
   /**
    * Sends a list of signed messages to the RPC provider and returns a list of corresponding transactions.
