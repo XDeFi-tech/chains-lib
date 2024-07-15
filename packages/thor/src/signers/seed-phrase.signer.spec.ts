@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
 import { THORCHAIN_MANIFESTS, ThorChains } from '../manifests';
@@ -33,7 +31,7 @@ describe('seed-phrase.signer', () => {
       decimals: 8,
     },
   };
-  const messages: Record<ThorChains, Msg> = {
+  const messages: Record<ThorChains, ChainMsg> = {
     [ThorChains.thorchain]: providers.thorchain.createMsg(txInputs.thorchain),
     [ThorChains.mayachain]: providers.mayachain.createMsg(txInputs.mayachain),
   };
@@ -60,7 +58,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    await signer.sign(messages.thorchain as ChainMsg, derivation);
+    await signer.sign(messages.thorchain, derivation);
 
     expect(messages.thorchain.signedTransaction).toEqual(
       'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJjClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIPCgkKBHJ1bmUSATAQwJoMGkCcsjR8tN2XlDJIN6WBlTtcvoqP3wNNEX5icxtynFY+hReK41XbLWqDiihvzBkpyikDBz6jyvCoWXdCY9A07hYx'
@@ -68,7 +66,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a mayachain transaction using a seed phrase', async () => {
-    await signer.sign(messages.mayachain as ChainMsg, derivation);
+    await signer.sign(messages.mayachain, derivation);
 
     expect(messages.mayachain.signedTransaction).toEqual(
       'Ck4KTAoOL3R5cGVzLk1zZ1NlbmQSOgoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgwKBWNhY2FvEgMxMDASZApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohA/C5ZHhO0v4GaeGiMT6ZF1tF/C6v15Jwjjjwq/Au6v1HEgQKAggBGAASEAoKCgVjYWNhbxIBMBDAmgwaQMLpXq11jlObzM8FMtor3iIXP5aOy3uavo6+8QDlBK9LTolUuiA7JACOAd9c+QlS0ML5lETTFpKH63nTmO8cxSQ='

@@ -1,4 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { bech32 } from 'bech32';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
@@ -63,7 +62,7 @@ describe('cosmos::ledger.signer', () => {
   let derivationPath: string;
   let provider: CosmosProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let externalTransport: any;
 
   beforeEach(async () => {
@@ -95,7 +94,7 @@ describe('cosmos::ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message as ChainMsg, derivationPath, 'cosmos');
+    await signer.sign(message, derivationPath, 'cosmos');
 
     expect(message.signedTransaction).toBeTruthy();
   });

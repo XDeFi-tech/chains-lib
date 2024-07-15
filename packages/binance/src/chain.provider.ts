@@ -25,7 +25,7 @@ import { ChainMsg, MsgBody } from './msg';
   providerType: 'Binance',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BinanceProvider extends Chain.Provider {
+export class BinanceProvider extends Chain.Provider<ChainMsg> {
   public rpcProvider: BncClient;
   public rest: Axios;
 

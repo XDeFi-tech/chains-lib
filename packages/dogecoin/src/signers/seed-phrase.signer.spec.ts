@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { DogecoinProvider } from '../chain.provider';
 import { DOGECOIN_MANIFEST } from '../manifests';
 import { ChainMsg, MsgBody } from '../msg';
@@ -60,7 +58,7 @@ describe('seed-phrase.signer', () => {
   let signer: SeedPhraseSigner;
   let provider: DogecoinProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     seedPhrase =
@@ -85,7 +83,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using the seed phrase', async () => {
-    await signer.sign(message as ChainMsg, derivation);
+    await signer.sign(message, derivation);
 
     expect(message.signedTransaction).toEqual(
       '0200000001ad2c88f940cd48f724d667e58323efd048bdea62e32f426cf04b8fdf87071216000000006a473044022068b491ee366b00d7ee0643111977b4f9d69d280446e4672c25f91e137f82ca5702205ce414f90daa6cb99f79ad80db6b2fb6cc700dcb74594e57b4f87b72d60260bf0121037e6c9ff86d24858e73a75d08d1c4270cf3aa56d421e362eacdd063e264e5b12cffffffff0164000000000000001976a914c602dc308aa94acd75537757eeca791da957e4f188ac00000000'

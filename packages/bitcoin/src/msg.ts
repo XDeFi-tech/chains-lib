@@ -24,7 +24,17 @@ export interface MsgBody {
   nftId?: string;
 }
 
-export class ChainMsg extends BaseMsg<MsgBody, any> {
+export interface TxBody {
+  to: string;
+  from: string;
+  inputs: UTXO[];
+  outputs: { address?: string; script?: Buffer; value: number }[];
+  utxos: UTXO[];
+  fee: string;
+  compiledMemo?: '' | Buffer;
+}
+
+export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
 
   constructor(

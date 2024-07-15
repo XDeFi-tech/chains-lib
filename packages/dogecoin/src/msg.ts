@@ -9,6 +9,7 @@ import {
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
+import { UTXO } from '@xdefi-tech/chains-utxo';
 
 import type { DogecoinProvider } from './chain.provider';
 
@@ -21,9 +22,19 @@ export interface MsgBody {
   decimals?: number;
 }
 
+export interface TxBody {
+  to: string;
+  from: string;
+  inputs: UTXO[];
+  outputs: { address?: string; script?: Buffer; value: number }[];
+  utxos: UTXO[];
+  fee: string;
+  compiledMemo?: '' | Buffer;
+}
+
 export const MINIMUM_DOGECOIN_FEE = 40000;
 
-export class ChainMsg extends BaseMsg<MsgBody, any> {
+export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
 
   constructor(

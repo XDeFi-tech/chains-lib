@@ -1,5 +1,3 @@
-import { Msg } from '@xdefi-tech/chains-core';
-
 import { EvmProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { EVM_MANIFESTS } from '../manifests';
@@ -18,7 +16,7 @@ describe('private-key.signer', () => {
   let signer: PrivateKeySigner;
   let provider: EvmProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let signature: string;
   let pubKey: string;
 
@@ -56,7 +54,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    await signer.sign(message as ChainMsg, '', SignatureType.Transaction);
+    await signer.sign(message, '', SignatureType.Transaction);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -64,7 +62,7 @@ describe('private-key.signer', () => {
   it('should sign a message using a private key', async () => {
     txInput.data = 'test test';
     const chainMsg = provider.createMsg(txInput);
-    await signer.sign(chainMsg as ChainMsg, '', SignatureType.PersonalSign);
+    await signer.sign(chainMsg, '', SignatureType.PersonalSign);
 
     expect(chainMsg.signedTransaction).toBeTruthy();
   });
@@ -86,7 +84,7 @@ describe('private-key.signer', () => {
     txInput.typedData = testData;
     const chainMsg = provider.createMsg(txInput);
 
-    await signer.sign(chainMsg as ChainMsg, '', SignatureType.SignTypedData);
+    await signer.sign(chainMsg, '', SignatureType.SignTypedData);
 
     expect(chainMsg.signedTransaction).toEqual(signature);
   });

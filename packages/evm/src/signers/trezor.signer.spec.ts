@@ -77,7 +77,7 @@ describe('trezor.signer', () => {
   let derivationPath: string;
   let provider: EvmProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
 
   beforeEach(() => {
     signer = new TrezorSigner();
@@ -99,7 +99,7 @@ describe('trezor.signer', () => {
 
   it('should fail signing if trezor device is not initialized', async () => {
     expect(async () => {
-      await signer.sign(message as ChainMsg, derivationPath);
+      await signer.sign(message, derivationPath);
     }).rejects.toThrow('Trezor connection is not initialized yet!');
   });
 
@@ -123,7 +123,7 @@ describe('trezor.signer', () => {
       ...parseConnectSettings(),
       lazyLoad: true,
     });
-    await signer.sign(message as ChainMsg, derivationPath);
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });

@@ -97,7 +97,7 @@ const estimateAbstractionFee = await provider.calculateFeeAbs(
 
   const msg = provider.createMsg(txInputWithAbsFee);
   // Sign the tx
-  await signer.sign(msg as ChainMsg, derivation);
+  await signer.sign(msg, derivation);
   // Send tx to the chain
-  const tx = await provider.broadcast([msg as ChainMsg]);
+  const tx = await provider.broadcast([msg]);
 ```

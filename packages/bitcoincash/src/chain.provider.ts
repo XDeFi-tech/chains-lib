@@ -16,7 +16,7 @@ import { ChainMsg } from './msg';
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BitcoinCashProvider extends UtxoProvider {
+export class BitcoinCashProvider extends UtxoProvider<ChainMsg> {
   declare dataSource: IndexerDataSource;
 
   createMsg(

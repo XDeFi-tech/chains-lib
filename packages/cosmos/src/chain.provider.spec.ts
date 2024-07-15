@@ -201,10 +201,7 @@ describe('chain.provider', () => {
       },
     };
     const msg = provider.createMsg(txInput);
-    const estimateFee = await provider.estimateFee(
-      [msg as ChainMsg],
-      GasFeeSpeed.low
-    );
+    const estimateFee = await provider.estimateFee([msg], GasFeeSpeed.low);
     expect(estimateFee[0].gasLimit).toBeTruthy();
   });
 });

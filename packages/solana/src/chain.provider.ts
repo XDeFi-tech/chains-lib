@@ -26,7 +26,7 @@ import { ChainMsg } from './msg';
   providerType: 'Solana',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class SolanaProvider extends Chain.Provider {
+export class SolanaProvider extends Chain.Provider<ChainMsg> {
   declare rpcProvider: Connection;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
@@ -34,7 +34,7 @@ export class SolanaProvider extends Chain.Provider {
     this.rpcProvider = new Connection(this.manifest.rpcURL);
   }
 
-  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object): Msg {
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
   }
 

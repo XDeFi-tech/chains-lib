@@ -6,6 +6,8 @@ import {
   FeeData,
   FeeOptions,
   GasFeeSpeed,
+  Msg,
+  MsgData,
   MsgEncoding,
   Response,
   Transaction,
@@ -13,7 +15,6 @@ import {
 } from '@xdefi-tech/chains-core';
 import axios, { Axios } from 'axios';
 
-import { ChainMsg, MsgBody } from './msg';
 import { UTXOManifest } from './manifests';
 import { UTXO } from './data-provider';
 
@@ -21,7 +22,9 @@ export interface UtxoProviderOptions extends Chain.IOptions {
   apiKey?: string;
 }
 
-export class UtxoProvider extends Chain.Provider {
+export class UtxoProvider<
+  ChainMsg extends Msg = Msg
+> extends Chain.Provider<ChainMsg> {
   public rpcProvider = null;
   public rest: Axios;
 
@@ -34,10 +37,11 @@ export class UtxoProvider extends Chain.Provider {
   }
 
   createMsg(
-    data: MsgBody,
+    data: MsgData,
     encoding: MsgEncoding = MsgEncoding.object
   ): ChainMsg {
-    return new ChainMsg(data, this, encoding);
+    // return new ChainMsg(data, this, encoding);
+    throw new Error('Method not implemented.');
   }
 
   async getTransactions(

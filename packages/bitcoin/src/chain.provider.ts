@@ -16,7 +16,7 @@ import { ChainMsg, MsgBody } from './msg';
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BitcoinProvider extends UtxoProvider {
+export class BitcoinProvider extends UtxoProvider<ChainMsg> {
   declare dataSource: IndexerDataSource;
 
   static get dataSourceList() {
@@ -25,10 +25,7 @@ export class BitcoinProvider extends UtxoProvider {
     };
   }
 
-  createMsg(
-    data: MsgBody,
-    encoding: MsgEncoding = MsgEncoding.object
-  ): ChainMsg {
+  createMsg(data: MsgBody, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
   }
 

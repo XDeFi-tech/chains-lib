@@ -1,4 +1,4 @@
-import { Msg, MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
 import { bech32 } from 'bech32';
 import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
@@ -23,7 +23,7 @@ describe('private-key.signer', () => {
   let terraSigner: PrivateKeySigner;
   let provider: CosmosProvider;
   let txInput: MsgBody;
-  let message: Msg;
+  let message: ChainMsg;
   let derivations: CosmosHdPathTypes;
   let backendSwapTransaction: any;
 
@@ -111,7 +111,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    await cosmosSigner.sign(message as ChainMsg);
+    await cosmosSigner.sign(message);
 
     expect(message.signedTransaction).toBeTruthy();
   });
@@ -121,7 +121,7 @@ describe('private-key.signer', () => {
       { data: backendSwapTransaction.unsignedStdTx },
       MsgEncoding.string
     );
-    await cosmosSigner.sign(msg as ChainMsg);
+    await cosmosSigner.sign(msg);
     expect(msg.signedTransaction).toBeTruthy();
   });
 
