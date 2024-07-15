@@ -4,13 +4,11 @@ import {
   ChainDecorator,
   Coin,
   FeeOptions,
-  GasFeeSpeed,
   Msg,
   MsgData,
   Response,
   Transaction,
   Balance,
-  FeeData,
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
@@ -54,11 +52,7 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async estimateFee(_msgs: Msg[], _speed: GasFeeSpeed): Promise<FeeData[]> {
-    throw new Error('Method Not Implemented - Use estimateTronFee');
-  }
-
-  async estimateTronFees(msgs: Msg[]): Promise<TronFee[]> {
+  async estimateFee(msgs: Msg[]): Promise<TronFee[]> {
     const feeData: TronFee[] = [];
 
     // Can change with a network update / fork, but not worth using an API call here.

@@ -48,7 +48,7 @@
     "watch": "tsup --watch",
     "clean": "rimraf dist .turbo node_modules",
     "lint": "eslint .",
-    "test:disabled": "jest",
+    "test": "jest",
     "lint:fix": "eslint . --fix",
     "test:watch": "jest --watch",
     "coverage": "jest --coverageReporters='json-summary' --coverage",

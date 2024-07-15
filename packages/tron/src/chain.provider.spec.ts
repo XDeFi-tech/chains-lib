@@ -65,6 +65,8 @@ describe('chain.providers.chain', () => {
     expect((await txData.getData()).length).toBeGreaterThanOrEqual(0);
   });
 
+  jest.setTimeout(15000);
+
   it('should get transactions for an address from the blockchain using an indexer data source', async () => {
     const txData = await providers.indexer.getTransactions(
       'TYCq2iBVHTKMhybfkwGeHdW72gsfYfrN18'
@@ -75,19 +77,21 @@ describe('chain.providers.chain', () => {
   it('should estimate fees for an unsigned TRX transaction using any data source', async () => {
     let msg = new ChainMsg({ ...messageData, provider: providers.chain });
 
-    let fees = await providers.chain.estimateTronFees([msg]);
+    let fees = await providers.chain.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
     expect(fees[0].cost).toEqual(0.265);
 
     msg = new ChainMsg({ ...messageData, provider: providers.indexer });
-    fees = await providers.indexer.estimateTronFees([msg]);
+    fees = await providers.indexer.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
     expect(fees[0].cost).toEqual(0.265);
   });
+
+  jest.setTimeout(15000);
 
   it('should estimate fees for an unsigned TRC20 transaction using any data source', async () => {
     let msg = new ChainMsg({
@@ -98,7 +102,7 @@ describe('chain.providers.chain', () => {
       provider: providers.chain,
     });
 
-    let fees = await providers.chain.estimateTronFees([msg]);
+    let fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
     expect(fees[0].cost).toEqual('27.255900345');
@@ -112,12 +116,14 @@ describe('chain.providers.chain', () => {
       provider: providers.indexer,
     });
 
-    fees = await providers.indexer.estimateTronFees([msg]);
+    fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
     expect(fees[0].cost).toEqual('27.255900345');
     expect(fees[0].willRevert).toBeFalsy();
   });
+
+  jest.setTimeout(15000);
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
     const msg = new ChainMsg({ ...messageData, provider: providers.chain });
@@ -125,7 +131,7 @@ describe('chain.providers.chain', () => {
 
     await signer.sign(msg);
 
-    const fees = await providers.chain.estimateTronFees([msg]);
+    const fees = await providers.chain.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
@@ -137,11 +143,13 @@ describe('chain.providers.chain', () => {
 
     await signer.sign(msg);
 
-    const fees = await providers.indexer.estimateTronFees([msg]);
+    const fees = await providers.indexer.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
   });
+
+  jest.setTimeout(15000);
 
   it('should estimate fees for a TRC20 transaction using a chain data source', async () => {
     const msg = new ChainMsg({
@@ -155,12 +163,14 @@ describe('chain.providers.chain', () => {
 
     await signer.sign(msg);
 
-    const fees = await providers.chain.estimateTronFees([msg]);
+    const fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
     expect(fees[0].cost).toEqual('27.255900345');
     expect(fees[0].willRevert).toBeFalsy();
   });
+
+  jest.setTimeout(15000);
 
   it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
     const msg = new ChainMsg({
@@ -174,12 +184,14 @@ describe('chain.providers.chain', () => {
 
     await signer.sign(msg);
 
-    const fees = await providers.indexer.estimateTronFees([msg]);
+    const fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
     expect(fees[0].cost).toEqual('27.255900345');
     expect(fees[0].willRevert).toBeFalsy();
   });
+
+  jest.setTimeout(15000);
 
   it('should get a token transaction from the blockchain using a chain data source', async () => {
     const txData = await providers.chain.getTransaction(

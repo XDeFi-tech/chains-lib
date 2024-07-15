@@ -10,6 +10,13 @@ export interface FeeData {
   maxPriorityFeePerGas?: NumberIsh;
 }
 
+export interface TronFee {
+  bandwidth: number;
+  energy: number;
+  cost: number;
+  willRevert: boolean;
+}
+
 export enum MsgEncoding {
   buffer = 'buffer',
   object = 'object',
