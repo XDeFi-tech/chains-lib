@@ -255,6 +255,16 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
 
     const { typeUrl, msgs } = this.getMsgToSend();
     const feeOptions = msgData.feeOptions;
+
+    if (!msgData.gasLimit && !msgData.gasPrice && this.provider) {
+      const [feeEstimation] = await this.provider.estimateFee(
+        [this],
+        GasFeeSpeed.medium
+      );
+      msgData.gasLimit = feeEstimation.gasLimit;
+      msgData.gasPrice = feeEstimation.gasPrice;
+    }
+
     const fee = {
       amount: [
         {

@@ -87,8 +87,18 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    return this.dataSource.estimateFee(msgs, speed);
+  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
+    try {
+      return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
+    } catch {
+      console.warn('Estimate fee failed, using default fee');
+
+      const defaultFee = [
+        { gasLimit: '20000', gasPrice: this.manifest.feeGasStep[speed] },
+      ] as FeeData[];
+
+      return defaultFee;
+    }
   }
 
   async getFeeTokens() {
