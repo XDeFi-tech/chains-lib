@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.26
+
+### Patch Changes
+
+- 54e5f927: add default fee config for Cosmos chains
+
 ## 2.0.25
 
 ### Patch Changes
