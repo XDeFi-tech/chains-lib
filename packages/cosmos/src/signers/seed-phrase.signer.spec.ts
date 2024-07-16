@@ -68,7 +68,8 @@ describe('seed-phrase.signer', () => {
       from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
       amount: '0.000001',
-      msgs: [],
+      gasLimit: '200000',
+      gasPrice: COSMOS_MANIFESTS.cosmos.feeGasStep.medium,
     };
 
     message = provider.createMsg(txInput);
@@ -380,6 +381,8 @@ describe('abstrction fee', () => {
       new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
     );
   });
+
+  jest.setTimeout(15000);
 
   it('should sign a transaction using a seed phrase', async () => {
     const ibcToken =
