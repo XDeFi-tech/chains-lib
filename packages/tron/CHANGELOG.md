@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.24
+
+### Patch Changes
+
+- 9a9fe602: Revert tsup config
+- Updated dependencies [9a9fe602]
+  - @xdefi-tech/chains-core@2.0.22
+
 ## 2.0.23
 
 ### Patch Changes
