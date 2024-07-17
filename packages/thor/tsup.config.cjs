@@ -22,6 +22,5 @@ module.exports = {
     target: 'ES6',
     external: ['crypto', 'bip32'],
     plugins: [NodeModulesPolyfillPlugin()],
-    skipNodeModulesBundle: true,
   },
 };
