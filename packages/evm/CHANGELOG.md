@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.36
+
+### Patch Changes
+
+- 9a9fe602: Revert tsup config
+- Updated dependencies [9a9fe602]
+  - @xdefi-tech/chains-core@2.0.22
+
 ## 2.0.35
 
 ### Patch Changes

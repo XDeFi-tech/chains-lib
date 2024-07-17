@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.22
+
+### Patch Changes
+
+- 9a9fe602: Revert tsup config
+
 ## 2.0.21
 
 ### Patch Changes
