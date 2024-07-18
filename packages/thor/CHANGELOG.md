@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.25
+
+### Patch Changes
+
+- 6ed254de: Fix: getBalance decimals for indexer datasource
+
 ## 2.0.24
 
 ### Patch Changes
