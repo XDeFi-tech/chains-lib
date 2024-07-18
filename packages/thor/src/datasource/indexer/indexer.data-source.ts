@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import cosmosclient from '@cosmos-client/core';
 import axios, { Axios } from 'axios';
 import Long from 'long';
+import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
@@ -64,7 +65,9 @@ export class IndexerDataSource extends DataSource {
           price: asset.price?.amount,
           decimals: asset.price?.scalingFactor,
         }),
-        amount.value
+        new BigNumber(amount.value)
+          .integerValue()
+          .dividedBy(Math.pow(10, asset.decimals))
       );
     });
   }
