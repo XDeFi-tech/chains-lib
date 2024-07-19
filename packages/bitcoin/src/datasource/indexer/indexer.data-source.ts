@@ -153,6 +153,8 @@ export class IndexerDataSource extends DataSource {
           (tx.blockNumber || 0) > 0
             ? TransactionStatus.success
             : TransactionStatus.pending,
+        inputs: tx.inputs,
+        outputs: tx.outputs,
       };
     }
 

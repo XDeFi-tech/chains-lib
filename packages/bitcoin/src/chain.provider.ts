@@ -37,8 +37,21 @@ export class BitcoinProvider extends UtxoProvider<ChainMsg> {
     return this.dataSource.getTransaction(txHash);
   }
 
-  public async scanUTXOs(address: string) {
-    return this.dataSource.scanUTXOs(address);
+  public async scanUTXOs(
+    address: string,
+    options?: { includeOrigins: boolean }
+  ) {
+    const utxos = await this.dataSource.scanUTXOs(address);
+    if (options?.includeOrigins) {
+      return utxos;
+    }
+    const ordinals = await this.getNFTBalance(address);
+    return utxos.filter((utxo) =>
+      (ordinals as any[]).every(
+        (ordinals) =>
+          !String(ordinals.location).startsWith(`${utxo.hash}:${utxo.index}`)
+      )
+    );
   }
 
   static verifyAddress(address: string): boolean {
