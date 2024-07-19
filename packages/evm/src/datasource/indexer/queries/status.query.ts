@@ -11,6 +11,7 @@ import {
   GetOptimismStatusDocument,
   GetPolygonStatusDocument,
   GetSmartChainStatusDocument,
+  GetGnosisStatusDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
@@ -51,6 +52,10 @@ export const getStatus = async (chain: string) => {
     case EVMChains.cronos:
       indexerChain = 'cronosEVM';
       query = GetCronosEvmStatusDocument;
+      break;
+    case EVMChains.gnosis:
+      indexerChain = 'gnosis';
+      query = GetGnosisStatusDocument;
       break;
     default:
       throw new Error(
