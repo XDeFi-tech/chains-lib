@@ -75,6 +75,7 @@ export class LedgerSigner extends Signer.Provider {
         app.splitTransaction(utxo.txHex, true),
         utxo.index,
         utxo.witnessUtxo.script.toString('hex'),
+        undefined,
       ]),
       associatedKeysets: [derivation],
       outputScriptHex,
