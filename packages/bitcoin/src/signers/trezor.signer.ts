@@ -4,7 +4,9 @@ import {
   IsTrezorInitialized,
 } from '@xdefi-tech/chains-core';
 import TrezorConnect, { Params, SignTransaction } from '@trezor/connect-web';
-import { UTXO, ChainMsg } from '@xdefi-tech/chains-utxo';
+import { UTXO } from '@xdefi-tech/chains-utxo';
+
+import { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.TREZOR)
 export class TrezorSigner extends Signer.TrezorProvider {
@@ -53,7 +55,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         prev_hash: utxo.hash,
         prev_index: utxo.index,
         amount: utxo.value,
-        script_type: scriptType,
+        script_type: scriptType as any,
         address_n: [
           (derivationArray[0] | 0x80000000) >>> 0,
           (derivationArray[1] | 0x80000000) >>> 0,
@@ -69,6 +71,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
       return {
         address: to,
         amount: output.value,
+        script_type: 'PAYTOADDRESS' as any,
       };
     });
 

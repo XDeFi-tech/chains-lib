@@ -6,6 +6,7 @@ export const BITCOIN_NFTS_QUERY = gql`
     bitcoin {
       legacyNFTs(address: $address) {
         ...LegacyNftData
+        location
       }
     }
   }

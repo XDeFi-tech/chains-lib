@@ -9,7 +9,7 @@ import {
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { BITCOIN_MANIFEST } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { MsgBody, ChainMsg } from '../msg';
 
 import TrezorSigner from './trezor.signer';
 jest.mock('@trezor/connect-web', () => ({
@@ -63,6 +63,21 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
     return [];
   },
 }));
+
+jest.mock('../datasource/indexer/queries/fees.query', () => {
+  const originalModule = jest.requireActual(
+    '../datasource/indexer/queries/fees.query'
+  );
+  return {
+    __esModule: true,
+    ...originalModule,
+    getFees: jest.fn().mockResolvedValue({
+      high: 3000,
+      medium: 3000, // 3000 sat/kvB => 3 sat/vB
+      low: 3000,
+    }),
+  };
+});
 
 describe('trezor.signer', () => {
   let signer: TrezorSigner;
