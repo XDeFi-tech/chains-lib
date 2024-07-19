@@ -12,6 +12,7 @@ import {
   GetSmartChainBalanceDocument,
   GetCronosEvmBalanceDocument,
   GetCantoEvmBalanceDocument,
+  GetGnosisBalanceDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
@@ -51,6 +52,10 @@ export const getBalance = async (chain: EVMChains, address: string) => {
     case EVMChains.cronos:
       indexerChain = 'cronosEVM';
       query = GetCronosEvmBalanceDocument;
+      break;
+    case EVMChains.gnosis:
+      indexerChain = 'gnosis';
+      query = GetGnosisBalanceDocument;
       break;
     default:
       throw new Error(

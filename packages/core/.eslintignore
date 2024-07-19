@@ -1,2 +1,5 @@
 .eslintrc.cjs
 webpack*
+src/common/fragment-masking.ts
+src/common/gql.ts
+src/common/graphql.ts

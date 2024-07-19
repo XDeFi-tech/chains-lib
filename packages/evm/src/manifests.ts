@@ -12,6 +12,7 @@ export enum EVMChains {
   optimism = 'optimism',
   klaytn = 'klaytn',
   cronos = 'cronos',
+  gnosis = 'gnosis',
 }
 
 export const EVM_MANIFESTS: {
@@ -192,9 +193,26 @@ export const EVM_MANIFESTS: {
     description: '',
     rpcURL: 'https://cronoscan-rpc.xdefiservices.com',
     chainSymbol: 'CRO',
-    blockExplorerURL: 'https://cronoscan.com/',
+    blockExplorerURL: 'https://cronoscan.com',
     chainId: '25',
     chain: 'cronos',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
+  },
+  [EVMChains.gnosis]: {
+    name: 'Gnosis',
+    description: '',
+    rpcURL: 'https://rpc-proxy.xdefi.services/gnosis',
+    chainSymbol: 'XDAI',
+    blockExplorerURL: 'https://gnosisscan.io',
+    chainId: '100',
+    chain: 'gnosis',
     decimals: 18,
     feeGasStep: {
       high: 1.5,
