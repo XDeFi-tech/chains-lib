@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.23
+
+### Patch Changes
+
+- fc1d1a2f: Fix: allow to spend UTXOs without losing the ordinals
+
 ## 2.0.22
 
 ### Patch Changes
