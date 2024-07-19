@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.0.21
+
+### Patch Changes
+
+- 5b9f95cb: Feat: add generic files to .eslintignore
+- Updated dependencies [5b9f95cb]
+  - @xdefi-tech/chains-core@2.0.23
+
 ## 2.0.20
 
 ### Patch Changes
