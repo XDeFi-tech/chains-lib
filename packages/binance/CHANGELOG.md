@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.18
+
+### Patch Changes
+
+- 5b9f95cb: Feat: add generic files to .eslintignore
+- Updated dependencies [5b9f95cb]
+  - @xdefi-tech/chains-core@2.0.23
+
 ## 2.0.17
 
 ### Patch Changes
