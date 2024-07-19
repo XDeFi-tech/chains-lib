@@ -12,6 +12,7 @@ import {
   GetOptimismTransactionsDocument,
   GetPolygonTransactionsDocument,
   GetSmartChainTransactionsDocument,
+  GetGnosisTransactionsDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
@@ -56,6 +57,10 @@ export const getTransactions = async (
     case EVMChains.cronos:
       indexerChain = 'cronosEVM';
       query = GetCronosEvmTransactionsDocument;
+      break;
+    case EVMChains.gnosis:
+      indexerChain = 'gnosis';
+      query = GetGnosisTransactionsDocument;
       break;
     default:
       throw new Error(

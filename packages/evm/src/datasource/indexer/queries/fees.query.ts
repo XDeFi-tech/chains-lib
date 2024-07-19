@@ -11,6 +11,7 @@ import {
   OptimismEip1559GasFeesDocument,
   PolygonEip1559GasFeesDocument,
   SmartChainDefaultGasFeesDocument,
+  GnosisEip1559GasFeesDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
@@ -51,6 +52,10 @@ export const getFees = async (chain: string) => {
     case EVMChains.cronos:
       indexerChain = 'cronosEVM';
       query = CronosEvmeip1559GasFeesDocument;
+      break;
+    case EVMChains.gnosis:
+      indexerChain = 'gnosis';
+      query = GnosisEip1559GasFeesDocument;
       break;
     default:
       throw new Error(

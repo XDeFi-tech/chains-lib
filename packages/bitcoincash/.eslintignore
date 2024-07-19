@@ -1,3 +1,4 @@
 .eslintrc.js
 webpack*
 jest-setup-file.ts
+src/gql/**/*.ts
