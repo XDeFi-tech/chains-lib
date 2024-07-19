@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.37
+
+### Patch Changes
+
+- 5b9f95cb: Feat: add generic files to .eslintignore
+- 5b9f95cb: Feat: add Gnosis chain support
+- Updated dependencies [5b9f95cb]
+  - @xdefi-tech/chains-core@2.0.23
+
 ## 2.0.36
 
 ### Patch Changes

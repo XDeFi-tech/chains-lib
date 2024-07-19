@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.23
+
+### Patch Changes
+
+- 5b9f95cb: Feat: add generic files to .eslintignore
+
 ## 2.0.22
 
 ### Patch Changes
