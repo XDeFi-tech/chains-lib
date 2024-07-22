@@ -12,6 +12,7 @@ export enum EVMChains {
   optimism = 'optimism',
   klaytn = 'klaytn',
   cronos = 'cronos',
+  rootstock = 'rootstock',
 }
 
 export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
@@ -57,6 +58,23 @@ export const EVM_MANIFESTS: { [key in EVMChains]: Chain.Manifest } = {
     blockExplorerURL: 'https://polygonscan.com',
     chainId: '137',
     chain: 'polygon',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
+  },
+  [EVMChains.rootstock]: {
+    name: 'Rootstock',
+    description: 'EVM compatible bitcoin sidechain',
+    rpcURL: 'https://public-node.rsk.co',
+    chainSymbol: 'RBTC',
+    blockExplorerURL: 'https://explorer.rootstock.io',
+    chainId: '30',
+    chain: 'rootstock',
     decimals: 18,
     feeGasStep: {
       high: 1.5,
