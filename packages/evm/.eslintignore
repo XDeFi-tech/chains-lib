@@ -1,3 +1,4 @@
 .eslintrc.cjs
 jest-setup-file.ts
+jest.config.ts
 webpack*

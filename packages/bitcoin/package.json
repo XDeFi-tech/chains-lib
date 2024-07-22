@@ -62,6 +62,7 @@
       "src/signers/react-native.ts",
       "src/index.ts"
     ],
+    "outDir": "dist",
     "format": "cjs",
     "splitting": false,
     "dts": true,

@@ -3,8 +3,26 @@
   "compilerOptions": {
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "stream": [
+        "node_modules/stream-browserify",
+        "../../node_modules/stream-browserify"
+      ],
+      "http": [
+        "node_modules/http-browserify",
+        "../../node_modules/http-browserify"
+      ],
+      "https": [
+        "node_modules/https-browserify",
+        "../../node_modules/https-browserify"
+      ],
+      "zlib": [
+        "node_modules/zlib-browserify",
+        "../../node_modules/zlib-browserify"
+      ]
+    }
   },
   "allowJs": true,
-  "include": ["./src/custom.d.ts", "./src/**/*"],
+  "include": ["./src/custom.d.ts", "./src/**/*"]
 }

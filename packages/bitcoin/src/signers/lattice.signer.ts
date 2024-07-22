@@ -6,6 +6,23 @@ import type { ChainMsg } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LATTICE)
 export class LatticeSigner extends Signer.LatticeProvider {
+  static async create({
+    deviceId,
+    password,
+    name,
+  }: {
+    deviceId: string;
+    password: string;
+    name: string;
+  }): Promise<LatticeSigner> {
+    const { clientData, isPaired } = await super.create({
+      deviceId,
+      password,
+      name,
+    });
+    return new LatticeSigner(clientData, isPaired);
+  }
+
   verifyAddress(address: string): boolean {
     try {
       Bitcoin.address.toOutputScript(address);

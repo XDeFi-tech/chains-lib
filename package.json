@@ -1,7 +1,11 @@
 {
   "name": "@xdefi-tech/chains",
   "version": "1.0.0",
-  "workspaces": ["utility-packages/*", "packages/*", "examples/*"],
+  "workspaces": [
+    "utility-packages/*",
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",

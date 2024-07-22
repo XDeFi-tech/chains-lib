@@ -37,7 +37,7 @@ describe('lattice.signer', () => {
 
   beforeEach(async () => {
     provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-    derivationPath = "m/84'/0'/0'/0/0";
+    derivationPath = "m/44'/60'/0'/0/0";
 
     txInput = {
       from: '0xdfb2682febe6ea96682b1018702958980449b7db',
