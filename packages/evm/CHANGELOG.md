@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.38
+
+### Patch Changes
+
+- 571b0456: added default usage of fee service for evm estimateFees
+- Updated dependencies [571b0456]
+  - @xdefi-tech/chains-core@2.0.24
+
 ## 2.0.37
 
 ### Patch Changes
