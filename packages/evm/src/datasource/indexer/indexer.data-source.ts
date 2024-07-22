@@ -3,6 +3,7 @@ import {
   DataSource,
   Coin,
   FeeOptions,
+  FeeParams,
   GasFeeSpeed,
   Transaction,
   Injectable,
@@ -195,9 +196,10 @@ export class IndexerDataSource extends DataSource {
 
   async estimateFee(
     msgs: ChainMsg[],
-    speed: GasFeeSpeed = GasFeeSpeed.medium
+    speed: GasFeeSpeed = GasFeeSpeed.medium,
+    options: FeeParams = { useFeeService: true }
   ): Promise<FeeData[]> {
-    const fee = await this.gasFeeOptions();
+    const fee = await this.gasFeeOptions(options);
     if (!fee) {
       throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
     }
@@ -304,9 +306,7 @@ export class IndexerDataSource extends DataSource {
     return feeData;
   }
 
-  async gasFeeOptions(options?: {
-    useFeeService: boolean;
-  }): Promise<FeeOptions | null> {
+  async gasFeeOptions(options?: FeeParams): Promise<FeeOptions | null> {
     if (options?.useFeeService) {
       return this._getFeeOptionsByFeeService();
     }

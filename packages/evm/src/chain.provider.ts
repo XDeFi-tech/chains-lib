@@ -6,6 +6,7 @@ import {
   DataSource,
   FeeData,
   FeeOptions,
+  FeeParams,
   GasFeeSpeed,
   Msg,
   MsgData,
@@ -94,9 +95,7 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async gasFeeOptions(options?: {
-    useFeeService: boolean;
-  }): Promise<FeeOptions | null> {
+  async gasFeeOptions(options?: FeeParams): Promise<FeeOptions | null> {
     return this.dataSource.gasFeeOptions(options);
   }
 
