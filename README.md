@@ -24,6 +24,7 @@ This library currently supports the following blockchain networks:
 | Ethereum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | BNB Smart Chain | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Polygon         | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
+| Rootstock       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Avalanche       | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Fantom          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Arbitrum        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
