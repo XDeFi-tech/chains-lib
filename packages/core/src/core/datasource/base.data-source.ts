@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { Manifest } from '../chain';
 import { Coin, FeeOptions, GasFeeSpeed, Msg, Transaction, TransactionData } from '../../core';
 import { FeeData } from '../interfaces';
-import { NfTv3 } from '../../common/graphql';
 
 export interface BalanceFilter {
   address: string;
@@ -13,6 +12,10 @@ export interface BalanceFilter {
 export interface TransactionsFilter {
   address: string;
   afterBlock?: number | string;
+}
+
+export interface FeeParams {
+  useFeeService: boolean;
 }
 
 export interface Balance {
@@ -53,9 +56,9 @@ export abstract class DataSource {
 
   abstract subscribeTransactions(filter: TransactionsFilter): Promise<Observable<Transaction>>;
 
-  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
+  abstract estimateFee(msgs: Msg[], speed: GasFeeSpeed, options?: FeeParams): Promise<FeeData[]>;
 
-  abstract gasFeeOptions(options?: { useFeeService: boolean }): Promise<FeeOptions | null>;
+  abstract gasFeeOptions(options?: FeeParams): Promise<FeeOptions | null>;
 
   async getNonce(_address: string): Promise<number> {
     return 0;
