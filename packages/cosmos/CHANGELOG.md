@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.28
+
+### Patch Changes
+
+- 7ff10296: feat: add signing mode for the sign method
+
 ## 2.0.27
 
 ### Patch Changes
