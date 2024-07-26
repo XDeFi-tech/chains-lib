@@ -6867,6 +6867,63 @@ export type GetStargazeStatusQuery = {
   };
 };
 
+export type SeiBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type SeiBalanceQuery = {
+  __typename?: 'Query';
+  sei: {
+    __typename?: 'CosmosBalanceChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      amount: { __typename?: 'Amount'; value: string };
+      asset: {
+        __typename?: 'CryptoAsset';
+        chain?: string | null;
+        contract?: string | null;
+        decimals?: number | null;
+        id?: string | null;
+        image?: string | null;
+        name?: string | null;
+        symbol?: string | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          scalingFactor: number;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+    }>;
+  };
+};
+
+export type GetSeiFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSeiFeesQuery = {
+  __typename?: 'Query';
+  sei: {
+    __typename?: 'CosmosBalanceChain';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
+  };
+};
+
+export type GetSeiStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSeiStatusQuery = {
+  __typename?: 'Query';
+  sei: {
+    __typename?: 'CosmosBalanceChain';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
 export type TerraBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -14590,6 +14647,222 @@ export const GetStargazeStatusDocument = {
   GetStargazeStatusQuery,
   GetStargazeStatusQueryVariables
 >;
+export const SeiBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'SeiBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sei' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'scalingFactor',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SeiBalanceQuery, SeiBalanceQueryVariables>;
+export const GetSeiFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSeiFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sei' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetSeiFeesQuery, GetSeiFeesQueryVariables>;
+export const GetSeiStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetSeiStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sei' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetSeiStatusQuery, GetSeiStatusQueryVariables>;
 export const TerraBalanceDocument = {
   kind: 'Document',
   definitions: [
