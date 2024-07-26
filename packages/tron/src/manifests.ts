@@ -8,11 +8,11 @@ export interface TronManifest extends Chain.Manifest {
 export const TRON_MANIFEST: TronManifest = {
   name: 'Tron',
   description: '',
-  rpcURL: 'https://api.trongrid.io',
+  rpcURL: 'https://rpc-proxy.xdefi.services/trongrid/rpc/mainnet',
   chainSymbol: 'TRX',
   blockExplorerURL: 'https://tronscan.org',
   dataProviderType: 'trongrid',
-  dataProviderURL: 'https://api.trongrid.io',
+  dataProviderURL: 'https://rpc-proxy.xdefi.services/trongrid/rpc/mainnet',
   chainId: '0x2b6653dc',
   chain: 'tron',
   decimals: 16,
