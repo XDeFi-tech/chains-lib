@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.29
+
+### Patch Changes
+
+- 25af39fe: Fix: getTransaction method for cosmos chains
+
 ## 2.0.28
 
 ### Patch Changes
