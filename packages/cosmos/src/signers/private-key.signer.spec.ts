@@ -6,7 +6,7 @@ import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
 
 import { PrivateKeySigner } from './private-key.signer';
 
@@ -110,9 +110,18 @@ describe('private-key.signer', () => {
     );
   });
 
-  it('should sign a transaction using a private key', async () => {
+  it('should sign direct a transaction using a private key', async () => {
     await cosmosSigner.sign(message);
+    expect(message.signedTransaction).toBeTruthy();
+  });
 
+  it('should sign amimo a transaction using a private key', async () => {
+    await cosmosSigner.sign(
+      message,
+      '',
+      CosmosChainType.Cosmos,
+      CosmosSignMode.SIGN_AMINO
+    );
     expect(message.signedTransaction).toBeTruthy();
   });
 
@@ -163,5 +172,87 @@ describe('private-key.signer', () => {
       new Uint8Array([...signature.r, ...signature.s])
     );
     expect(result).toBe(false);
+  });
+
+  it('Should create msg adn sign it with direct mode', async () => {
+    const chainMsg = provider.createMsg(txInput);
+
+    const txData = await chainMsg.buildTx();
+
+    // Check tx msgs before signinng
+    const expectedMsg = {
+      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+      value: {
+        fromAddress: txInput.from,
+        toAddress: txInput.to,
+        amount: [
+          {
+            denom: 'uatom',
+            amount: '1', // txInput * 10 ** decimals
+          },
+        ],
+      },
+    };
+    expect(txData.msgs[0]).toEqual(expectedMsg);
+
+    // Check tx fee info before signing
+    const expectedFee = {
+      amount: [{ denom: 'uatom', amount: '2500' }],
+      gas: '200000',
+    };
+    expect(txData.fee).toEqual(expectedFee);
+
+    // Sign msg with direct sign mode
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    await signer.sign(
+      chainMsg,
+      '',
+      CosmosChainType.Cosmos,
+      CosmosSignMode.SIGN_DIRECT
+    );
+    expect(chainMsg.signedTransaction).toEqual(
+      'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIARgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkDMqz7SD1+2tvYlImP5HGOLF0/wjqpDAyMODMKnmh8bmkjdarqIGVnN+FgLzEaKHUpIc1c6n8iwCkh/a8SW1yfr'
+    );
+  });
+
+  it('Should create msg adn sign it with animo mode', async () => {
+    const chainMsg = provider.createMsg(txInput);
+
+    const txData = await chainMsg.buildTx();
+
+    // Check tx msgs before signinng
+    const expectedMsg = {
+      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+      value: {
+        fromAddress: txInput.from,
+        toAddress: txInput.to,
+        amount: [
+          {
+            denom: 'uatom',
+            amount: '1', // txInput * 10 ** decimals
+          },
+        ],
+      },
+    };
+    expect(txData.msgs[0]).toEqual(expectedMsg);
+
+    // Check tx fee info before signing
+    const expectedFee = {
+      amount: [{ denom: 'uatom', amount: '2500' }],
+      gas: '200000',
+    };
+    expect(txData.fee).toEqual(expectedFee);
+
+    // Sign msg with amino sign mode
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    await signer.sign(
+      chainMsg,
+      '',
+      CosmosChainType.Cosmos,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(chainMsg.signedTransaction).toEqual(
+      'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIfxgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkCMICf5+o/tooHugIHu8JFVWQ1Gj8EjJVKWHdZOJSEuBWyh+Wt/k8b4A0EWzhwI8B4nHvGEPGjmLWVI6USX1wQs'
+    );
   });
 });
