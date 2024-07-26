@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.30
+
+### Patch Changes
+
+- 918ccee9: Feat: add Sei mainnet chain
+
 ## 2.0.29
 
 ### Patch Changes
