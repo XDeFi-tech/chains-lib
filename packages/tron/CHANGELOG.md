@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.26
+
+### Patch Changes
+
+- 38794f73: Feat: change dataProviderURL
+
 ## 2.0.25
 
 ### Patch Changes
