@@ -14,6 +14,7 @@ import {
   GetStrideFeesDocument,
   GetMarsFeesDocument,
   GetTerraFeesDocument,
+  GetSeiFeesDocument,
   DefaultGasFee,
 } from '../../../gql/graphql';
 import { CosmosHubChains } from '../../../manifests';
@@ -81,6 +82,10 @@ const getChainParams = (chain: string): CosmosChainParams => {
     case CosmosHubChains.terra:
       params.query = GetTerraFeesDocument;
       params.queryName = 'terra';
+      break;
+    case CosmosHubChains.sei:
+      params.query = GetSeiFeesDocument;
+      params.queryName = 'sei';
       break;
   }
 

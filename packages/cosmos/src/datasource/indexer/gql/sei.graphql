@@ -1,0 +1,42 @@
+query SeiBalance($address: String!) {
+  sei {
+    balances(address: $address) {
+      address
+      amount {
+        value
+      }
+      asset {
+        chain
+        contract
+        decimals
+        id
+        image
+        name
+        price {
+          amount
+          scalingFactor
+          dayPriceChange
+        }
+        symbol
+      }
+    }
+  }
+}
+
+query GetSeiFees {
+  sei {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetSeiStatus {
+  sei {
+    status {
+      lastBlock
+    }
+  }
+}
