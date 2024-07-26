@@ -202,7 +202,9 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
     if (tx.tx_response.code) {
       result.status = TransactionStatus.failure;
     } else {
-      const { data } = await this.lcdAxiosClient.get('/blocks/latest');
+      const { data } = await this.lcdAxiosClient.get(
+        '/cosmos/base/tendermint/v1beta1/blocks/latest'
+      );
       if (tx.tx_response.height <= data.block.header.height) {
         result.status = TransactionStatus.success;
         result.data = tx.tx_response.data;
