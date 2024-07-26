@@ -14,6 +14,7 @@ export enum CosmosHubChains {
   stride = 'stride',
   mars = 'mars',
   terra = 'terra',
+  sei = 'sei',
 }
 
 export interface CosmosManifest extends Chain.Manifest {
@@ -270,6 +271,25 @@ export const COSMOS_MANIFESTS: {
       high: 0.003,
       medium: 0.0025,
       low: 0.001,
+    },
+    maxGapAmount: 0,
+  },
+  [CosmosHubChains.sei]: {
+    name: 'Sei',
+    description: 'mainnet',
+    rpcURL: 'https://rpc-proxy.xdefi.services/sei/rpc/mainnet',
+    lcdURL: 'https://rpc-proxy.xdefi.services/sei/lcd/mainnet',
+    chainSymbol: 'SEI',
+    blockExplorerURL: 'https://www.mintscan.io/sei',
+    chainId: 'pacific-1',
+    chain: 'sei',
+    denom: 'usei',
+    decimals: 6,
+    prefix: 'sei',
+    feeGasStep: {
+      high: 0.1,
+      medium: 0.1,
+      low: 0.1,
     },
     maxGapAmount: 0,
   },

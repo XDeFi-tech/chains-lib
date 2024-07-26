@@ -14,6 +14,7 @@ import {
   StrideBalanceDocument,
   MarsBalanceDocument,
   TerraBalanceDocument,
+  SeiBalanceDocument,
   Balance,
 } from '../../../gql/graphql';
 import { CosmosHubChains } from '../../../manifests';
@@ -81,6 +82,10 @@ const getChainParams = (chain: string): CosmosChainParams => {
     case CosmosHubChains.terra:
       params.query = TerraBalanceDocument;
       params.queryName = 'terra';
+      break;
+    case CosmosHubChains.sei:
+      params.query = SeiBalanceDocument;
+      params.queryName = 'sei';
       break;
   }
 
