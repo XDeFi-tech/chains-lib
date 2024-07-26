@@ -11,8 +11,9 @@ import { Wallet } from 'ethers';
 import { MnemonicKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
+import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 
-import { ChainMsg, CosmosChainType } from '../msg';
+import { ChainMsg, CosmosChainType, CosmosSignMode } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.SEED_PHRASE)
@@ -63,31 +64,20 @@ export class SeedPhraseSigner extends Signer.Provider {
   async sign(
     msg: ChainMsg,
     derivation: string,
-    chainType?: CosmosChainType
+    chainType?: CosmosChainType,
+    signMode?: CosmosSignMode
   ): Promise<void> {
-    const txData = await msg.buildTx();
     if (chainType === CosmosChainType.Cosmos || !chainType) {
-      const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-        prefix: msg.provider.manifest.prefix,
-      });
-      const [{ address: senderAddress }] = await wallet.getAccounts();
-      const client = await SigningStargateClient.connectWithSigner(
-        msg.provider.manifest.rpcURL,
-        wallet,
-        STARGATE_CLIENT_OPTIONS
-      );
-
-      const signedTx = await client.sign(
-        senderAddress,
-        txData.msgs,
-        txData.fee,
-        txData.memo
-      );
+      const signedTx =
+        signMode === CosmosSignMode.SIGN_DIRECT || !signMode
+          ? await this.signDirect(msg)
+          : await this.signAmino(msg);
       const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
       const rawTx = Buffer.from(txBytes).toString('base64');
       msg.sign(rawTx);
       return;
     } else if (chainType === CosmosChainType.Terra) {
+      const txData = await msg.buildTx();
       const clientOptions: Record<string, any> = {};
       clientOptions[msg.provider.manifest.chainId] = {
         chainID: msg.provider.manifest.chainId,
@@ -116,6 +106,34 @@ export class SeedPhraseSigner extends Signer.Provider {
 
       msg.sign(Buffer.from(tx.toBytes()).toString('base64'));
     }
+  }
+
+  async signDirect(msg: ChainMsg) {
+    const txData = await msg.buildTx();
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
+      prefix: msg.provider.manifest.prefix,
+    });
+    const [{ address: senderAddress }] = await wallet.getAccounts();
+    const client = await SigningStargateClient.connectWithSigner(
+      msg.provider.manifest.rpcURL,
+      wallet,
+      STARGATE_CLIENT_OPTIONS
+    );
+    return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
+  }
+
+  async signAmino(msg: ChainMsg) {
+    const txData = await msg.buildTx();
+    const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
+      prefix: msg.provider.manifest.prefix,
+    });
+    const [{ address: senderAddress }] = await wallet.getAccounts();
+    const client = await SigningStargateClient.connectWithSigner(
+      msg.provider.manifest.rpcURL,
+      wallet,
+      STARGATE_CLIENT_OPTIONS
+    );
+    return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
   }
 
   async verifyMessage(

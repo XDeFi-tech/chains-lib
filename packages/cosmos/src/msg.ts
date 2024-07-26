@@ -67,6 +67,11 @@ export enum CosmosChainType {
   Terra = 2,
 }
 
+export enum CosmosSignMode {
+  SIGN_DIRECT = 0,
+  SIGN_AMINO = 1,
+}
+
 export class ChainMsg extends BasMsg<MsgBody, TxData> {
   declare signedTransaction: StdTx | undefined;
   declare provider: CosmosProvider;
