@@ -5,7 +5,7 @@ import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS, CosmosHubChains } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
@@ -103,9 +103,18 @@ describe('seed-phrase.signer', () => {
     );
   });
 
-  it('should sign a transaction using a seed phrase', async () => {
+  it('should sign direct a transaction using a seed phrase', async () => {
     await signer.sign(message, derivations.cosmos);
+    expect(message.signedTransaction).toBeTruthy();
+  });
 
+  it('should sign amino a transaction using a seed phrase', async () => {
+    await signer.sign(
+      message,
+      derivations.cosmos,
+      CosmosChainType.Cosmos,
+      CosmosSignMode.SIGN_AMINO
+    );
     expect(message.signedTransaction).toBeTruthy();
   });
 });
