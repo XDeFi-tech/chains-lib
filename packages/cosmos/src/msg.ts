@@ -10,20 +10,20 @@ import {
 import { StdTx } from '@cosmjs/amino/build/stdtx';
 import { Coin as AminoCoin } from '@cosmjs/amino/build/coins';
 import BigNumber from 'bignumber.js';
-import { MsgSend } from 'osmojs/cosmos/bank/v1beta1/tx';
-import { MessageComposer as MessageComposerCosmos } from 'osmojs/cosmos/bank/v1beta1/tx.registry';
-import { AminoConverter as AminoConverterCosmos } from 'osmojs/cosmos/bank/v1beta1/tx.amino';
-import { MsgSwapExactAmountIn } from 'osmojs/osmosis/gamm/v1beta1/tx';
-import { MessageComposer as MessageComposerGamm } from 'osmojs/osmosis/gamm/v1beta1/tx.registry';
-import { AminoConverter as AminoConverterGamm } from 'osmojs/osmosis/gamm/v1beta1/tx.amino';
-import { MsgTransfer } from 'osmojs/ibc/applications/transfer/v1/tx';
-import { MessageComposer as MessageComposerIbc } from 'osmojs/ibc/applications/transfer/v1/tx.registry';
-import { AminoConverter as AminoConverterIbc } from 'osmojs/ibc/applications/transfer/v1/tx.amino';
 import Long from 'long';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 import { StdSignature } from '@cosmjs/amino';
 
+import { MsgTransfer } from './proto_export/ibc/applications/transfer/v1/tx';
+import { MessageComposer as MessageComposerIbc } from './proto_export/ibc/applications/transfer/v1/tx.registry';
+import { AminoConverter as AminoConverterIbc } from './proto_export/ibc/applications/transfer/v1/tx.amino';
+import { AminoConverter as AminoConverterCosmos } from './proto_export/cosmos/bank/v1beta1/tx.amino';
+import { MessageComposer as MessageComposerCosmos } from './proto_export/cosmos/bank/v1beta1/tx.registry';
+import { MsgSend } from './proto_export/cosmos/bank/v1beta1/tx';
 import type { CosmosProvider } from './chain.provider';
+import { MsgSwapExactAmountIn } from './proto_export/osmosis/gamm/v1beta1/tx';
+import { MessageComposer as MessageComposerGamm } from './proto_export/osmosis/gamm/v1beta1/tx.registry';
+import { AminoConverter as AminoConverterGamm } from './proto_export/osmosis/gamm/v1beta1/tx.amino';
 
 export type MsgBody = {
   from: string;

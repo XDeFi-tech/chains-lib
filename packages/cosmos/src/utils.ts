@@ -4,14 +4,14 @@ import {
 } from '@cosmjs/stargate/build/signingstargateclient';
 import { AminoTypes } from '@cosmjs/stargate/build/aminotypes';
 import { Registry } from '@cosmjs/proto-signing/build/registry';
-import {
-  osmosisProtoRegistry,
-  osmosisAminoConverters,
-} from 'osmojs/osmosis/client';
 import axios from 'axios';
 import { wasmTypes } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/messages';
 import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/aminomessages';
 
+import {
+  osmosisProtoRegistry,
+  osmosisAminoConverters,
+} from './proto_export/osmosis/client';
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
 import { AminoMsgSend, MsgBody } from './msg';
 
