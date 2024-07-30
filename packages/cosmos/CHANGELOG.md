@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.31
+
+### Patch Changes
+
+- 5f2e1cf1: feat: add methods to sign transaction from sign doc
+
 ## 2.0.30
 
 ### Patch Changes
