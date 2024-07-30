@@ -255,4 +255,165 @@ describe('private-key.signer', () => {
       'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIfxgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkCMICf5+o/tooHugIHu8JFVWQ1Gj8EjJVKWHdZOJSEuBWyh+Wt/k8b4A0EWzhwI8B4nHvGEPGjmLWVI6USX1wQs'
     );
   });
+
+  it('Should sign raw tx with amino mode', async () => {
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'cosmos-sdk/MsgSend',
+          value: {
+            from_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            to_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            amount: [{ denom: 'uatom', amount: '1000000' }],
+          },
+        },
+      ],
+      memo: '',
+    };
+
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'y77g4nQrMCxTH8ICyffz0w2sjXUjisSANkbwy1i+AsBjoZNTIhqJs9l03p2pG/MVavW8ZTx0IQ26ItLRLCrAkQ=='
+    );
+  });
+
+  it('Should sign raw tx with direct mode', async () => {
+    const signDoc = {
+      chainId: 'cosmoshub-4',
+      accountNumber: '1895821',
+      bodyBytes: new Uint8Array(
+        Buffer.from(
+          '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
+          'hex'
+        )
+      ),
+      authInfoBytes: new Uint8Array(
+        Buffer.from(
+          '0a4e0a460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a2103dda39b22c1f8e2c2d11da3bc4517f80b461aa69f10e761e34576f4f09ccfa1ee12040a02087f12130a0d0a057561746f6d12043130303010c09a0c',
+          'hex'
+        )
+      ),
+    };
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_DIRECT
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'i3STDg7CxEgl4svgXmhyKePzBoPtqdL3WHrkeHqI/HAMp18EUE+mh9LzTfoFYGlk7O+E+jhXtECISzUakZJ83Q=='
+    );
+  });
+
+  it('Should sign arbitrary message', async () => {
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'sign/msgSignData',
+          value: {
+            signer: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            data: 'SGVsbG8=', // echo -n "Hello" | base64
+          },
+        },
+      ],
+      memo: '',
+    };
+
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.pub_key.type).toEqual(
+      'tendermint/PubKeySecp256k1'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'gzgi+GKdyLOhRHQRBQol0zOcl/J0idmL2MMIrE2f+AU7txWSpdX3irnPHa73BXokYh0mkxB2/o4iZzsr3kiWmQ=='
+    );
+  });
+
+  it('Should sign doc direct aux with sign amino mode', async () => {
+    // const signDoc = SignDocDirectAux.fromPartial({
+    //   chainId: 'cosmoshub-4',
+    //   accountNumber: 1895821n,
+    //   bodyBytes: new Uint8Array(
+    //     Buffer.from(
+    //       '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
+    //       'hex'
+    //     )
+    //   ),
+    //   publicKey: {
+    //     value: Buffer.from('A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu==', 'base64'),
+    //     typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+    //   },
+    //   sequence: 0n,
+    // });
+    // console.log('🚀 ~ it ~ signDoc:', SignDocDirectAux.toAminoMsg(signDoc));
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'cosmos-sdk/SignDocDirectAux',
+          value: {
+            body_bytes:
+              'CjIKHC9jb3Ntb3MuYmFuay52MWJldGExLk1zZ1NlbmQSEhoQCgV1YXRvbRIHMTAwMDAwMA==',
+            pub_key: {
+              type: 'tendermint/PubKeySecp256k1',
+              value: 'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu',
+            },
+            chain_id: 'cosmoshub-4',
+            account_number: '1895821',
+          },
+        },
+      ],
+      memo: '',
+    };
+    const signer = new PrivateKeySigner(privateKeys.cosmos);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      '7WG+1gvdV0dN/l1ntIK67im1H4wp+8kgACuCQ64cM1MgmXCiM7Q0+C3RZot7uFU6grNiJExtYEw9zakIxqsXwg=='
+    );
+  });
 });

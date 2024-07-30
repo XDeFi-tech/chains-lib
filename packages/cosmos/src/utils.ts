@@ -13,7 +13,7 @@ import { wasmTypes } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/messages
 import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/aminomessages';
 
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
-import { MsgBody } from './msg';
+import { AminoMsgSend, MsgBody } from './msg';
 
 export interface ChainAsset {
   denom: string;
