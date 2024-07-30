@@ -1,7 +1,7 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { TxRaw, SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 import {
   stringToPath,
@@ -12,9 +12,8 @@ import { MnemonicKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
-import { CosmosProvider } from 'src/chain.provider';
-import { SignDoc } from 'osmojs/cosmos/tx/v1beta1/tx';
 
+import { CosmosProvider } from '../chain.provider';
 import {
   AminoSignDoc,
   ChainMsg,

@@ -26,8 +26,8 @@ import 'reflect-metadata';
 import { bech32 } from 'bech32';
 import { utils } from 'ethers';
 import { AccAddress } from '@terra-money/feather.js';
-import { osmosis } from 'osmojs/osmosis/bundle';
 
+import { osmosis } from './proto_export/osmosis/bundle';
 import { ChainMsg } from './msg';
 import * as manifests from './manifests';
 import { ChainDataSource, IndexerDataSource } from './datasource';
