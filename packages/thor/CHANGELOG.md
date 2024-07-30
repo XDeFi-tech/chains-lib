@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.27
+
+### Patch Changes
+
+- 30a0bf9e: Feat: add getThorChainID function to get chain ID dynamically
+
 ## 2.0.26
 
 ### Patch Changes
