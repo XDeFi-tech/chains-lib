@@ -13,8 +13,17 @@ import { RawKey, LCDClient } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { Secp256k1Wallet } from '@cosmjs/amino';
+import { CosmosProvider } from 'src/chain.provider';
+import { SignDoc } from 'osmojs/cosmos/tx/v1beta1/tx';
 
-import { ChainMsg, CosmosChainType, CosmosSignMode } from '../msg';
+import {
+  AminoSignDoc,
+  ChainMsg,
+  CosmosChainType,
+  CosmosSignMode,
+  DirectSignDoc,
+  SignMsgSendResponse,
+} from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.PRIVATE_KEY)
@@ -128,6 +137,49 @@ export class PrivateKeySigner extends Signer.Provider {
       STARGATE_CLIENT_OPTIONS
     );
     return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
+  }
+
+  async signAminoRawTransaction(
+    signDoc: AminoSignDoc,
+    provider: CosmosProvider
+  ): Promise<SignMsgSendResponse> {
+    const wallet = await Secp256k1Wallet.fromKey(
+      fromHex(this.key),
+      provider.manifest.prefix
+    );
+    const [{ address: senderAddress }] = await wallet.getAccounts();
+    return wallet.signAmino(senderAddress, signDoc);
+  }
+
+  async signDirectRawTransaction(
+    signDoc: DirectSignDoc,
+    provider: CosmosProvider
+  ): Promise<SignMsgSendResponse> {
+    const wallet = await DirectSecp256k1Wallet.fromKey(
+      fromHex(this.key),
+      provider.manifest.prefix
+    );
+    const [{ address: senderAddress }] = await wallet.getAccounts();
+
+    const newSignDoc = SignDoc.fromPartial({
+      bodyBytes: signDoc.bodyBytes,
+      authInfoBytes: signDoc.authInfoBytes,
+      chainId: signDoc.chainId,
+      accountNumber: signDoc.accountNumber
+        ? BigInt(signDoc.accountNumber)
+        : undefined,
+    });
+    return await wallet.signDirect(senderAddress, newSignDoc);
+  }
+
+  async signRawTransaction(
+    signDoc: AminoSignDoc | DirectSignDoc,
+    provider: CosmosProvider,
+    signMode: CosmosSignMode
+  ): Promise<SignMsgSendResponse> {
+    return signMode === CosmosSignMode.SIGN_AMINO
+      ? this.signAminoRawTransaction(signDoc as AminoSignDoc, provider)
+      : this.signDirectRawTransaction(signDoc as DirectSignDoc, provider);
   }
 
   async verifyMessage(
