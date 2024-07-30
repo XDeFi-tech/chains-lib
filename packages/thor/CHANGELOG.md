@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.28
+
+### Patch Changes
+
+- ab8cd4fa: chore: update denom default for deposit msg
+
 ## 2.0.27
 
 ### Patch Changes
