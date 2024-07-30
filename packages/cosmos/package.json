@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-cosmos",
-  "version": "2.0.31",
+  "version": "2.0.32",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
