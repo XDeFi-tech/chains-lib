@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-graphql",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "license": "MIT",
   "repository": "https://github.com/XDeFi-tech/chains/",
   "main": "dist/index.js",
@@ -44,6 +44,8 @@
     ],
     "platform": "browser",
     "target": "es2015",
-    "external": ["*"]
+    "external": [
+      "*"
+    ]
   }
 }

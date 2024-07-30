@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.19
+
+### Patch Changes
+
+- 85b3eb03: Feat: update build config
+- Updated dependencies [85b3eb03]
+  - @xdefi-tech/chains-core@2.0.25
+
 ## 2.0.18
 
 ### Patch Changes

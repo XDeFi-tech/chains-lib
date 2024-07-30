@@ -1,5 +1,21 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.8
+
+### Patch Changes
+
+- 85b3eb03: Feat: update build config
+- Updated dependencies [85b3eb03]
+  - @xdefi-tech/chains-graphql@1.2.16
+  - @xdefi-tech/chains-bitcoincash@2.0.25
+  - @xdefi-tech/chains-dogecoin@2.0.24
+  - @xdefi-tech/chains-litecoin@2.0.22
+  - @xdefi-tech/chains-binance@2.0.19
+  - @xdefi-tech/chains-bitcoin@2.0.25
+  - @xdefi-tech/chains-solana@2.0.26
+  - @xdefi-tech/chains-core@2.0.25
+  - @xdefi-tech/chains-evm@2.0.39
+
 ## 2.0.7
 
 ### Patch Changes
