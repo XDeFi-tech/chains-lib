@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { common } from './proto';
 
 export const SYNTH_DELIMITER = '/';
@@ -25,4 +27,30 @@ export const assetFromString = (s: string): common.IAsset | null => {
   }
 
   return { chain, symbol, ticker, synth: isSynth };
+};
+
+/**
+ * Get the chain ID of the THORChain network from the given RPC URL.
+ * If there is an error, it will return the default chain ID.
+ *
+ * @param {string} rpcUrl - RPC URL
+ * @param {string} defaultChainId - Default chain ID to return if there is an error
+ */
+export const getThorChainID = async (
+  rpcUrl: string,
+  defaultChainId = 'thorchain-mainnet-v1'
+): Promise<string> => {
+  try {
+    const restAxiosInstance = axios.create({
+      baseURL: rpcUrl,
+    });
+    const { data } = await restAxiosInstance.get('/status');
+    return data?.result?.network;
+  } catch (err) {
+    console.error(
+      'Error while getting thor chain id, returning "thorchain-mainnet-v1" by default.'
+    );
+    console.error(err);
+    return defaultChainId;
+  }
 };
