@@ -60,7 +60,8 @@
       "./dist/index.d.ts"
     ],
     "platform": "browser",
-    "target": "ES6"
+    "target": "ES6",
+    "external": ["*"]
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",

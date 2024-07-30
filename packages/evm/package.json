@@ -75,8 +75,12 @@
       "./dist/signers/react-native.d.ts",
       "./dist/index.d.ts"
     ],
+    "keepNames": true,
     "platform": "browser",
-    "target": "ES6"
+    "target": "ES6",
+    "sourcemap": true,
+    "skipNodeModulesBundle": true,
+    "external": ["*"]
   },
   "jest": {
     "setupFiles": [
