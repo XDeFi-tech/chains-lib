@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.39
+
+### Patch Changes
+
+- 85b3eb03: Feat: update build config
+- Updated dependencies [85b3eb03]
+  - @xdefi-tech/chains-core@2.0.25
+
 ## 2.0.38
 
 ### Patch Changes

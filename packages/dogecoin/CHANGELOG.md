@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.24
+
+### Patch Changes
+
+- 85b3eb03: Feat: update build config
+- Updated dependencies [85b3eb03]
+  - @xdefi-tech/chains-core@2.0.25
+  - @xdefi-tech/chains-utxo@2.0.12
+
 ## 2.0.23
 
 ### Patch Changes
