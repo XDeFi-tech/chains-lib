@@ -77,14 +77,17 @@
       "!src/custom.d.ts"
     ],
     "outDir": "dist",
-    "format": "cjs",
+    "format": ["cjs"],
     "splitting": false,
     "dts": true,
+    "keepNames": true,
+    "sourcemap": true,
     "types": [
       "./dist/index.d.ts"
     ],
     "platform": "browser",
-    "target": "ES6"
+    "target": "ES6",
+    "external": ["*"]
   },
   "jest": {
     "setupFiles": [],

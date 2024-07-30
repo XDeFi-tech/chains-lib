@@ -60,10 +60,7 @@
     ],
     "platform": "browser",
     "target": "ES6",
-    "external": [
-      "@xdefi-tech/chains-cosmos",
-      "@xdefi-tech/chains-btc"
-    ]
+    "external": ["*"]
   },
   "jest": {
     "setupFiles": [

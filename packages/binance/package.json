@@ -70,9 +70,7 @@
     ],
     "platform": "browser",
     "targer": "ES6",
-    "external": [
-      "@binance-chain/javascript-sdk"
-    ]
+    "external": ["*"]
   },
   "jest": {
     "setupFiles": [
