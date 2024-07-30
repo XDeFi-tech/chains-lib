@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.32
+
+### Patch Changes
+
+- 340ec5ef: use protobuf for cosmos types (remove osmojs dependency)
+
 ## 2.0.31
 
 ### Patch Changes
