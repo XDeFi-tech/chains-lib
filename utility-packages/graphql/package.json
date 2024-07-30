@@ -43,6 +43,7 @@
       "./dist/index.d.ts"
     ],
     "platform": "browser",
-    "target": "es2015"
+    "target": "es2015",
+    "external": ["*"]
   }
 }
