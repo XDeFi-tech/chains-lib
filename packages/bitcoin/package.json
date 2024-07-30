@@ -73,14 +73,22 @@
     "format": "cjs",
     "splitting": false,
     "dts": true,
-    "shims": true,
+    "shims": false,
     "types": [
       "./dist/signers/web.d.ts",
       "./dist/signers/react-native.d.ts",
       "./dist/index.d.ts"
     ],
+    "clean": true,
+    "treeshake": true, 
     "platform": "browser",
-    "target": "ES6"
+    "target": "ES6",
+    "external": ["*"]
+  },
+  "esbuildOptions": {
+    "minifyWhitespace": true,
+    "minifyIdentifiers": true,
+    "minifySyntax": true
   },
   "jest": {
     "setupFiles": [

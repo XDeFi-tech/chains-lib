@@ -48,6 +48,7 @@ to: packages/<%= name.toLowerCase() %>/package.json
       "./signers/web.d.ts",
       "./signers/react-native.d.ts"
     ],
-    "platform": "browser"
+    "platform": "browser",
+    "external": ["*"]
   }
 }
