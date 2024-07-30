@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-graphql
 
+## 1.2.16
+
+### Patch Changes
+
+- 85b3eb03: Feat: update build config
+- Updated dependencies [85b3eb03]
+  - @xdefi-tech/chains-core@2.0.25
+
 ## 1.2.15
 
 ### Patch Changes

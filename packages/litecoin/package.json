@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-litecoin",
-  "version": "2.0.21",
+  "version": "2.0.22",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
@@ -80,10 +80,12 @@
       "./dist/index.d.ts"
     ],
     "clean": true,
-    "treeshake": true, 
+    "treeshake": true,
     "platform": "browser",
     "target": "ES6",
-    "external": ["*"]
+    "external": [
+      "*"
+    ]
   },
   "esbuildOptions": {
     "minifyWhitespace": true,
