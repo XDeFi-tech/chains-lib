@@ -101,7 +101,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
     const messageData = this.toData();
-    const denom = messageData.denom || this.provider.manifest.denom;
+    const denom =
+      messageData.denom ||
+      `${this.provider.manifest.chain.toUpperCase()}.${this.provider.manifest.denom.toUpperCase()}`; // THOR.RUNE OR MAYA.CACAO
     const decimals = messageData.decimals || this.provider.manifest.decimals;
     const signer = bech32Buffer.decode(messageData.from).data;
     const memo = messageData.memo || '';
