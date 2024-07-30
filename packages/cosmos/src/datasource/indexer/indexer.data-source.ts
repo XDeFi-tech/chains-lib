@@ -24,12 +24,14 @@ import {
   TxRaw,
 } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
-import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
+// import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
 import { CosmosHubChains } from '../../manifests';
+import { MsgSwapExactAmountIn } from '../../proto_export/osmosis/gamm/v1beta1/tx';
+import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
+import { MsgSend } from '../../proto_export/cosmos/bank/v1beta1/tx';
 
 import { getBalance, getFees, getTransactions, getNFTBalance } from './queries';
 
@@ -130,34 +132,37 @@ export class IndexerDataSource extends DataSource {
 
   async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     let fromAddress = '';
-    const _msgs = msgs.map((m) => {
-      const messageData = m.toData();
+    const _msgs: any[] = [];
+    for (let index = 0; index < msgs.length; index++) {
+      const m = msgs[index];
+      const messageData =
+        m.encoding === 'string' ? await m.buildTx() : m.toData();
       fromAddress = messageData.from;
-      if (messageData.typeUrl === '/ibc.applications.transfer.v1.MsgTransfer') {
-        const msgTransfer = messageData.msgs[0];
-        return {
-          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-          value: MsgTransfer.encode(
-            MsgTransfer.fromPartial(msgTransfer.value)
-          ).finish(),
-        };
-      }
-      return {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: MsgSend.encode({
-          fromAddress: messageData.from,
-          toAddress: messageData.to,
-          amount: [
-            {
-              denom: this.manifest.denom,
-              amount: String(
-                messageData.amount * Math.pow(10, this.manifest.decimals)
-              ),
-            },
-          ],
-        }).finish(),
-      };
-    });
+      messageData.msgs.map((msgTransfer: any) => {
+        if (msgTransfer.typeUrl.includes('MsgTransfer')) {
+          _msgs.push({
+            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+            value: MsgTransfer.encode(
+              MsgTransfer.fromPartial(msgTransfer.value)
+            ).finish(),
+          });
+        } else if (msgTransfer.typeUrl.includes('MsgSwapExactAmountIn')) {
+          _msgs.push({
+            typeUrl: '/osmosis.gamm.v1beta1.MsgSwapExactAmountIn',
+            value: MsgSwapExactAmountIn.encode(
+              MsgSwapExactAmountIn.fromPartial(msgTransfer.value)
+            ).finish(),
+          });
+        } else {
+          _msgs.push({
+            typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+            value: MsgSend.encode(
+              MsgSend.fromPartial(msgTransfer.value)
+            ).finish(),
+          });
+        }
+      });
+    }
 
     const _feeAmount = msgs.map((m) => {
       const messageData = m.toData();

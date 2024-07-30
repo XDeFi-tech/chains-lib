@@ -3,3 +3,4 @@ dist
 node_modules
 jest-setup-file.ts
 src/gql/**/*.ts
+src/proto_export

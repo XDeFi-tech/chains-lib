@@ -2196,10 +2196,10 @@
   resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.32.3.tgz#5dcaee6dd7cc846cdc073e9a7a7f63242f5f7e31"
   integrity sha512-WCZK4yksj2hBDz4w7xFZQTRZQ/RJhBX26uFHmmQFIcNUUVAihrLO+RerqJgk0dZqC42wstM9pEUQGtPmLcIYvg==
 
-"@cosmology/lcd@^0.13.3":
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/@cosmology/lcd/-/lcd-0.13.3.tgz#4072178cfe979b948ab596c9378b56c4f320d192"
-  integrity sha512-lihAHCoap0GN/32qcOhiMp6HcoZP8A7GeScZMlmmvBtBk6ocGAStNHjvBR4MayrvyHSCOZCvCAWPh36iFTT8Sw==
+"@cosmology/lcd@^0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@cosmology/lcd/-/lcd-0.13.4.tgz#5b0a8c309cb0d66f949d271eaf2f02699ae36ad4"
+  integrity sha512-llClHHHjOCie9PxnXUOxvMcWi0aVjmzkRXM6IBBXluOczRFFog23rPPfrWZPeT30dIX1SGklp0Fek28O76BkvQ==
   dependencies:
     axios "1.6.0"
 
@@ -5875,6 +5875,18 @@
   integrity sha512-rEUrBSGIoSFuYxwBYtlUFMlE2CwGhmW+w9355/5oduSw8e5h2+Tj4UrAGNNgP9915++wj5vkQo0UuOBqOAq4nw==
   dependencies:
     tslib "^2.4.0"
+
+"@tanstack/query-core@5.51.1":
+  version "5.51.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.51.1.tgz#55049ef0252c7d29de05e8219fd19b679509270e"
+  integrity sha512-fJBMQMpo8/KSsWW5ratJR5+IFr7YNJ3K2kfP9l5XObYHsgfVy1w3FJUWU4FT2fj7+JMaEg33zOcNDBo0LMwHnw==
+
+"@tanstack/react-query@^5.51.1":
+  version "5.51.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.51.1.tgz#e483b9c9011e079b89cf73ce447b2e06340b3f41"
+  integrity sha512-s47HKFnQ4HOJAHoIiXcpna/roMMPZJPy6fJ6p4ZNVn8+/onlLBEDd1+xc8OnDuwgvecqkZD7Z2mnSRbcWefrKw==
+  dependencies:
+    "@tanstack/query-core" "5.51.1"
 
 "@terra-money/feather.js@2.1.0-beta.3":
   version "2.1.0-beta.3"
@@ -15247,17 +15259,6 @@ osenv@^0.1.5:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
-osmojs@16.14.0:
-  version "16.14.0"
-  resolved "https://registry.yarnpkg.com/osmojs/-/osmojs-16.14.0.tgz#5558e74f76b9b05e6f74dd1bd6f57ae768c5a4f4"
-  integrity sha512-m4A5X0ZYanQ/u4/Xlz6nU9QqZEQbAKSD8SAKaDR/mIQYB6g3JkzWLgQgLMzMxDNJZKFTJCjWxHBp7al502x2aw==
-  dependencies:
-    "@cosmjs/amino" "0.32.3"
-    "@cosmjs/proto-signing" "0.32.3"
-    "@cosmjs/stargate" "0.32.3"
-    "@cosmjs/tendermint-rpc" "0.32.3"
-    "@cosmology/lcd" "^0.13.3"
-
 outdent@^0.5.0:
   version "0.5.0"
   resolved "https://registry.npmjs.org/outdent/-/outdent-0.5.0.tgz"
@@ -18250,10 +18251,10 @@ ts-proto-descriptors@1.16.0:
     long "^5.2.3"
     protobufjs "^7.2.4"
 
-ts-proto@^1.181.0:
-  version "1.181.0"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.181.0.tgz#9f87240c3cd9a6ac512fbbdab09ce51664f9c541"
-  integrity sha512-5+ZnxOgPsSn/lU93x8ApEFQPHE9G8kZubCSF1/EUjyeKImbGRp27iPXHilelQLOdClYHLUgr3hJwqtVqfsjNYQ==
+ts-proto@^1.181.1:
+  version "1.181.1"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.181.1.tgz#d96707087840870cae4d293f9cd6d52ed66bdede"
+  integrity sha512-lNmd/KEgqWtwDG9mIM3EpcxBx+URRVHkDP/EEJBgQJaQwmZFTk6VjHg56HNQswd114yXGfF+8pKQvJ2iH9KfWw==
   dependencies:
     case-anything "^2.1.13"
     protobufjs "^7.2.4"
