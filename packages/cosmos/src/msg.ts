@@ -21,6 +21,7 @@ import { MessageComposer as MessageComposerIbc } from 'osmojs/ibc/applications/t
 import { AminoConverter as AminoConverterIbc } from 'osmojs/ibc/applications/transfer/v1/tx.amino';
 import Long from 'long';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
+import { StdSignature } from '@cosmjs/amino';
 
 import type { CosmosProvider } from './chain.provider';
 
@@ -59,6 +60,59 @@ export interface TxData {
   typeUrl: string;
   contractAddress?: string;
   nftId?: string;
+}
+
+export interface StdFee {
+  readonly amount: readonly AminoCoin[];
+  readonly gas: string;
+  readonly payer?: string;
+  readonly granter?: string;
+
+  // XXX: "feePayer" should be "payer". But, it maybe from ethermint team's mistake.
+  //      That means this part is not standard.
+  readonly feePayer?: string;
+}
+
+export interface AminoMsgSend {
+  readonly type: string;
+  readonly value: any;
+}
+
+export interface AminoSignDoc {
+  readonly chain_id: string;
+  readonly account_number: string;
+  readonly sequence: string;
+  // Should be nullable
+  readonly timeout_height?: string;
+  readonly fee: StdFee;
+  readonly msgs: readonly AminoMsgSend[];
+  readonly memo: string;
+}
+
+export interface DirectSignDoc {
+  /**
+   * body_bytes is protobuf serialization of a TxBody that matches the
+   * representation in TxRaw.
+   */
+  bodyBytes?: Uint8Array;
+  /**
+   * auth_info_bytes is a protobuf serialization of an AuthInfo that matches the
+   * representation in TxRaw.
+   */
+  authInfoBytes?: Uint8Array;
+  /**
+   * chain_id is the unique identifier of the chain this transaction targets.
+   * It prevents signed transactions from being used on another chain by an
+   * attacker
+   */
+  chainId?: string;
+  /** account_number is the account number of the account in state */
+  accountNumber?: string;
+}
+
+export interface SignMsgSendResponse {
+  signed: any;
+  signature: StdSignature;
 }
 
 export enum CosmosChainType {
