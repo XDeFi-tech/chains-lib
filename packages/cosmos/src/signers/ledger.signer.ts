@@ -6,8 +6,9 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { bech32 } from 'bech32';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
+import { CosmosProvider } from 'src/chain.provider';
 
-import { ChainMsg } from '../msg';
+import { AminoSignDoc, ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
@@ -65,6 +66,25 @@ export class LedgerSigner extends Signer.Provider {
     const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
     const rawTx = Buffer.from(txBytes).toString('base64');
     msg.sign(rawTx);
+  }
+
+  async signRawTransaction(
+    signDoc: AminoSignDoc,
+    derivation: string,
+    prefix: string
+  ) {
+    if (!derivation.startsWith('m/')) {
+      derivation = 'm/' + derivation;
+    }
+
+    const hdPath = stringToPath(derivation);
+    const app = new LedgerApp(this.transport as Transport, {
+      testModeAllowed: true,
+      hdPaths: [hdPath],
+      prefix,
+    });
+    const [{ address: senderAddress }] = await app.getAccounts();
+    return app.signAmino(senderAddress, signDoc);
   }
 
   async verifyMessage(

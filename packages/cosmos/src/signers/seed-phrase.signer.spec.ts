@@ -25,12 +25,16 @@ jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
 });
 
 jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
+  const originalModule = jest.requireActual(
+    'cosmjs-types/cosmos/tx/v1beta1/tx'
+  );
   return {
     TxRaw: {
       encode: jest.fn().mockImplementation(() => {
         return { finish: jest.fn().mockReturnValue([1, 1, 1]) };
       }),
     },
+    SignDoc: originalModule.SignDoc,
   };
 });
 
@@ -116,6 +120,111 @@ describe('seed-phrase.signer', () => {
       CosmosSignMode.SIGN_AMINO
     );
     expect(message.signedTransaction).toBeTruthy();
+  });
+
+  it('Should sign raw tx with amino mode', async () => {
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'cosmos-sdk/MsgSend',
+          value: {
+            from_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            to_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            amount: [{ denom: 'uatom', amount: '1000000' }],
+          },
+        },
+      ],
+      memo: '',
+    };
+
+    const signer = new SeedPhraseSigner(mnemonic);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'y77g4nQrMCxTH8ICyffz0w2sjXUjisSANkbwy1i+AsBjoZNTIhqJs9l03p2pG/MVavW8ZTx0IQ26ItLRLCrAkQ=='
+    );
+  });
+
+  it('Should sign raw tx with direct mode', async () => {
+    const signDoc = {
+      chainId: 'cosmoshub-4',
+      accountNumber: '1895821',
+      bodyBytes: new Uint8Array(
+        Buffer.from(
+          '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
+          'hex'
+        )
+      ),
+      authInfoBytes: new Uint8Array(
+        Buffer.from(
+          '0a4e0a460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a2103dda39b22c1f8e2c2d11da3bc4517f80b461aa69f10e761e34576f4f09ccfa1ee12040a02087f12130a0d0a057561746f6d12043130303010c09a0c',
+          'hex'
+        )
+      ),
+    };
+    const signer = new SeedPhraseSigner(mnemonic);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_DIRECT
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'i3STDg7CxEgl4svgXmhyKePzBoPtqdL3WHrkeHqI/HAMp18EUE+mh9LzTfoFYGlk7O+E+jhXtECISzUakZJ83Q=='
+    );
+  });
+
+  it('sign arbitrary message', async () => {
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'sign/msgSignData',
+          value: {
+            signer: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            data: 'SGVsbG8=', // echo -n "Hello" | base64
+          },
+        },
+      ],
+      memo: '',
+    };
+
+    const signer = new SeedPhraseSigner(mnemonic);
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_AMINO
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.pub_key.type).toEqual(
+      'tendermint/PubKeySecp256k1'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'gzgi+GKdyLOhRHQRBQol0zOcl/J0idmL2MMIrE2f+AU7txWSpdX3irnPHa73BXokYh0mkxB2/o4iZzsr3kiWmQ=='
+    );
   });
 });
 

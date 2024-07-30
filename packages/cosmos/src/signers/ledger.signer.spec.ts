@@ -38,10 +38,15 @@ jest.mock('@cosmjs/ledger-amino/build/ledgersigner', () => {
           address: 'cosmos1rysuxnc2qdedfxpwj4g26a59yr53kxzd2r7yd4',
         },
       ]),
-      sign: jest.fn().mockResolvedValue({
-        bodyBytes: [],
-        authInfoBytes: [],
-        signatures: [],
+      signAmino: jest.fn().mockResolvedValue({
+        signed: {},
+        signature: {
+          pub_key: {
+            value: 'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu',
+          },
+          signature:
+            'y77g4nQrMCxTH8ICyffz0w2sjXUjisSANkbwy1i+AsBjoZNTIhqJs9l03p2pG/MVavW8ZTx0IQ26ItLRLCrAkQ==',
+        },
       }),
     })),
   };
@@ -143,5 +148,39 @@ describe('cosmos::ledger.signer', () => {
       new Uint8Array([...signature.r, ...signature.s])
     );
     expect(result).toBe(false);
+  });
+
+  it('Should sign raw tx', async () => {
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      msgs: [
+        {
+          type: 'cosmos-sdk/MsgSend',
+          value: {
+            from_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            to_address: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
+            amount: [{ denom: 'uatom', amount: '1000000' }],
+          },
+        },
+      ],
+      memo: '',
+    };
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      derivationPath,
+      'cosmos'
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'y77g4nQrMCxTH8ICyffz0w2sjXUjisSANkbwy1i+AsBjoZNTIhqJs9l03p2pG/MVavW8ZTx0IQ26ItLRLCrAkQ=='
+    );
   });
 });
