@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.0.26
+
+### Patch Changes
+
+- 97b7e929: fix: utxo format for inputBytes from coinselect
+
 ## 2.0.25
 
 ### Patch Changes
