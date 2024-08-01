@@ -58,7 +58,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     const { fee } = await this.getFee();
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRate = Number(fee) * 1e5;
+    const feeRate = Math.floor(Number(fee) * 1e5);
 
     // Calculate dust threshold filter for utxo outputs
     const dustThreshold = utils.inputBytes({}) * feeRate;
@@ -88,7 +88,10 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     );
 
     const { inputs, outputs } = accumulative(
-      utxosWithoutOrdinals,
+      utxosWithoutOrdinals.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      })),
       targetOutputs,
       feeRate
     );
@@ -115,9 +118,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     utxos: UTXO[],
     ordinalsMapping: { [utxo: string]: NfTv3[] }
   ): UTXO[] {
-    return utxos.filter(
-      (utxo) => !ordinalsMapping[`${utxo.hash}:${utxo.index}`]
-    );
+    // Ascending Value Order: If the UTXOs are passed in ascending order of value, the function might accumulate many small UTXOs before reaching the required amount, potentially resulting in a larger transaction.
+    // This will reduce the likelihood of creating many small UTXO on a given address. this will mean less dust and detrimental inputs
+    return utxos
+      .filter((utxo) => !ordinalsMapping[`${utxo.hash}:${utxo.index}`])
+      .sort((a, b) => a.value - b.value);
   }
 
   private async handleOrdinals(
@@ -311,14 +316,20 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       }
       const totalFee =
         utils.transactionBytes(finalInputs, finalOutputs) * feeRate;
+
+      const blankOutputFee = utils.outputBytes({}) * feeRate;
       const remainAmount =
         utils.sumOrNaN(finalInputs) -
         finalInputs[0].value -
         valueToSend -
-        totalFee -
-        utils.outputBytes({}) * feeRate;
-      if (remainAmount > dustThreshold) {
-        finalOutputs.push({ value: remainAmount });
+        totalFee;
+
+      if (remainAmount < 0) {
+        throw new Error('Insufficient Balance for transaction');
+      }
+
+      if (remainAmount > dustThreshold + blankOutputFee) {
+        finalOutputs.push({ value: remainAmount - blankOutputFee });
       }
 
       return this.createTxBody(
