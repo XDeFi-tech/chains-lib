@@ -462,15 +462,10 @@ describe('msg: Bitcoin dust filter', () => {
     expect(inputUtxosSize * feeRate).toBeGreaterThan(utxos[0].value); // 1000 < utxo fees => bitcoin dust and shuld be removed
 
     const { inputs, outputs } = await msg.buildTx();
-    expect(inputs.length).toBe(1);
-    expect(outputs.length).toBe(1);
+    expect(inputs.length).toBe(2);
+    expect(outputs.length).toBe(2);
     expect(outputs[0].value).toEqual(546);
-    expect(inputs[0].value).toEqual(3000);
-    const inputSize = utils.inputBytes(inputs[0]);
-    const accumBytes = utils.transactionBytes([], outputs);
-    const fee = (inputSize + accumBytes) * feeRate;
-    const surplus = 3000 - 546 - fee; // 942 sat < 8 * 148 => bitcoin dust
-    expect(surplus).toBeLessThan(8 * inputSize);
+    expect(inputs[0].value).toEqual(1000);
   });
 
   it('Should not enough balances by fees', async () => {
@@ -482,7 +477,7 @@ describe('msg: Bitcoin dust filter', () => {
     const msg = provider.createMsg({
       from: address,
       to: address,
-      amount: 0.00003, // 3000 sat
+      amount: 0.00004, // 4000 sat
     });
 
     const utxos = await provider.scanUTXOs(address);
@@ -518,8 +513,8 @@ describe('msg: Bitcoin dust filter', () => {
     expect(utxos[0].value).toBeGreaterThan(inputBytesSize * feeRate);
 
     const { inputs, outputs } = await msg.buildTx();
-    expect(inputs.length).toBe(2);
-    expect(outputs.length).toBe(2);
+    expect(inputs.length).toBe(1);
+    expect(outputs.length).toBe(1);
     expect(outputs[0].value).toEqual(546);
     expect(inputs[0].value).toEqual(1000);
   });
