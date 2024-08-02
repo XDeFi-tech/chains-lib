@@ -68,6 +68,7 @@ export const getBalance = async (chain: EVMChains, address: string) => {
       address,
       first: 100,
     },
+    fetchPolicy: 'no-cache',
   });
 
   return filter(
