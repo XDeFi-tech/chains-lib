@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.41
+
+### Patch Changes
+
+- 5d972f34: Fix: nft query for smartchain and cronos
+
 ## 2.0.40
 
 ### Patch Changes
