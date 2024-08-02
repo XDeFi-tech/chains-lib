@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.0.25
+
+### Patch Changes
+
+- 4316454e: feat: add no-cache for crypto asset and fetching balance queries
+- Updated dependencies [4316454e]
+  - @xdefi-tech/chains-core@2.0.26
+
 ## 2.0.24
 
 ### Patch Changes
