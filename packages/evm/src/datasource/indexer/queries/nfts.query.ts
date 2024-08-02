@@ -154,11 +154,11 @@ export const getNFTBalance = async (chain: string, address: string) => {
       query = FANTOM_NFTS_QUERY;
       chainName = 'fantom';
       break;
-    case 'binancesmartchain':
+    case 'smartchain':
       query = BINANCE_SMART_CHAIN_NFTS_QUERY;
       chainName = 'binanceSmartChain';
       break;
-    case 'cronosevm':
+    case 'cronos':
       query = CRONOS_EVM_NFTS_QUERY;
       chainName = 'cronosEVM';
       break;
