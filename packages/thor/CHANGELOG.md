@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 2.0.29
+
+### Patch Changes
+
+- 4316454e: feat: add no-cache for crypto asset and fetching balance queries
+- Updated dependencies [4316454e]
+  - @xdefi-tech/chains-core@2.0.26
+
 ## 2.0.28
 
 ### Patch Changes
