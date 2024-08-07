@@ -1,3 +1,5 @@
+import TronWeb from 'tronweb';
+
 import { TronProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';
 import { TRON_MANIFEST } from '../manifests';
@@ -181,6 +183,25 @@ describe('tron seed-phrase.signer', () => {
     expect(signature).toEqual(
       '0x7605f9a707b2bc6ca6c5fc6deaf192868ef70b2c196df784c849d8734413131f67ba100590ecb931548869e771329aea8d137c339570882f3c1314c031bf75cb1c'
     );
+  });
+
+  it('should multiSignTransaction a TRC20 TX with the private key', async () => {
+    const tronWeb = new TronWeb({
+      fullHost: TRON_MANIFEST.rpcURL,
+    });
+    const transaction = await tronWeb.transactionBuilder.sendTrx(
+      tronWeb.address.toHex(txInput.to),
+      1,
+      tronWeb.address.toHex(txInput.from)
+    );
+    const signedTx = await signer.multiSignTransaction(
+      transaction,
+      deriviationPath,
+      0
+    );
+    expect(signedTx.signature).toBeDefined();
+    expect(signedTx.signature?.length).toBe(1);
+    expect(signedTx.signature?.[0].length).toBe(130);
   });
 });
 

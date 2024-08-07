@@ -1,3 +1,5 @@
+import TronWeb from 'tronweb';
+
 import { IndexerDataSource } from '../datasource';
 import { TronProvider } from '../chain.provider';
 import { TRON_MANIFEST } from '../manifests';
@@ -133,10 +135,10 @@ describe('tron private-key.signer', () => {
     });
     ChainMsg.prototype.buildTx = jest.fn().mockResolvedValue({
       raw_data_hex:
-        '0a0218c52208b2dcb6ece39c937140a886d9be87325aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541b2431e51da71cf3fbe9a0daf59b2d716213dc8f2121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000084987d218c5ae2027c419e52c95791e453493821000000000000000000000000000000000000000000000000000000e8d4a5100070cac0d5be8732900180a3c347',
+        '0a0208c52208620b55abd6d1dfaf40e884cab792325aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541617bfdc9fad81202ec6de6d57e2555a415f675d1121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000084987d218c5ae2027c419e52c95791e453493821000000000000000000000000000000000000000000000000000000e8d4a5100070b5ccc6b79232900180a3c347',
     });
     const { raw_data_hex } = await msg.buildTx();
-    const signature = await signer.signMessage(raw_data_hex);
+    const signature = await signer.signMessage(raw_data_hex, true, true);
 
     expect(signature.length).toBe(132);
   });
@@ -163,8 +165,23 @@ describe('tron private-key.signer', () => {
         '0a0218c52208b2dcb6ece39c937140a886d9be87325aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541b2431e51da71cf3fbe9a0daf59b2d716213dc8f2121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000084987d218c5ae2027c419e52c95791e453493821000000000000000000000000000000000000000000000000000000e8d4a5100070cac0d5be8732900180a3c347',
     });
     const { raw_data_hex } = await msg.buildTx();
-    const signature = await signer.signTransaction(raw_data_hex);
+    const signature = await signer.signTransaction(raw_data_hex, true, true);
 
     expect(signature.length).toBe(132);
+  });
+
+  it('should multiSignTransaction a TRC20 TX with the private key', async () => {
+    const tronWeb = new TronWeb({
+      fullHost: TRON_MANIFEST.rpcURL,
+    });
+    const transaction = await tronWeb.transactionBuilder.sendTrx(
+      tronWeb.address.toHex(txInput.to),
+      1,
+      tronWeb.address.toHex(txInput.from)
+    );
+    const signedTx = await signer.multiSignTransaction(transaction, 0);
+    expect(signedTx.signature).toBeDefined();
+    expect(signedTx.signature?.length).toBe(1);
+    expect(signedTx.signature?.[0].length).toBe(130);
   });
 });
