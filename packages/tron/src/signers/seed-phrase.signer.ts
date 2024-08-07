@@ -1,5 +1,5 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import TronWeb from 'tronweb';
+import TronWeb, { TronTransaction } from 'tronweb';
 import type { TronManifest } from 'src/manifests';
 
 import { ChainMsg } from '../msg';
@@ -32,28 +32,47 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
   }
 
-  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+  async sign(
+    msg: ChainMsg,
+    derivation: string,
+    useTronHeader?: boolean,
+    multisig?: boolean
+  ): Promise<void> {
     const tronAccount = TronWeb.fromMnemonic(this.key, derivation);
+    const privateKey = tronAccount.privateKey.replace('0x', '');
     const tronWeb = new TronWeb({
       fullHost: this.manifest.rpcURL,
-      privateKey: tronAccount.privateKey.replace('0x', ''),
+      privateKey,
     });
 
     const txData = await msg.buildTx();
-    const signature = await tronWeb.trx.sign(txData);
+    const signature = await tronWeb.trx.sign(
+      txData,
+      privateKey,
+      useTronHeader,
+      multisig
+    );
     msg.sign(signature);
   }
 
-  async signMessage(txHex: string, derivation: string): Promise<string> {
+  async signMessage(
+    txHex: string,
+    derivation: string,
+    useTronHeader?: boolean,
+    multisig?: boolean
+  ): Promise<string> {
     const tronAccount = TronWeb.fromMnemonic(this.key, derivation);
+    const privateKey = tronAccount.privateKey.replace('0x', '');
     const tronWeb = new TronWeb({
       fullHost: this.manifest.rpcURL,
-      privateKey: tronAccount.privateKey.replace('0x', ''),
+      privateKey,
     });
 
     const signature = await tronWeb.trx.signMessage(
       txHex,
-      tronAccount.privateKey.replace('0x', '')
+      privateKey,
+      useTronHeader,
+      multisig
     );
 
     return signature;
@@ -77,18 +96,45 @@ export class SeedPhraseSigner extends Signer.Provider {
     return signature;
   }
 
-  async signTransaction(txHex: string, derivation: string): Promise<string> {
+  async signTransaction(
+    txHex: string,
+    derivation: string,
+    useTronHeader?: boolean,
+    multisig?: boolean
+  ): Promise<string> {
     const tronAccount = TronWeb.fromMnemonic(this.key, derivation);
+    const privateKey = tronAccount.privateKey.replace('0x', '');
     const tronWeb = new TronWeb({
       fullHost: this.manifest.rpcURL,
-      privateKey: tronAccount.privateKey.replace('0x', ''),
+      privateKey,
     });
 
     const signature = await tronWeb.trx.signTransaction(
       txHex,
-      tronAccount.privateKey.replace('0x', '')
+      privateKey,
+      useTronHeader,
+      multisig
     );
 
+    return signature;
+  }
+
+  async multiSignTransaction(
+    transaction: TronTransaction,
+    derivation: string,
+    permisionId?: number
+  ): Promise<TronTransaction> {
+    const tronAccount = TronWeb.fromMnemonic(this.key, derivation);
+    const privateKey = tronAccount.privateKey.replace('0x', '');
+    const tronWeb = new TronWeb({
+      fullHost: this.manifest.rpcURL,
+      privateKey,
+    });
+    const signature = await tronWeb.trx.multiSign(
+      transaction,
+      privateKey,
+      permisionId
+    );
     return signature;
   }
 }
