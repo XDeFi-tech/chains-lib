@@ -1,5 +1,5 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import TronWeb from 'tronweb';
+import TronWeb, { TronTransaction } from 'tronweb';
 import type { TronManifest } from 'src/manifests';
 
 import { ChainMsg } from '../msg';
@@ -45,12 +45,21 @@ export class PrivateKeySigner extends Signer.Provider {
     msg.sign(signature);
   }
 
-  async signMessage(txHex: string): Promise<string> {
+  async signMessage(
+    txHex: string,
+    useTronHeader?: boolean,
+    multisig?: boolean
+  ): Promise<string> {
     const tronWeb = new TronWeb({
       fullHost: this.manifest.rpcURL,
       privateKey: this.key,
     });
-    const signature = await tronWeb.trx.signMessage(txHex, this.key);
+    const signature = await tronWeb.trx.signMessage(
+      txHex,
+      this.key,
+      useTronHeader,
+      multisig
+    );
     return signature;
   }
 
@@ -63,13 +72,38 @@ export class PrivateKeySigner extends Signer.Provider {
     return signature;
   }
 
-  async signTransaction(txHex: string): Promise<string> {
+  async signTransaction(
+    txHex: string,
+    useTronHeader?: boolean,
+    multisig?: boolean
+  ): Promise<string> {
     const tronWeb = new TronWeb({
       fullHost: this.manifest.rpcURL,
       privateKey: this.key,
     });
-    const signature = await tronWeb.trx.signTransaction(txHex, this.key);
+    const signature = await tronWeb.trx.signTransaction(
+      txHex,
+      this.key,
+      useTronHeader,
+      multisig
+    );
     return signature;
+  }
+
+  async multiSignTransaction(
+    transaction: TronTransaction,
+    permisionId?: number
+  ): Promise<TronTransaction> {
+    const tronWeb = new TronWeb({
+      fullHost: this.manifest.rpcURL,
+      privateKey: this.key,
+    });
+    const signedTx = await tronWeb.trx.multiSign(
+      transaction,
+      this.key,
+      permisionId
+    );
+    return signedTx;
   }
 }
 
