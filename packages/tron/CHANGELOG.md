@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.29
+
+### Patch Changes
+
+- 9972c424: Add sign method options and the multiSign method
+
 ## 2.0.28
 
 ### Patch Changes
