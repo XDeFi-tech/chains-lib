@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.34
+
+### Patch Changes
+
+- 631d1476: fix: error in fee estimation
+
 ## 2.0.33
 
 ### Patch Changes
