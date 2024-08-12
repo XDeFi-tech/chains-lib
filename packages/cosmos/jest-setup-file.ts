@@ -1,4 +1,10 @@
 import 'reflect-metadata';
+
+// @ts-ignore
+import XMLHttpRequest from 'xhr2';
+
+global.XMLHttpRequest = XMLHttpRequest;
+
 import { TextEncoder, TextDecoder } from 'util';
 Object.assign(global, { TextDecoder, TextEncoder });
 

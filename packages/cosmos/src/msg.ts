@@ -196,7 +196,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     };
   }
 
-  private getMsgToSend() {
+  getMsgToSend() {
     const msgData = this.toData();
     let msgs;
     let typeUrl = msgData.typeUrl;
