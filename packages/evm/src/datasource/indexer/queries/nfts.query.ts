@@ -129,7 +129,6 @@ export const GNOSIS_NFTS_QUERY = gql`
       }
     }
   }
-
   ${LEGACY_NFTS_FRAGMENT}
 `;
 

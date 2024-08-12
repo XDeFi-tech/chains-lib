@@ -179,7 +179,6 @@ export enum AddressChain {
   Tron = 'Tron',
   Umee = 'Umee',
   opBNB = 'opBNB',
-  xDAI = 'xDAI',
   zkSync = 'zkSync',
 }
 
@@ -2590,8 +2589,8 @@ export enum NftChainType {
   BinanceSmartChain = 'BinanceSmartChain',
   Bitcoin = 'Bitcoin',
   Ethereum = 'Ethereum',
-  Gnosis = 'Gnosis',
   Optimism = 'Optimism',
+  Gnosis = 'Gnosis',
   Polygon = 'Polygon',
   Solana = 'Solana',
 }
@@ -3345,7 +3344,6 @@ export enum ReputationChains {
   Wax = 'Wax',
   Zilliqa = 'Zilliqa',
   opBNB = 'opBNB',
-  xDAI = 'xDAI',
   zkSync = 'zkSync',
 }
 
