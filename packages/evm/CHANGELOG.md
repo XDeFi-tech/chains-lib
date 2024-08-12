@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.42
+
+### Patch Changes
+
+- 6f3aa96e: remove xDai(Gnosis) - unsupported chain
+
 ## 2.0.41
 
 ### Patch Changes
