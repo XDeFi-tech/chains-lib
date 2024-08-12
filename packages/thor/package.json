@@ -28,7 +28,7 @@
     "@thorchain/ledger-thorchain": "0.1.0-alpha.2",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-graphql": "*",
-    "axios": "1.4.0",
+    "axios": "1.6.0",
     "bech32": "2.0.0",
     "bech32-buffer": "0.2.1",
     "bignumber.js": "9.1.2",
