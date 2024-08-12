@@ -2,15 +2,9 @@
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -192,7 +186,7 @@ export enum AddressChain {
   Umee = 'Umee',
   opBNB = 'opBNB',
   xDAI = 'xDAI',
-  zkSync = 'zkSync',
+  zkSync = 'zkSync'
 }
 
 /** Portfolio by wallet address */
@@ -324,11 +318,13 @@ export type Arbitrum = {
   version: Array<Version>;
 };
 
+
 export type ArbitrumActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type ArbitrumBalancesArgs = {
   address: Scalars['String'];
@@ -337,15 +333,18 @@ export type ArbitrumBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type ArbitrumLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type ArbitrumNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type ArbitrumTransactionsArgs = {
   address: Scalars['String'];
@@ -604,11 +603,11 @@ export type AssetHistory = {
 export enum AssetInternalType {
   CRYPTOCURRENCY = 'CRYPTOCURRENCY',
   LP_TOKEN = 'LP_TOKEN',
-  TOKEN = 'TOKEN',
+  TOKEN = 'TOKEN'
 }
 
 export enum AssetSortBy {
-  MARKET_CAP = 'MARKET_CAP',
+  MARKET_CAP = 'MARKET_CAP'
 }
 
 export type AssetTokenContractType = {
@@ -728,12 +727,14 @@ export type AssetType = {
   trending?: Maybe<Array<TrendingCoingeckoType>>;
 };
 
+
 export type AssetTypeAllAssetsArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   afterPrice?: InputMaybe<Scalars['DateTime']>;
   filter?: InputMaybe<AllAssetsFilter>;
   page: ConnectionArgs;
 };
+
 
 export type AssetTypeCompositeTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
@@ -742,9 +743,11 @@ export type AssetTypeCompositeTokensArgs = {
   page: ConnectionArgs;
 };
 
+
 export type AssetTypeCryptoAssetsArgs = {
   input: Array<CryptoAssetArgs>;
 };
+
 
 export type AssetTypeCryptoCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
@@ -753,10 +756,12 @@ export type AssetTypeCryptoCurrenciesArgs = {
   page: ConnectionArgs;
 };
 
+
 export type AssetTypeDappsArgs = {
   address: Scalars['String'];
   chain: Scalars['String'];
 };
+
 
 export type AssetTypeFiatCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
@@ -765,6 +770,7 @@ export type AssetTypeFiatCurrenciesArgs = {
   page: ConnectionArgs;
 };
 
+
 export type AssetTypeLpTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   afterPrice?: InputMaybe<Scalars['DateTime']>;
@@ -772,14 +778,17 @@ export type AssetTypeLpTokensArgs = {
   page: ConnectionArgs;
 };
 
+
 export type AssetTypeNftsV0Args = {
   keys: Array<NfTv0Args>;
 };
+
 
 export type AssetTypeSearchArgs = {
   filter?: InputMaybe<SearchFilter>;
   page: ConnectionArgs;
 };
+
 
 export type AssetTypeTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
@@ -787,6 +796,7 @@ export type AssetTypeTokensArgs = {
   filter?: InputMaybe<TokenFilter>;
   page: ConnectionArgs;
 };
+
 
 export type AssetTypeTokensV0Args = {
   input: Array<TokenV0Args>;
@@ -842,11 +852,13 @@ export type Aurora = {
   version: Array<Version>;
 };
 
+
 export type AuroraActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type AuroraBalancesArgs = {
   address: Scalars['String'];
@@ -855,15 +867,18 @@ export type AuroraBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type AuroraLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type AuroraNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type AuroraTransactionsArgs = {
   address: Scalars['String'];
@@ -890,11 +905,13 @@ export type Avalanche = {
   version: Array<Version>;
 };
 
+
 export type AvalancheActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type AvalancheBalancesArgs = {
   address: Scalars['String'];
@@ -903,15 +920,18 @@ export type AvalancheBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type AvalancheLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type AvalancheNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type AvalancheTransactionsArgs = {
   address: Scalars['String'];
@@ -955,11 +975,13 @@ export type Base = {
   version: Array<Version>;
 };
 
+
 export type BaseActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type BaseBalancesArgs = {
   address: Scalars['String'];
@@ -968,10 +990,12 @@ export type BaseBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type BaseNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type BaseTransactionsArgs = {
   address: Scalars['String'];
@@ -1000,9 +1024,11 @@ export type Binance = {
   transactions: BinanceTransactionConnection;
 };
 
+
 export type BinanceBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type BinanceTransactionsArgs = {
   address: Scalars['String'];
@@ -1029,11 +1055,13 @@ export type BinanceSmartChain = {
   version: Array<Version>;
 };
 
+
 export type BinanceSmartChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type BinanceSmartChainBalancesArgs = {
   address: Scalars['String'];
@@ -1042,15 +1070,18 @@ export type BinanceSmartChainBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type BinanceSmartChainLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type BinanceSmartChainNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type BinanceSmartChainTransactionsArgs = {
   address: Scalars['String'];
@@ -1113,28 +1144,34 @@ export type BitcoinChain = {
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
+
 export type BitcoinChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type BitcoinChainBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type BitcoinChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
+
 export type BitcoinChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
+
 
 export type BitcoinChainLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
+
 
 export type BitcoinChainTransactionsArgs = {
   address: Scalars['String'];
@@ -1144,11 +1181,13 @@ export type BitcoinChainTransactionsArgs = {
   pageSize: Scalars['Int'];
 };
 
+
 export type BitcoinChainTransactionsV2Args = {
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
+
 
 export type BitcoinChainTransactionsV3Args = {
   address: Scalars['String'];
@@ -1156,10 +1195,12 @@ export type BitcoinChainTransactionsV3Args = {
   first: Scalars['Int'];
 };
 
+
 export type BitcoinChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
+
 
 export type BitcoinChainUnspentTxOutputsV5Args = {
   address: Scalars['String'];
@@ -1186,23 +1227,28 @@ export type BitcoinChainTestNet = {
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
+
 export type BitcoinChainTestNetActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type BitcoinChainTestNetBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type BitcoinChainTestNetBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
+
 export type BitcoinChainTestNetGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
+
 
 export type BitcoinChainTestNetTransactionsArgs = {
   address: Scalars['String'];
@@ -1212,11 +1258,13 @@ export type BitcoinChainTestNetTransactionsArgs = {
   pageSize: Scalars['Int'];
 };
 
+
 export type BitcoinChainTestNetTransactionsV2Args = {
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
+
 
 export type BitcoinChainTestNetTransactionsV3Args = {
   address: Scalars['String'];
@@ -1224,10 +1272,12 @@ export type BitcoinChainTestNetTransactionsV3Args = {
   first: Scalars['Int'];
 };
 
+
 export type BitcoinChainTestNetUnspentTxOutputsArgs = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
+
 
 export type BitcoinChainTestNetUnspentTxOutputsV5Args = {
   address: Scalars['String'];
@@ -1254,23 +1304,28 @@ export type BitcoincashChain = {
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
+
 export type BitcoincashChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type BitcoincashChainBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type BitcoincashChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
+
 export type BitcoincashChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
+
 
 export type BitcoincashChainTransactionsArgs = {
   address: Scalars['String'];
@@ -1280,11 +1335,13 @@ export type BitcoincashChainTransactionsArgs = {
   pageSize: Scalars['Int'];
 };
 
+
 export type BitcoincashChainTransactionsV2Args = {
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
+
 
 export type BitcoincashChainTransactionsV3Args = {
   address: Scalars['String'];
@@ -1292,10 +1349,12 @@ export type BitcoincashChainTransactionsV3Args = {
   first: Scalars['Int'];
 };
 
+
 export type BitcoincashChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
+
 
 export type BitcoincashChainUnspentTxOutputsV5Args = {
   address: Scalars['String'];
@@ -1325,11 +1384,13 @@ export type Blast = {
   version: Array<Version>;
 };
 
+
 export type BlastActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type BlastBalancesArgs = {
   address: Scalars['String'];
@@ -1338,10 +1399,12 @@ export type BlastBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type BlastNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type BlastTransactionsArgs = {
   address: Scalars['String'];
@@ -1380,7 +1443,7 @@ export type BridgeTokenInput = {
 
 export enum CacheControlScope {
   PRIVATE = 'PRIVATE',
-  PUBLIC = 'PUBLIC',
+  PUBLIC = 'PUBLIC'
 }
 
 export type CantoEvm = {
@@ -1400,11 +1463,13 @@ export type CantoEvm = {
   version: Array<Version>;
 };
 
+
 export type CantoEvmActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type CantoEvmBalancesArgs = {
   address: Scalars['String'];
@@ -1413,15 +1478,18 @@ export type CantoEvmBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type CantoEvmLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type CantoEvmNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type CantoEvmTransactionsArgs = {
   address: Scalars['String'];
@@ -1447,11 +1515,13 @@ export type Celo = {
   version: Array<Version>;
 };
 
+
 export type CeloActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type CeloBalancesArgs = {
   address: Scalars['String'];
@@ -1460,10 +1530,12 @@ export type CeloBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type CeloNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type CeloTransactionsArgs = {
   address: Scalars['String'];
@@ -1481,7 +1553,7 @@ export enum Chain {
   FANTOM = 'FANTOM',
   HARMONY = 'HARMONY',
   OPTIMISM = 'OPTIMISM',
-  POLYGON = 'POLYGON',
+  POLYGON = 'POLYGON'
 }
 
 export type ChainType = {
@@ -1552,6 +1624,7 @@ export type CosmosBalanceChain = {
   version: Array<Version>;
 };
 
+
 export type CosmosBalanceChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
@@ -1572,16 +1645,19 @@ export type CosmosBasedChain = {
   version: Array<Version>;
 };
 
+
 export type CosmosBasedChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type CosmosBasedChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type CosmosBasedChainTransactionsArgs = {
   address: Scalars['String'];
@@ -1665,11 +1741,13 @@ export type CronosEvm = {
   version: Array<Version>;
 };
 
+
 export type CronosEvmActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type CronosEvmBalancesArgs = {
   address: Scalars['String'];
@@ -1678,15 +1756,18 @@ export type CronosEvmBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type CronosEvmLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type CronosEvmNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type CronosEvmTransactionsArgs = {
   address: Scalars['String'];
@@ -1854,18 +1935,7 @@ export type DelegateStakeActivityV0 = {
 };
 
 /** Detailed activity represent more details about transaction */
-export type DetailedActivityV0 =
-  | DelegateStakeActivityV0
-  | DirectStakeActivityV0
-  | DirectUnstakeActivityV0
-  | GasTankDepositActivityV0
-  | GasTankWithdrawActivityV0
-  | OffchainReceiveAssetActivityV0
-  | OffchainSendAssetActivityV0
-  | SwapAssetActivityV0
-  | TokenApproveActivityV0
-  | TokenRevokeActivityV0
-  | UndelegateStakeActivityV0;
+export type DetailedActivityV0 = DelegateStakeActivityV0 | DirectStakeActivityV0 | DirectUnstakeActivityV0 | GasTankDepositActivityV0 | GasTankWithdrawActivityV0 | OffchainReceiveAssetActivityV0 | OffchainSendAssetActivityV0 | SwapAssetActivityV0 | TokenApproveActivityV0 | TokenRevokeActivityV0 | UndelegateStakeActivityV0 | WithdrawUnstakedActivityV0;
 
 /** Stake by creating own node */
 export type DirectStakeActivityV0 = {
@@ -1903,23 +1973,28 @@ export type DogeChain = {
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
+
 export type DogeChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type DogeChainBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type DogeChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
+
 export type DogeChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
+
 
 export type DogeChainTransactionsArgs = {
   address: Scalars['String'];
@@ -1929,11 +2004,13 @@ export type DogeChainTransactionsArgs = {
   pageSize: Scalars['Int'];
 };
 
+
 export type DogeChainTransactionsV2Args = {
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
+
 
 export type DogeChainTransactionsV3Args = {
   address: Scalars['String'];
@@ -1941,10 +2018,12 @@ export type DogeChainTransactionsV3Args = {
   first: Scalars['Int'];
 };
 
+
 export type DogeChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
+
 
 export type DogeChainUnspentTxOutputsV5Args = {
   address: Scalars['String'];
@@ -2047,11 +2126,13 @@ export type Ethereum = {
   version: Array<Version>;
 };
 
+
 export type EthereumActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type EthereumBalancesArgs = {
   address: Scalars['String'];
@@ -2060,15 +2141,18 @@ export type EthereumBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type EthereumLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type EthereumNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type EthereumTransactionsArgs = {
   address: Scalars['String'];
@@ -2152,11 +2236,13 @@ export type Fantom = {
   version: Array<Version>;
 };
 
+
 export type FantomActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type FantomBalancesArgs = {
   address: Scalars['String'];
@@ -2165,15 +2251,18 @@ export type FantomBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type FantomLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type FantomNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type FantomTransactionsArgs = {
   address: Scalars['String'];
@@ -2190,10 +2279,7 @@ export type Fee = {
 };
 
 /** Represent possible fee details specific to chain */
-export type FeeDetailsV0 =
-  | EvmFeeDetailsV0
-  | ThorChainFeeDetailsV0
-  | TronFeeDetailsV0;
+export type FeeDetailsV0 = EvmFeeDetailsV0 | ThorChainFeeDetailsV0 | TronFeeDetailsV0;
 
 export type FeeInputType = {
   feeRateTransaction: Scalars['Float'];
@@ -2311,11 +2397,13 @@ export type Gnosis = {
   version: Array<Version>;
 };
 
+
 export type GnosisActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type GnosisBalancesArgs = {
   address: Scalars['String'];
@@ -2324,15 +2412,18 @@ export type GnosisBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type GnosisLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type GnosisNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type GnosisTransactionsArgs = {
   address: Scalars['String'];
@@ -2359,6 +2450,7 @@ export type InvestingType = {
   pools: Array<PoolType>;
 };
 
+
 export type InvestingTypePoolsArgs = {
   filter?: InputMaybe<FilterArgs>;
 };
@@ -2379,20 +2471,24 @@ export type JunoChain = {
   version: Array<Version>;
 };
 
+
 export type JunoChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type JunoChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type JunoChainNftsArgs = {
   address: Scalars['String'];
 };
+
 
 export type JunoChainTransactionsArgs = {
   address: Scalars['String'];
@@ -2448,11 +2544,13 @@ export type Linea = {
   version: Array<Version>;
 };
 
+
 export type LineaActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type LineaBalancesArgs = {
   address: Scalars['String'];
@@ -2461,10 +2559,12 @@ export type LineaBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type LineaNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type LineaTransactionsArgs = {
   address: Scalars['String'];
@@ -2494,23 +2594,28 @@ export type LitecoinChain = {
   unspentTxOutputsV5: Array<UnspentTransactionOutputV5>;
 };
 
+
 export type LitecoinChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type LitecoinChainBalancesArgs = {
   address: Scalars['String'];
 };
+
 
 export type LitecoinChainBroadcastTransactionArgs = {
   rawHex: Scalars['String'];
 };
 
+
 export type LitecoinChainGetTransactionByHashV5Args = {
   txHash: Scalars['String'];
 };
+
 
 export type LitecoinChainTransactionsArgs = {
   address: Scalars['String'];
@@ -2520,11 +2625,13 @@ export type LitecoinChainTransactionsArgs = {
   pageSize: Scalars['Int'];
 };
 
+
 export type LitecoinChainTransactionsV2Args = {
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
+
 
 export type LitecoinChainTransactionsV3Args = {
   address: Scalars['String'];
@@ -2532,10 +2639,12 @@ export type LitecoinChainTransactionsV3Args = {
   first: Scalars['Int'];
 };
 
+
 export type LitecoinChainUnspentTxOutputsArgs = {
   address: Scalars['String'];
   page: Scalars['Int'];
 };
+
 
 export type LitecoinChainUnspentTxOutputsV5Args = {
   address: Scalars['String'];
@@ -2572,11 +2681,13 @@ export type Mantle = {
   version: Array<Version>;
 };
 
+
 export type MantleActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type MantleBalancesArgs = {
   address: Scalars['String'];
@@ -2585,10 +2696,12 @@ export type MantleBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type MantleNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type MantleTransactionsArgs = {
   address: Scalars['String'];
@@ -2622,16 +2735,19 @@ export type MayaChain = {
   version: Array<Version>;
 };
 
+
 export type MayaChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type MayaChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddress?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type MayaChainTransactionsArgs = {
   address: Scalars['String'];
@@ -2687,11 +2803,13 @@ export type Mode = {
   version: Array<Version>;
 };
 
+
 export type ModeActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type ModeBalancesArgs = {
   address: Scalars['String'];
@@ -2700,10 +2818,12 @@ export type ModeBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type ModeNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type ModeTransactionsArgs = {
   address: Scalars['String'];
@@ -2719,7 +2839,9 @@ export type Mutation = {
   claimFees?: Maybe<ClaimStatus>;
   /** Publicly exposed Create a referrer */
   createReferrer?: Maybe<Referrer>;
+  /** @deprecated added the transactionHashV3 which supports the new swap history logging, use transactionHashV3 instead */
   transactionHashV2: Scalars['String'];
+  transactionHashV3: Scalars['String'];
   transactions: Array<RouteTransactionType>;
   transactionsV2: PostRouteTypeV2;
   transactonHash: Scalars['String'];
@@ -2727,15 +2849,18 @@ export type Mutation = {
   upsertReferrer?: Maybe<Referrer>;
 };
 
+
 export type MutationAddCommentArgs = {
   address: Scalars['String'];
   comment: Scalars['String'];
   source: Scalars['String'];
 };
 
+
 export type MutationCreateReferrerArgs = {
   referrer: CreateReferrer;
 };
+
 
 export type MutationTransactionHashV2Args = {
   routeId: Scalars['String'];
@@ -2743,19 +2868,31 @@ export type MutationTransactionHashV2Args = {
   transactionHash: Scalars['String'];
 };
 
+
+export type MutationTransactionHashV3Args = {
+  accountId: Scalars['String'];
+  routeId: Scalars['String'];
+  tradeId: Scalars['String'];
+  transactionHash: Scalars['String'];
+};
+
+
 export type MutationTransactionsArgs = {
   routeData: RouteTransactionInputType;
 };
 
+
 export type MutationTransactionsV2Args = {
   routeData: RouteInputTypeV2;
 };
+
 
 export type MutationTransactonHashArgs = {
   routeId: Scalars['String'];
   signedHash: Scalars['String'];
   tradeId: Scalars['Float'];
 };
+
 
 export type MutationUpsertReferrerArgs = {
   address: Scalars['String'];
@@ -2878,13 +3015,16 @@ export type NearChain = {
   version: Array<Version>;
 };
 
+
 export type NearChainBalancesArgs = {
   address: Scalars['String'];
 };
 
+
 export type NearChainNftsArgs = {
   address: Scalars['String'];
 };
+
 
 export type NearChainTransactionsArgs = {
   address: Scalars['String'];
@@ -2950,7 +3090,7 @@ export enum NftChainType {
   Gnosis = 'Gnosis',
   Optimism = 'Optimism',
   Polygon = 'Polygon',
-  Solana = 'Solana',
+  Solana = 'Solana'
 }
 
 /** Receive off-chain asset activity with on-chain proof (for example compressed NFT on Solana with Merkle tree) */
@@ -2997,11 +3137,13 @@ export type OpBnb = {
   version: Array<Version>;
 };
 
+
 export type OpBnbActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type OpBnbBalancesArgs = {
   address: Scalars['String'];
@@ -3010,10 +3152,12 @@ export type OpBnbBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type OpBnbNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type OpBnbTransactionsArgs = {
   address: Scalars['String'];
@@ -3066,11 +3210,13 @@ export type Optimism = {
   version: Array<Version>;
 };
 
+
 export type OptimismActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type OptimismBalancesArgs = {
   address: Scalars['String'];
@@ -3079,15 +3225,18 @@ export type OptimismBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type OptimismLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type OptimismNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type OptimismTransactionsArgs = {
   address: Scalars['String'];
@@ -3158,11 +3307,13 @@ export type Polygon = {
   version: Array<Version>;
 };
 
+
 export type PolygonActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type PolygonBalancesArgs = {
   address: Scalars['String'];
@@ -3171,15 +3322,18 @@ export type PolygonBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type PolygonLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type PolygonNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type PolygonTransactionsArgs = {
   address: Scalars['String'];
@@ -3193,7 +3347,7 @@ export enum Pool {
   Aave = 'Aave',
   Benqi = 'Benqi',
   Bitswap = 'Bitswap',
-  IronBank = 'IronBank',
+  IronBank = 'IronBank'
 }
 
 export type PoolType = {
@@ -3294,7 +3448,7 @@ export enum PortfolioChainVariant {
   TerraClassic = 'TerraClassic',
   TomoChain = 'TomoChain',
   Tron = 'Tron',
-  Umee = 'Umee',
+  Umee = 'Umee'
 }
 
 export type PostRouteTypeV2 = {
@@ -3307,7 +3461,7 @@ export enum PriceHistoryInterval {
   day = 'day',
   month = 'month',
   week = 'week',
-  year = 'year',
+  year = 'year'
 }
 
 /** Prices history contains history information for each asset: its price, market caps and total volumes. All those metrics provided for different time frames: day, week, month and year. */
@@ -3450,14 +3604,17 @@ export type Query = {
   zkSync: ZkSync;
 };
 
+
 export type QueryChainsArgs = {
   filter?: InputMaybe<Scalars['String']>;
 };
+
 
 export type QueryCompositeTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   ids?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type QueryCryptoCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
@@ -3465,14 +3622,17 @@ export type QueryCryptoCurrenciesArgs = {
   symbols?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type QueryDappArgs = {
   app: DAppReputationInput;
 };
+
 
 export type QueryFiatCurrenciesArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   ids?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type QueryReputationArgs = {
   address: Scalars['String'];
@@ -3480,6 +3640,7 @@ export type QueryReputationArgs = {
   first?: Scalars['Int'];
   offest?: Scalars['Int'];
 };
+
 
 export type QueryReputationV2Args = {
   address: Scalars['String'];
@@ -3489,15 +3650,18 @@ export type QueryReputationV2Args = {
   first?: Scalars['Int'];
 };
 
+
 export type QueryTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   filter?: InputMaybe<GetTokensArgs>;
 };
 
+
 export type QueryTrackWalletConnectArgs = {
   walletAddress: Scalars['String'];
   walletProvider: Scalars['String'];
 };
+
 
 export type QueryWalletInfoArgs = {
   address: Scalars['String'];
@@ -3737,7 +3901,7 @@ export enum ReputationChains {
   Zilliqa = 'Zilliqa',
   opBNB = 'opBNB',
   xDAI = 'xDAI',
-  zkSync = 'zkSync',
+  zkSync = 'zkSync'
 }
 
 export type ReputationComment = {
@@ -3957,6 +4121,7 @@ export type RoutingChainType = {
   tokens: Array<RoutingTokenType>;
 };
 
+
 export type RoutingChainTypeTokensArgs = {
   addresses?: InputMaybe<Array<AddressRouteInputType>>;
   srcToken?: InputMaybe<Scalars['String']>;
@@ -4001,6 +4166,14 @@ export type RoutingFeeTypeV2 = {
   xdefiSwapFeeDollar?: Maybe<Scalars['Decimal']>;
 };
 
+export type RoutingSwapHistory = {
+  __typename?: 'RoutingSwapHistory';
+  activityType: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  inputAsset?: Maybe<RoutingTokenTypeV2>;
+  outputAsset?: Maybe<RoutingTokenTypeV2>;
+};
+
 export type RoutingTokenInputType = {
   asset?: InputMaybe<CryptoAssetInput>;
   id: Scalars['ID'];
@@ -4039,9 +4212,11 @@ export type RoutingType = {
   trades?: Maybe<Array<RouteTransactionTradeType>>;
 };
 
+
 export type RoutingTypeChainArgs = {
   name: Scalars['String'];
 };
+
 
 export type RoutingTypeRouteArgs = {
   addresses: Array<AddressRouteInputType>;
@@ -4052,14 +4227,17 @@ export type RoutingTypeRouteArgs = {
   srcToken: Scalars['String'];
 };
 
+
 export type RoutingTypeTokenArgs = {
   id: Scalars['String'];
 };
+
 
 export type RoutingTypeTokensArgs = {
   names?: InputMaybe<Array<Scalars['String']>>;
   tokenIds?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type RoutingTypeTradesArgs = {
   routeId: Scalars['String'];
@@ -4067,6 +4245,7 @@ export type RoutingTypeTradesArgs = {
 
 export type RoutingTypeV2 = {
   __typename?: 'RoutingTypeV2';
+  SwapHistory: Array<RoutingSwapHistory>;
   addressCheckV2: AddressRouteCheckTypeV2;
   allReferrers?: Maybe<Array<ReferrerWithFees>>;
   bridgeableTokens: Array<RoutingTokenTypeV2>;
@@ -4087,27 +4266,39 @@ export type RoutingTypeV2 = {
   tradesV2: Array<RouteTransactionTradeTypeV2>;
 };
 
+
+export type RoutingTypeV2SwapHistoryArgs = {
+  accountId: Scalars['String'];
+  limit?: Scalars['Int'];
+};
+
+
 export type RoutingTypeV2AddressCheckV2Args = {
   address: AddressRouteInputTypeV2;
 };
+
 
 export type RoutingTypeV2BridgeableTokensArgs = {
   bridgeToken?: InputMaybe<BridgeTokenInput>;
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type RoutingTypeV2ChainV2Args = {
   name: Scalars['String'];
 };
+
 
 export type RoutingTypeV2DailyVolumeArgs = {
   startDate?: Scalars['String'];
 };
 
+
 export type RoutingTypeV2IsAssetSwappableArgs = {
   address: Scalars['String'];
   chainName: Scalars['String'];
 };
+
 
 export type RoutingTypeV2RefuelArgs = {
   addresses: Array<AddressRouteInputTypeV2>;
@@ -4118,10 +4309,12 @@ export type RoutingTypeV2RefuelArgs = {
   srcToken: Scalars['String'];
 };
 
+
 export type RoutingTypeV2RefuelInfoArgs = {
   destChain: Scalars['String'];
   srcChain: Scalars['String'];
 };
+
 
 export type RoutingTypeV2RouteV2Args = {
   addresses: Array<AddressRouteInputTypeV2>;
@@ -4129,25 +4322,28 @@ export type RoutingTypeV2RouteV2Args = {
   destAddress: Scalars['String'];
   destToken: Scalars['String'];
   infiniteApproval?: InputMaybe<Scalars['Boolean']>;
-  isLedgerLive?: InputMaybe<Scalars['Boolean']>;
   isOptedIn?: InputMaybe<Scalars['Boolean']>;
   referral?: InputMaybe<ReferralInputType>;
   slippage: Scalars['String'];
   srcToken: Scalars['String'];
 };
 
+
 export type RoutingTypeV2TokenV2Args = {
   id: Scalars['String'];
 };
+
 
 export type RoutingTypeV2TokensV2Args = {
   names?: InputMaybe<Array<Scalars['String']>>;
   tokenIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type RoutingTypeV2TradeV2Args = {
   tradeId: Scalars['String'];
 };
+
 
 export type RoutingTypeV2TradesV2Args = {
   routeId: Scalars['String'];
@@ -4167,11 +4363,13 @@ export type Scroll = {
   version: Array<Version>;
 };
 
+
 export type ScrollActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type ScrollBalancesArgs = {
   address: Scalars['String'];
@@ -4180,10 +4378,12 @@ export type ScrollBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type ScrollNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type ScrollTransactionsArgs = {
   address: Scalars['String'];
@@ -4292,11 +4492,13 @@ export type SolanaChain = {
   version: Array<Version>;
 };
 
+
 export type SolanaChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type SolanaChainAssetHistoryBalancesV0Args = {
   address: Scalars['String'];
@@ -4304,19 +4506,23 @@ export type SolanaChainAssetHistoryBalancesV0Args = {
   skipAssetServiceFiltering?: Scalars['Boolean'];
 };
 
+
 export type SolanaChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type SolanaChainLegacyNfTsArgs = {
   address: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
+
 export type SolanaChainNftsArgs = {
   address: Scalars['String'];
 };
+
 
 export type SolanaChainTransactionsArgs = {
   address: Scalars['String'];
@@ -4381,20 +4587,24 @@ export type StargazeChain = {
   version: Array<Version>;
 };
 
+
 export type StargazeChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type StargazeChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type StargazeChainNftsArgs = {
   address: Scalars['String'];
 };
+
 
 export type StargazeChainTransactionsArgs = {
   address: Scalars['String'];
@@ -4459,10 +4669,12 @@ export type TerraChain = {
   version: Array<Version>;
 };
 
+
 export type TerraChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type TerraChainLegacyNfTsArgs = {
   address: Scalars['String'];
@@ -4482,16 +4694,19 @@ export type ThorChain = {
   version: Array<Version>;
 };
 
+
 export type ThorChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
 
+
 export type ThorChainBalancesArgs = {
   address: Scalars['String'];
   tokenAddress?: InputMaybe<Array<Scalars['String']>>;
 };
+
 
 export type ThorChainTransactionsArgs = {
   address: Scalars['String'];
@@ -4589,7 +4804,7 @@ export enum TimePeriod {
   DAY = 'DAY',
   MONTH = 'MONTH',
   WEEK = 'WEEK',
-  YEAR = 'YEAR',
+  YEAR = 'YEAR'
 }
 
 /** Unlimited or specific amount of asset approved to spend for spender address */
@@ -4606,7 +4821,7 @@ export enum TokenCategory {
   LST_TOKEN = 'LST_TOKEN',
   SHITCOIN = 'SHITCOIN',
   STABLECOIN = 'STABLECOIN',
-  TRENDING_TOKEN = 'TRENDING_TOKEN',
+  TRENDING_TOKEN = 'TRENDING_TOKEN'
 }
 
 export type TokenContractType = {
@@ -4708,7 +4923,7 @@ export enum TransactionStatus {
   /** Transaction was sent and is in the mempool (or equivalent for the chain) */
   PENDING = 'PENDING',
   /** Transaction was included in a block and successfully executed */
-  SUCCESS = 'SUCCESS',
+  SUCCESS = 'SUCCESS'
 }
 
 /** Represents the status of a transaction with optional details */
@@ -4724,7 +4939,7 @@ export enum TransactionType {
   STAKE = 'STAKE',
   SWAP = 'SWAP',
   UNCLASSIFIED = 'UNCLASSIFIED',
-  WITHDRAW = 'WITHDRAW',
+  WITHDRAW = 'WITHDRAW'
 }
 
 export type TrendingCoingeckoType = {
@@ -4769,11 +4984,13 @@ export type Tron = {
   version: Array<Version>;
 };
 
+
 export type TronActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type TronBalancesArgs = {
   address: Scalars['String'];
@@ -4782,10 +4999,12 @@ export type TronBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type TronNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type TronTransactionsArgs = {
   address: Scalars['String'];
@@ -4857,57 +5076,71 @@ export type TxClassifier = {
   getBlockchairTxsByQuery: Scalars['String'];
 };
 
+
 export type TxClassifierAnalyzeEvmTxBlowfishArgs = {
   payload: BlowfishEvmTxPayload;
 };
+
 
 export type TxClassifierAnalyzeSolanaTxBlowfishArgs = {
   payload: BlowfishSolanaTxPayload;
 };
 
+
 export type TxClassifierAnalyzeTxBlowfishArgs = {
   payload: BlowfishEvmTxPayload;
 };
+
 
 export type TxClassifierAnalyzeTxV1HexagateArgs = {
   payload: EvmTransactionPayloadV2;
 };
 
+
 export type TxClassifierAnalyzeTxV2HexagateArgs = {
   payload: EvmTransactionPayloadV2;
 };
+
 
 export type TxClassifierDecodeTransactionV2Args = {
   payload: EvmTransactionPayload;
 };
 
+
 export type TxClassifierExplainEvmTxWithRiskAnalysisV1Args = {
   payload: EvmTransactionPayloadV2;
 };
+
 
 export type TxClassifierExplainTransactionV3Args = {
   payload: EvmTransactionPayloadV2;
 };
 
+
 export type TxClassifierExplainTransactionV3DebugTraceCallArgs = {
   payload: EvmTransactionPayloadV2;
 };
+
 
 export type TxClassifierExplainTransactionV3TenderlyArgs = {
   payload: EvmTransactionPayloadV2;
 };
 
+
 export type TxClassifierExplainTransactionV3TenderlyBundledArgs = {
   payload: Array<TenderlyMinimalSimulateInput>;
 };
+
 
 export type TxClassifierExplainTransactionV4TenderlyArgs = {
   payload: EvmTransactionPayloadV2;
 };
 
+
 export type TxClassifierExplainTransactionV5Args = {
   payload: EvmTransactionPayloadV2;
 };
+
 
 export type TxClassifierGetBlockchairTxsByQueryArgs = {
   chain: TxClassifierChains;
@@ -4930,7 +5163,7 @@ export enum TxClassifierChains {
   linea = 'linea',
   optimism = 'optimism',
   polygon = 'polygon',
-  solana = 'solana',
+  solana = 'solana'
 }
 
 export enum TxClassifierTxType {
@@ -4942,7 +5175,7 @@ export enum TxClassifierTxType {
   SWAP = 'SWAP',
   TRANSFER = 'TRANSFER',
   UNCLASSIFIED = 'UNCLASSIFIED',
-  WITHDRAW = 'WITHDRAW',
+  WITHDRAW = 'WITHDRAW'
 }
 
 export type TxSecurityIssue = {
@@ -5044,11 +5277,13 @@ export type UserPortfolio = {
   walletHistory?: Maybe<WalletPortfolioFiat>;
 };
 
+
 export type UserPortfolioAddressHistoryArgs = {
   address: Scalars['String'];
   chain: PortfolioChainVariant;
   timePeriod: TimePeriod;
 };
+
 
 export type UserPortfolioWalletHistoryArgs = {
   accounts: Array<AccountPortfolioRequest>;
@@ -5207,6 +5442,15 @@ export type WalletPortfolioFiat = {
   sum?: Maybe<SumPortfolioFiat>;
 };
 
+/** Transfer of asset that was previously staked */
+export type WithdrawUnstakedActivityV0 = {
+  __typename?: 'WithdrawUnstakedActivityV0';
+  amount?: Maybe<Scalars['IntegerString']>;
+  asset?: Maybe<AssetV0>;
+  /** on Solana (stake account) */
+  from?: Maybe<AddressV0>;
+};
+
 export type ZetaChain = {
   __typename?: 'ZetaChain';
   /** activity history for address in descending order */
@@ -5223,11 +5467,13 @@ export type ZetaChain = {
   version: Array<Version>;
 };
 
+
 export type ZetaChainActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type ZetaChainBalancesArgs = {
   address: Scalars['String'];
@@ -5236,10 +5482,12 @@ export type ZetaChainBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type ZetaChainNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type ZetaChainTransactionsArgs = {
   address: Scalars['String'];
@@ -5265,11 +5513,13 @@ export type ZkSync = {
   version: Array<Version>;
 };
 
+
 export type ZkSyncActivityHistoryV0Args = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
   first?: Scalars['Int'];
 };
+
 
 export type ZkSyncBalancesArgs = {
   address: Scalars['String'];
@@ -5278,10 +5528,12 @@ export type ZkSyncBalancesArgs = {
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
+
 export type ZkSyncNftsArgs = {
   address: Scalars['String'];
   first?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type ZkSyncTransactionsArgs = {
   address: Scalars['String'];
@@ -5295,47 +5547,13 @@ export type BitcoinCashBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
 
-export type BitcoinCashBalanceQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    balances: Array<{
-      __typename?: 'Balance';
-      address: string;
-      amount: { __typename?: 'Amount'; value: string };
-      asset: {
-        __typename?: 'CryptoAsset';
-        chain?: string | null;
-        contract?: string | null;
-        decimals?: number | null;
-        id?: string | null;
-        image?: string | null;
-        name?: string | null;
-        symbol?: string | null;
-        price?: {
-          __typename?: 'AssetAmountType';
-          amount: string;
-          dayPriceChange?: string | null;
-        } | null;
-      };
-    }>;
-  };
-};
 
-export type GetBitcoinCashFeesQueryVariables = Exact<{ [key: string]: never }>;
+export type BitcoinCashBalanceQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', balances: Array<{ __typename?: 'Balance', address: string, amount: { __typename?: 'Amount', value: string }, asset: { __typename?: 'CryptoAsset', chain?: string | null, contract?: string | null, decimals?: number | null, id?: string | null, image?: string | null, name?: string | null, symbol?: string | null, price?: { __typename?: 'AssetAmountType', amount: string, dayPriceChange?: string | null } | null } }> } };
 
-export type GetBitcoinCashFeesQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    fee?: {
-      __typename?: 'DefaultGasFee';
-      high?: number | null;
-      low?: number | null;
-      medium?: number | null;
-    } | null;
-  };
-};
+export type GetBitcoinCashFeesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBitcoinCashFeesQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', fee?: { __typename?: 'DefaultGasFee', high?: number | null, low?: number | null, medium?: number | null } | null } };
 
 export type GetBitcoinCashTransactionsQueryVariables = Exact<{
   address: Scalars['String'];
@@ -5343,753 +5561,35 @@ export type GetBitcoinCashTransactionsQueryVariables = Exact<{
   pageNumber: Scalars['Int'];
 }>;
 
-export type GetBitcoinCashTransactionsQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    transactionsV2: Array<{
-      __typename?: 'UTXOTransactionV2';
-      blockNumber?: number | null;
-      hash: string;
-      timestamp?: any | null;
-      status?: string | null;
-      balanceChange?: { __typename?: 'Amount'; value: string } | null;
-      fee?: { __typename?: 'Amount'; value: string } | null;
-      inputs?: Array<{
-        __typename?: 'Input';
-        address: string;
-        amount: { __typename?: 'Amount'; value: string };
-      }> | null;
-      outputs?: Array<{
-        __typename?: 'Output';
-        address: string;
-        amount: { __typename?: 'Amount'; value: string };
-      }> | null;
-    }>;
-  };
-};
+
+export type GetBitcoinCashTransactionsQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', transactionsV2: Array<{ __typename?: 'UTXOTransactionV2', blockNumber?: number | null, hash: string, timestamp?: any | null, status?: string | null, balanceChange?: { __typename?: 'Amount', value: string } | null, fee?: { __typename?: 'Amount', value: string } | null, inputs?: Array<{ __typename?: 'Input', address: string, amount: { __typename?: 'Amount', value: string } }> | null, outputs?: Array<{ __typename?: 'Output', address: string, amount: { __typename?: 'Amount', value: string } }> | null }> } };
 
 export type BitcoinCashBroadcastTransactionQueryVariables = Exact<{
   rawHex: Scalars['String'];
 }>;
 
-export type BitcoinCashBroadcastTransactionQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    broadcastTransaction: string;
-  };
-};
+
+export type BitcoinCashBroadcastTransactionQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', broadcastTransaction: string } };
 
 export type BitcoinCashScanUtxOsQueryVariables = Exact<{
   address: Scalars['String'];
   page: Scalars['Int'];
 }>;
 
-export type BitcoinCashScanUtxOsQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    unspentTxOutputsV5: Array<{
-      __typename?: 'UnspentTransactionOutputV5';
-      oTxHash: string;
-      oIndex: number;
-      oTxHex?: string | null;
-      address?: string | null;
-      isCoinbase?: boolean | null;
-      scriptHex?: string | null;
-      value: { __typename?: 'Amount'; value: string };
-    }>;
-  };
-};
+
+export type BitcoinCashScanUtxOsQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', unspentTxOutputsV5: Array<{ __typename?: 'UnspentTransactionOutputV5', oTxHash: string, oIndex: number, oTxHex?: string | null, address?: string | null, isCoinbase?: boolean | null, scriptHex?: string | null, value: { __typename?: 'Amount', value: string } }> } };
 
 export type BitcoinCashGetTransactionByHashQueryVariables = Exact<{
   txHash: Scalars['String'];
 }>;
 
-export type BitcoinCashGetTransactionByHashQuery = {
-  __typename?: 'Query';
-  bitcoincash: {
-    __typename?: 'BitcoincashChain';
-    getTransactionByHashV5: {
-      __typename?: 'UtxotransactionByHashV5';
-      hex?: string | null;
-      txid?: string | null;
-      hash: string;
-      size: number;
-      version: number;
-      locktime?: number | null;
-      confirmations?: number | null;
-      blocktime?: number | null;
-      time?: number | null;
-      blockhash?: string | null;
-      blockNumber?: number | null;
-      sourceOfData: string;
-      inputs: Array<{ __typename?: 'Input'; address: string }>;
-      outputs: Array<{ __typename?: 'Output'; address: string }>;
-    };
-  };
-};
 
-export const BitcoinCashBalanceDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'BitcoinCashBalance' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'address' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'balances' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'address' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'address' },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'address' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'amount' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'asset' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'chain' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'contract' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'decimals' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'image' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'name' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'price' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'amount' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'dayPriceChange',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'symbol' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  BitcoinCashBalanceQuery,
-  BitcoinCashBalanceQueryVariables
->;
-export const GetBitcoinCashFeesDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetBitcoinCashFees' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'fee' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'medium' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetBitcoinCashFeesQuery,
-  GetBitcoinCashFeesQueryVariables
->;
-export const GetBitcoinCashTransactionsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetBitcoinCashTransactions' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'address' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'pageSize' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'pageNumber' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'transactionsV2' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'address' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'address' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageSize' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageSize' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'pageNumber' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'pageNumber' },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'balanceChange' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'blockNumber' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'fee' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
-                      },
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'inputs' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'address' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'amount' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'value' },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'outputs' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'amount' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'value' },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'address' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'timestamp' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'status' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetBitcoinCashTransactionsQuery,
-  GetBitcoinCashTransactionsQueryVariables
->;
-export const BitcoinCashBroadcastTransactionDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'BitcoinCashBroadcastTransaction' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'rawHex' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'broadcastTransaction' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'rawHex' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'rawHex' },
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  BitcoinCashBroadcastTransactionQuery,
-  BitcoinCashBroadcastTransactionQueryVariables
->;
-export const BitcoinCashScanUtxOsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'BitcoinCashScanUTXOs' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'address' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'page' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'unspentTxOutputsV5' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'address' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'address' },
-                      },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'page' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'page' },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'oTxHash' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'oIndex' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'value' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'value' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'oTxHex' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'address' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'isCoinbase' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'scriptHex' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  BitcoinCashScanUtxOsQuery,
-  BitcoinCashScanUtxOsQueryVariables
->;
-export const BitcoinCashGetTransactionByHashDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'BitcoinCashGetTransactionByHash' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'txHash' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'bitcoincash' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'getTransactionByHashV5' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'txHash' },
-                      value: {
-                        kind: 'Variable',
-                        name: { kind: 'Name', value: 'txHash' },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'hex' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'txid' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'size' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'version' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'locktime' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'confirmations' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'blocktime' },
-                      },
-                      { kind: 'Field', name: { kind: 'Name', value: 'time' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'blockhash' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'blockNumber' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'sourceOfData' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'inputs' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'address' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'outputs' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'address' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  BitcoinCashGetTransactionByHashQuery,
-  BitcoinCashGetTransactionByHashQueryVariables
->;
+export type BitcoinCashGetTransactionByHashQuery = { __typename?: 'Query', bitcoincash: { __typename?: 'BitcoincashChain', getTransactionByHashV5: { __typename?: 'UtxotransactionByHashV5', hex?: string | null, txid?: string | null, hash: string, size: number, version: number, locktime?: number | null, confirmations?: number | null, blocktime?: number | null, time?: number | null, blockhash?: string | null, blockNumber?: number | null, sourceOfData: string, inputs: Array<{ __typename?: 'Input', address: string }>, outputs: Array<{ __typename?: 'Output', address: string }> } } };
+
+
+export const BitcoinCashBalanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BitcoinCashBalance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"address"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balances"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"address"},"value":{"kind":"Variable","name":{"kind":"Name","value":"address"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"amount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"asset"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chain"}},{"kind":"Field","name":{"kind":"Name","value":"contract"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"dayPriceChange"}}]}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}}]}}]}}]} as unknown as DocumentNode<BitcoinCashBalanceQuery, BitcoinCashBalanceQueryVariables>;
+export const GetBitcoinCashFeesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBitcoinCashFees"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"high"}},{"kind":"Field","name":{"kind":"Name","value":"low"}},{"kind":"Field","name":{"kind":"Name","value":"medium"}}]}}]}}]}}]} as unknown as DocumentNode<GetBitcoinCashFeesQuery, GetBitcoinCashFeesQueryVariables>;
+export const GetBitcoinCashTransactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBitcoinCashTransactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"address"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageNumber"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactionsV2"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"address"},"value":{"kind":"Variable","name":{"kind":"Name","value":"address"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageNumber"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageNumber"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balanceChange"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"blockNumber"}},{"kind":"Field","name":{"kind":"Name","value":"fee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"inputs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"amount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"outputs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"address"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<GetBitcoinCashTransactionsQuery, GetBitcoinCashTransactionsQueryVariables>;
+export const BitcoinCashBroadcastTransactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BitcoinCashBroadcastTransaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"rawHex"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"broadcastTransaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"rawHex"},"value":{"kind":"Variable","name":{"kind":"Name","value":"rawHex"}}}]}]}}]}}]} as unknown as DocumentNode<BitcoinCashBroadcastTransactionQuery, BitcoinCashBroadcastTransactionQueryVariables>;
+export const BitcoinCashScanUtxOsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BitcoinCashScanUTXOs"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"address"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unspentTxOutputsV5"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"address"},"value":{"kind":"Variable","name":{"kind":"Name","value":"address"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oTxHash"}},{"kind":"Field","name":{"kind":"Name","value":"oIndex"}},{"kind":"Field","name":{"kind":"Name","value":"value"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"oTxHex"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"isCoinbase"}},{"kind":"Field","name":{"kind":"Name","value":"scriptHex"}}]}}]}}]}}]} as unknown as DocumentNode<BitcoinCashScanUtxOsQuery, BitcoinCashScanUtxOsQueryVariables>;
+export const BitcoinCashGetTransactionByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BitcoinCashGetTransactionByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"txHash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bitcoincash"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTransactionByHashV5"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"txHash"},"value":{"kind":"Variable","name":{"kind":"Name","value":"txHash"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hex"}},{"kind":"Field","name":{"kind":"Name","value":"txid"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"locktime"}},{"kind":"Field","name":{"kind":"Name","value":"confirmations"}},{"kind":"Field","name":{"kind":"Name","value":"blocktime"}},{"kind":"Field","name":{"kind":"Name","value":"time"}},{"kind":"Field","name":{"kind":"Name","value":"blockhash"}},{"kind":"Field","name":{"kind":"Name","value":"blockNumber"}},{"kind":"Field","name":{"kind":"Name","value":"sourceOfData"}},{"kind":"Field","name":{"kind":"Name","value":"inputs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"address"}}]}},{"kind":"Field","name":{"kind":"Name","value":"outputs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"address"}}]}}]}}]}}]}}]} as unknown as DocumentNode<BitcoinCashGetTransactionByHashQuery, BitcoinCashGetTransactionByHashQueryVariables>;
