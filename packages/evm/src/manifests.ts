@@ -191,7 +191,7 @@ export const EVM_MANIFESTS: {
   [EVMChains.cronos]: {
     name: 'Cronos',
     description: '',
-    rpcURL: 'https://cronoscan-rpc.xdefiservices.com',
+    rpcURL: 'https://evm.cronos.org',
     chainSymbol: 'CRO',
     blockExplorerURL: 'https://cronoscan.com',
     chainId: '25',
