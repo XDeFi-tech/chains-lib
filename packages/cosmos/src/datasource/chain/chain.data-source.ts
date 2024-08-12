@@ -36,6 +36,7 @@ import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
 import { ChainMsg } from '../../msg';
+import { COSMOS_ADDRESS_CHAIN } from '../../manifests';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -73,7 +74,10 @@ export class ChainDataSource extends DataSource {
     );
 
     const balances = response.data.balances as CosmosCoin[];
-    const chain = capitalize(this.manifest.chain) as AddressChain;
+    const chain =
+      COSMOS_ADDRESS_CHAIN[
+        this.manifest.chain as keyof typeof COSMOS_ADDRESS_CHAIN
+      ];
     const cryptoAssetsInput = balances.map<CryptoAssetArgs>(({ denom }) => ({
       chain: chain,
       contract: this.manifest.denom === denom ? null : denom,
