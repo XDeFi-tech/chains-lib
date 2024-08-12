@@ -1865,7 +1865,8 @@ export type DetailedActivityV0 =
   | SwapAssetActivityV0
   | TokenApproveActivityV0
   | TokenRevokeActivityV0
-  | UndelegateStakeActivityV0;
+  | UndelegateStakeActivityV0
+  | WithdrawUnstakedActivityV0;
 
 /** Stake by creating own node */
 export type DirectStakeActivityV0 = {
@@ -2719,7 +2720,9 @@ export type Mutation = {
   claimFees?: Maybe<ClaimStatus>;
   /** Publicly exposed Create a referrer */
   createReferrer?: Maybe<Referrer>;
+  /** @deprecated added the transactionHashV3 which supports the new swap history logging, use transactionHashV3 instead */
   transactionHashV2: Scalars['String'];
+  transactionHashV3: Scalars['String'];
   transactions: Array<RouteTransactionType>;
   transactionsV2: PostRouteTypeV2;
   transactonHash: Scalars['String'];
@@ -2738,6 +2741,13 @@ export type MutationCreateReferrerArgs = {
 };
 
 export type MutationTransactionHashV2Args = {
+  routeId: Scalars['String'];
+  tradeId: Scalars['String'];
+  transactionHash: Scalars['String'];
+};
+
+export type MutationTransactionHashV3Args = {
+  accountId: Scalars['String'];
   routeId: Scalars['String'];
   tradeId: Scalars['String'];
   transactionHash: Scalars['String'];
@@ -4001,6 +4011,14 @@ export type RoutingFeeTypeV2 = {
   xdefiSwapFeeDollar?: Maybe<Scalars['Decimal']>;
 };
 
+export type RoutingSwapHistory = {
+  __typename?: 'RoutingSwapHistory';
+  activityType: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  inputAsset?: Maybe<RoutingTokenTypeV2>;
+  outputAsset?: Maybe<RoutingTokenTypeV2>;
+};
+
 export type RoutingTokenInputType = {
   asset?: InputMaybe<CryptoAssetInput>;
   id: Scalars['ID'];
@@ -4067,6 +4085,7 @@ export type RoutingTypeTradesArgs = {
 
 export type RoutingTypeV2 = {
   __typename?: 'RoutingTypeV2';
+  SwapHistory: Array<RoutingSwapHistory>;
   addressCheckV2: AddressRouteCheckTypeV2;
   allReferrers?: Maybe<Array<ReferrerWithFees>>;
   bridgeableTokens: Array<RoutingTokenTypeV2>;
@@ -4085,6 +4104,11 @@ export type RoutingTypeV2 = {
   tokensV2: Array<RoutingTokenTypeV2>;
   tradeV2: RouteTransactionTradeTypeV2;
   tradesV2: Array<RouteTransactionTradeTypeV2>;
+};
+
+export type RoutingTypeV2SwapHistoryArgs = {
+  accountId: Scalars['String'];
+  limit?: Scalars['Int'];
 };
 
 export type RoutingTypeV2AddressCheckV2Args = {
@@ -4129,7 +4153,6 @@ export type RoutingTypeV2RouteV2Args = {
   destAddress: Scalars['String'];
   destToken: Scalars['String'];
   infiniteApproval?: InputMaybe<Scalars['Boolean']>;
-  isLedgerLive?: InputMaybe<Scalars['Boolean']>;
   isOptedIn?: InputMaybe<Scalars['Boolean']>;
   referral?: InputMaybe<ReferralInputType>;
   slippage: Scalars['String'];
@@ -5205,6 +5228,15 @@ export type WalletPortfolioFiat = {
   accounts: Array<AccountPortfolioFiat>;
   /** Provide sum of all accounts with aligned dates */
   sum?: Maybe<SumPortfolioFiat>;
+};
+
+/** Transfer of asset that was previously staked */
+export type WithdrawUnstakedActivityV0 = {
+  __typename?: 'WithdrawUnstakedActivityV0';
+  amount?: Maybe<Scalars['IntegerString']>;
+  asset?: Maybe<AssetV0>;
+  /** on Solana (stake account) */
+  from?: Maybe<AddressV0>;
 };
 
 export type ZetaChain = {
