@@ -8,3 +8,7 @@ module.exports = withBundleAnalyzer({
         return config;
     }
 });
+
+const crypto = require('crypto');
+
+global.crypto = crypto;
