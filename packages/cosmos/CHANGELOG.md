@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.35
+
+### Patch Changes
+
+- 9afd5bca: fix: error when fetching balance on cronos and mars chains
+
 ## 2.0.34
 
 ### Patch Changes
