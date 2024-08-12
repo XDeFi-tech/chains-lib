@@ -24,6 +24,7 @@ import {
   TxRaw,
 } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { ChainMsg } from '../../msg';
@@ -138,30 +139,58 @@ export class IndexerDataSource extends DataSource {
       const messageData =
         m.encoding === 'string' ? await m.buildTx() : m.toData();
       fromAddress = messageData.from;
-      messageData.msgs.map((msgTransfer: any) => {
-        if (msgTransfer.typeUrl.includes('MsgTransfer')) {
-          _msgs.push({
-            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-            value: MsgTransfer.encode(
-              MsgTransfer.fromPartial(msgTransfer.value)
-            ).finish(),
-          });
-        } else if (msgTransfer.typeUrl.includes('MsgSwapExactAmountIn')) {
-          _msgs.push({
-            typeUrl: '/osmosis.gamm.v1beta1.MsgSwapExactAmountIn',
-            value: MsgSwapExactAmountIn.encode(
-              MsgSwapExactAmountIn.fromPartial(msgTransfer.value)
-            ).finish(),
-          });
-        } else {
-          _msgs.push({
-            typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-            value: MsgSend.encode(
-              MsgSend.fromPartial(msgTransfer.value)
-            ).finish(),
-          });
-        }
-      });
+      if (m.encoding === 'string') {
+        messageData.msgs.map((msgTransfer: any) => {
+          if (msgTransfer.typeUrl.includes('MsgTransfer')) {
+            _msgs.push({
+              typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+              value: MsgTransfer.encode(
+                MsgTransfer.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl.includes('MsgSwapExactAmountIn')) {
+            _msgs.push({
+              typeUrl: '/osmosis.gamm.v1beta1.MsgSwapExactAmountIn',
+              value: MsgSwapExactAmountIn.encode(
+                MsgSwapExactAmountIn.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else {
+            _msgs.push({
+              typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+              value: MsgSend.encode(
+                MsgSend.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          }
+        });
+      } else {
+        const { msgs: msgsToSend, typeUrl } = m.getMsgToSend();
+        msgsToSend.map((msgTransfer: any) => {
+          if (typeUrl.includes('MsgTransfer')) {
+            _msgs.push({
+              typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+              value: MsgTransfer.encode(
+                MsgTransfer.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (typeUrl.includes('MsgExecuteContract')) {
+            _msgs.push({
+              typeUrl: '/cosmos.base.v1beta1.MsgExecuteContract',
+              value: MsgExecuteContract.encode(
+                MsgExecuteContract.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else {
+            _msgs.push({
+              typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+              value: MsgSend.encode(
+                MsgSend.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          }
+        });
+      }
     }
 
     const _feeAmount = msgs.map((m) => {
