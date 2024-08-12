@@ -7,11 +7,12 @@ import {
 
 import { ChainMsg } from './msg';
 import { CosmosProvider } from './chain.provider';
-import { IndexerDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import { COSMOS_MANIFESTS } from './manifests';
 
 describe('chain.provider', () => {
   let provider: CosmosProvider;
+  const mockedGetBalance = jest.spyOn(CosmosProvider.prototype, 'getBalance');
 
   beforeEach(() => {
     provider = new CosmosProvider(
@@ -41,7 +42,7 @@ describe('chain.provider', () => {
   });
 
   it('getBalance() should return balance data', async () => {
-    jest.spyOn(CosmosProvider.prototype, 'getBalance').mockResolvedValue(
+    mockedGetBalance.mockResolvedValue(
       new Response(
         // getData
         jest.fn().mockImplementation(async () => [
@@ -107,6 +108,8 @@ describe('chain.provider', () => {
     );
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(2);
+    // Reset to the original method implementation (non-mocked)
+    mockedGetBalance.mockRestore();
   });
 
   it('estimatFee() should return fee estimation with encoding string msg', async () => {
@@ -167,6 +170,26 @@ describe('chain.provider', () => {
     expect(txData?.hash).toEqual(
       '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
     );
+  });
+
+  it('getBalance() on cronos chain', async () => {
+    const provider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.cronos)
+    );
+    const balance = await provider.getBalance(
+      'cro1g5rjj3dsdxnmxz4ydvhxem6hddqs2hgw5wem0f'
+    );
+    expect(await balance.getData()).toBeTruthy();
+  });
+
+  it('getBalance() on mars chain', async () => {
+    const provider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.mars)
+    );
+    const balance = await provider.getBalance(
+      'mars1km3nehyxu92vu2whjqhuqkmljvcd4nwvnxz8yt'
+    );
+    expect(await balance.getData()).toBeTruthy();
   });
 });
 

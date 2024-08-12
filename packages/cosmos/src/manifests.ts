@@ -1,5 +1,7 @@
 import { Chain } from '@xdefi-tech/chains-core';
 
+import { AddressChain } from './gql';
+
 export enum CosmosHubChains {
   cosmos = 'cosmos',
   osmosis = 'osmosis',
@@ -16,6 +18,25 @@ export enum CosmosHubChains {
   terra = 'terra',
   sei = 'sei',
 }
+
+export const COSMOS_ADDRESS_CHAIN: {
+  [key in CosmosHubChains]: AddressChain;
+} = {
+  [CosmosHubChains.cosmos]: AddressChain.Cosmos,
+  [CosmosHubChains.osmosis]: AddressChain.Osmosis,
+  [CosmosHubChains.axelar]: AddressChain.Axelar,
+  [CosmosHubChains.juno]: AddressChain.JUNO,
+  [CosmosHubChains.crescent]: AddressChain.Crescent,
+  [CosmosHubChains.kava]: AddressChain.Kava,
+  [CosmosHubChains.stargaze]: AddressChain.Stargaze,
+  [CosmosHubChains.akash]: AddressChain.Akash,
+  [CosmosHubChains.cronos]: AddressChain.CronosPOS,
+  [CosmosHubChains.kujira]: AddressChain.Kujira,
+  [CosmosHubChains.stride]: AddressChain.Stride,
+  [CosmosHubChains.mars]: AddressChain.MarsProtocol,
+  [CosmosHubChains.terra]: AddressChain.Terra,
+  [CosmosHubChains.sei]: AddressChain.Sei,
+};
 
 export interface CosmosManifest extends Chain.Manifest {
   lcdURL: string;
