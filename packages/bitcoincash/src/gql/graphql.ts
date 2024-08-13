@@ -1935,7 +1935,19 @@ export type DelegateStakeActivityV0 = {
 };
 
 /** Detailed activity represent more details about transaction */
-export type DetailedActivityV0 = DelegateStakeActivityV0 | DirectStakeActivityV0 | DirectUnstakeActivityV0 | GasTankDepositActivityV0 | GasTankWithdrawActivityV0 | OffchainReceiveAssetActivityV0 | OffchainSendAssetActivityV0 | SwapAssetActivityV0 | TokenApproveActivityV0 | TokenRevokeActivityV0 | UndelegateStakeActivityV0 | WithdrawUnstakedActivityV0;
+export type DetailedActivityV0 =
+  | DelegateStakeActivityV0
+  | DirectStakeActivityV0
+  | DirectUnstakeActivityV0
+  | GasTankDepositActivityV0
+  | GasTankWithdrawActivityV0
+  | OffchainReceiveAssetActivityV0
+  | OffchainSendAssetActivityV0
+  | SwapAssetActivityV0
+  | TokenApproveActivityV0
+  | TokenRevokeActivityV0
+  | UndelegateStakeActivityV0
+  | WithdrawUnstakedActivityV0;
 
 /** Stake by creating own node */
 export type DirectStakeActivityV0 = {
@@ -2868,14 +2880,12 @@ export type MutationTransactionHashV2Args = {
   transactionHash: Scalars['String'];
 };
 
-
 export type MutationTransactionHashV3Args = {
   accountId: Scalars['String'];
   routeId: Scalars['String'];
   tradeId: Scalars['String'];
   transactionHash: Scalars['String'];
 };
-
 
 export type MutationTransactionsArgs = {
   routeData: RouteTransactionInputType;
@@ -4266,12 +4276,10 @@ export type RoutingTypeV2 = {
   tradesV2: Array<RouteTransactionTradeTypeV2>;
 };
 
-
 export type RoutingTypeV2SwapHistoryArgs = {
   accountId: Scalars['String'];
   limit?: Scalars['Int'];
 };
-
 
 export type RoutingTypeV2AddressCheckV2Args = {
   address: AddressRouteInputTypeV2;
