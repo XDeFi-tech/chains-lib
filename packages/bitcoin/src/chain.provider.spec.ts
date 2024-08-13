@@ -53,6 +53,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '65000.00',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '-4.187565214298426',
+                },
               },
               amount: '100',
             },
@@ -69,6 +72,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '65000.00',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '-4.187565214298426',
+                },
               },
               amount: '100',
             },
@@ -84,6 +90,10 @@ describe('chain.provider', () => {
       expect(balanceData.length).toEqual(1);
       expect(balanceData[0].amount).toEqual('100');
       expect(balanceData[0].asset.symbol).toEqual('BTC');
+      expect(balanceData[0].asset.price).toEqual('65000.00');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual(
+        '-4.187565214298426'
+      );
     } else {
       const balance = await provider.getBalance(
         'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
@@ -94,6 +104,8 @@ describe('chain.provider', () => {
       expect(balanceData[0]).toBeInstanceOf(Coin);
       expect(balanceData[0].amount).toBeTruthy();
       expect(balanceData[0].asset.symbol).toEqual('BTC');
+      expect(balanceData[0].asset.price).toBeTruthy();
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toBeTruthy();
     }
   });
 

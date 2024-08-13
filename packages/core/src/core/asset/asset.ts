@@ -11,6 +11,12 @@ export interface AssetData {
   address?: string | null;
   price?: string;
   priceHistory?: number[][];
+  priceChange?: {
+    dayPriceChange?: string | null;
+    weekPriceChange?: string | null;
+    monthPriceChange?: string | null;
+    yearPriceChange?: string | null;
+  };
 }
 
 export class Asset {
@@ -30,6 +36,7 @@ export class Asset {
       ...(data.price && { price: data.price }),
       ...(data.decimals && { decimals: data.decimals }),
       ...(data.priceHistory && { priceHistory: data.priceHistory }),
+      ...(data.priceChange && { priceChange: data.priceChange }),
     };
   }
 
@@ -75,6 +82,12 @@ export class Asset {
 
   get priceHistory() {
     return this.data.priceHistory;
+  }
+
+  get priceChange() {
+    return {
+      ...this.data.priceChange,
+    };
   }
 
   /**

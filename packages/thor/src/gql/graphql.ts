@@ -5344,7 +5344,11 @@ export type GetMayachainBalancesQuery = {
         name?: string | null;
         image?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -5467,7 +5471,11 @@ export type GetThorchainBalancesQuery = {
         name?: string | null;
         image?: string | null;
         symbol?: string | null;
-        price?: { __typename?: 'AssetAmountType'; amount: string } | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
       };
     }>;
   };
@@ -5699,6 +5707,13 @@ export const GetMayachainBalancesDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
@@ -6327,6 +6342,13 @@ export const GetThorchainBalancesDocument = {
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
                                   },
                                 ],
                               },
