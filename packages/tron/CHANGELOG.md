@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.30
+
+### Patch Changes
+
+- ac6e391d: add priceChange (dayPriceChange) to getData function (getBalance response)
+- Updated dependencies [ac6e391d]
+  - @xdefi-tech/chains-core@2.0.27
+
 ## 2.0.29
 
 ### Patch Changes

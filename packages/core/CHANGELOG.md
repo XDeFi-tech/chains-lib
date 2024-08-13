@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.27
+
+### Patch Changes
+
+- ac6e391d: add priceChange (dayPriceChange) to getData function (getBalance response)
+
 ## 2.0.26
 
 ### Patch Changes
