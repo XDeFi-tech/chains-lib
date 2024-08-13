@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.43
+
+### Patch Changes
+
+- ac6e391d: add priceChange (dayPriceChange) to getData function (getBalance response)
+- Updated dependencies [ac6e391d]
+  - @xdefi-tech/chains-core@2.0.27
+
 ## 2.0.42
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.36
+
+### Patch Changes
+
+- ac6e391d: add priceChange (dayPriceChange) to getData function (getBalance response)
+- Updated dependencies [ac6e391d]
+  - @xdefi-tech/chains-core@2.0.27
+
 ## 2.0.35
 
 ### Patch Changes
