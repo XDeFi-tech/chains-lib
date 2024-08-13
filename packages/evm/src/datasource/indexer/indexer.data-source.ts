@@ -115,6 +115,9 @@ export class IndexerDataSource extends DataSource {
           address: asset.contract,
           price: asset.price?.amount,
           decimals: asset.decimals,
+          priceChange: {
+            dayPriceChange: asset.price?.dayPriceChange,
+          },
         }),
         new BigNumber(amount.value)
           .integerValue()

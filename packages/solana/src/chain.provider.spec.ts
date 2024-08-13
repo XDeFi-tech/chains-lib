@@ -56,6 +56,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '123',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '3',
+                },
               },
               amount: '1000',
             },
@@ -84,6 +87,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '123',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '3',
+                },
               },
               amount: '1000',
             },
@@ -113,6 +119,8 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.symbol).toEqual('SOL');
       expect(balanceData[1].amount).toEqual('1000');
       expect(balanceData[1].asset.symbol).toEqual('BONK');
+      expect(balanceData[0].asset.price).toEqual('123');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('3');
     } else {
       const balance = await chainProvider.getBalance(
         'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5'
@@ -123,6 +131,8 @@ describe('chain.provider', () => {
       if (balanceData.length > 0) {
         expect(balanceData[0]).toBeInstanceOf(Coin);
         expect(balanceData[0].amount).toBeTruthy();
+        expect(balanceData[0].asset.price).toBeTruthy();
+        expect(balanceData[0].asset.priceChange.dayPriceChange).toBeTruthy();
       }
     }
   });

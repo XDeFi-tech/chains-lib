@@ -72,6 +72,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '443.21',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
               },
               amount: '1000',
             },
@@ -88,6 +91,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '443.21',
                 decimals: 8,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
               },
               amount: '1000',
             },
@@ -103,6 +109,8 @@ describe('chain.provider', () => {
       expect(balanceData.length).toEqual(1);
       expect(balanceData[0].amount).toEqual('1000');
       expect(balanceData[0].asset.symbol).toEqual('BCH');
+      expect(balanceData[0].asset.price).toEqual('443.21');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
     } else {
       const balance = await provider.getBalance(
         'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'
@@ -114,6 +122,8 @@ describe('chain.provider', () => {
         expect(balanceData[0]).toBeInstanceOf(Coin);
         expect(balanceData[0].amount).toBeTruthy();
         expect(balanceData[0].asset.symbol).toEqual('BCH');
+        expect(balanceData[0].asset.price).toBeTruthy();
+        expect(balanceData[0].asset.priceChange.dayPriceChange).toBeTruthy();
       }
     }
   });

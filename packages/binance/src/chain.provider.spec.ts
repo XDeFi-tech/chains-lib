@@ -45,6 +45,10 @@ describe('chain.provider', () => {
                 native: false,
                 address: '0x1b0e27D4733b5e6499354085114F2A5D21A00C60',
                 decimals: 8,
+                price: '0.00008282',
+                priceChange: {
+                  dayPriceChange: '-0.00000001',
+                },
               },
               amount: '1000',
             },
@@ -60,6 +64,10 @@ describe('chain.provider', () => {
                 native: false,
                 address: '0x1b0e27D4733b5e6499354085114F2A5D21A00C60',
                 decimals: 8,
+                price: '0.00008282',
+                priceChange: {
+                  dayPriceChange: '-0.00000001',
+                },
               },
               amount: '1000',
             },
@@ -75,6 +83,10 @@ describe('chain.provider', () => {
       expect(balanceData.length).toEqual(1);
       expect(balanceData[0].amount).toEqual('1000');
       expect(balanceData[0].asset.symbol).toEqual('ANDY');
+      expect(balanceData[0].asset.price).toEqual('0.00008282');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual(
+        '-0.00000001'
+      );
     } else {
       const balance = await provider.getBalance(
         '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'
