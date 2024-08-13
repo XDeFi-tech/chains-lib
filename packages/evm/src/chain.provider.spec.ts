@@ -102,6 +102,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '345.55',
                 decimals: 18,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
               },
               amount: '1000',
             },
@@ -130,6 +133,9 @@ describe('chain.provider', () => {
                 id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
                 price: '345.55',
                 decimals: 18,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
               },
               amount: '1000',
             },
@@ -157,6 +163,8 @@ describe('chain.provider', () => {
       expect(balanceData.length).toEqual(2);
       expect(balanceData[0].amount.toString()).toEqual('1000');
       expect(balanceData[0].asset.symbol).toEqual('ETH');
+      expect(balanceData[0].asset.price).toEqual('345.55');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
       expect(balanceData[1].amount.toString()).toEqual('1000');
       expect(balanceData[1].asset.symbol).toEqual('stETH');
     } else {
@@ -169,6 +177,8 @@ describe('chain.provider', () => {
       if (balanceData.length > 0) {
         expect(balanceData[0]).toBeInstanceOf(Coin);
         expect(balanceData[0].amount).toBeTruthy();
+        expect(balanceData[0].asset.price).toBeTruthy();
+        expect(balanceData[0].asset.priceChange.dayPriceChange).toBeTruthy();
       }
     }
   });

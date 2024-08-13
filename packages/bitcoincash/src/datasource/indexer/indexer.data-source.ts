@@ -90,6 +90,9 @@ export class IndexerDataSource extends DataSource {
               address: asset.contract,
               price: asset.price?.amount,
               decimals: asset.decimals || 0,
+              priceChange: {
+                dayPriceChange: asset.price?.dayPriceChange,
+              },
             }),
             utils.formatUnits(amount.value, asset.decimals || 0)
           )

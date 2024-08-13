@@ -27,6 +27,7 @@ jest.mock('./datasource/indexer/queries/balances.query', () => ({
             'https://xdefi-prod-static.s3.eu-west-1.amazonaws.com/thorchain.png',
           price: {
             amount: '6.12',
+            dayPriceChange: '0.01',
           },
           symbol: 'RUNE',
         },
@@ -163,6 +164,9 @@ describe('chain.provider', () => {
               id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
               price: '6.03',
               decimals: 8,
+              priceChange: {
+                dayPriceChange: '0.01',
+              },
             },
             amount: '1000',
           },
@@ -179,6 +183,9 @@ describe('chain.provider', () => {
               id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
               price: '6.03',
               decimals: 8,
+              priceChange: {
+                dayPriceChange: '0.01',
+              },
             },
             amount: '1000',
           },
@@ -194,6 +201,8 @@ describe('chain.provider', () => {
     expect(balanceData.length).toEqual(1);
     expect(balanceData[0].amount).toEqual('1000');
     expect(balanceData[0].asset.symbol).toEqual('RUNE');
+    expect(balanceData[0].asset.price).toEqual('6.03');
+    expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('0.01');
   });
 
   it('estimateFee() should return fee estimation', async () => {

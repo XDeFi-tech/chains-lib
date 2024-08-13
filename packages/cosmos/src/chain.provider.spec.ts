@@ -56,6 +56,9 @@ describe('chain.provider', () => {
               id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
               price: '443.21',
               decimals: 18,
+              priceChange: {
+                dayPriceChange: '-1',
+              },
             },
             amount: '1000',
           },
@@ -84,6 +87,9 @@ describe('chain.provider', () => {
               id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
               price: '443.21',
               decimals: 18,
+              priceChange: {
+                dayPriceChange: '-1',
+              },
             },
             amount: '1000',
           },
@@ -108,8 +114,10 @@ describe('chain.provider', () => {
     );
     const balanceData = await balance.getData();
     expect(balanceData.length).toEqual(2);
-    // Reset to the original method implementation (non-mocked)
-    mockedGetBalance.mockRestore();
+    expect(balanceData[0].amount).toEqual('1000');
+    expect(balanceData[0].asset.symbol).toEqual('ATOM');
+    expect(balanceData[0].asset.price).toEqual('443.21');
+    expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
   });
 
   it('estimatFee() should return fee estimation with encoding string msg', async () => {
