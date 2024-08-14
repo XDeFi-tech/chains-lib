@@ -296,4 +296,35 @@ export class ChainDataSource extends DataSource {
   async getNonce(_address: string): Promise<number> {
     throw new Error('Method not implemented.');
   }
+
+  async getAccountResource(address: string) {
+    try {
+      const response = await this.httpProvider.post(
+        `/wallet/getaccountresource`,
+        JSON.stringify({ address, visible: true }),
+        {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const {
+        freeNetLimit,
+        freeNetUsed = 0,
+        NetUsed = 0,
+        NetLimit = 0,
+        EnergyUsed = 0,
+        EnergyLimit = 0,
+      } = response.data;
+
+      return {
+        freeBandwidth: NetLimit + freeNetLimit - NetUsed - freeNetUsed,
+        freeEnergy: EnergyLimit - EnergyUsed,
+      };
+    } catch (error) {
+      throw new Error('Error getting account resource!');
+    }
+  }
 }
