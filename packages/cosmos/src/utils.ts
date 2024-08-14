@@ -145,8 +145,8 @@ export const getIBCTransferRouter = async (
 
 export const createIBCTransferMsg = async (
   route: RouteData,
-  userAddresses: string[]
-): Promise<MsgBody> => {
+  userAddresses: Record<CosmosHubChains, string>
+): Promise<MsgBody[]> => {
   const {
     source_asset_denom,
     source_asset_chain_id,
@@ -156,6 +156,19 @@ export const createIBCTransferMsg = async (
     amount_out,
     operations,
   } = route;
+  const addressList = route.chain_ids.reduce(
+    (arr: string[], chainId: string): string[] => {
+      for (const chain in COSMOS_MANIFESTS) {
+        if (COSMOS_MANIFESTS[chain as CosmosHubChains]!.chainId === chainId) {
+          const address = userAddresses[chain as CosmosHubChains];
+          if (address) arr.push(address);
+          return arr;
+        }
+      }
+      throw new Error(`No manifest found for ${chainId}`);
+    },
+    []
+  );
   const bodyTx = {
     source_asset_denom,
     source_asset_chain_id,
@@ -164,41 +177,44 @@ export const createIBCTransferMsg = async (
     amount_in,
     amount_out,
     operations,
-    address_list: userAddresses,
+    address_list: addressList,
   };
   const { data } = await skipAxiosClient.post('v2/fungible/msgs', bodyTx);
-  const { msg, msg_type_url } = data.msgs[0].multi_chain_msg;
-  const msgConvert = JSON.parse(msg);
-  const message: MsgBody = {
-    from: userAddresses[0],
-    to: '',
-    amount: '0',
-    typeUrl: msg_type_url,
-    msgs: [
-      {
-        typeUrl: msg_type_url,
-        value: {
-          sourcePort: msgConvert.source_port,
-          sourceChannel: msgConvert.source_channel,
-          sender: msgConvert.sender,
-          token: {
-            denom: msgConvert.token.denom,
-            amount: msgConvert.token.amount,
+  return data.msgs.map(({ multi_chain_msg: { msg, msg_type_url } }: any) => {
+    const msgConvert = JSON.parse(msg);
+    const message: MsgBody = {
+      from: msgConvert.sender,
+      to: msgConvert.receiver,
+      amount: '0',
+      typeUrl: msg_type_url,
+      msgs: [
+        {
+          typeUrl: msg_type_url,
+          value: {
+            sourcePort: msgConvert.source_port,
+            sourceChannel: msgConvert.source_channel,
+            sender: msgConvert.sender,
+            token: {
+              denom: msgConvert.token.denom,
+              amount: msgConvert.token.amount,
+            },
+            receiver: msgConvert.receiver,
+            timeoutHeight: msgConvert.timeout_height
+              ? {
+                  revisionNumber:
+                    msgConvert.timeout_height.revision_number ?? 0,
+                  revisionHeight:
+                    msgConvert.timeout_height.revision_height ?? 0,
+                }
+              : undefined,
+            timeoutTimestamp: msgConvert.timeout_timestamp,
+            memo: msgConvert.memo,
           },
-          receiver: msgConvert.receiver,
-          timeoutHeight: msgConvert.timeout_height
-            ? {
-                revisionNumber: msgConvert.timeout_height.revision_number ?? 0,
-                revisionHeight: msgConvert.timeout_height.revision_height ?? 0,
-              }
-            : undefined,
-          timeoutTimestamp: msgConvert.timeout_timestamp,
-          memo: msgConvert.memo,
         },
-      },
-    ],
-  };
-  return message;
+      ],
+    };
+    return message;
+  });
 };
 
 export const getIBCDestAsset = async (
