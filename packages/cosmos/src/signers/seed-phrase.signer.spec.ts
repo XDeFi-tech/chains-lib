@@ -541,50 +541,92 @@ describe('IBC token transfer', () => {
   let destChain: CosmosHubChains;
   let destAssetDenom: string;
   let derivations: string;
-  let prefix: { [key: string]: string };
-  const { getIBCTransferRouter, createIBCTransferMsg } = CosmosProvider.utils;
+  let provider: CosmosProvider;
+  let addresses: Record<CosmosHubChains, string>;
 
   beforeEach(async () => {
     jest.setTimeout(60 * 1000);
+    provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
     mnemonic =
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solution shove early arch topic';
     signer = new SeedPhraseSigner(mnemonic);
 
     derivations = "m/44'/118'/0'/0/0";
+    const addressEntries: [CosmosHubChains, string][] = await Promise.all(
+      Object.values(CosmosHubChains).map(async (chain) => {
+        return [
+          chain,
+          await signer.getAddress(
+            derivations,
+            COSMOS_MANIFESTS[chain as CosmosHubChains].prefix
+          ),
+        ];
+      })
+    );
+    addresses = Object.fromEntries(addressEntries) as Record<
+      CosmosHubChains,
+      string
+    >;
+  });
 
+  it('Create success tx to transfer uatom from osmosis to akash', async () => {
     sourceChain = CosmosHubChains.osmosis;
     destChain = CosmosHubChains.akash;
     sourceAssetDenom =
       'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'; // uatom on osmosis
-    destAssetDenom =
-      'ibc/2E5D0AC026AC1AFA65A23023BA4F24BB8DDF94F118EDC0BAD6F625BFC557CDED'; // uatom on akash
-    prefix = {
-      [COSMOS_MANIFESTS[sourceChain].chainId]:
-        COSMOS_MANIFESTS[sourceChain].prefix,
-      [COSMOS_MANIFESTS[destChain].chainId]: COSMOS_MANIFESTS[destChain].prefix,
-    };
+    const msgBodies = await provider.createIBCTransferMsg({
+      amountIn: '0.1',
+      sourceAssetDenom,
+      sourceAssetChain: sourceChain,
+      destAssetChain: destChain,
+      addresses,
+    });
+    expect(msgBodies[0].msgs).toBeDefined();
+    const ibcTrasferMsg = msgBodies[0].msgs![0];
+    expect(ibcTrasferMsg.typeUrl).toBe(
+      '/ibc.applications.transfer.v1.MsgTransfer'
+    );
+    expect(ibcTrasferMsg.value.sender).toBe(addresses['osmosis']);
+    expect(ibcTrasferMsg.value.token.denom).toBe(sourceAssetDenom);
+    expect(ibcTrasferMsg.value.token.amount).toBe('100000'); // 0.1 * 1e6
+    expect(ibcTrasferMsg.value.receiver).toBe(addresses['cosmos']);
+    expect(ibcTrasferMsg.value.memo).toContain(addresses['akash']);
+
+    const chainMsg = await provider.createMsg(msgBodies[0]);
+    await signer.sign(chainMsg, derivations);
+    expect(chainMsg.signedTransaction).toBeTruthy();
   });
 
-  it('Create success tx to transfer uatom from osmosis to akash', async () => {
-    const route = await getIBCTransferRouter(
-      // Get route to transfer from osmosis to akash
-      '1',
+  it('Create success tx to transfer with path unwinding', async () => {
+    sourceChain = CosmosHubChains.osmosis;
+    destChain = CosmosHubChains.cosmos;
+    sourceAssetDenom =
+      'ibc/1DBD74F7D8022AFE3D79A2502C0FCFFF6EDC74F7342117A676B623830B859994'; // uatom/transfer/channel-208/transfer/channel-2
+    const msgBodies = await provider.createIBCTransferMsg({
+      amountIn: '0.1',
       sourceAssetDenom,
-      sourceChain,
-      destAssetDenom,
-      destChain
+      sourceAssetChain: sourceChain,
+      destAssetChain: destChain,
+      addresses,
+    });
+    expect(msgBodies[0].msgs).toBeDefined();
+    const firstIbcTrasferMsg = msgBodies[0].msgs![0];
+    expect(firstIbcTrasferMsg.typeUrl).toBe(
+      '/ibc.applications.transfer.v1.MsgTransfer'
     );
-    const userAddresses = await Promise.all(
-      (route.chain_ids as string[]).map((chainId) =>
-        signer.getAddress(derivations, prefix[chainId])
-      )
+    expect(firstIbcTrasferMsg.value.sender).toBe(addresses['osmosis']);
+    expect(firstIbcTrasferMsg.value.token.denom).toBe(sourceAssetDenom);
+    expect(firstIbcTrasferMsg.value.token.amount).toBe('100000'); // 0.1 * 1e6
+    expect(firstIbcTrasferMsg.value.receiver).toBe(addresses['axelar']);
+
+    const secondIbcTrasferMsg = msgBodies[1].msgs![0];
+    expect(secondIbcTrasferMsg.typeUrl).toBe(
+      '/ibc.applications.transfer.v1.MsgTransfer'
     );
-    const msgBody = await createIBCTransferMsg(route, userAddresses);
-    const provider = new CosmosProvider(
-      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
-    );
-    const message = provider.createMsg(msgBody);
-    await signer.sign(message, derivations);
-    expect(message.signedTransaction).toBeTruthy();
+    expect(secondIbcTrasferMsg.value.sender).toBe(addresses['axelar']);
+    expect(secondIbcTrasferMsg.value.token.amount).toBe('100000'); // 0.1 * 1e6
+    expect(secondIbcTrasferMsg.value.receiver).toBe(addresses['cosmos']);
   });
 });
