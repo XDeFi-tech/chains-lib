@@ -101,7 +101,7 @@ describe('cosmos::ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    await signer.sign(message, derivationPath, 'cosmos');
+    await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
   });
