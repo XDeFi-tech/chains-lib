@@ -25,6 +25,11 @@ jest.spyOn(TronWeb, 'createAccount').mockResolvedValue({
     '0404B604296010A55D40000B798EE8454ECCC1F8900E70B1ADF47C9887625D8BAE3866351A6FA0B5370623268410D33D345F63344121455849C9C28F9389ED9731',
 });
 
+const mockedAccountResource = jest.spyOn(
+  ChainDataSource.prototype,
+  'getAccountResource'
+);
+
 describe('chain.providers.chain', () => {
   let providers: TronProviders;
   const messageData = {
@@ -81,17 +86,15 @@ describe('chain.providers.chain', () => {
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
-    expect(fees[0].cost).toEqual(0.265);
+    expect(fees[0].fee).toEqual(0);
 
     msg = new ChainMsg({ ...messageData, provider: providers.indexer });
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
     expect(fees[0].energy).toEqual(0);
-    expect(fees[0].cost).toEqual(0.265);
+    expect(fees[0].fee).toEqual(0);
   });
-
-  jest.setTimeout(15000);
 
   it('should estimate fees for an unsigned TRC20 transaction using any data source', async () => {
     let msg = new ChainMsg({
@@ -105,7 +108,7 @@ describe('chain.providers.chain', () => {
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].fee).toEqual(27.2559);
     expect(fees[0].willRevert).toBeFalsy();
 
     msg = new ChainMsg({
@@ -119,11 +122,9 @@ describe('chain.providers.chain', () => {
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].fee).toEqual(27.2559);
     expect(fees[0].willRevert).toBeFalsy();
   });
-
-  jest.setTimeout(15000);
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
     const msg = new ChainMsg({ ...messageData, provider: providers.chain });
@@ -149,8 +150,6 @@ describe('chain.providers.chain', () => {
     expect(fees[0].energy).toEqual(0);
   });
 
-  jest.setTimeout(15000);
-
   it('should estimate fees for a TRC20 transaction using a chain data source', async () => {
     const msg = new ChainMsg({
       ...messageData,
@@ -166,11 +165,9 @@ describe('chain.providers.chain', () => {
     const fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].fee).toEqual(27.2559);
     expect(fees[0].willRevert).toBeFalsy();
   });
-
-  jest.setTimeout(15000);
 
   it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
     const msg = new ChainMsg({
@@ -187,11 +184,34 @@ describe('chain.providers.chain', () => {
     const fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].cost).toEqual('27.255900345');
+    expect(fees[0].fee).toEqual(27.2559);
     expect(fees[0].willRevert).toBeFalsy();
   });
 
-  jest.setTimeout(15000);
+  it('should subtract free bandwidth and energy when estimate fee', async () => {
+    mockedAccountResource.mockResolvedValue({
+      freeBandwidth: 245,
+      freeEnergy: 54895,
+    });
+
+    const msg = new ChainMsg({
+      ...messageData,
+      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      tokenType: TokenType.TRC20,
+      decimals: 6,
+      provider: providers.indexer,
+    });
+    const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
+
+    await signer.sign(msg);
+
+    const fees = await providers.chain.estimateFee([msg]);
+    expect(fees[0].bandwidth).toEqual(345);
+    expect(fees[0].energy).toEqual(64895);
+    expect(fees[0].fee).toEqual(4.3); // (345 - 245) * 1000 + (64895 - 54895) * 420 = 4300000 SUN => 4.3 TRX
+    expect(fees[0].willRevert).toBeFalsy();
+    mockedAccountResource.mockRestore();
+  });
 
   it('should get a token transaction from the blockchain using a chain data source', async () => {
     const txData = await providers.chain.getTransaction(

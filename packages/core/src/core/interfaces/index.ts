@@ -13,7 +13,7 @@ export interface FeeData {
 export interface TronFee {
   bandwidth: number;
   energy: number;
-  cost: number;
+  fee: number;
   willRevert: boolean;
 }
 
