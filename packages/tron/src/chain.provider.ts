@@ -57,13 +57,15 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
 
     // Can change with a network update / fork, but not worth using an API call here.
     // 1000 SUN (not TRX) for bandwidth and 420 SUN for energy per unit.
-    const bandiwtdthPrice = 1000;
+    const bandwidthPrice = 1000;
     const energyPrice = 420;
 
     for (let i = 0; i < msgs.length; i++) {
       const msg = msgs[i];
 
       const msgBody = msg.toData() as MsgBody;
+      const { freeBandwidth, freeEnergy } =
+        await this.dataSource.getAccountResource(msgBody.from);
 
       let tx: TronTransaction;
 
@@ -72,32 +74,47 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
         const account = await this.rpcProvider.createAccount();
         msg.data.from = account.address.base58;
         const dummyTx = await msg.buildTx();
-        tx = await this.rpcProvider.trx.sign(dummyTx, account.privateKey);
+        tx = await this.rpcProvider.trx.sign(
+          dummyTx as TronTransaction,
+          account.privateKey
+        );
         msg.data.from = originalAddress;
       } else {
-        tx = msg.signedTransaction;
+        tx = msg.signedTransaction as TronTransaction;
       }
 
-      const transactionByteLength =
-        9 +
-        60 +
-        Buffer.from(tx.raw_data_hex, 'hex').byteLength +
-        Buffer.from(tx.signature ? tx.signature[0] : '', 'hex').byteLength;
+      // Reference: https://developers.tron.network/docs/faq#5-how-to-calculate-the-bandwidth-and-energy-consumed-when-callingdeploying-a-contract
+      const DATA_HEX_PROTOBUF_LENGTH = 3;
+      const MAX_RESULT_SIZE_IN_TX = 64;
+      const A_SIGNATURE = 67;
+      const signatureListSize = tx.signature?.length ?? 1;
+      const bandwidthUsed =
+        tx.raw_data_hex.length / 2 +
+        DATA_HEX_PROTOBUF_LENGTH +
+        MAX_RESULT_SIZE_IN_TX +
+        signatureListSize * A_SIGNATURE;
 
+      // Reference: https://developers.tron.network/docs/tron-protocol-transaction#bandwidth-fee
       const bandwidthConsumed =
-        (transactionByteLength * bandiwtdthPrice) / 1000;
+        Math.max(bandwidthUsed - freeBandwidth, 0) * bandwidthPrice; // in SUN
 
-      if (!msgBody.tokenType || msgBody.tokenType === TokenType.None) {
+      // Native token and TRC10 only use bandwidth
+      if (
+        !msgBody.tokenType ||
+        msgBody.tokenType === TokenType.None ||
+        msgBody.tokenType === TokenType.TRC10
+      ) {
         feeData.push({
-          bandwidth: bandwidthConsumed,
+          bandwidth: bandwidthUsed,
           energy: 0,
-          cost: bandwidthConsumed / bandiwtdthPrice,
+          fee: Number(this.rpcProvider.fromSun(bandwidthConsumed)),
           willRevert: false,
         });
       } else if (
         msgBody.tokenType === TokenType.TRC20 &&
         msgBody.contractAddress
       ) {
+        // Reference: https://developers.tron.network/docs/tron-protocol-transaction#energy-fee
         const { energy, willRevert } = await (
           this.dataSource as ChainDataSource
         ).estimateEnergy(
@@ -110,10 +127,12 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
         );
 
         feeData.push({
-          bandwidth: bandwidthConsumed,
+          bandwidth: bandwidthUsed,
           energy: energy,
-          cost: this.rpcProvider.fromSun(
-            bandwidthConsumed / bandiwtdthPrice + energy * energyPrice
+          fee: Number(
+            this.rpcProvider.fromSun(
+              bandwidthConsumed + Math.max(energy - freeEnergy, 0) * energyPrice
+            )
           ),
           willRevert,
         });
@@ -177,10 +196,10 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       hash: tx.txID,
       from: '',
       to: '',
-      status: tx.blockNumber
+      status: tx.raw_data.ref_block_num
         ? TransactionStatus.success
         : TransactionStatus.pending,
-      date: tx.blockTimeStamp,
+      date: tx.raw_data.timestamp,
       amount: '',
     };
 
