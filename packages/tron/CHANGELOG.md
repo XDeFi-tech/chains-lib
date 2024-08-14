@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.31
+
+### Patch Changes
+
+- d53373c4: chore: update fee estimation on tron
+- Updated dependencies [d53373c4]
+  - @xdefi-tech/chains-core@2.0.28
+
 ## 2.0.30
 
 ### Patch Changes
