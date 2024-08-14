@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.38
+
+### Patch Changes
+
+- 196ec779: chore: refactor ibc tranfer methods
+
 ## 2.0.37
 
 ### Patch Changes
