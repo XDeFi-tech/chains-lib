@@ -37,7 +37,7 @@ export class LedgerSigner extends Signer.Provider {
     return address;
   }
 
-  async sign(msg: ChainMsg, derivation: string, prefix: string): Promise<void> {
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
     if (!derivation.startsWith('m/')) {
       derivation = 'm/' + derivation;
     }
@@ -46,7 +46,7 @@ export class LedgerSigner extends Signer.Provider {
     const app = new LedgerApp(this.transport as Transport, {
       testModeAllowed: true,
       hdPaths: [hdPath],
-      prefix,
+      prefix: msg.provider.manifest.prefix,
     });
 
     const client = await SigningStargateClient.connectWithSigner(
