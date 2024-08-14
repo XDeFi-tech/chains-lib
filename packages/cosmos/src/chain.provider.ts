@@ -50,6 +50,14 @@ export interface IBCData {
   originDenom: string;
 }
 
+export interface IBCPayload {
+  amountIn: string;
+  sourceAssetDenom: string;
+  sourceAssetChain: manifests.CosmosHubChains;
+  destAssetChain: manifests.CosmosHubChains;
+  addresses: Record<manifests.CosmosHubChains, string>;
+}
+
 @ChainDecorator('CosmosProvider', {
   deps: [],
   providerType: 'Cosmos',
@@ -216,6 +224,32 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
 
   async getAccount(address: string): Promise<null | Account> {
     return this.dataSource.getAccount(address);
+  }
+
+  async createIBCTransferMsg(payload: IBCPayload) {
+    const { sourceAssetDenom, sourceAssetChain, destAssetChain, addresses } =
+      payload;
+    const amountIn = (Number(payload.amountIn) * 1e6).toString();
+    const {
+      getIBCTransferRouter,
+      createIBCTransferMsg: _createIBCTransferMsg,
+      getIBCDestAsset,
+    } = CosmosProvider.utils;
+    const { destAssetDenom } = await getIBCDestAsset(
+      sourceAssetChain,
+      destAssetChain,
+      sourceAssetDenom
+    );
+
+    if (!destAssetDenom) throw new Error('destAssetDenom missing');
+    const route = await getIBCTransferRouter(
+      amountIn,
+      sourceAssetDenom,
+      sourceAssetChain,
+      destAssetDenom,
+      destAssetChain
+    );
+    return await _createIBCTransferMsg(route, addresses);
   }
 
   /**
