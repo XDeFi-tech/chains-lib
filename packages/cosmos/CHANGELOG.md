@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.37
+
+### Patch Changes
+
+- 688bc6f7: chore: update ledger sign method to take prefix from manifest
+
 ## 2.0.36
 
 ### Patch Changes
