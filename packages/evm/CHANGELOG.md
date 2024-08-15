@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.44
+
+### Patch Changes
+
+- e53967a2: Feat: add fallback for calculating fees
+
 ## 2.0.43
 
 ### Patch Changes
