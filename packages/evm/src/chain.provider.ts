@@ -21,7 +21,12 @@ import { some } from 'lodash';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
-import { decryptParams, paramToString } from './utils';
+import {
+  decryptParams,
+  paramToString,
+  getFeesFromRPC,
+  getGasLimitFromRPC,
+} from './utils';
 
 @ChainDecorator('EvmProvider', {
   deps: [],
@@ -77,8 +82,37 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    return this.dataSource.estimateFee(msgs, speed);
+  async _getFeesFromRpc(
+    msgs: Msg[],
+    speed: GasFeeSpeed,
+    isEIP1559: undefined | boolean = undefined
+  ) {
+    const promises = msgs.map((msg) =>
+      getFeesFromRPC(
+        msg as ChainMsg,
+        speed,
+        this.manifest.feeGasStep,
+        isEIP1559
+      )
+    );
+    return Promise.all(promises);
+  }
+
+  async estimateFee(
+    msgs: Msg[],
+    speed: GasFeeSpeed,
+    options?: { forceUseRpc: boolean; isEIP1559?: boolean } // useful for custom chains
+  ): Promise<FeeData[]> {
+    if (options?.forceUseRpc) {
+      return this._getFeesFromRpc(msgs, speed, options?.isEIP1559);
+    }
+
+    try {
+      return await this.dataSource.estimateFee(msgs, speed);
+    } catch (err) {
+      console.warn('Failed to estimate fee. Fallback to RFC method', err);
+      return this._getFeesFromRpc(msgs, speed);
+    }
   }
 
   async getNFTBalance(address: string) {
@@ -142,6 +176,8 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     return {
       paramToString,
       decryptParams,
+      getFeesFromRPC,
+      getGasLimitFromRPC,
     };
   }
 

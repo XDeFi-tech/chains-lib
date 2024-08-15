@@ -15,8 +15,12 @@ export enum EVMChains {
   gnosis = 'gnosis',
 }
 
+export interface EVMChainManifest extends Chain.Manifest {
+  maxGapAmount?: number;
+}
+
 export const EVM_MANIFESTS: {
-  [key in EVMChains]: Chain.Manifest & { maxGapAmount?: number };
+  [key in EVMChains]: EVMChainManifest;
 } = {
   [EVMChains.ethereum]: {
     name: 'Ethereum',

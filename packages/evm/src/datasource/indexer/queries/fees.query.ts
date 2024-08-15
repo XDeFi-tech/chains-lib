@@ -16,6 +16,7 @@ import {
 import { EVMChains } from '../../../manifests';
 
 export const getFees = async (chain: string) => {
+  // if you update this function, make sure to update packages/evm/src/utils/get-fees.ts
   let indexerChain = chain;
   let query: any;
 

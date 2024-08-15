@@ -184,7 +184,7 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async _estimateGasLimit(
+  async _estimateGasLimit(
     txParams: RestEstimateGasRequest
   ): Promise<number | null> {
     try {
@@ -269,11 +269,9 @@ export class ChainDataSource extends DataSource {
           gasLimit = DEFAULT_CONTRACT_FEE;
         }
       } else {
-        const { contractData } = await msg.getDataFromContract();
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
-          value: contractData.value as string,
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {
