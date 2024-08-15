@@ -177,7 +177,7 @@ export class IndexerDataSource extends DataSource {
     );
   }
 
-  private async _estimateGasLimit(
+  async _estimateGasLimit(
     txParams: RestEstimateGasRequest
   ): Promise<number | null> {
     try {
@@ -250,6 +250,7 @@ export class IndexerDataSource extends DataSource {
             );
         }
       } else if (msgData.contractAddress) {
+        // ERC transaction
         const { contract, contractData } = await msg.getDataFromContract();
         if (!contract) {
           throw new Error(
@@ -268,11 +269,10 @@ export class IndexerDataSource extends DataSource {
           gasLimit = DEFAULT_CONTRACT_FEE;
         }
       } else {
-        const { contractData } = await msg.getDataFromContract();
+        // common transaction
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
-          value: contractData.value as string,
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {
