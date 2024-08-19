@@ -6,8 +6,11 @@ import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS, CosmosHubChains } from '../manifests';
 import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
+import { SignDocDirectAux, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 
 import SeedPhraseSigner from './seed-phrase.signer';
+import { Secp256k1, Secp256k1Signature, sha256 } from '@cosmjs/crypto';
+import { makeMultisignedTxBytes } from '@cosmjs/stargate';
 
 jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
   return {
@@ -23,20 +26,19 @@ jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
     createDefaultAminoConverters: jest.fn().mockResolvedValue([]),
   };
 });
-
-jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
-  const originalModule = jest.requireActual(
-    'cosmjs-types/cosmos/tx/v1beta1/tx'
-  );
-  return {
-    TxRaw: {
-      encode: jest.fn().mockImplementation(() => {
-        return { finish: jest.fn().mockReturnValue([1, 1, 1]) };
-      }),
-    },
-    SignDoc: originalModule.SignDoc,
-  };
-});
+// jest.mock('cosmjs-types/cosmos/tx/v1beta1/tx', () => {
+//   const originalModule = jest.requireActual(
+//     'cosmjs-types/cosmos/tx/v1beta1/tx'
+//   );
+//   return {
+//     TxRaw: {
+//       encode: jest.fn().mockImplementation(() => {
+//         return { finish: jest.fn().mockReturnValue([1, 1, 1]) };
+//       }),
+//     },
+//     ...originalModule
+//   };
+// });
 
 type CosmosHdPathTypes = {
   cosmos: string;
@@ -108,11 +110,22 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign direct a transaction using a seed phrase', async () => {
+    const originalEncode = TxRaw.encode;
+    TxRaw.encode = jest.fn().mockImplementation(() => {
+      return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
+    });
+
     await signer.sign(message, derivations.cosmos);
     expect(message.signedTransaction).toBeTruthy();
+
+    TxRaw.encode = originalEncode;
   });
 
   it('should sign amino a transaction using a seed phrase', async () => {
+    const originalEncode = TxRaw.encode;
+    TxRaw.encode = jest.fn().mockImplementation(() => {
+      return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
+    });
     await signer.sign(
       message,
       derivations.cosmos,
@@ -120,6 +133,7 @@ describe('seed-phrase.signer', () => {
       CosmosSignMode.SIGN_AMINO
     );
     expect(message.signedTransaction).toBeTruthy();
+    TxRaw.encode = originalEncode;
   });
 
   it('Should sign raw tx with amino mode', async () => {
@@ -200,7 +214,7 @@ describe('seed-phrase.signer', () => {
       },
       msgs: [
         {
-          type: 'sign/msgSignData',
+          type: 'sign/MsgSignData',
           value: {
             signer: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
             data: 'SGVsbG8=', // echo -n "Hello" | base64
@@ -223,7 +237,75 @@ describe('seed-phrase.signer', () => {
       'tendermint/PubKeySecp256k1'
     );
     expect(signedTx.signature.signature).toEqual(
-      'gzgi+GKdyLOhRHQRBQol0zOcl/J0idmL2MMIrE2f+AU7txWSpdX3irnPHa73BXokYh0mkxB2/o4iZzsr3kiWmQ=='
+      '4oHTVOF4EtiizvPajDe2+l/iOE6goG7zuySs1qNeZ+wSHUl74oFioE/pSta/7Z0n7rL6z9zL3s14yfYldkne+Q=='
+    );
+    const serialized = serializeSignDoc(signDoc);
+    const signatureBytes = Buffer.from(signedTx.signature.signature, 'base64');
+    const isVerified = await Secp256k1.verifySignature(
+      Secp256k1Signature.fromFixedLength(signatureBytes),
+      sha256(serialized),
+      Buffer.from(signedTx.signature.pub_key.value, 'base64')
+    );
+    expect(isVerified).toBe(true);
+  });
+
+  it('Should sign doc direct aux with sign amino mode', async () => {
+    const signDoc = SignDocDirectAux.fromPartial({
+      chainId: 'cosmoshub-4',
+      accountNumber: 1895821n,
+      bodyBytes: new Uint8Array(
+        Buffer.from(
+          '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
+          'hex'
+        )
+      ),
+      publicKey: {
+        value: Buffer.from(
+          'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu==',
+          'base64'
+        ),
+        typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+      },
+    });
+    const signedTx = await signer.signRawTransaction(
+      signDoc,
+      provider,
+      CosmosSignMode.SIGN_DIRECT
+    );
+    expect(signedTx.signature.pub_key.value).toEqual(
+      'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
+    );
+    expect(signedTx.signature.signature).toEqual(
+      'pyBuAh++d0s6JqaYpIpRBwIU8lwOxT8kV3s8Df5UM4UZepaCF1PaawGf55azY5PHJXSgBfyUx1MjYFHnHgAahQ=='
+    );
+    const signatures = new Map<string, Uint8Array>();
+    signatures.set(
+      await signer.getAddress(derivations.cosmos),
+      new Uint8Array(Buffer.from(signedTx.signature.signature))
+    );
+    const multisigTxBytes = makeMultisignedTxBytes(
+      {
+        type: 'tendermint/PubKeyMultisigThreshold',
+        value: {
+          threshold: '1',
+          pubkeys: [signedTx.signature.pub_key],
+        },
+      },
+      0,
+      {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
+      },
+      new Uint8Array(
+        Buffer.from(
+          '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
+          'hex'
+        )
+      ),
+      signatures
+    );
+    expect(Buffer.from(multisigTxBytes).toString('hex')).toEqual(
+      '0a340a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d12073130303030303012a2010a8a010a770a292f636f736d6f732e63727970746f2e6d756c74697369672e4c6567616379416d696e6f5075624b6579124a080112460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a2103dda39b22c1f8e2c2d11da3bc4517f80b461aa69f10e761e34576f4f09ccfa1ee120f120d0a05080112018012040a02087f12130a0d0a057561746f6d12043130303010c09a0c1a5a0a587079427541682b2b643073364a7161597049705242774955386c774f7854386b56337338446635554d34555a6570614346315061617747663535617a593550484a5853674266795578314d6a5946486e4867416168513d3d'
     );
   });
 });
@@ -503,6 +585,10 @@ describe('abstrction fee', () => {
   jest.setTimeout(15000);
 
   it('should sign a transaction using a seed phrase', async () => {
+    const originalEncode = TxRaw.encode;
+    TxRaw.encode = jest.fn().mockImplementation(() => {
+      return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
+    });
     const ibcToken =
       'ibc/B547DC9B897E7C3AA5B824696110B8E3D2C31E3ED3F02FF363DCBAD82457E07E'; // uxki;
     const txInput = {
@@ -530,6 +616,7 @@ describe('abstrction fee', () => {
     await signer.sign(message, derivation);
     expect(message.signedTransaction).toBeTruthy();
     expect((buildTxData as any).fee.amount[0].amount).toEqual(fee);
+    TxRaw.encode = originalEncode;
   });
 });
 
@@ -572,6 +659,10 @@ describe('IBC token transfer', () => {
   });
 
   it('Create success tx to transfer uatom from osmosis to akash', async () => {
+    const originalEncode = TxRaw.encode;
+    TxRaw.encode = jest.fn().mockImplementation(() => {
+      return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
+    });
     sourceChain = CosmosHubChains.osmosis;
     destChain = CosmosHubChains.akash;
     sourceAssetDenom =
@@ -597,6 +688,7 @@ describe('IBC token transfer', () => {
     const chainMsg = await provider.createMsg(msgBodies[0]);
     await signer.sign(chainMsg, derivations);
     expect(chainMsg.signedTransaction).toBeTruthy();
+    TxRaw.encode = originalEncode;
   });
 
   it('Create success tx to transfer with path unwinding', async () => {
