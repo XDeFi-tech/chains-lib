@@ -107,7 +107,7 @@ export interface DirectSignDoc {
    */
   chainId?: string;
   /** account_number is the account number of the account in state */
-  accountNumber?: string;
+  accountNumber?: string | bigint;
 }
 
 export interface SignMsgSendResponse {
