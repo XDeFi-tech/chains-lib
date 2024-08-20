@@ -11,7 +11,7 @@ import { Balance, DataSource, MsgEncoding, Response, FeeData, TronFee } from 'co
 import { forEach } from 'lodash';
 
 export interface IOptions {
-  signers?: (typeof SignerProvider)[];
+  signers?: typeof SignerProvider[];
   providerId?: string;
 }
 

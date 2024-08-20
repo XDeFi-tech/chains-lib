@@ -20,7 +20,7 @@ import {
   setupBankExtension,
 } from '@cosmjs/launchpad';
 import cosmosclient from '@cosmos-client/core';
-import { uniqBy, capitalize } from 'lodash';
+import { uniqBy } from 'lodash';
 import { Account } from '@cosmjs/stargate';
 import axios, { AxiosInstance } from 'axios';
 import {
@@ -33,7 +33,7 @@ import {
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
-import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
+import { CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
 import { ChainMsg } from '../../msg';
 import { COSMOS_ADDRESS_CHAIN } from '../../manifests';
