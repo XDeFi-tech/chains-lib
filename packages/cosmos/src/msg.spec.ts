@@ -105,6 +105,9 @@ describe('msg', () => {
         maxGapAmount: 0.0001,
       },
     };
+    provider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.osmosis)
+    );
   });
 
   it('buildTx with insufficient balance should throw an error', async () => {
@@ -240,19 +243,6 @@ describe('msg', () => {
   });
 
   it('getFee should return fee estimation', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        to: 'cosmos1g6qu6hm4v3s3vq7438jehn9fzxg9p720yesq2q',
-        amount: '0.000001',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-    provider = new CosmosProvider(
-      new ChainDataSource(COSMOS_MANIFESTS.osmosis)
-    );
-
     CosmosProvider.prototype.getBalance = jest.fn().mockResolvedValue({
       getData: () =>
         new Promise((resolve) =>
@@ -311,7 +301,6 @@ describe('msg', () => {
 
     const feeEstimation = await chainMsg.getFee();
     const gap = provider.manifest?.maxGapAmount || 0;
-
     expect(response).toEqual(
       new BigNumber('1000')
         .minus(feeEstimation.fee || 0)

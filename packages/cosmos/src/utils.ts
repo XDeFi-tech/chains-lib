@@ -13,7 +13,7 @@ import {
   osmosisAminoConverters,
 } from './proto_export/osmosis/client';
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
-import { AminoMsgSend, MsgBody } from './msg';
+import { MsgBody } from './msg';
 
 export interface ChainAsset {
   denom: string;
@@ -159,7 +159,7 @@ export const createIBCTransferMsg = async (
   const addressList = route.chain_ids.reduce(
     (arr: string[], chainId: string): string[] => {
       for (const chain in COSMOS_MANIFESTS) {
-        if (COSMOS_MANIFESTS[chain as CosmosHubChains]!.chainId === chainId) {
+        if (COSMOS_MANIFESTS[chain as CosmosHubChains]?.chainId === chainId) {
           const address = userAddresses[chain as CosmosHubChains];
           if (address) arr.push(address);
           return arr;

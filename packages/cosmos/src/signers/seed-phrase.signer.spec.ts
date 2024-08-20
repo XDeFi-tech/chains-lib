@@ -1,16 +1,16 @@
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
 import { bech32 } from 'bech32';
 import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
+import { SignDocDirectAux, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { Secp256k1, Secp256k1Signature, sha256 } from '@cosmjs/crypto';
+import { makeMultisignedTxBytes } from '@cosmjs/stargate';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS, CosmosHubChains } from '../manifests';
 import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
-import { SignDocDirectAux, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 
 import SeedPhraseSigner from './seed-phrase.signer';
-import { Secp256k1, Secp256k1Signature, sha256 } from '@cosmjs/crypto';
-import { makeMultisignedTxBytes } from '@cosmjs/stargate';
 
 jest.mock('@cosmjs/stargate/build/signingstargateclient', () => {
   return {
@@ -626,7 +626,6 @@ describe('IBC token transfer', () => {
   let sourceChain: CosmosHubChains;
   let sourceAssetDenom: string;
   let destChain: CosmosHubChains;
-  let destAssetDenom: string;
   let derivations: string;
   let provider: CosmosProvider;
   let addresses: Record<CosmosHubChains, string>;
@@ -675,7 +674,7 @@ describe('IBC token transfer', () => {
       addresses,
     });
     expect(msgBodies[0].msgs).toBeDefined();
-    const ibcTrasferMsg = msgBodies[0].msgs![0];
+    const ibcTrasferMsg = msgBodies[0].msgs?.[0];
     expect(ibcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
@@ -704,7 +703,7 @@ describe('IBC token transfer', () => {
       addresses,
     });
     expect(msgBodies[0].msgs).toBeDefined();
-    const firstIbcTrasferMsg = msgBodies[0].msgs![0];
+    const firstIbcTrasferMsg = msgBodies[0].msgs?.[0];
     expect(firstIbcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
@@ -713,7 +712,7 @@ describe('IBC token transfer', () => {
     expect(firstIbcTrasferMsg.value.token.amount).toBe('100000'); // 0.1 * 1e6
     expect(firstIbcTrasferMsg.value.receiver).toBe(addresses['axelar']);
 
-    const secondIbcTrasferMsg = msgBodies[1].msgs![0];
+    const secondIbcTrasferMsg = msgBodies[1].msgs?.[0];
     expect(secondIbcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
