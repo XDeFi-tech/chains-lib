@@ -6,7 +6,6 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { bech32 } from 'bech32';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
-import { CosmosProvider } from 'src/chain.provider';
 
 import { AminoSignDoc, ChainMsg } from '../msg';
 import { STARGATE_CLIENT_OPTIONS } from '../utils';

@@ -2,16 +2,15 @@ import { MsgEncoding } from '@xdefi-tech/chains-core';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
 import { bech32 } from 'bech32';
 import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
-import { SignDocDirectAux } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { makeMultisignedTxBytes } from '@cosmjs/stargate';
+import { Secp256k1, Secp256k1Signature, sha256 } from '@cosmjs/crypto';
 
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS } from '../manifests';
-import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
+import { ChainMsg, CosmosSignMode, MsgBody } from '../msg';
 
 import { PrivateKeySigner } from './private-key.signer';
-import { Secp256k1, Secp256k1Signature, sha256 } from '@cosmjs/crypto';
 
 type CosmosHdPathTypes = {
   cosmos: string;
@@ -119,12 +118,7 @@ describe('private-key.signer', () => {
   });
 
   it('should sign amimo a transaction using a private key', async () => {
-    await cosmosSigner.sign(
-      message,
-      '',
-      CosmosChainType.Cosmos,
-      CosmosSignMode.SIGN_AMINO
-    );
+    await cosmosSigner.sign(message, '');
     expect(message.signedTransaction).toBeTruthy();
   });
 
@@ -207,55 +201,9 @@ describe('private-key.signer', () => {
 
     // Sign msg with direct sign mode
     const signer = new PrivateKeySigner(privateKeys.cosmos);
-    await signer.sign(
-      chainMsg,
-      '',
-      CosmosChainType.Cosmos,
-      CosmosSignMode.SIGN_DIRECT
-    );
+    await signer.sign(chainMsg, '');
     expect(chainMsg.signedTransaction).toEqual(
       'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIARgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkDMqz7SD1+2tvYlImP5HGOLF0/wjqpDAyMODMKnmh8bmkjdarqIGVnN+FgLzEaKHUpIc1c6n8iwCkh/a8SW1yfr'
-    );
-  });
-
-  it('Should create msg adn sign it with animo mode', async () => {
-    const chainMsg = provider.createMsg(txInput);
-
-    const txData = await chainMsg.buildTx();
-
-    // Check tx msgs before signinng
-    const expectedMsg = {
-      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-      value: {
-        fromAddress: txInput.from,
-        toAddress: txInput.to,
-        amount: [
-          {
-            denom: 'uatom',
-            amount: '1', // txInput * 10 ** decimals
-          },
-        ],
-      },
-    };
-    expect(txData.msgs[0]).toEqual(expectedMsg);
-
-    // Check tx fee info before signing
-    const expectedFee = {
-      amount: [{ denom: 'uatom', amount: '2500' }],
-      gas: '200000',
-    };
-    expect(txData.fee).toEqual(expectedFee);
-
-    // Sign msg with amino sign mode
-    const signer = new PrivateKeySigner(privateKeys.cosmos);
-    await signer.sign(
-      chainMsg,
-      '',
-      CosmosChainType.Cosmos,
-      CosmosSignMode.SIGN_AMINO
-    );
-    expect(chainMsg.signedTransaction).toEqual(
-      'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIfxgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkCMICf5+o/tooHugIHu8JFVWQ1Gj8EjJVKWHdZOJSEuBWyh+Wt/k8b4A0EWzhwI8B4nHvGEPGjmLWVI6USX1wQs'
     );
   });
 
@@ -284,7 +232,7 @@ describe('private-key.signer', () => {
     const signer = new PrivateKeySigner(privateKeys.cosmos);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_AMINO
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -315,7 +263,7 @@ describe('private-key.signer', () => {
     const signer = new PrivateKeySigner(privateKeys.cosmos);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_DIRECT
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -350,7 +298,7 @@ describe('private-key.signer', () => {
     const signer = new PrivateKeySigner(privateKeys.cosmos);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_AMINO
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -373,34 +321,42 @@ describe('private-key.signer', () => {
   });
 
   it('Should sign doc direct aux with sign amino mode', async () => {
-    const signDoc = SignDocDirectAux.fromPartial({
-      chainId: 'cosmoshub-4',
-      accountNumber: 1895821n,
-      bodyBytes: new Uint8Array(
-        Buffer.from(
-          '0a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d120731303030303030',
-          'hex'
-        )
-      ),
-      publicKey: {
-        value: Buffer.from(
-          'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu==',
-          'base64'
-        ),
-        typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+    const signDoc = {
+      chain_id: 'cosmoshub-4',
+      account_number: '1895821',
+      sequence: '0',
+      fee: {
+        amount: [{ denom: 'uatom', amount: '1000' }],
+        gas: '200000',
       },
-    });
+      msgs: [
+        {
+          type: 'cosmos-sdk/SignDocDirectAux',
+          value: {
+            body_bytes:
+              'CjIKHC9jb3Ntb3MuYmFuay52MWJldGExLk1zZ1NlbmQSEhoQCgV1YXRvbRIHMTAwMDAwMA==',
+            pub_key: {
+              type: 'tendermint/PubKeySecp256k1',
+              value: 'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu',
+            },
+            chain_id: 'cosmoshub-4',
+            account_number: '1895821',
+          },
+        },
+      ],
+      memo: '',
+    };
     const signer = new PrivateKeySigner(privateKeys.cosmos);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
-      CosmosSignMode.SIGN_DIRECT
+      provider.manifest.prefix,
+      CosmosSignMode.SIGN_AMINO
     );
     expect(signedTx.signature.pub_key.value).toEqual(
       'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
     );
     expect(signedTx.signature.signature).toEqual(
-      'pyBuAh++d0s6JqaYpIpRBwIU8lwOxT8kV3s8Df5UM4UZepaCF1PaawGf55azY5PHJXSgBfyUx1MjYFHnHgAahQ=='
+      '7WG+1gvdV0dN/l1ntIK67im1H4wp+8kgACuCQ64cM1MgmXCiM7Q0+C3RZot7uFU6grNiJExtYEw9zakIxqsXwg=='
     );
     const signatures = new Map<string, Uint8Array>();
     signatures.set(
@@ -429,7 +385,7 @@ describe('private-key.signer', () => {
       signatures
     );
     expect(Buffer.from(multisigTxBytes).toString('hex')).toEqual(
-      '0a340a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d12073130303030303012a2010a8a010a770a292f636f736d6f732e63727970746f2e6d756c74697369672e4c6567616379416d696e6f5075624b6579124a080112460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a2103dda39b22c1f8e2c2d11da3bc4517f80b461aa69f10e761e34576f4f09ccfa1ee120f120d0a05080112018012040a02087f12130a0d0a057561746f6d12043130303010c09a0c1a5a0a587079427541682b2b643073364a7161597049705242774955386c774f7854386b56337338446635554d34555a6570614346315061617747663535617a593550484a5853674266795578314d6a5946486e4867416168513d3d'
+      '0a340a320a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412121a100a057561746f6d12073130303030303012a2010a8a010a770a292f636f736d6f732e63727970746f2e6d756c74697369672e4c6567616379416d696e6f5075624b6579124a080112460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a2103dda39b22c1f8e2c2d11da3bc4517f80b461aa69f10e761e34576f4f09ccfa1ee120f120d0a05080112018012040a02087f12130a0d0a057561746f6d12043130303010c09a0c1a5a0a583757472b316776645630644e2f6c316e74494b3637696d31483477702b386b6741437543513634634d314d676d5843694d3751302b4333525a6f74377546553667724e694a457874594577397a616b497871735877673d3d'
     );
   });
 });
