@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.0.28
+
+### Patch Changes
+
+- 63cbdc41: Fix: update gql generic file
+
 ## 2.0.27
 
 ### Patch Changes

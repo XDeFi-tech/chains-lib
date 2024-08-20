@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.39
+
+### Patch Changes
+
+- 63cbdc41: Fix: improve build tx with swap pool manager
+
 ## 2.0.38
 
 ### Patch Changes
