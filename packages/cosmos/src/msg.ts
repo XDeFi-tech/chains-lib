@@ -23,7 +23,10 @@ import { MsgSend } from './proto_export/cosmos/bank/v1beta1/tx';
 import type { CosmosProvider } from './chain.provider';
 import { MsgSwapExactAmountIn } from './proto_export/osmosis/gamm/v1beta1/tx';
 import { MessageComposer as MessageComposerGamm } from './proto_export/osmosis/gamm/v1beta1/tx.registry';
+import { MessageComposer as MessageComposerPoolManager } from './proto_export/osmosis/poolmanager/v1beta1/tx.registry';
 import { AminoConverter as AminoConverterGamm } from './proto_export/osmosis/gamm/v1beta1/tx.amino';
+import { AminoConverter } from './proto_export/osmosis/poolmanager/v1beta1/tx.amino';
+import { MsgSwapExactAmountIn as PoolManagerMsgSwapExactAmountIn } from './proto_export/osmosis/poolmanager/v1beta1/tx';
 
 export type MsgBody = {
   from: string;
@@ -144,30 +147,85 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       .toString();
   }
 
-  private getIBCTransferMsg(rawMsg: any) {
+  private getIBCTransferMsg(rawMsg: any, signMode: CosmosSignMode) {
     const ibcCheck = rawMsg.token.denom.split('/');
     if (ibcCheck?.[0] === 'ibc') {
       rawMsg.token.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
     }
-    if (rawMsg.timeoutTimestamp) {
-      rawMsg.timeoutTimestamp = Long.fromValue(rawMsg.timeoutTimestamp);
+
+    let parser: (input: any) => MsgTransfer = MsgTransfer.fromPartial;
+    if (signMode === CosmosSignMode.SIGN_AMINO) {
+      parser = MsgTransfer.fromAmino;
+      if (rawMsg.timeout_timestamp) {
+        rawMsg.timeout_timestamp = Long.fromValue(
+          rawMsg.timeout_timestamp
+        ).toString();
+      }
+    } else {
+      if (rawMsg.timeoutTimestamp) {
+        rawMsg.timeoutTimestamp = Long.fromValue(rawMsg.timeoutTimestamp);
+      }
     }
-    const ibcTransfer = MsgTransfer.fromPartial(rawMsg);
+
+    const ibcTransfer = parser(rawMsg);
 
     return MessageComposerIbc.withTypeUrl.transfer(ibcTransfer);
   }
 
-  private getSwapMsg(rawMsg: any) {
-    rawMsg.tokenIn.amount = rawMsg.tokenIn.amount.toString();
-    const ibcCheck = rawMsg.tokenIn.denom.split('/');
-    if (ibcCheck?.[0] === 'ibc') {
-      rawMsg.tokenIn.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
+  private getSwapMsg(rawMsg: any, signMode: CosmosSignMode) {
+    let parser: (input: any) => MsgSwapExactAmountIn =
+      MsgSwapExactAmountIn.fromPartial;
+    if (signMode === CosmosSignMode.SIGN_AMINO) {
+      parser = MsgSwapExactAmountIn.fromAmino;
+      rawMsg.token_in.amount = rawMsg.token_in.amount.toString();
+      const ibcCheck = rawMsg.token_in.denom.split('/');
+      if (ibcCheck?.[0] === 'ibc') {
+        rawMsg.tokenIn.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
+      }
+      rawMsg.token_out_min_amount = rawMsg.token_out_min_amount.toString();
+    } else {
+      rawMsg.tokenIn.amount = rawMsg.tokenIn.amount.toString();
+      const ibcCheck = rawMsg.tokenIn.denom.split('/');
+      if (ibcCheck?.[0] === 'ibc') {
+        rawMsg.tokenIn.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
+      }
+      rawMsg.tokenOutMinAmount = rawMsg.tokenOutMinAmount.toString();
     }
-    rawMsg.tokenOutMinAmount = rawMsg.tokenOutMinAmount.toString();
-    const msgSwapExactAmountIn = MsgSwapExactAmountIn.fromPartial(rawMsg);
+    const msgSwapExactAmountIn = parser(rawMsg);
     return MessageComposerGamm.withTypeUrl.swapExactAmountIn(
       msgSwapExactAmountIn
     );
+  }
+
+  private getSwapMsgPoolManager(rawMsg: any, signMode: CosmosSignMode) {
+    let parser: (input: any) => PoolManagerMsgSwapExactAmountIn =
+      PoolManagerMsgSwapExactAmountIn.fromPartial;
+    if (signMode === CosmosSignMode.SIGN_AMINO) {
+      parser = PoolManagerMsgSwapExactAmountIn.fromAmino;
+      if (!rawMsg.token_in) return;
+      if (!rawMsg.token_out_min_amount) return;
+      rawMsg.token_in.amount = rawMsg.token_in?.amount.toString();
+      const ibcCheck = rawMsg.token_in.denom?.split('/');
+      if (ibcCheck?.[0] === 'ibc') {
+        rawMsg.token_in.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
+      }
+      rawMsg.token_out_min_amount = rawMsg.token_out_min_amount.toString();
+      const msgSwapExactAmountIn = parser(rawMsg);
+      return MessageComposerPoolManager.withTypeUrl.swapExactAmountIn(
+        msgSwapExactAmountIn
+      );
+    } else {
+      rawMsg.tokenIn.amount = rawMsg.tokenIn.amount.toString();
+      const ibcCheck = rawMsg.tokenIn.denom.split('/');
+      if (ibcCheck?.[0] === 'ibc') {
+        rawMsg.tokenIn.denom = `ibc/${ibcCheck?.[1]?.toUpperCase()}`;
+      }
+      rawMsg.tokenOutMinAmount = rawMsg.tokenOutMinAmount.toString();
+      const msgSwapExactAmountIn = parser(rawMsg);
+      return MessageComposerPoolManager.withTypeUrl.swapExactAmountIn(
+        msgSwapExactAmountIn
+      );
+    }
   }
 
   private getMsgSend(rawMsg: any) {
@@ -196,14 +254,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     };
   }
 
-  getMsgToSend() {
+  getMsgToSend(): { typeUrl: string; value: any }[] {
     const msgData = this.toData();
     let msgs;
     let typeUrl = msgData.typeUrl;
 
     if (typeUrl && typeUrl === '/ibc.applications.transfer.v1.MsgTransfer') {
       // transferring IBC token
-      msgs = msgData.msgs;
+      msgs = msgData.msgs ?? [];
     } else if (msgData.contractAddress && msgData.nftId) {
       // sending nft
       typeUrl = msgData.typeUrl || '/cosmwasm.wasm.v1.MsgExecuteContract';
@@ -242,15 +300,17 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         },
       ];
     }
-
-    return {
-      msgs,
-      typeUrl,
-    };
+    return msgs;
   }
 
   async buildTx() {
     const msgData = this.toData();
+    let signMode = CosmosSignMode.SIGN_DIRECT;
+    const isAmino = (EncodingTypes: object, key: string): boolean => {
+      return Object.values(EncodingTypes).find(
+        (converter) => converter.aminoType === key
+      );
+    };
 
     if (this.encoding === MsgEncoding.string) {
       if (!msgData.data || typeof msgData.data !== 'string') {
@@ -258,11 +318,22 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           'Invalid msg data, see examples to build msg from data'
         );
       }
-      const {
-        signDoc: { fee, memo, msgs, sequence, account_number },
-        signer,
-      } = JSON.parse(msgData.data);
-
+      const { signDoc, signer } = JSON.parse(msgData.data);
+      const isDirectSignDoc = (signDoc: any): signDoc is DirectSignDoc => {
+        return !!signDoc?.bodyBytes;
+      };
+      const { fee, memo, msgs, sequence, account_number } = signDoc;
+      if (isDirectSignDoc(signDoc)) {
+        return {
+          signMode,
+          raw: true,
+          signDoc,
+          msgs: [],
+          from: signer ?? msgData.from,
+          to: '',
+          value: 0,
+        };
+      }
       const encodedMsgs = msgs.map((signDocMsg: any) => {
         const key: string =
           signDocMsg?.['@type'] ||
@@ -273,19 +344,41 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
 
         const isIBCTransfer =
           AminoConverterIbc[key as keyof typeof AminoConverterIbc];
-        if (isIBCTransfer) {
-          return this.getIBCTransferMsg(rawMsg);
+        const isIBCTransferAmino = isAmino(AminoConverterIbc, key);
+        if (isIBCTransfer || isIBCTransferAmino) {
+          if (isIBCTransferAmino) signMode = CosmosSignMode.SIGN_AMINO;
+          return this.getIBCTransferMsg(rawMsg, signMode);
         }
 
         const isMsgSwapExactAmountIn =
           AminoConverterGamm[key as keyof typeof AminoConverterGamm];
-        if (isMsgSwapExactAmountIn) {
-          return this.getSwapMsg(rawMsg);
+        const isMsgSwapExactAmountInAmino = isAmino(AminoConverterGamm, key);
+        if (isMsgSwapExactAmountIn || isMsgSwapExactAmountInAmino) {
+          if (isMsgSwapExactAmountInAmino) signMode = CosmosSignMode.SIGN_AMINO;
+          return this.getSwapMsg(rawMsg, signMode);
+        }
+        const isMsgSwapExactAmountInPoolManager =
+          AminoConverter[key as keyof typeof AminoConverter];
+
+        const isMsgSwapExactAmountInPoolManagerAmino = isAmino(
+          AminoConverter,
+          key
+        );
+
+        if (
+          isMsgSwapExactAmountInPoolManager ||
+          isMsgSwapExactAmountInPoolManagerAmino
+        ) {
+          if (isMsgSwapExactAmountInPoolManagerAmino)
+            signMode = CosmosSignMode.SIGN_AMINO;
+          return this.getSwapMsgPoolManager(rawMsg, signMode);
         }
 
         const isMsgSend =
           AminoConverterCosmos[key as keyof typeof AminoConverterCosmos];
-        if (isMsgSend) {
+        const isMsgSendAmino = isAmino(AminoConverterCosmos, key);
+        if (isMsgSend || isMsgSendAmino) {
+          if (isMsgSendAmino) signMode = CosmosSignMode.SIGN_AMINO;
           return this.getMsgSend(rawMsg);
         }
 
@@ -295,6 +388,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       });
 
       return {
+        signMode,
+        raw: false,
+        signDoc,
         msgs: encodedMsgs,
         fee: {
           amount: fee.amount.map(({ amount, denom }: any) => ({
@@ -306,13 +402,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         ...(memo && { memo }),
         sequence: parseInt(sequence),
         accountNumber: parseInt(account_number),
-        from: signer,
+        from: signer ?? msgData.from,
         to: '',
         value: 0,
       };
     }
 
-    const { typeUrl, msgs } = this.getMsgToSend();
+    const _msgs = this.getMsgToSend();
     const feeOptions = msgData.feeOptions;
 
     if (!msgData.gasLimit && !msgData.gasPrice && this.provider) {
@@ -344,11 +440,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     };
     const acc = await this.provider.getAccount(msgData.from);
 
+    const msgs = _msgs.length > 0 ? _msgs : msgData.msgs || _msgs;
     return {
-      msgs:
-        typeUrl === '/ibc.applications.transfer.v1.MsgTransfer'
-          ? msgs
-          : msgData.msgs || msgs,
+      msgs,
       ...(msgData.memo && { memo: msgData.memo }),
       fee,
       ...(acc && {
@@ -359,7 +453,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       from: msgData.from,
       denom: msgData.denom || this.provider.manifest.denom,
       value: this.getValue(),
-      typeUrl,
+      typeUrl: msgs[0].typeUrl,
       contractAddress: msgData.contractAddress,
       nftId: msgData.nftId,
     };
