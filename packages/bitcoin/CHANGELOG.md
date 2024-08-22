@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.0
+
+### Minor Changes
+
+- 9121608c: Switched to scure bip32/bip39
+
 ## 2.0.28
 
 ### Patch Changes
