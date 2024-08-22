@@ -1,7 +1,8 @@
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
-import * as bip39 from 'bip39';
-import * as bip32 from 'bip32';
+import * as bip39 from '@scure/bip39';
+import { wordlist as bip39WordList } from '@scure/bip39/wordlists/english';
+import * as bip32 from '@scure/bip32';
 import Long from 'long';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import {
@@ -21,12 +22,12 @@ export class SeedPhraseSigner extends Signer.Provider {
   async getCosmosPrivateKey(
     derivation: string
   ): Promise<cosmosclient.proto.cosmos.crypto.secp256k1.PrivKey> {
-    if (!bip39.validateMnemonic(this.key)) {
+    if (!bip39.validateMnemonic(this.key, bip39WordList)) {
       throw new Error('Invalid phrase');
     }
     const seed = await bip39.mnemonicToSeed(this.key);
-    const node = bip32.fromSeed(seed);
-    const child = node.derivePath(derivation);
+    const node = bip32.HDKey.fromMasterSeed(seed);
+    const child = node.derive(derivation);
 
     if (!child.privateKey) {
       throw new Error('Invalid child');
