@@ -4,7 +4,7 @@ import {
   Transaction as SolanaTransaction,
   VersionedTransaction,
 } from '@solana/web3.js';
-import * as bip39 from 'bip39';
+import * as bip39 from '@scure/bip39';
 import { derivePath } from 'ed25519-hd-key';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
