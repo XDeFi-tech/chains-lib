@@ -20,7 +20,7 @@ module.exports = {
     ],
     platform: 'browser',
     target: 'ES6',
-    external: ['crypto', 'bip32'],
+    external: ['crypto', '@scure/bip32'],
     plugins: [NodeModulesPolyfillPlugin()],
   },
 };

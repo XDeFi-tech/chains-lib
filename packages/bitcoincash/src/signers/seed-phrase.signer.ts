@@ -1,10 +1,11 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { UTXO } from '@xdefi-tech/chains-utxo';
-import * as bip32 from 'bip32';
-import * as bip39 from 'bip39';
+import * as bip32 from '@scure/bip32';
+import * as bip39 from '@scure/bip39';
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import * as Bitcoin from 'bitcoinjs-lib';
+import * as btc from '@scure/btc-signer';
 import coininfo from 'coininfo';
 import * as bchaddr from 'bchaddrjs';
 
@@ -16,12 +17,12 @@ export class SeedPhraseSigner extends Signer.Provider {
     if (!this.key) {
       throw new Error('Seed phrase not set!');
     }
-
-    const seed = await bip39.mnemonicToSeed(this.key);
-    const root = bip32.fromSeed(seed, coininfo.bitcoincash.main.toBitcoinJS());
-    const master = root.derivePath(derivation);
-
-    return master.toWIF();
+    const seed = await bip39.mnemonicToSeed(this.key, '');
+    const root = bip32.HDKey.fromMasterSeed(seed);
+    const master = root.derive(derivation);
+    const bitcoincashNetwork = coininfo.bitcoincash.main.toBitcoinJS();
+    const wif = btc.WIF(bitcoincashNetwork).encode(master.privateKey!);
+    return wif;
   }
 
   async getAddress(derivation: string): Promise<string> {
