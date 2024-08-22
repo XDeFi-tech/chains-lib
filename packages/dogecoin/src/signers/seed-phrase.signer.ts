@@ -3,8 +3,8 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import coininfo from 'coininfo';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
-import * as bip32 from 'bip32';
-import * as bip39 from 'bip39';
+import * as bip32 from '@scure/bip32';
+import * as bip39 from '@scure/bip39';
 import * as Dogecoin from 'bitcoinjs-lib';
 
 import { ChainMsg } from '../msg';
@@ -13,15 +13,14 @@ import { ChainMsg } from '../msg';
 export class SeedPhraseSigner extends Signer.Provider {
   async getPrivateKey(derivation: string): Promise<string> {
     if (!this.key) {
-      throw new Error('Private key not set!');
+      throw new Error('Seed phrase not set!');
     }
-
-    const network = coininfo.dogecoin.main.toBitcoinJS();
-    const seed = await bip39.mnemonicToSeed(this.key);
-    const root = bip32.fromSeed(seed, network);
-    const master = root.derivePath(derivation);
-
-    return master.toWIF();
+    const seed = await bip39.mnemonicToSeed(this.key, '');
+    const root = bip32.HDKey.fromMasterSeed(seed);
+    const master = root.derive(derivation);
+    const dogecoinNetwork = coininfo.dogecoin.main.toBitcoinJS();
+    const wif = btc.WIF(dogecoinNetwork).encode(master.privateKey!);
+    return wif;
   }
 
   async getAddress(derivation: string): Promise<string> {
