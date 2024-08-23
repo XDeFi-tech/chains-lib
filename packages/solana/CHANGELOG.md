@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.1
+
+### Patch Changes
+
+- 5fc3fd95: fix: send on solana for secondary token to new accounts
+
 ## 2.1.0
 
 ### Minor Changes
