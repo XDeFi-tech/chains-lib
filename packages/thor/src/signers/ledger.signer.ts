@@ -35,6 +35,7 @@ export class LedgerSigner extends Signer.Provider {
       await msg.buildTx();
     if (txBody) {
       const derivationArray = derivation
+        .replace('m/', '')
         .replace(/'/g, '')
         .split('/')
         .map(Number);
