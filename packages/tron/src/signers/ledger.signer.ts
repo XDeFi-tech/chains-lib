@@ -15,7 +15,7 @@ export class LedgerSigner extends Signer.Provider {
 
   async getAddress(derivation: string): Promise<string> {
     const trx = new Trx(this.transport as Transport);
-    const address = await trx.getAddress(derivation);
+    const address = await trx.getAddress(derivation.replace('m/', ''));
 
     return address.address;
   }
@@ -24,7 +24,11 @@ export class LedgerSigner extends Signer.Provider {
     const trx = new Trx(this.transport as Transport);
     const tx = await msg.buildTx();
 
-    const signedTx = await trx.signTransaction(derivation, tx.raw_data_hex, []);
+    const signedTx = await trx.signTransaction(
+      derivation.replace('m/', ''),
+      tx.raw_data_hex,
+      []
+    );
 
     tx.signature = [signedTx];
 
@@ -38,7 +42,7 @@ export class LedgerSigner extends Signer.Provider {
   async signMessageV2(message: string, derivation: string) {
     const trx = new Trx(this.transport as Transport);
     const signature = await trx.signPersonalMessage(
-      derivation,
+      derivation.replace('m/', ''),
       Buffer.from(message).toString('hex')
     );
 
@@ -52,7 +56,7 @@ export class LedgerSigner extends Signer.Provider {
   ) {
     const trx = new Trx(this.transport as Transport);
     const signature = await trx.signTransaction(
-      derivation,
+      derivation.replace('m/', ''),
       txHex,
       tokenSignature
     );
