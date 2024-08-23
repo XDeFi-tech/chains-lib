@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.32
+
+### Patch Changes
+
+- 75fc2fee: fix: remove 'm/' prefix from derivation in LedgerSigner for Tron and Thor
+
 ## 2.0.31
 
 ### Patch Changes
