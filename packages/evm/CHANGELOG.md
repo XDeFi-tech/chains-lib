@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.45
+
+### Patch Changes
+
+- 1d2bf619: fix: hex odd length error for trezor signing
+
 ## 2.0.44
 
 ### Patch Changes
