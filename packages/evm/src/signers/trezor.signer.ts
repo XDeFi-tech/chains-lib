@@ -43,7 +43,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         chainId: parseInt(txData.chainId),
         nonce: txData.nonce,
         gasLimit: txData.gasLimit,
-        value: txData.value,
+        value: txData.value === '0x0' ? '0x00' : txData.value,
         gasPrice: txData.gasPrice,
         data: txData.data,
       };
@@ -53,7 +53,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         chainId: parseInt(txData.chainId),
         nonce: txData.nonce,
         gasLimit: txData.gasLimit,
-        value: txData.value,
+        value: txData.value === '0x0' ? '0x00' : txData.value,
         maxFeePerGas: txData.maxFeePerGas,
         maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
         data: txData.data,
