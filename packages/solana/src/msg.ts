@@ -17,7 +17,9 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 import {
+  createAssociatedTokenAccountInstruction,
   createTransferInstruction,
+  getAccount,
   getAssociatedTokenAddress,
   getMint,
   TOKEN_PROGRAM_ID,
@@ -117,7 +119,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     let instruction;
     if (msgData.contractAddress) {
       const mintPublicKey = new PublicKey(msgData.contractAddress);
-
       const mint = await getMint(
         this.provider.rpcProvider,
         mintPublicKey,
@@ -132,6 +133,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         getAssociatedTokenAddress(mint.address, senderPublicKey),
         getAssociatedTokenAddress(mint.address, recipientPublicKey),
       ]);
+      try {
+        await getAccount(this.provider.rpcProvider, toTokenAcc);
+      } catch (error) {
+        transaction.add(
+          createAssociatedTokenAccountInstruction(
+            senderPublicKey,
+            toTokenAcc,
+            recipientPublicKey,
+            mint.address
+          )
+        );
+      }
       contractInfo.contractAddress = msgData.contractAddress;
       contractInfo.toTokenAddress = toTokenAcc.toBase58();
       contractInfo.fromTokenAddress = fromTokenAcc.toBase58();

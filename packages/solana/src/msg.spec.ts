@@ -1,26 +1,19 @@
 import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import {
-  getMint,
-  getAssociatedTokenAddress,
-  createTransferInstruction,
   TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import {
   LAMPORTS_PER_SOL,
   PublicKey,
-  TransactionInstruction,
+  Transaction as SolanaTransaction,
 } from '@solana/web3.js';
 
 import { ChainMsg } from './msg';
-
-// Mock dependencies
-jest.mock('@solana/spl-token', () => ({
-  ...jest.requireActual('@solana/spl-token'),
-  getMint: jest.fn(),
-  getAssociatedTokenAddress: jest.fn(),
-  createTransferInstruction: jest.fn(),
-}));
+import { SolanaProvider } from './chain.provider';
+import { IndexerDataSource } from './datasource';
+import { SOLANA_MANIFEST } from './manifests';
 
 describe('msg', () => {
   let mockProvider: any;
@@ -111,63 +104,6 @@ describe('msg', () => {
     expect(txBody.gasPrice).toBe(5000);
   });
 
-  it('buildTx with non-native token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
-        to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
-        amount: 0.000001,
-        contractAddress: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', // BONK
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const decimals = 8;
-    const value = new BigNumber('0.000001')
-      .multipliedBy(10 ** decimals)
-      .toNumber();
-
-    (getMint as jest.Mock).mockResolvedValue({ decimals });
-    const fromTokenAcc = new PublicKey(
-      'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU6'
-    );
-    const toTokenAcc = new PublicKey(
-      'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU6'
-    );
-
-    (getAssociatedTokenAddress as jest.Mock).mockResolvedValueOnce(
-      fromTokenAcc
-    );
-    (getAssociatedTokenAddress as jest.Mock).mockResolvedValueOnce(toTokenAcc);
-
-    const mockInstruction = new TransactionInstruction({
-      keys: [
-        { pubkey: fromTokenAcc, isSigner: false, isWritable: true },
-        { pubkey: toTokenAcc, isSigner: false, isWritable: true },
-        {
-          pubkey: new PublicKey('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5'),
-          isSigner: true,
-          isWritable: false,
-        },
-      ],
-      programId: TOKEN_PROGRAM_ID,
-      data: Buffer.from([]),
-    });
-
-    (createTransferInstruction as jest.Mock).mockReturnValue(mockInstruction);
-
-    const txBody = await chainMsg.buildTx();
-    expect(txBody.value).toBe(value);
-    expect(txBody.to).toBe('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5');
-    expect(txBody.from).toBe('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5');
-    expect(txBody.gasPrice).toBe(5000);
-    expect(txBody.decimals).toBe(decimals);
-    expect(txBody.programId).toEqual(TOKEN_PROGRAM_ID);
-    expect(txBody.toTokenAddress).toBe(toTokenAcc.toBase58());
-    expect(txBody.fromTokenAddress).toBe(fromTokenAcc.toBase58());
-  });
-
   it('getFee should return fee estimation', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -247,5 +183,34 @@ describe('msg', () => {
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
+  });
+
+  it('Should create associated token account instruction when sending secondary token to new account', async () => {
+    const provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
+    const msg = provider.createMsg({
+      from: '5UghpDRDYPger6vqVCrvvvRQsg3NZ5CNzJWfPyKTZpf2',
+      to: 'EwSJ1V4zGUbJBbURwBViezwEo8Ei8UkSDigg9dvBmQXk',
+      contractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      amount: '0.0001',
+    });
+    const builtMsg = await msg.buildTx();
+    const tx = builtMsg.tx as SolanaTransaction;
+    expect(tx.instructions.length).toBe(2);
+    expect(tx.instructions[0].programId).toBe(ASSOCIATED_TOKEN_PROGRAM_ID);
+    expect(tx.instructions[1].programId).toBe(TOKEN_PROGRAM_ID);
+  });
+
+  it('Should not create associated token account instruction when sending secondary token to account containing token', async () => {
+    const provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
+    const msg = provider.createMsg({
+      from: '5UghpDRDYPger6vqVCrvvvRQsg3NZ5CNzJWfPyKTZpf2',
+      to: 'EwSJ1V4zGUbJBbURwBViezwEo8Ei8UkSDigg9dvBmQXk',
+      contractAddress: 'Hg675ypQpBUwP3wiWjq8pFQxr6rjnT2QRH4Vi519jdiP',
+      amount: '0.0001',
+    });
+    const builtMsg = await msg.buildTx();
+    const tx = builtMsg.tx as SolanaTransaction;
+    expect(tx.instructions.length).toBe(1);
+    expect(tx.instructions[0].programId).toBe(TOKEN_PROGRAM_ID);
   });
 });
