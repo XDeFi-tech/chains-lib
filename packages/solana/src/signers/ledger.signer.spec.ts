@@ -73,8 +73,8 @@ describe('ledger.signer', () => {
 
     await signer.sign(message, "44'/501'/0'");
 
-    expect(message.signedTransaction.toString('hex')).toBe(
-      '016132ba1ca152cf3fdf70bc76ac49f3c0fe7468f24e7d051ba11ebf2b8c4e30a14c97623fa089924f9320026cabfc412f242bc0db8e405d9c7ea6e608f8d4120a0100010316821af3d7d203354d558ce9f6828ce040fe388541c1b7cdadc9dcd03bda42fba216d8118c45c50f08f511fcbffa02d9e23f670c8765b135be2d58ef49bb95990000000000000000000000000000000000000000000000000000000000000000de371d4c7efe41c73e69650c01ee6f845716e0578dcbb8cc6760f31cfab73d0d01020200010c020000008096980000000000'
+    expect(message.signedTransaction.sig).toBe(
+      '2wiGcgsNdq2qHMHrLpsjf7PJz9PqndHSE6kCyZjMTo45ZzhmT95GLXYLWmsCT6mF8vGubdBdUnsL9yfHNuH8HNfB'
     );
   });
 

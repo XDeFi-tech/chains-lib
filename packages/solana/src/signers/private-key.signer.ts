@@ -44,8 +44,19 @@ export class PrivateKeySigner extends Signer.Provider {
     if (!serializedTx) {
       throw new Error('Failed to serialize transaction');
     }
+    const pubKey = account.publicKey.toBase58();
+    const signedTransaction = VersionedTransaction.deserialize(serializedTx);
+    const signatureIndex =
+      signedTransaction.message.staticAccountKeys.findIndex(
+        (pKey) => pKey.toBase58() === pubKey
+      );
 
-    msg.sign(serializedTx);
+    const signature = bs58.encode(signedTransaction.signatures[signatureIndex]);
+
+    msg.sign({
+      pubKey,
+      sig: signature,
+    });
   }
 
   async signMessage(msg: ChainMsg): Promise<SolanaSignature> {
