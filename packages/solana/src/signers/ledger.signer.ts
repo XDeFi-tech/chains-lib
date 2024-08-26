@@ -6,6 +6,7 @@ import {
 } from '@solana/web3.js';
 import Transport from '@ledgerhq/hw-transport';
 import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import bs58 from 'bs58';
 
 import { ChainMsg } from '../msg';
 
@@ -54,9 +55,13 @@ export class LedgerSigner extends Signer.Provider {
     }
 
     const addressBuffer = await app.getAddress(derivation);
-    tx.addSignature(new PublicKey(addressBuffer.address), signedTx.signature);
+    const pubKey = new PublicKey(addressBuffer.address);
+    const signature = bs58.encode(signedTx.signature);
 
-    msg.sign(tx.serialize());
+    msg.sign({
+      pubKey,
+      sig: signature,
+    });
   }
 }
 

@@ -28,6 +28,7 @@ import bs58 from 'bs58';
 
 import type { SolanaProvider } from './chain.provider';
 import { DEFAULT_FEE } from './constants';
+import { SolanaSignature } from './types';
 
 export interface MsgBody {
   amount: NumberIsh;
@@ -64,7 +65,7 @@ export enum TransactionType {
 }
 
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
-  declare signedTransaction: Buffer;
+  declare signedTransaction: SolanaSignature;
   declare provider: SolanaProvider;
 
   constructor(data: MsgBody, provider: SolanaProvider, encoding: MsgEncoding) {

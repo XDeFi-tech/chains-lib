@@ -15,8 +15,13 @@ import {
   TransactionData,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { Connection, PublicKey } from '@solana/web3.js';
+import {
+  Connection,
+  PublicKey,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
 import { some } from 'lodash';
+import bs58 from 'bs58';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
@@ -81,8 +86,15 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
 
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
+      const { tx: _tx } = await msg.buildTx();
+      const pubKey = new PublicKey(msg.signedTransaction.pubKey);
+      const base58Sig = bs58.decode(msg.signedTransaction.sig);
+      const buffer = Buffer.from(base58Sig);
+      const tx = _tx as SolanaTransaction;
+      tx.addSignature(pubKey, buffer);
+      const serializeTx = tx.serialize({ verifySignatures: false });
       const hash = await this.rpcProvider.sendRawTransaction(
-        msg.signedTransaction,
+        Buffer.from(serializeTx),
         {
           skipPreflight: true,
           maxRetries: 2,
