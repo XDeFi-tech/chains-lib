@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.2
+
+### Patch Changes
+
+- f12c368f: fix solana signing
+
 ## 2.1.1
 
 ### Patch Changes
