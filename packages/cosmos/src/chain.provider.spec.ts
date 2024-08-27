@@ -120,7 +120,7 @@ describe('chain.provider', () => {
     expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
   });
 
-  it('estimatFee() should return fee estimation with encoding string msg', async () => {
+  it('estimateFee() should return fee estimation with encoding string message using IndexerDataSource', async () => {
     const osmosisProvider = new CosmosProvider(
       new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
     );
@@ -137,7 +137,41 @@ describe('chain.provider', () => {
     expect(estimateFee[0].gasLimit).toBeTruthy();
   });
 
-  it('estimateFee() should return fee estimation with encoding json msg', async () => {
+  it('estimateFee() should return fee estimation with encoding string message using ChainDataSource', async () => {
+    const osmosisProvider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+    const msg = osmosisProvider.createMsg(
+      {
+        data: '{"signDoc":{"accountNumber":"2551461","chainId":"osmosis-1","fee":{"gas":"318939","amount":[{"amount":"1196","denom":"uosmo"}]},"memo":"FE","msgs":[{"typeUrl":"/osmosis.gamm.v1beta1.MsgSwapExactAmountIn","value":{"routes":[{"poolId":"1400","tokenOutDenom":"ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2"}],"sender":"osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf","tokenIn":{"amount":"5000000","denom":"uosmo"},"tokenOutMinAmount":"370642"}}],"sequence":"6","timeoutHeight":"18897301"},"signer":"osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf"}',
+      },
+      MsgEncoding.string
+    );
+    const estimateFee = await osmosisProvider.estimateFee(
+      [msg],
+      GasFeeSpeed.low
+    );
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+
+  it('estimateFee() should return fee estimation with encoding json message using IndexerDataSource', async () => {
+    const provider = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+    const msg = provider.createMsg({
+      from: 'cosmos1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn0cwydm',
+      to: 'cosmos1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn0cwydm',
+      amount: 0.000001,
+    });
+
+    const estimateFee = await provider.estimateFee([msg], GasFeeSpeed.medium);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+
+  it('estimateFee() should return fee estimation with encoding json message using ChainDataSource', async () => {
+    const provider = new CosmosProvider(
+      new ChainDataSource(COSMOS_MANIFESTS.osmosis)
+    );
     const msg = provider.createMsg({
       from: 'cosmos1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn0cwydm',
       to: 'cosmos1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn0cwydm',
