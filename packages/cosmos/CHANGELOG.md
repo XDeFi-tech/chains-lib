@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.40
+
+### Patch Changes
+
+- 14b88161: chore: align fee estimation on ChainDatasource with IndexDatasource
+- f28122bc: fix: estimateFee for stargaze NFTs
+
 ## 2.0.39
 
 ### Patch Changes
