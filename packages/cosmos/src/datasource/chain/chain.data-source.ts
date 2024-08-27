@@ -37,6 +37,10 @@ import { CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
 import { ChainMsg } from '../../msg';
 import { COSMOS_ADDRESS_CHAIN } from '../../manifests';
+import { MsgSwapExactAmountIn } from '../../proto_export/osmosis/gamm/v1beta1/tx';
+import { MsgSwapExactAmountIn as MsgSwapExactAmountInPoolManager } from '../../proto_export/osmosis/poolmanager/v1beta1/tx';
+import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -174,26 +178,8 @@ export class ChainDataSource extends DataSource {
 
   async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     let fromAddress = '';
-    const _msgs = msgs.map((m) => {
-      const messageData = m.toData();
-      fromAddress = messageData.from;
-      return {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: MsgSend.encode({
-          fromAddress: messageData.from,
-          toAddress: messageData.to,
-          amount: [
-            {
-              denom: this.manifest.denom,
-              amount: String(
-                messageData.amount * Math.pow(10, this.manifest.decimals)
-              ),
-            },
-          ],
-        }).finish(),
-      };
-    });
-
+    const feeData: FeeData[] = [];
+    const gasFeeOptions = await this.gasFeeOptions();
     const _feeAmount = msgs.map((m) => {
       const messageData = m.toData();
       if (messageData.feeOptions) {
@@ -212,53 +198,148 @@ export class ChainDataSource extends DataSource {
       };
     });
 
-    const account = await this.getAccount(fromAddress);
-    if (!account) {
-      return [
-        {
+    for (let index = 0; index < msgs.length; index++) {
+      const m = msgs[index];
+      const messageData =
+        m.encoding === 'string' ? await m.buildTx() : await m.toData();
+      fromAddress = messageData.from;
+      const _msgs: any[] = [];
+      if (messageData.msgs?.length) {
+        messageData.msgs.map((msgTransfer: any) => {
+          if (msgTransfer.typeUrl === MsgTransfer.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgTransfer.typeUrl,
+              value: MsgTransfer.encode(
+                MsgTransfer.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (
+            msgTransfer.typeUrl === MsgSwapExactAmountInPoolManager.typeUrl
+          ) {
+            _msgs.push({
+              typeUrl: MsgSwapExactAmountInPoolManager.typeUrl,
+              value: MsgSwapExactAmountInPoolManager.encode(
+                MsgSwapExactAmountInPoolManager.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgSwapExactAmountIn.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgSwapExactAmountIn.typeUrl,
+              value: MsgSwapExactAmountIn.encode(
+                MsgSwapExactAmountIn.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          }
+        });
+      } else {
+        const msgsToSend = m.getMsgToSend();
+        msgsToSend.map((msgTransfer: any) => {
+          if (msgTransfer.typeUrl === MsgTransfer.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgTransfer.typeUrl,
+              value: MsgTransfer.encode(
+                MsgTransfer.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (
+            msgTransfer.typeUrl === MsgSwapExactAmountInPoolManager.typeUrl
+          ) {
+            _msgs.push({
+              typeUrl: MsgSwapExactAmountInPoolManager.typeUrl,
+              value: MsgSwapExactAmountInPoolManager.encode(
+                MsgSwapExactAmountInPoolManager.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgSwapExactAmountIn.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgSwapExactAmountIn.typeUrl,
+              value: MsgSwapExactAmountIn.encode(
+                MsgSwapExactAmountIn.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgSend.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgSend.typeUrl,
+              value: MsgSend.encode(
+                MsgSend.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgExecuteContract.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgExecuteContract.typeUrl,
+              value: MsgExecuteContract.encode(
+                MsgExecuteContract.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          }
+        });
+      }
+
+      const account = await this.getAccount(fromAddress);
+      if (!account) {
+        feeData.push({
           gasLimit: 200000,
           gasPrice: this.manifest.feeGasStep[speed],
-        },
-      ];
-    }
-    const tx = TxRaw.encode({
-      bodyBytes: TxBody.encode(
-        TxBody.fromPartial({
-          messages: _msgs,
-          memo: undefined,
-        })
-      ).finish(),
-      authInfoBytes: AuthInfo.encode({
-        signerInfos: [
-          SignerInfo.fromPartial({
-            modeInfo: {
-              single: {
-                mode: SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
-              },
-              multi: void 0,
-            },
-            sequence: BigInt(account.sequence),
-          }),
-        ],
-        fee: Fee.fromPartial({
-          amount: _feeAmount as any,
-        }),
-      }).finish(),
-      signatures: [new Uint8Array(64)],
-    }).finish();
-    const { data } = await this.lcdAxiosClient.post(
-      '/cosmos/tx/v1beta1/simulate',
-      {
-        txBytes: Buffer.from(tx).toString('base64'),
+        });
+        continue;
       }
-    );
 
-    return [
-      {
+      let tx;
+      if (messageData.signDoc?.bodyBytes) {
+        tx = TxRaw.encode({
+          bodyBytes: Uint8Array.from(
+            Object.values(messageData.signDoc.bodyBytes)
+          ),
+          authInfoBytes: Uint8Array.from(
+            Object.values(messageData.signDoc.authInfoBytes)
+          ),
+          signatures: [new Uint8Array(64)],
+        }).finish();
+      } else {
+        tx = TxRaw.encode({
+          bodyBytes: TxBody.encode(
+            TxBody.fromPartial({
+              messages: _msgs,
+              memo: undefined,
+            })
+          ).finish(),
+          authInfoBytes: AuthInfo.encode({
+            signerInfos: [
+              SignerInfo.fromPartial({
+                modeInfo: {
+                  single: {
+                    mode: SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
+                  },
+                  multi: void 0,
+                },
+                sequence: BigInt(account.sequence),
+              }),
+            ],
+            fee: Fee.fromPartial({
+              amount: _feeAmount as any,
+            }),
+          }).finish(),
+          signatures: [new Uint8Array(64)],
+        }).finish();
+      }
+
+      const { data } = await this.lcdAxiosClient
+        .post('/cosmos/tx/v1beta1/simulate', {
+          txBytes: Buffer.from(tx).toString('base64'),
+        })
+        .catch((e) => {
+          throw new Error(e?.response?.data?.message ?? 'Error');
+        });
+
+      feeData.push({
         gasLimit: Math.ceil(parseInt(data.gas_info.gas_used) * 2),
-        gasPrice: this.manifest.feeGasStep[speed],
-      },
-    ];
+        gasPrice: gasFeeOptions
+          ? (gasFeeOptions[speed] as number)
+          : this.manifest.feeGasStep[speed],
+      });
+    }
+
+    return feeData;
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
