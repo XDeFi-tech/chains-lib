@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import Long from 'long';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 import { StdSignature } from '@cosmjs/amino';
+import { toUtf8 } from '@cosmjs/encoding';
 
 import { MsgTransfer } from './proto_export/ibc/applications/transfer/v1/tx';
 import { MessageComposer as MessageComposerIbc } from './proto_export/ibc/applications/transfer/v1/tx.registry';
@@ -272,12 +273,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
             sender: msgData.from,
             contract: msgData.contractAddress,
             funds: [],
-            msg: {
-              transfer_nft: {
-                recipient: msgData.to,
-                token_id: msgData.nftId,
-              },
-            },
+            msg: toUtf8(
+              JSON.stringify({
+                transfer_nft: {
+                  recipient: msgData.to,
+                  token_id: msgData.nftId,
+                },
+              })
+            ),
           },
         },
       ];

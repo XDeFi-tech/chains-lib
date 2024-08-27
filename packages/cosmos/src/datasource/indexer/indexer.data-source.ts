@@ -24,7 +24,7 @@ import {
   TxRaw,
 } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
-// import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 
 import { ChainMsg } from '../../msg';
 import * as manifests from '../../manifests';
@@ -219,6 +219,13 @@ export class IndexerDataSource extends DataSource {
               typeUrl: MsgSend.typeUrl,
               value: MsgSend.encode(
                 MsgSend.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgExecuteContract.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgExecuteContract.typeUrl,
+              value: MsgExecuteContract.encode(
+                MsgExecuteContract.fromPartial(msgTransfer.value)
               ).finish(),
             });
           }
