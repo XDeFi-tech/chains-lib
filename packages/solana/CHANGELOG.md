@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.3
+
+### Patch Changes
+
+- 4b849010: fix: logic to handle getAccount errors
+
 ## 2.1.2
 
 ### Patch Changes
