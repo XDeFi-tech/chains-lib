@@ -5,7 +5,12 @@ import {
   Transaction,
   TransactionData,
 } from '@xdefi-tech/chains-core';
-import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+import {
+  IUtxoProvider,
+  MsgBody,
+  UtxoProvider,
+  UtxoProviderOptions,
+} from '@xdefi-tech/chains-utxo';
 import bchaddr from 'bchaddrjs';
 
 import { IndexerDataSource } from './datasource';
@@ -16,8 +21,15 @@ import { ChainMsg } from './msg';
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BitcoinCashProvider extends UtxoProvider<ChainMsg> {
+export class BitcoinCashProvider
+  extends UtxoProvider<ChainMsg>
+  implements IUtxoProvider
+{
   declare dataSource: IndexerDataSource;
+
+  constructor(dataSource: IndexerDataSource, options?: UtxoProviderOptions) {
+    super(dataSource, options);
+  }
 
   createMsg(
     data: MsgBody,
