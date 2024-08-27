@@ -23,6 +23,8 @@ import {
   getAssociatedTokenAddress,
   getMint,
   TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
+  TokenInvalidAccountOwnerError,
 } from '@solana/spl-token';
 import bs58 from 'bs58';
 
@@ -137,14 +139,19 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       try {
         await getAccount(this.provider.rpcProvider, toTokenAcc);
       } catch (error) {
-        transaction.add(
-          createAssociatedTokenAccountInstruction(
-            senderPublicKey,
-            toTokenAcc,
-            recipientPublicKey,
-            mint.address
-          )
-        );
+        if (
+          error instanceof TokenAccountNotFoundError ||
+          error instanceof TokenInvalidAccountOwnerError
+        ) {
+          transaction.add(
+            createAssociatedTokenAccountInstruction(
+              senderPublicKey,
+              toTokenAcc,
+              recipientPublicKey,
+              mint.address
+            )
+          );
+        }
       }
       contractInfo.contractAddress = msgData.contractAddress;
       contractInfo.toTokenAddress = toTokenAcc.toBase58();
