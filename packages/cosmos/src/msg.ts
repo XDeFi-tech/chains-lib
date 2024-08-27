@@ -414,13 +414,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const _msgs = this.getMsgToSend();
     const feeOptions = msgData.feeOptions;
 
-    if (!msgData.gasLimit && !msgData.gasPrice && this.provider) {
+    if (!msgData.gasLimit || !msgData.gasPrice) {
       const [feeEstimation] = await this.provider.estimateFee(
         [this],
         GasFeeSpeed.medium
       );
-      msgData.gasLimit = feeEstimation.gasLimit;
-      msgData.gasPrice = feeEstimation.gasPrice;
+      msgData.gasLimit = msgData.gasLimit ?? feeEstimation.gasLimit;
+      msgData.gasPrice = msgData.gasPrice ?? feeEstimation.gasPrice;
     }
 
     const fee = {

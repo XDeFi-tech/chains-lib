@@ -299,26 +299,35 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
   }
 
   async buildTx(): Promise<TxData> {
-    let msgData = this.toData();
-
-    if (this.provider) {
-      if (!msgData.gasLimit) {
-        const [feeData] = await this.provider.estimateFee(
-          [this],
-          GasFeeSpeed.medium
-        );
-        msgData = { ...msgData, ...feeData };
-      }
-      if (!msgData.nonce) {
-        msgData.nonce = await this.provider.getNonce(msgData.from);
-      }
-      if (!msgData.chainId) {
-        msgData.chainId = this.provider.manifest.chainId;
-      }
-    }
+    const msgData = this.toData();
+    const [feeData] = await this.provider.estimateFee(
+      [this],
+      GasFeeSpeed.medium
+    );
 
     if (!msgData.gasLimit) {
-      throw new Error('Gas fields are required');
+      msgData.gasLimit = feeData.gasLimit;
+    }
+
+    // If fee info not provided, get legacy gas fee from provider
+    if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
+      msgData.gasPrice = feeData.gasPrice ?? feeData.baseFeePerGas;
+    }
+
+    // If fee info not provided, get EIP1559 gas fee from provider
+    if (
+      msgData.txType !== TransactionType.Legacy &&
+      (!msgData.maxPriorityFeePerGas || !msgData.maxFeePerGas)
+    ) {
+      msgData.maxFeePerGas = feeData.maxFeePerGas;
+      msgData.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
+    }
+
+    if (!msgData.nonce) {
+      msgData.nonce = await this.provider.getNonce(msgData.from);
+    }
+    if (!msgData.chainId) {
+      msgData.chainId = this.provider.manifest.chainId;
     }
 
     if (!msgData.amount) {
@@ -334,24 +343,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       ...(msgData.data && { data: msgData.data }),
     };
 
-    if (
-      msgData.txType !== TransactionType.Legacy &&
-      msgData.maxFeePerGas &&
-      msgData.maxPriorityFeePerGas
-    ) {
+    if (msgData.txType !== TransactionType.Legacy) {
+      if (!msgData.maxFeePerGas || !msgData.maxPriorityFeePerGas) {
+        throw new Error(`Can't get EIP1559 gas fee`);
+      }
       baseTx.maxFeePerGas = utils.toHex(msgData.maxFeePerGas.toString());
       baseTx.maxPriorityFeePerGas = utils.toHex(
         msgData.maxPriorityFeePerGas.toString()
       );
       baseTx.type = 2;
     } else {
-      if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
-        throw new Error(
-          'Legacy transactions required gasPrice and gasLimit fields'
-        );
-      }
       if (!msgData.gasPrice) {
-        throw new Error(`Invalid gasPrice value: ${msgData.gasPrice}`);
+        throw new Error(`Can't get legacy gas fee`);
       }
       baseTx.gasPrice = utils.toHex(msgData.gasPrice.toString());
     }
