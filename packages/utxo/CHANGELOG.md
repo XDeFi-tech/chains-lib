@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.13
+
+### Patch Changes
+
+- 6d09e6b7: feat: fix typescript error with utxo chains
+
 ## 2.0.12
 
 ### Patch Changes
