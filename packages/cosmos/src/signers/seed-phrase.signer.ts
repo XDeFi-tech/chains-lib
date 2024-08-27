@@ -1,7 +1,7 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { TxRaw, SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { AuthInfo, SignDoc, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { bech32 } from 'bech32';
 import {
   stringToPath,
@@ -13,11 +13,9 @@ import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 
-import { CosmosProvider } from '../chain.provider';
 import {
   AminoSignDoc,
   ChainMsg,
-  CosmosChainType,
   CosmosSignMode,
   DirectSignDoc,
   SignMsgSendResponse,
@@ -69,57 +67,43 @@ export class SeedPhraseSigner extends Signer.Provider {
     return wallet.address;
   }
 
-  async sign(
-    msg: ChainMsg,
-    derivation: string,
-    chainType?: CosmosChainType,
-    signMode?: CosmosSignMode
-  ): Promise<void> {
-    if (chainType === CosmosChainType.Cosmos || !chainType) {
-      const signedTx =
-        signMode === CosmosSignMode.SIGN_DIRECT || !signMode
-          ? await this.signDirect(msg)
-          : await this.signAmino(msg);
-      const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
-      const rawTx = Buffer.from(txBytes).toString('base64');
-      msg.sign(rawTx);
-      return;
-    } else if (chainType === CosmosChainType.Terra) {
-      const txData = await msg.buildTx();
-      const clientOptions: Record<string, any> = {};
-      clientOptions[msg.provider.manifest.chainId] = {
-        chainID: msg.provider.manifest.chainId,
-        lcd: msg.provider.manifest.lcdURL,
-        gasAdjustment: 1.75,
-        gasPrices: {
-          uluna: 0.015,
-        },
-        prefix: msg.provider.manifest.prefix, // bech32 prefix, used by the LCD to understand which is the right chain to query
-      };
-      const lcdClient = new LCDClient(clientOptions);
-      const hdPath = stringToPath(derivation);
-      const terraWallet = lcdClient.wallet(
-        new MnemonicKey({
-          mnemonic: this._key,
-          coinType: 330, // optional, default
-          account: parseInt(pathToString(hdPath).split('/')[3]), // optional, default
-          index: parseInt(pathToString(hdPath).split('/')[4]), // optional, default
-        })
+  async sign(msg: ChainMsg, derivation: string): Promise<void> {
+    const { signMode, raw, signDoc } = await msg.buildTx();
+    if (raw) {
+      if (msg.encoding === MsgEncoding.string) {
+        signDoc.bodyBytes = Uint8Array.from(Object.values(signDoc.bodyBytes));
+        signDoc.authInfoBytes = Uint8Array.from(
+          Object.values(signDoc.authInfoBytes)
+        );
+        const authInfo = AuthInfo.decode(signDoc.authInfoBytes);
+        signDoc.authInfoBytes = AuthInfo.encode(authInfo).finish();
+      }
+      const res = await this.signRawTransaction(
+        signDoc,
+        msg.provider.manifest.prefix,
+        signMode
       );
-
-      const tx = await terraWallet.createAndSignTx({
-        msgs: [txData.msgs],
-        chainID: msg.provider.manifest.chainId,
-      });
-
-      msg.sign(Buffer.from(tx.toBytes()).toString('base64'));
+      msg.sign(res);
+      return;
+    } else {
+      if (signMode === CosmosSignMode.SIGN_DIRECT || !signMode) {
+        const signedTx = await this.signDirect(msg, derivation);
+        const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+        const rawTx = Buffer.from(txBytes).toString('base64');
+        msg.sign(rawTx);
+        return;
+      }
+      const signedTx = await this.signAmino(msg, derivation);
+      msg.sign(signedTx);
     }
+    return;
   }
 
-  async signDirect(msg: ChainMsg) {
+  async signDirect(msg: ChainMsg, derivation?: string) {
     const txData = await msg.buildTx();
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
       prefix: msg.provider.manifest.prefix,
+      hdPaths: derivation ? [stringToPath(derivation) as any] : undefined,
     });
     const [{ address: senderAddress }] = await wallet.getAccounts();
     const client = await SigningStargateClient.connectWithSigner(
@@ -130,10 +114,11 @@ export class SeedPhraseSigner extends Signer.Provider {
     return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
   }
 
-  async signAmino(msg: ChainMsg) {
+  async signAmino(msg: ChainMsg, derivation?: string) {
     const txData = await msg.buildTx();
     const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
       prefix: msg.provider.manifest.prefix,
+      hdPaths: derivation ? [stringToPath(derivation)] : undefined,
     });
     const [{ address: senderAddress }] = await wallet.getAccounts();
     const client = await SigningStargateClient.connectWithSigner(
@@ -146,10 +131,12 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async signAminoRawTransaction(
     signDoc: AminoSignDoc,
-    provider: CosmosProvider
+    prefix: string,
+    derivation?: string
   ): Promise<SignMsgSendResponse> {
     const wallet = await Secp256k1HdWallet.fromMnemonic(this.key, {
-      prefix: provider.manifest.prefix,
+      prefix,
+      hdPaths: derivation ? [stringToPath(derivation)] : undefined,
     });
     const [{ address: senderAddress }] = await wallet.getAccounts();
     return wallet.signAmino(senderAddress, signDoc);
@@ -157,10 +144,12 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async signDirectRawTransaction(
     signDoc: DirectSignDoc,
-    provider: CosmosProvider
+    prefix: string,
+    derivation?: string
   ): Promise<SignMsgSendResponse> {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.key, {
-      prefix: provider.manifest.prefix,
+      prefix,
+      hdPaths: derivation ? [stringToPath(derivation) as any] : undefined,
     });
     const [{ address: senderAddress }] = await wallet.getAccounts();
 
@@ -177,12 +166,21 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async signRawTransaction(
     signDoc: AminoSignDoc | DirectSignDoc,
-    provider: CosmosProvider,
-    signMode: CosmosSignMode
+    prefix: string,
+    signMode: CosmosSignMode,
+    derivation?: string
   ): Promise<SignMsgSendResponse> {
     return signMode === CosmosSignMode.SIGN_AMINO
-      ? this.signAminoRawTransaction(signDoc as AminoSignDoc, provider)
-      : this.signDirectRawTransaction(signDoc as DirectSignDoc, provider);
+      ? this.signAminoRawTransaction(
+          signDoc as AminoSignDoc,
+          prefix,
+          derivation
+        )
+      : this.signDirectRawTransaction(
+          signDoc as DirectSignDoc,
+          prefix,
+          derivation
+        );
   }
 
   async verifyMessage(

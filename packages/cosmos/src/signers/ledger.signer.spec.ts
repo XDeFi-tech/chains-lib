@@ -6,7 +6,7 @@ import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS } from '../manifests';
-import { ChainMsg, MsgBody } from '../msg';
+import { ChainMsg, CosmosSignMode, MsgBody } from '../msg';
 
 import LedgerSigner from './ledger.signer';
 jest.mock('@ledgerhq/hw-transport-webhid', () => ({
@@ -173,8 +173,9 @@ describe('cosmos::ledger.signer', () => {
     };
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      derivationPath,
-      'cosmos'
+      'cosmos',
+      CosmosSignMode.SIGN_AMINO,
+      derivationPath
     );
     expect(signedTx.signature.pub_key.value).toEqual(
       'A92jmyLB+OLC0R2jvEUX+AtGGqafEOdh40V29PCcz6Hu'
