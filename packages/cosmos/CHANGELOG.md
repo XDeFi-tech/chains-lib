@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.42
+
+### Patch Changes
+
+- ee444743: feat: add logic to calculate gasPrice when not provided
+
 ## 2.0.41
 
 ### Patch Changes
