@@ -81,6 +81,17 @@ const response = await provider.getBalance(
   ['0x0000000000000000000000000000000000000000'] // List token addresses
 );
 const data = await response.getData();
+
+// Fetcher balance with after block
+// Some RPC providers have a limit on the number of blocks that can be fetched in a single request.
+// In this case, you can use the afterBlock parameter to fetch the balance from a specific block number.
+const afterBlock =
+  (await provider.rpcProvider.getBlockNumber()) - limitationBlock;
+const response = await provider.getBalance(
+  '0x1234567890123456789012345678901234567890',
+  afterBlock // Default value is latest block number - 1000
+);
+const data = await response.getData();
 ```
 
 ## Usage ethers provides
