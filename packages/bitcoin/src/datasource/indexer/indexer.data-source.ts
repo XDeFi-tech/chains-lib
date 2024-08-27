@@ -14,7 +14,7 @@ import {
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
-import { UTXO, UTXOManifest } from '@xdefi-tech/chains-utxo';
+import { UTXO, type UTXOManifest } from '@xdefi-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 

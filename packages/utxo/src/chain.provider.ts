@@ -22,6 +22,30 @@ export interface UtxoProviderOptions extends Chain.IOptions {
   apiKey?: string;
 }
 
+export interface IUtxoProvider {
+  getTransactions(
+    address: string,
+    afterBlock?: number | string
+  ): Promise<Response<Transaction[], Transaction>>;
+  estimateFee(messages: Msg[], speed: GasFeeSpeed): Promise<FeeData[]>;
+  getNFTBalance(address: string): Promise<any>;
+  getBalance(address: string): Promise<Response<Coin[], Balance[]>>;
+  gasFeeOptions(): Promise<FeeOptions | null>;
+  getNonce(address: string): Promise<number>;
+  broadcast(messages: Msg[]): Promise<Transaction[]>;
+  getTransaction(txHash: string): Promise<TransactionData | null>;
+  get manifest(): UTXOManifest;
+  /**
+   * Scans for UTXOs associated with a given address. This method should be overridden in subclasses
+   * that handle UTXO-based chains, providing a specific implementation for scanning UTXOs.
+   *
+   * @param {string} _address The address for which to scan UTXOs.
+   * @returns A promise that resolves to the scanned UTXOs.
+   * @throws {Error} Throws an error if the method is not implemented.
+   */
+  scanUTXOs(_address: string): Promise<UTXO[]>;
+}
+
 export class UtxoProvider<
   ChainMsg extends Msg = Msg
 > extends Chain.Provider<ChainMsg> {
