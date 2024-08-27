@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.46
+
+### Patch Changes
+
+- ee444743: feat: add logic to calculate gasPrice when not provided
+
 ## 2.0.45
 
 ### Patch Changes
