@@ -112,13 +112,8 @@ describe('private-key.signer', () => {
     );
   });
 
-  it('should sign direct a transaction using a private key', async () => {
+  it('should sign a transaction using a private key', async () => {
     await cosmosSigner.sign(message);
-    expect(message.signedTransaction).toBeTruthy();
-  });
-
-  it('should sign amimo a transaction using a private key', async () => {
-    await cosmosSigner.sign(message, '');
     expect(message.signedTransaction).toBeTruthy();
   });
 
@@ -171,7 +166,7 @@ describe('private-key.signer', () => {
     expect(result).toBe(false);
   });
 
-  it('Should create msg adn sign it with direct mode', async () => {
+  it('Should create msg adn sign it', async () => {
     const chainMsg = provider.createMsg(txInput);
 
     const txData = await chainMsg.buildTx();

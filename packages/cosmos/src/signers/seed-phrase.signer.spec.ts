@@ -109,7 +109,7 @@ describe('seed-phrase.signer', () => {
     );
   });
 
-  it('should sign direct a transaction using a seed phrase', async () => {
+  it('should sign a transaction using a seed phrase', async () => {
     const originalEncode = TxRaw.encode;
     TxRaw.encode = jest.fn().mockImplementation(() => {
       return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
@@ -118,21 +118,6 @@ describe('seed-phrase.signer', () => {
     await signer.sign(message, derivations.cosmos);
     expect(message.signedTransaction).toBeTruthy();
 
-    TxRaw.encode = originalEncode;
-  });
-
-  it('should sign amino a transaction using a seed phrase', async () => {
-    const originalEncode = TxRaw.encode;
-    TxRaw.encode = jest.fn().mockImplementation(() => {
-      return { finish: jest.fn().mockReturnValue(Uint8Array.from([1, 1, 1])) };
-    });
-    await signer.sign(
-      message,
-      derivations.cosmos,
-      CosmosChainType.Cosmos,
-      CosmosSignMode.SIGN_AMINO
-    );
-    expect(message.signedTransaction).toBeTruthy();
     TxRaw.encode = originalEncode;
   });
 
@@ -161,7 +146,7 @@ describe('seed-phrase.signer', () => {
     const signer = new SeedPhraseSigner(mnemonic);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_AMINO
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -192,7 +177,7 @@ describe('seed-phrase.signer', () => {
     const signer = new SeedPhraseSigner(mnemonic);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_DIRECT
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -227,7 +212,7 @@ describe('seed-phrase.signer', () => {
     const signer = new SeedPhraseSigner(mnemonic);
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_AMINO
     );
     expect(signedTx.signature.pub_key.value).toEqual(
@@ -269,7 +254,7 @@ describe('seed-phrase.signer', () => {
     });
     const signedTx = await signer.signRawTransaction(
       signDoc,
-      provider,
+      provider.manifest.prefix,
       CosmosSignMode.SIGN_DIRECT
     );
     expect(signedTx.signature.pub_key.value).toEqual(
