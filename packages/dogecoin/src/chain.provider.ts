@@ -5,7 +5,12 @@ import {
   Transaction,
   TransactionData,
 } from '@xdefi-tech/chains-core';
-import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+import {
+  IUtxoProvider,
+  MsgBody,
+  UtxoProvider,
+  type UtxoProviderOptions,
+} from '@xdefi-tech/chains-utxo';
 import coininfo from 'coininfo';
 import * as btc from '@scure/btc-signer';
 
@@ -17,7 +22,10 @@ import { ChainMsg } from './msg';
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class DogecoinProvider extends UtxoProvider<ChainMsg> {
+export class DogecoinProvider
+  extends UtxoProvider<ChainMsg>
+  implements IUtxoProvider
+{
   declare dataSource: IndexerDataSource;
 
   createMsg(
@@ -25,6 +33,10 @@ export class DogecoinProvider extends UtxoProvider<ChainMsg> {
     encoding: MsgEncoding = MsgEncoding.object
   ): ChainMsg {
     return new ChainMsg(data, this, encoding);
+  }
+
+  constructor(dataSource: IndexerDataSource, options?: UtxoProviderOptions) {
+    super(dataSource, options);
   }
 
   static get dataSourceList() {

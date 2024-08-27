@@ -1,28 +1,38 @@
 import {
   Chain,
   ChainDecorator,
+  DataSource,
   MsgEncoding,
   Transaction,
   TransactionData,
 } from '@xdefi-tech/chains-core';
-import { UtxoProvider } from '@xdefi-tech/chains-utxo';
+import {
+  IUtxoProvider,
+  UtxoProvider,
+  UtxoProviderOptions,
+} from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg, MsgBody } from './msg';
-
 @ChainDecorator('BitcoinProvider', {
   deps: [],
   providerType: 'UTXO',
   features: [Chain.ChainFeatures.TOKENS],
 })
-export class BitcoinProvider extends UtxoProvider<ChainMsg> {
+export class BitcoinProvider
+  extends UtxoProvider<ChainMsg>
+  implements IUtxoProvider
+{
   declare dataSource: IndexerDataSource;
 
   static get dataSourceList() {
     return {
       IndexerDataSource: IndexerDataSource,
     };
+  }
+  constructor(dataSource: IndexerDataSource, options?: UtxoProviderOptions) {
+    super(dataSource, options);
   }
 
   createMsg(data: MsgBody, encoding: MsgEncoding = MsgEncoding.object) {
