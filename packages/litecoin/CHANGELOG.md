@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.1
+
+### Patch Changes
+
+- 6d09e6b7: feat: fix typescript error with utxo chains
+- Updated dependencies [6d09e6b7]
+  - @xdefi-tech/chains-utxo@2.0.13
+
 ## 2.1.0
 
 ### Minor Changes

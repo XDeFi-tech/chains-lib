@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.41
+
+### Patch Changes
+
+- 5c8da390: chore: align HW signers & SeedPhrase signer with the PK signer
+
 ## 2.0.40
 
 ### Patch Changes
