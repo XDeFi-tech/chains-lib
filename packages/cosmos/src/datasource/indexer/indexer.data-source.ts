@@ -33,6 +33,7 @@ import { MsgSwapExactAmountIn } from '../../proto_export/osmosis/gamm/v1beta1/tx
 import { MsgSwapExactAmountIn as MsgSwapExactAmountInPoolManager } from '../../proto_export/osmosis/poolmanager/v1beta1/tx';
 import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
 import { MsgSend } from '../../proto_export/cosmos/bank/v1beta1/tx';
+import { isIBCPayload } from '../../utils';
 
 import { getBalance, getFees, getTransactions, getNFTBalance } from './queries';
 
@@ -157,10 +158,16 @@ export class IndexerDataSource extends DataSource {
     });
     for (let index = 0; index < msgs.length; index++) {
       const m = msgs[index];
-      const messageData =
+      let messageData =
         m.encoding === 'string' ? await m.buildTx() : await m.toData();
       fromAddress = messageData.from;
       const _msgs: any[] = [];
+      if (isIBCPayload(messageData)) {
+        const iBCTransferMsgs = await m.provider.createIBCTransferMsg(
+          messageData
+        );
+        messageData = iBCTransferMsgs[0];
+      }
       if (messageData.msgs?.length) {
         messageData.msgs.map((msgTransfer: any) => {
           if (msgTransfer.typeUrl === MsgTransfer.typeUrl) {
