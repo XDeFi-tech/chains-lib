@@ -37,6 +37,7 @@ import {
   getIBCDestAsset,
   getIBCTokenInfo,
   getIBCTransferRouter,
+  isIBCPayload,
   skipAxiosClient,
 } from './utils';
 
@@ -319,6 +320,7 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
       getIBCTransferRouter,
       createIBCTransferMsg,
       getIBCDestAsset,
+      isIBCPayload,
     };
   }
 

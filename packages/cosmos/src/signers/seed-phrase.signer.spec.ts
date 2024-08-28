@@ -8,7 +8,7 @@ import { makeMultisignedTxBytes } from '@cosmjs/stargate';
 import { CosmosProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { COSMOS_MANIFESTS, CosmosHubChains } from '../manifests';
-import { ChainMsg, CosmosChainType, CosmosSignMode, MsgBody } from '../msg';
+import { ChainMsg, CosmosSignMode, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 

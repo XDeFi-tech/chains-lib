@@ -7,6 +7,7 @@ import { Registry } from '@cosmjs/proto-signing/build/registry';
 import axios from 'axios';
 import { wasmTypes } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/messages';
 import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate/build/modules/wasm/aminomessages';
+import { MsgData } from '@xdefi-tech/chains-core';
 
 import {
   osmosisProtoRegistry,
@@ -14,6 +15,7 @@ import {
 } from './proto_export/osmosis/client';
 import { COSMOS_MANIFESTS, CosmosHubChains } from './manifests';
 import { MsgBody } from './msg';
+import { IBCPayload } from './chain.provider';
 
 export interface ChainAsset {
   denom: string;
@@ -256,4 +258,14 @@ export const getIBCDestAsset = async (
     originDenom,
     originalChainId,
   };
+};
+
+export const isIBCPayload = (payload: MsgData): payload is IBCPayload => {
+  return (
+    payload.amountIn &&
+    payload.sourceAssetDenom &&
+    payload.sourceAssetChain &&
+    payload.destAssetChain &&
+    payload.addresses
+  );
 };

@@ -8,7 +8,7 @@ import {
   pathToString,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { Wallet } from 'ethers';
-import { MnemonicKey, LCDClient } from '@terra-money/feather.js';
+import { MnemonicKey } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
