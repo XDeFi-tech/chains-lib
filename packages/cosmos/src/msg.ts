@@ -28,6 +28,7 @@ import { MessageComposer as MessageComposerPoolManager } from './proto_export/os
 import { AminoConverter as AminoConverterGamm } from './proto_export/osmosis/gamm/v1beta1/tx.amino';
 import { AminoConverter } from './proto_export/osmosis/poolmanager/v1beta1/tx.amino';
 import { MsgSwapExactAmountIn as PoolManagerMsgSwapExactAmountIn } from './proto_export/osmosis/poolmanager/v1beta1/tx';
+import { isIBCPayload } from './utils';
 
 export type MsgBody = {
   from: string;
@@ -307,7 +308,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
   }
 
   async buildTx() {
-    const msgData = this.toData();
+    let msgData = this.toData();
     let signMode = CosmosSignMode.SIGN_DIRECT;
     const isAmino = (EncodingTypes: object, key: string): boolean => {
       return Object.values(EncodingTypes).find(
@@ -409,6 +410,11 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         to: '',
         value: 0,
       };
+    }
+
+    if (isIBCPayload(msgData)) {
+      const iBCTransferMsgs = await this.provider.createIBCTransferMsg(msgData);
+      msgData = iBCTransferMsgs[0];
     }
 
     const _msgs = this.getMsgToSend();
