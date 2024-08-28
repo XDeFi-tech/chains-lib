@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.43
+
+### Patch Changes
+
+- 0d0096cc: feat: update cosmos sign + estimateFee to automatically adapt inputs to ibc when possible
+
 ## 2.0.42
 
 ### Patch Changes
