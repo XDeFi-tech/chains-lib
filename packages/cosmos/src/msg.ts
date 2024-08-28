@@ -411,13 +411,13 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         value: 0,
       };
     }
-
+    const _msgs = [];
     if (isIBCPayload(msgData)) {
       const iBCTransferMsgs = await this.provider.createIBCTransferMsg(msgData);
       msgData = iBCTransferMsgs[0];
+    } else {
+      _msgs.push(...this.getMsgToSend());
     }
-
-    const _msgs = this.getMsgToSend();
     const feeOptions = msgData.feeOptions;
 
     if (!msgData.gasLimit || !msgData.gasPrice) {
