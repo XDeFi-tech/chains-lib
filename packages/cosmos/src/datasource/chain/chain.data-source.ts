@@ -32,6 +32,7 @@ import {
 } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 
 import { CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
@@ -40,7 +41,7 @@ import { COSMOS_ADDRESS_CHAIN } from '../../manifests';
 import { MsgSwapExactAmountIn } from '../../proto_export/osmosis/gamm/v1beta1/tx';
 import { MsgSwapExactAmountIn as MsgSwapExactAmountInPoolManager } from '../../proto_export/osmosis/poolmanager/v1beta1/tx';
 import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
-import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
+import { isIBCPayload } from '../../utils';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -200,9 +201,15 @@ export class ChainDataSource extends DataSource {
 
     for (let index = 0; index < msgs.length; index++) {
       const m = msgs[index];
-      const messageData =
+      let messageData =
         m.encoding === 'string' ? await m.buildTx() : await m.toData();
       fromAddress = messageData.from;
+      if (isIBCPayload(messageData)) {
+        const iBCTransferMsgs = await m.provider.createIBCTransferMsg(
+          messageData
+        );
+        messageData = iBCTransferMsgs[0];
+      }
       const _msgs: any[] = [];
       if (messageData.msgs?.length) {
         messageData.msgs.map((msgTransfer: any) => {

@@ -284,4 +284,30 @@ describe('chain.provider', () => {
     const estimateFee = await provider.estimateFee([msg], GasFeeSpeed.low);
     expect(estimateFee[0].gasLimit).toBeTruthy();
   });
+
+  it('estimateGas(): for IBC ', async () => {
+    const txInput = {
+      from: 'osmo185zc74a7w2pfxkv6d06t3kdja65tngjgkn6pqg',
+      addresses: {
+        cronos: '0x8d8dC7e30407778532052330dBAC3D3186411e0D',
+        cosmos: 'cosmos185zc74a7w2pfxkv6d06t3kdja65tngjg7gf3k6',
+        stargaze: 'stars185zc74a7w2pfxkv6d06t3kdja65tngjg257vat',
+        akash: 'akash185zc74a7w2pfxkv6d06t3kdja65tngjgnnyk0q',
+        kujira: 'kujira185zc74a7w2pfxkv6d06t3kdja65tngjg0qtfms',
+        sei: 'sei185zc74a7w2pfxkv6d06t3kdja65tngjgnyc8sm',
+        stride: 'stride185zc74a7w2pfxkv6d06t3kdja65tngjgarfdzk',
+        mars: 'mars185zc74a7w2pfxkv6d06t3kdja65tngjgr4sgrp',
+        osmosis: 'osmo185zc74a7w2pfxkv6d06t3kdja65tngjgkn6pqg',
+        axelar: 'axelar1qjn7k284m7ym6rxd2v6h7magwtectyxvhlals0',
+      },
+      amountIn: '0.01',
+      destAssetChain: 'axelar',
+      sourceAssetDenom:
+        'ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E',
+      sourceAssetChain: 'osmosis',
+    };
+    const msg = provider.createMsg(txInput);
+    const estimateFee = await provider.estimateFee([msg], GasFeeSpeed.low);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
 });

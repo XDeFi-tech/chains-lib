@@ -2,7 +2,7 @@ import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
 import Transport from '@ledgerhq/hw-transport';
 import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { TxRaw, SignDoc, AuthInfo } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { TxRaw, AuthInfo } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { bech32 } from 'bech32';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
@@ -10,7 +10,6 @@ import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import {
   AminoSignDoc,
   ChainMsg,
-  CosmosChainType,
   CosmosSignMode,
   DirectSignDoc,
   SignMsgSendResponse,
@@ -97,7 +96,7 @@ export class LedgerSigner extends Signer.Provider {
     return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
   }
 
-  async signDirect(msg: ChainMsg, app: LedgerApp): Promise<TxRaw> {
+  async signDirect(_msg: ChainMsg, _app: LedgerApp): Promise<TxRaw> {
     throw new Error('Ledger Signer not supported SIGN_DIRECT_MODE');
   }
 
@@ -124,7 +123,7 @@ export class LedgerSigner extends Signer.Provider {
   async signDirectRawTransaction(
     signDoc: DirectSignDoc,
     prefix: string,
-    derivation = `m/44'/118'/0'/0/0`
+    _derivation = `m/44'/118'/0'/0/0`
   ): Promise<SignMsgSendResponse> {
     throw new Error('Ledger Signer not supported SIGN_DIRECT_MODE');
   }
