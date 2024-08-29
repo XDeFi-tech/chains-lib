@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.47
+
+### Patch Changes
+
+- 81860b9b: fix: buildTx when maxPriorityFeePerGas is 0
+
 ## 2.0.46
 
 ### Patch Changes
