@@ -344,19 +344,27 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     };
 
     if (msgData.txType !== TransactionType.Legacy) {
-      if (!msgData.maxFeePerGas || !msgData.maxPriorityFeePerGas) {
-        throw new Error(`Can't get EIP1559 gas fee`);
+      if (
+        isNaN(Number(msgData.maxFeePerGas)) ||
+        isNaN(Number(msgData.maxPriorityFeePerGas))
+      ) {
+        throw new Error(
+          `Can't get EIP1559 gas fee. maxFeePerGas: ${msgData.maxFeePerGas}, maxPriorityFeePerGas: ${msgData.maxPriorityFeePerGas}`
+        );
       }
-      baseTx.maxFeePerGas = utils.toHex(msgData.maxFeePerGas.toString());
+
+      baseTx.maxFeePerGas = utils.toHex(msgData.maxFeePerGas!.toString());
       baseTx.maxPriorityFeePerGas = utils.toHex(
-        msgData.maxPriorityFeePerGas.toString()
+        msgData.maxPriorityFeePerGas!.toString()
       );
       baseTx.type = 2;
     } else {
-      if (!msgData.gasPrice) {
-        throw new Error(`Can't get legacy gas fee`);
+      if (isNaN(Number(msgData.gasPrice))) {
+        throw new Error(
+          `Can't get legacy gas fee. gasPrice: ${msgData.gasPrice}`
+        );
       }
-      baseTx.gasPrice = utils.toHex(msgData.gasPrice.toString());
+      baseTx.gasPrice = utils.toHex(msgData.gasPrice!.toString());
     }
 
     const { contractData } = await this.getDataFromContract();

@@ -22,7 +22,7 @@ export class PrivateKeySigner extends Signer.Provider {
 
   async sign(
     msg: ChainMsg,
-    _derivation: string,
+    _derivation?: string,
     signatureType: SignatureType = SignatureType.Transaction
   ): Promise<void> {
     const wallet = new Wallet(this.key);
