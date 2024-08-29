@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.29
+
+### Patch Changes
+
+- 44d3e999: feat: add xdefi-trace-id to debug gql issues
+
 ## 2.0.28
 
 ### Patch Changes

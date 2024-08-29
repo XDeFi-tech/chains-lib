@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.48
+
+### Patch Changes
+
+- 44d3e999: feat: add xdefi-trace-id to debug gql issues
+- Updated dependencies [44d3e999]
+  - @xdefi-tech/chains-core@2.0.29
+
 ## 2.0.47
 
 ### Patch Changes
