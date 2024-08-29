@@ -1,6 +1,7 @@
-import { ApolloClient, split } from '@apollo/client/core';
+import { ApolloClient, split, from } from '@apollo/client/core';
 import { InMemoryCache } from '@apollo/client/cache';
 import { HttpLink } from '@apollo/client/link/http';
+import { onError } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
@@ -47,7 +48,24 @@ const cache = new InMemoryCache({
   },
 });
 
+const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      /* next step improvement: Check error and send it to sentry with traceId */
+
+      const traceId = operation.getContext().response.headers.get('xdefi-trace-id');
+      // eslint-disable-next-line no-console
+      console.debug(`[GQL Error] traceId: ${traceId}`, err?.message);
+    }
+  }
+
+  if (networkError) {
+    // eslint-disable-next-line no-console
+    console.debug(`[GQL Network error]: ${networkError}`);
+  }
+});
+
 export const gqlClient = new ApolloClient({
-  link: splitLink,
+  link: from([errorLink, splitLink]),
   cache,
 });
