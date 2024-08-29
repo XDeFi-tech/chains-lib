@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.2
+
+### Patch Changes
+
+- 7237e67c: fix: fee estimation for mayachain chain.datasource
+
 ## 2.1.1
 
 ### Patch Changes
