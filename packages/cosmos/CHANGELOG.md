@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.45
+
+### Patch Changes
+
+- 34d81da7: fix: asset.decimals field for indexer data-source
+
 ## 2.0.44
 
 ### Patch Changes
