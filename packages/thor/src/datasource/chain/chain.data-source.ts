@@ -190,6 +190,11 @@ export class ChainDataSource extends DataSource {
         const network = `/${this.manifest.chain.toLowerCase()}/network`;
         const { data } = await this.rest.get(network);
 
+        if (!data.native_outbound_fee_rune) {
+          result.push(DEFAULT_FEE_DATA);
+          continue;
+        }
+
         result.push({
           gasLimit: Math.ceil(parseInt(data.native_outbound_fee_rune) * 1.4),
           gasPrice: this.manifest.feeGasStep[speed],
