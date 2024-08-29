@@ -86,7 +86,8 @@ export class IndexerDataSource extends DataSource {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           address: asset.contract!,
           price: asset.price?.amount,
-          decimals: asset.price?.scalingFactor,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          decimals: asset.decimals!,
           priceChange: {
             dayPriceChange: asset.price?.dayPriceChange,
           },
