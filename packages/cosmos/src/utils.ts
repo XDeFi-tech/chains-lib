@@ -269,3 +269,18 @@ export const isIBCPayload = (payload: MsgData): payload is IBCPayload => {
     payload.addresses
   );
 };
+
+// this is required as routing is sometimes returning a denom which is in uppercase which is causing the balance not to be found
+export const sanitiseMsg = (msg: any) => {
+  if (Array.isArray(msg.amount)) {
+    msg.amount = msg.amount.map((amount: { amount: string; denom: string }) => {
+      if (amount.denom && !amount.denom.includes('ibc'))
+        amount.denom = amount.denom.toLowerCase();
+      return amount;
+    });
+  }
+  if (msg?.tokenIn?.denom && !msg.tokenIn.denom.includes('ibc')) {
+    msg.tokenIn.denom = msg.tokenIn.denom.toLowerCase();
+  }
+  return msg;
+};

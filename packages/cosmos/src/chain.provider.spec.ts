@@ -16,7 +16,7 @@ describe('chain.provider', () => {
 
   beforeEach(() => {
     provider = new CosmosProvider(
-      new IndexerDataSource(COSMOS_MANIFESTS.cosmos)
+      new IndexerDataSource(COSMOS_MANIFESTS.axelar)
     );
   });
 
@@ -308,6 +308,138 @@ describe('chain.provider', () => {
     };
     const msg = provider.createMsg(txInput);
     const estimateFee = await provider.estimateFee([msg], GasFeeSpeed.low);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+  it('test sanitiseMsg with tx from routing API', async () => {
+    const data = {
+      chainId: 'osmosis-1',
+      signer: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+      signDoc: {
+        chain_id: 'osmosis-1',
+        account_number: '856691',
+        sequence: '11',
+        fee: { amount: [{ denom: 'uosmo', amount: 20000 }], gas: 500000 },
+        msgs: [
+          {
+            '@type': '/cosmos.bank.v1beta1.MsgSend',
+            amount: [{ amount: '15', denom: 'UION' }],
+            fromAddress: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+            toAddress: 'osmo13djgqp5mmxvcgsr3ykt2pd8c5l4vr5gzz7pyqj',
+          },
+          {
+            '@type': '/osmosis.gamm.v1beta1.MsgSwapExactAmountIn',
+            routes: [
+              { poolId: '1013', tokenOutDenom: 'uosmo' },
+              {
+                poolId: '1086',
+                tokenOutDenom:
+                  'ibc/71F11BC0AF8E526B80E44172EBA9D3F0A8E03950BB882325435691EBC9450B1D',
+              },
+            ],
+            sender: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+            tokenIn: { amount: '4985', denom: 'UION' },
+            tokenOutMinAmount: '2896449',
+          },
+        ],
+        memo: '',
+      },
+      signOptions: { preferNoSetFee: false },
+    };
+    const osmosis = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+    const msg = osmosis.createMsg(
+      { data: JSON.stringify(data) },
+      MsgEncoding.string
+    );
+    const estimateFee = await osmosis.estimateFee([msg], GasFeeSpeed.high);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+  it('test with msg containing MsgExecuteContract', async () => {
+    const data = {
+      chainId: 'osmosis-1',
+      signer: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+      signDoc: {
+        chain_id: 'osmosis-1',
+        account_number: '856691',
+        sequence: '12',
+        fee: { amount: [{ denom: 'uosmo', amount: 20000 }], gas: 500000 },
+        msgs: [
+          {
+            typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
+            value: {
+              sender: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+              contract:
+                'osmo15jw7xccxaxk30lf4xgag8f7aeg53pgkh74e39rv00xfnymldjaas2fk627',
+              msg: [
+                123, 34, 115, 119, 97, 112, 95, 119, 105, 116, 104, 95, 97, 99,
+                116, 105, 111, 110, 34, 58, 32, 123, 34, 115, 119, 97, 112, 95,
+                109, 115, 103, 34, 58, 32, 123, 34, 116, 111, 107, 101, 110, 95,
+                111, 117, 116, 95, 109, 105, 110, 95, 97, 109, 111, 117, 110,
+                116, 34, 58, 32, 34, 49, 50, 50, 48, 49, 53, 34, 44, 32, 34,
+                112, 97, 116, 104, 34, 58, 32, 91, 123, 34, 112, 111, 111, 108,
+                95, 105, 100, 34, 58, 32, 34, 49, 49, 49, 52, 34, 44, 32, 34,
+                116, 111, 107, 101, 110, 95, 111, 117, 116, 95, 100, 101, 110,
+                111, 109, 34, 58, 32, 34, 117, 111, 115, 109, 111, 34, 125, 44,
+                32, 123, 34, 112, 111, 111, 108, 95, 105, 100, 34, 58, 32, 34,
+                49, 34, 44, 32, 34, 116, 111, 107, 101, 110, 95, 111, 117, 116,
+                95, 100, 101, 110, 111, 109, 34, 58, 32, 34, 105, 98, 99, 47,
+                50, 55, 51, 57, 52, 70, 66, 48, 57, 50, 68, 50, 69, 67, 67, 68,
+                53, 54, 49, 50, 51, 67, 55, 52, 70, 51, 54, 69, 52, 67, 49, 70,
+                57, 50, 54, 48, 48, 49, 67, 69, 65, 68, 65, 57, 67, 65, 57, 55,
+                69, 65, 54, 50, 50, 66, 50, 53, 70, 52, 49, 69, 53, 69, 66, 50,
+                34, 125, 93, 125, 44, 32, 34, 97, 102, 116, 101, 114, 95, 115,
+                119, 97, 112, 95, 97, 99, 116, 105, 111, 110, 34, 58, 32, 123,
+                34, 105, 98, 99, 95, 116, 114, 97, 110, 115, 102, 101, 114, 34,
+                58, 32, 123, 34, 114, 101, 99, 101, 105, 118, 101, 114, 34, 58,
+                32, 34, 99, 111, 115, 109, 111, 115, 49, 108, 122, 109, 100,
+                112, 117, 48, 118, 107, 97, 118, 55, 51, 119, 120, 50, 116, 118,
+                51, 113, 103, 121, 102, 109, 99, 97, 110, 115, 102, 56, 102, 55,
+                108, 107, 107, 117, 115, 101, 34, 44, 32, 34, 99, 104, 97, 110,
+                110, 101, 108, 34, 58, 32, 34, 99, 104, 97, 110, 110, 101, 108,
+                45, 48, 34, 125, 125, 44, 32, 34, 108, 111, 99, 97, 108, 95,
+                102, 97, 108, 108, 98, 97, 99, 107, 95, 97, 100, 100, 114, 101,
+                115, 115, 34, 58, 32, 34, 111, 115, 109, 111, 49, 108, 122, 109,
+                100, 112, 117, 48, 118, 107, 97, 118, 55, 51, 119, 120, 50, 116,
+                118, 51, 113, 103, 121, 102, 109, 99, 97, 110, 115, 102, 56,
+                102, 55, 104, 100, 57, 118, 120, 116, 34, 125, 125,
+              ],
+              funds: [
+                {
+                  denom:
+                    'ibc/71F11BC0AF8E526B80E44172EBA9D3F0A8E03950BB882325435691EBC9450B1D',
+                  amount: '1994000',
+                },
+              ],
+            },
+          },
+          {
+            typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+            value: {
+              amount: [
+                {
+                  amount: '6000',
+                  denom:
+                    'ibc/71F11BC0AF8E526B80E44172EBA9D3F0A8E03950BB882325435691EBC9450B1D',
+                },
+              ],
+              fromAddress: 'osmo1lzmdpu0vkav73wx2tv3qgyfmcansf8f7hd9vxt',
+              toAddress: 'osmo13djgqp5mmxvcgsr3ykt2pd8c5l4vr5gzz7pyqj',
+            },
+          },
+        ],
+        memo: '',
+      },
+      signOptions: { preferNoSetFee: false },
+    };
+    const osmosis = new CosmosProvider(
+      new IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+    );
+    const msg = osmosis.createMsg(
+      { data: JSON.stringify(data) },
+      MsgEncoding.string
+    );
+    const estimateFee = await osmosis.estimateFee([msg], GasFeeSpeed.high);
     expect(estimateFee[0].gasLimit).toBeTruthy();
   });
 });
