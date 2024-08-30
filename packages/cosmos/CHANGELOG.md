@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.47
+
+### Patch Changes
+
+- be72f6c7: added MsgExecuteContract and sanitiseMsg
+
 ## 2.0.46
 
 ### Patch Changes
