@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.50
+
+### Patch Changes
+
+- a09cc88b: fix mars gasFeeStep
+
 ## 2.0.49
 
 ### Patch Changes
