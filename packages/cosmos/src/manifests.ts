@@ -270,8 +270,8 @@ export const COSMOS_MANIFESTS: {
     decimals: 6,
     prefix: 'mars',
     feeGasStep: {
-      high: 0,
-      medium: 0,
+      high: 0.01,
+      medium: 0.01,
       low: 0.01,
     },
     maxGapAmount: 0,
