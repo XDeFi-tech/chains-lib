@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.30
+
+### Patch Changes
+
+- 1b543aef: Fix: add getAccountResource to base datasource to use it in FallbackDataSource
+
 ## 2.0.29
 
 ### Patch Changes
