@@ -260,4 +260,11 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       return obj;
     }, []);
   }
+
+  static get dataSourceList() {
+    return {
+      ChainDataSource: ChainDataSource,
+      IndexerDataSource: IndexerDataSource,
+    };
+  }
 }
