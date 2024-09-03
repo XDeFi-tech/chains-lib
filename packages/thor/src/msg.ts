@@ -186,13 +186,17 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         [this],
         speed || GasFeeSpeed.medium
       );
-      if (feeEstimation.gasPrice && feeEstimation.gasLimit) {
+      if (
+        !isNaN(Number(feeEstimation.gasPrice)) &&
+        !isNaN(Number(feeEstimation.gasLimit))
+      ) {
         estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
-          .multipliedBy(feeEstimation.gasPrice.toString())
+          .multipliedBy(feeEstimation.gasPrice!.toString())
           .dividedBy(10 ** this.provider.manifest.decimals)
           .toString();
       }
-    } else if (data.gasLimit && data.gasPrice) {
+    }
+    if (!isNaN(Number(data.gasPrice)) && !isNaN(Number(data.gasLimit))) {
       estimation.fee = new BigNumber(data.gasLimit)
         .multipliedBy(data.gasPrice)
         .dividedBy(10 ** this.provider.manifest.decimals)
