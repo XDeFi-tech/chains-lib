@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.35
+
+### Patch Changes
+
+- 59e58ce9: Feat: add dataSourceList to provider
+
 ## 2.0.34
 
 ### Patch Changes
