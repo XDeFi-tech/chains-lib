@@ -488,14 +488,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
             feeEstimation,
             feeOptions.gasFee.denom
           );
-          if (!feeAbstractionEstimation.gasPrice) {
+          if (isNaN(Number(feeAbstractionEstimation.gasPrice))) {
             throw new Error('Cannot calculate fee abstraction');
           }
           estimation.fee = new BigNumber(
             feeAbstractionEstimation.gasLimit.toString()
           )
             .multipliedBy(feeOptions.gasAdjustment)
-            .multipliedBy(feeAbstractionEstimation.gasPrice.toString())
+            .multipliedBy(feeAbstractionEstimation.gasPrice!.toString())
             .toFixed(0);
         } else {
           estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
@@ -504,7 +504,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
             .toString();
         }
       }
-    } else if (data.gasLimit && data.gasPrice) {
+    } else if (!isNaN(Number(data.gasPrice)) && !isNaN(Number(data.gasLimit))) {
       estimation.fee = new BigNumber(data.gasLimit)
         .multipliedBy(feeOptions?.gasAdjustment ?? 1)
         .multipliedBy(data.gasPrice)
