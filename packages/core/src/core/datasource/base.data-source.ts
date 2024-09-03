@@ -95,4 +95,8 @@ export abstract class DataSource {
   public async getTransaction(_txHash: string): Promise<TransactionData | null> {
     throw new Error('Method not implemented.');
   }
+
+  public async getAccountResource(_address: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }
