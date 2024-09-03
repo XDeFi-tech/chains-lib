@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.5
+
+### Patch Changes
+
+- f72964cd: Fix: return null for getFee method
+
 ## 2.1.4
 
 ### Patch Changes

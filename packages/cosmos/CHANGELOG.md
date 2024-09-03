@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.49
+
+### Patch Changes
+
+- f72964cd: Fix: return null for getFee method
+
 ## 2.0.48
 
 ### Patch Changes
