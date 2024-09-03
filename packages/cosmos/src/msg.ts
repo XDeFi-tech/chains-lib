@@ -426,7 +426,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         GasFeeSpeed.medium
       );
       msgData.gasLimit = msgData.gasLimit ?? feeEstimation.gasLimit;
-      msgData.gasPrice = msgData.gasPrice ?? feeEstimation.gasPrice;
+      if (!msgData?.gasPrice || msgData?.gasPrice <= 0)
+        msgData.gasPrice = feeEstimation.gasPrice;
     }
 
     const fee = {
