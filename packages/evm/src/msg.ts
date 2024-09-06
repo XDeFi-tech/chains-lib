@@ -243,8 +243,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     }
 
     if (
-      this.data.txType !== TransactionType.Legacy &&
-      feeOptions.maxFeePerGas
+      !isNaN(Number(feeOptions.maxFeePerGas)) &&
+      !isNaN(Number(feeOptions.maxPriorityFeePerGas))
     ) {
       const baseFeePerGas = new BigNumber(feeOptions.baseFeePerGas);
       const priorityFee = new BigNumber(feeOptions.maxPriorityFeePerGas);
@@ -261,10 +261,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           'ether'
         )
         .toString();
-    } else {
-      if (!feeOptions.gasPrice) {
-        return estimation;
-      }
+    } else if (!isNaN(Number(feeOptions.gasPrice))) {
       const gasPrice = new BigNumber(feeOptions.gasPrice);
       const gasFee = gasPrice.multipliedBy(feeOptions.gasLimit);
 
@@ -309,16 +306,11 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       msgData.gasLimit = feeData.gasLimit;
     }
 
-    // If fee info not provided, get legacy gas fee from provider
-    if (msgData.txType === TransactionType.Legacy && !msgData.gasPrice) {
-      msgData.gasPrice = feeData.gasPrice ?? feeData.baseFeePerGas;
+    if (!msgData.gasPrice) {
+      msgData.gasPrice = feeData.gasPrice;
     }
 
-    // If fee info not provided, get EIP1559 gas fee from provider
-    if (
-      msgData.txType !== TransactionType.Legacy &&
-      (!msgData.maxPriorityFeePerGas || !msgData.maxFeePerGas)
-    ) {
+    if (!msgData.maxPriorityFeePerGas || !msgData.maxFeePerGas) {
       msgData.maxFeePerGas = feeData.maxFeePerGas;
       msgData.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
     }
@@ -343,27 +335,16 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       ...(msgData.data && { data: msgData.data }),
     };
 
-    if (msgData.txType !== TransactionType.Legacy) {
-      if (
-        isNaN(Number(msgData.maxFeePerGas)) ||
-        isNaN(Number(msgData.maxPriorityFeePerGas))
-      ) {
-        throw new Error(
-          `Can't get EIP1559 gas fee. maxFeePerGas: ${msgData.maxFeePerGas}, maxPriorityFeePerGas: ${msgData.maxPriorityFeePerGas}`
-        );
-      }
-
+    if (
+      !isNaN(Number(msgData.maxFeePerGas)) &&
+      !isNaN(Number(msgData.maxPriorityFeePerGas))
+    ) {
       baseTx.maxFeePerGas = utils.toHex(msgData.maxFeePerGas!.toString());
       baseTx.maxPriorityFeePerGas = utils.toHex(
         msgData.maxPriorityFeePerGas!.toString()
       );
       baseTx.type = 2;
     } else {
-      if (isNaN(Number(msgData.gasPrice))) {
-        throw new Error(
-          `Can't get legacy gas fee. gasPrice: ${msgData.gasPrice}`
-        );
-      }
       baseTx.gasPrice = utils.toHex(msgData.gasPrice!.toString());
     }
 
