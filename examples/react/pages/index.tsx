@@ -1,68 +1,183 @@
 'use clients';
-import React, { useCallback, useState, useContext, useEffect } from 'react';
+import React from 'react';
 import type { NextPage } from 'next';
 import {
   Container,
   Typography,
   FormControl,
   InputLabel,
-  Select,
-  MenuItem,
-  TextField,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  Button,
   Box,
 } from '@mui/material';
-import { Chain } from '@xdefi-tech/chains-core';
-import {
-  ChainsContext,
-  initDefaultProviders,
-  restoreProviders,
-  saveProviders,
-} from '../context/chains.context';
-import BalancesComponent from '../components/balances.component';
-import TransactionsComponent from '../components/transactions.component';
-import BroadcastComponent from '../components/broadcast.component';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { ChainsContext, initDefaultProviders } from '../context/chains.context';
+import EvmProviderContainer from '../components/chains/evm/provider.container';
+import SolanaProviderContainer from '../components/chains/solana/provider.container';
+import BinanceProviderContainer from '../components/chains/binance/provider.container';
+import BitcoinProviderContainer from '../components/chains/bitcoin/provider.container';
+import LitecoinProviderContainer from '../components/chains/litecoin/provider.container';
+import DogecoinProviderContainer from '../components/chains/dogecoin/provider.container';
+import BitcoinCashProviderContainer from '../components/chains/bitcoincash/provider.container';
+import CosmosProviderContainer from '../components/chains/cosmos/provider.container';
+import ThorProviderContainer from '../components/chains/thor/provider.container';
+import TronProviderContainer from '../components/chains/tron/provider.container';
 
 const Home: NextPage = () => {
-  const chains = useContext(ChainsContext);
+  /* Providers block */
+  const chains = React.useContext(ChainsContext);
+  const [providerList, setProviderList] = React.useState([]);
+  const [selectedProvider, setSelectedProvider] = React.useState(null);
 
-  const [currentProvider, setCurrentProvider] = useState<
-    undefined | Chain.Provider
-  >(chains.getProviderList()[0]);
-  const [tokenList, setTokenList] = useState<string[]>([]);
-  const handleChainChange = useCallback(
-    (event) => {
-      setCurrentProvider(chains.getProviderById(event.target.value));
+  React.useEffect(() => {
+    initDefaultProviders();
+    const allProviders = chains.getProviderList();
+    setProviderList(allProviders);
+    setSelectedProvider(allProviders[0] || null);
+
+    setTimeout(() => {
+      console.log(chains.getProviderList());
+    }, 0);
+  }, []);
+
+  /* Seed phrase input block */
+  const [seedPhraseInput, setSeedPhraseInput] = React.useState<string>('');
+  const handleSeedPhraseChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSeedPhraseInput(event.target.value);
     },
-    [chains]
-  );
-
-  const [address, setAddress] = useState<string>('');
-  const handleAddressChange = useCallback(
-    (event) => setAddress(event.target.value),
     []
   );
 
-  const handleTokenListChange = useCallback((event) => {
-    setTokenList(event.target.value.split(','));
+  const [showSeedPhrase, setShowSeedPhrase] = React.useState<boolean>(false);
+  const handleClickShowSeedPhrase = React.useCallback(() => {
+    setShowSeedPhrase((prev) => !prev);
+  }, []);
+  const handleMouseDownSeedPhrase = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+    },
+    []
+  );
+
+  /* Confirm seed phrase block*/
+  const [seedPhrase, setSeedPhrase] = React.useState<string>('');
+  const handleConfirmSeedPhrase = React.useCallback(() => {
+    setSeedPhrase(seedPhraseInput);
+  }, [seedPhraseInput]);
+  const handleResetSeedPhrase = React.useCallback(() => {
+    setSeedPhrase('');
+    setSeedPhraseInput('');
   }, []);
 
-  useEffect(() => {
-    const list = chains.getProviderList();
-    if (list.length > 0) {
-      return;
+  const handleSelectProviderClick = React.useCallback(
+    (provider) => () => {
+      // clear previous state
+      setSelectedProvider(null);
+      setTimeout(() => {
+        setSelectedProvider(provider);
+      }, 0);
+    },
+    []
+  );
+
+  const renderUtxoProvider = React.useCallback(
+    (seedPhrase, selectedProvider) => {
+      switch (selectedProvider.manifest.chain) {
+        case 'bitcoin':
+          return (
+            <BitcoinProviderContainer
+              seedPhrase={seedPhrase}
+              providerId={selectedProvider.id}
+            />
+          );
+        case 'bitcoincash':
+          return (
+            <BitcoinCashProviderContainer
+              seedPhrase={seedPhrase}
+              providerId={selectedProvider.id}
+            />
+          );
+        case 'dogecoin':
+          return (
+            <DogecoinProviderContainer
+              seedPhrase={seedPhrase}
+              providerId={selectedProvider.id}
+            />
+          );
+        case 'litecoin':
+          return (
+            <LitecoinProviderContainer
+              seedPhrase={seedPhrase}
+              providerId={selectedProvider.id}
+            />
+          );
+        default:
+          return <Box>Not ready yet</Box>;
+      }
+    },
+    []
+  );
+
+  const renderProvider = React.useCallback(() => {
+    if (!selectedProvider) {
+      return null;
     }
 
-    const restored = restoreProviders();
-    if (!restored) {
-      initDefaultProviders();
-      saveProviders();
-    }
-    setCurrentProvider(chains.getProviderList()[0]);
-  }, [chains]);
+    console.log('SELECTED', selectedProvider);
+    console.log('SELECTED', selectedProvider.providerType);
 
-  if (!currentProvider) {
-    return null;
-  }
+    switch (selectedProvider.providerType) {
+      case 'EVM':
+        return (
+          <EvmProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      case 'Solana':
+        return (
+          <SolanaProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      case 'Binance':
+        return (
+          <BinanceProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      case 'UTXO':
+        return renderUtxoProvider(seedPhrase, selectedProvider);
+      case 'Cosmos':
+        return (
+          <CosmosProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      case 'Thor':
+        return (
+          <ThorProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      case 'Tron':
+        return (
+          <TronProviderContainer
+            seedPhrase={seedPhrase}
+            providerId={selectedProvider.id}
+          />
+        );
+      default:
+        return <Box>Not ready yet</Box>;
+    }
+  }, [seedPhrase, selectedProvider]);
 
   return (
     <Container>
@@ -135,58 +250,66 @@ const Home: NextPage = () => {
         <span style={{ marginLeft: '10px' }}>XDEFI Playground</span>
       </Typography>
 
-      <Typography variant="h4" my={3}>
-        Current chain: {currentProvider?.manifest.name}
-      </Typography>
-
-      <FormControl fullWidth>
-        <InputLabel id="chains-list">Available chain</InputLabel>
-        <Select
-          labelId="chains-list"
-          id="chains-list"
-          value={currentProvider.id}
-          label="Available chains"
-          onChange={handleChainChange}
-        >
-          {chains.getProviderList().map((provider) => (
-            <MenuItem value={provider.id} key={provider.id}>
-              {provider.manifest.name}
-            </MenuItem>
-          ))}
-        </Select>
+      <FormControl sx={{ mb: 2 }} fullWidth variant="outlined">
+        <InputLabel htmlFor="outlined-show-seed-phrase">Seed phrase</InputLabel>
+        <OutlinedInput
+          id="outlined-show-seed-phrase"
+          type={showSeedPhrase ? 'text' : 'password'}
+          value={seedPhraseInput}
+          onChange={handleSeedPhraseChange}
+          disabled={Boolean(seedPhrase)}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle show seed phrase"
+                onClick={handleClickShowSeedPhrase}
+                onMouseDown={handleMouseDownSeedPhrase}
+                edge="end"
+              >
+                {showSeedPhrase ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Seed phrase"
+        />
       </FormControl>
 
-      <Box my={2}>
-        <TextField
-          id="address"
-          label="Address"
-          variant="outlined"
-          value={address}
-          onChange={handleAddressChange}
-          fullWidth
-        />
+      <Box sx={{ mb: 3 }}>
+        <Button
+          onClick={handleConfirmSeedPhrase}
+          disabled={Boolean(seedPhrase)}
+        >
+          Set seed phrase
+        </Button>
+        <Button onClick={handleResetSeedPhrase} disabled={!seedPhrase}>
+          Reset
+        </Button>
       </Box>
 
-      <Box my={2}>
-        <TextField
-          id="token-list"
-          label="List token addresses"
-          variant="outlined"
-          value={tokenList}
-          onChange={handleTokenListChange}
-          fullWidth
-        />
-      </Box>
-
-      <BalancesComponent
-        provider={currentProvider}
-        address={address}
-        tokenList={tokenList}
-      />
-
-      <TransactionsComponent provider={currentProvider} address={address} />
-
-      <BroadcastComponent provider={currentProvider} />
+      {seedPhrase && (
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              textWrap: 'nowrap',
+            }}
+          >
+            {providerList.map((provider) => (
+              <Button
+                key={provider.id}
+                onClick={handleSelectProviderClick(provider)}
+              >
+                {provider.manifest.name}
+              </Button>
+            ))}
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            {/* The thing what you're probably looking for */}
+            {selectedProvider && renderProvider()}
+          </Box>
+        </Box>
+      )}
     </Container>
   );
 };

@@ -1,33 +1,84 @@
 import React from 'react';
 import { ChainController } from '@xdefi-tech/chains-controller';
 import { EVM_MANIFESTS, EvmProvider } from '@xdefi-tech/chains-evm';
+import {
+  SeedPhraseSigner as EvmSeedPhraseSigner,
+  PrivateKeySigner as EvmPrivateKeySigner,
+} from '@xdefi-tech/chains-evm/dist/signers/web';
 import { COSMOS_MANIFESTS, CosmosProvider } from '@xdefi-tech/chains-cosmos';
+import {
+  SeedPhraseSigner as CosmosSeedPhraseSigner,
+  PrivateKeySigner as CosmosPrivateKeySigner,
+} from '@xdefi-tech/chains-cosmos/dist/signers/web';
 import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
+import {
+  SeedPhraseSigner as BinanceSeedPhraseSigner,
+  PrivateKeySigner as BinancePrivateKeySigner,
+} from '@xdefi-tech/chains-binance/dist/signers/web';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
+import {
+  SeedPhraseSigner as SolanaSeedPhraseSigner,
+  PrivateKeySigner as SolanaPrivateKeySigner,
+} from '@xdefi-tech/chains-solana/dist/signers/web';
 import { THORCHAIN_MANIFESTS, ThorProvider } from '@xdefi-tech/chains-thor';
+import {
+  SeedPhraseSigner as ThorSeedPhraseSigner,
+  PrivateKeySigner as ThorPrivateKeySigner,
+} from '@xdefi-tech/chains-thor/dist/signers/web';
 import { BITCOIN_MANIFEST, BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
+import {
+  SeedPhraseSigner as BitcoinSeedPhraseSigner,
+  PrivateKeySigner as BitcoinPrivateKeySigner,
+} from '@xdefi-tech/chains-bitcoin/dist/signers/web';
 import {
   LITECOIN_MANIFEST,
   LitecoinProvider,
 } from '@xdefi-tech/chains-litecoin';
 import {
+  SeedPhraseSigner as LitecoinSeedPhraseSigner,
+  PrivateKeySigner as LitecoinPrivateKeySigner,
+} from '@xdefi-tech/chains-litecoin/dist/signers/web';
+import {
   DOGECOIN_MANIFEST,
   DogecoinProvider,
 } from '@xdefi-tech/chains-dogecoin';
 import {
+  SeedPhraseSigner as DogecoinSeedPhraseSigner,
+  PrivateKeySigner as DogecoinPrivateKeySigner,
+} from '@xdefi-tech/chains-dogecoin/dist/signers/web';
+import {
   BITCOINCASH_MANIFEST,
   BitcoinCashProvider,
 } from '@xdefi-tech/chains-bitcoincash';
+import {
+  SeedPhraseSigner as BitcoinCashSeedPhraseSigner,
+  PrivateKeySigner as BitcoinCashPrivateKeySigner,
+} from '@xdefi-tech/chains-bitcoincash/dist/signers/web';
+import { TronProvider, TRON_MANIFEST } from '@xdefi-tech/chains-tron';
+
+import {
+  SeedPhraseSigner as TronSeedPhraseSigner,
+  PrivateKeySigner as TronPrivateKeySigner,
+} from '@xdefi-tech/chains-tron/dist/signers/web';
 
 export const ChainsContextDefaultValue = new ChainController();
 
 export const initDefaultProviders = () => {
   ChainsContextDefaultValue.addProvider(
-    // 0
+    new EvmProvider(
+      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.ethereum),
+      {
+        providerId: 'ethereum',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
+      }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
     new SolanaProvider(
       new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST),
       {
         providerId: 'solana',
+        signers: [SolanaSeedPhraseSigner, SolanaPrivateKeySigner],
       }
     )
   );
@@ -36,47 +87,18 @@ export const initDefaultProviders = () => {
       new BinanceProvider.dataSourceList.IndexerDataSource(BINANCE_MANIFEST),
       {
         providerId: 'binance',
+        signers: [BinanceSeedPhraseSigner, BinancePrivateKeySigner],
       }
     )
   );
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.ethereum),
-      {
-        providerId: 'ethereum',
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.ethereum,
-        name: `${EVM_MANIFESTS.ethereum.name} chain`,
-      }),
-      {
-        providerId: 'ethereum-chain',
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    //5
     new EvmProvider(
       new EvmProvider.dataSourceList.IndexerDataSource(
         EVM_MANIFESTS.smartchain
       ),
       {
         providerId: 'smartchain',
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.smartchain,
-        name: `${EVM_MANIFESTS.smartchain.name} chain`,
-      }),
-      {
-        providerId: 'smartchain-chain',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
@@ -85,18 +107,7 @@ export const initDefaultProviders = () => {
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.polygon),
       {
         providerId: 'polygon',
-      }
-    )
-  );
-
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.polygon,
-        name: `${EVM_MANIFESTS.polygon.name} chain`,
-      }),
-      {
-        providerId: 'polygon-chain',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
@@ -105,18 +116,7 @@ export const initDefaultProviders = () => {
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.avalanche),
       {
         providerId: 'avalanche',
-      }
-    )
-  );
-
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.avalanche,
-        name: `${EVM_MANIFESTS.avalanche.name} chain`,
-      }),
-      {
-        providerId: 'avalanche-chain',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
@@ -126,18 +126,7 @@ export const initDefaultProviders = () => {
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.fantom),
       {
         providerId: 'fantom',
-      }
-    )
-  );
-
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.fantom,
-        name: `${EVM_MANIFESTS.fantom.name} chain`,
-      }),
-      {
-        providerId: 'fantom-chain',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
@@ -147,67 +136,62 @@ export const initDefaultProviders = () => {
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.arbitrum),
       {
         providerId: 'arbitrum',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
 
   ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.arbitrum,
-        name: `${EVM_MANIFESTS.arbitrum.name} chain`,
-      }),
-      {
-        providerId: 'arbitrum-chain',
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    // 10
     new EvmProvider(
       new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS.aurora),
       {
         providerId: 'aurora',
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    new EvmProvider(
-      new EvmProvider.dataSourceList.ChainDataSource({
-        ...EVM_MANIFESTS.aurora,
-        name: `${EVM_MANIFESTS.aurora.name} chain`,
-      }),
-      {
-        providerId: 'aurora-chain',
+        signers: [EvmSeedPhraseSigner, EvmPrivateKeySigner],
       }
     )
   );
 
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(
-      new CosmosProvider.dataSourceList.ChainDataSource(
+      new CosmosProvider.dataSourceList.IndexerDataSource(
         COSMOS_MANIFESTS.cosmos
       ),
       {
         providerId: 'cosmos',
+        signers: [CosmosSeedPhraseSigner, CosmosPrivateKeySigner],
       }
     )
   );
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(
-      new CosmosProvider.dataSourceList.ChainDataSource(COSMOS_MANIFESTS.kava),
+      new CosmosProvider.dataSourceList.IndexerDataSource(
+        COSMOS_MANIFESTS.kava
+      ),
       {
         providerId: 'kava',
+        signers: [CosmosSeedPhraseSigner, CosmosPrivateKeySigner],
       }
     )
   );
   ChainsContextDefaultValue.addProvider(
     new ThorProvider(
-      new ThorProvider.dataSourceList.ChainDataSource(
+      new ThorProvider.dataSourceList.IndexerDataSource(
         THORCHAIN_MANIFESTS.thorchain
       ),
       {
-        providerId: 'thor',
+        providerId: 'thorchain',
+        signers: [ThorSeedPhraseSigner, ThorPrivateKeySigner],
+      }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
+    new ThorProvider(
+      new ThorProvider.dataSourceList.IndexerDataSource(
+        THORCHAIN_MANIFESTS.mayachain
+      ),
+      {
+        providerId: 'mayachain',
+        signers: [ThorSeedPhraseSigner, ThorPrivateKeySigner],
       }
     )
   );
@@ -216,6 +200,7 @@ export const initDefaultProviders = () => {
       new BitcoinProvider.dataSourceList.IndexerDataSource(BITCOIN_MANIFEST),
       {
         providerId: 'bitcoin',
+        signers: [BitcoinSeedPhraseSigner, BitcoinPrivateKeySigner],
       }
     )
   );
@@ -224,6 +209,7 @@ export const initDefaultProviders = () => {
       new LitecoinProvider.dataSourceList.IndexerDataSource(LITECOIN_MANIFEST),
       {
         providerId: 'litecoin',
+        signers: [LitecoinSeedPhraseSigner, LitecoinPrivateKeySigner],
       }
     )
   );
@@ -232,6 +218,7 @@ export const initDefaultProviders = () => {
       new DogecoinProvider.dataSourceList.IndexerDataSource(DOGECOIN_MANIFEST),
       {
         providerId: 'dogecoin',
+        signers: [DogecoinSeedPhraseSigner, DogecoinPrivateKeySigner],
       }
     )
   );
@@ -242,39 +229,19 @@ export const initDefaultProviders = () => {
       ),
       {
         providerId: 'bitcoincash',
+        signers: [BitcoinCashSeedPhraseSigner, BitcoinCashPrivateKeySigner],
       }
     )
   );
-};
-
-export const CHAINS_DATA_KEY = 'chains-data';
-
-export const restoreProviders = (): boolean => {
-  const serialisedData = localStorage.getItem(CHAINS_DATA_KEY);
-  if (!serialisedData) {
-    return false;
-  }
-  const parsedData = ChainController.deserialize(serialisedData);
-  const providerList = ChainController.providerList;
-  Object.values(parsedData).forEach((chainParam) => {
-    const provider = providerList.getProvider(
-      chainParam.providerClassName,
-      chainParam.manifest,
+  ChainsContextDefaultValue.addProvider(
+    new TronProvider(
+      new TronProvider.dataSourceList.IndexerDataSource(TRON_MANIFEST),
       {
-        providerId: chainParam.providerId,
-        dataSourceClassName: chainParam.dataSourceClassName,
+        providerId: 'tron',
+        signers: [TronSeedPhraseSigner, TronPrivateKeySigner],
       }
-    );
-    if (provider) {
-      ChainsContextDefaultValue.addProvider(provider);
-    }
-  });
-  return true;
-};
-
-export const saveProviders = () => {
-  const serialisedData = ChainsContextDefaultValue.serialize();
-  localStorage.setItem(CHAINS_DATA_KEY, serialisedData);
+    )
+  );
 };
 
 export const ChainsContext = React.createContext<ChainController>(
