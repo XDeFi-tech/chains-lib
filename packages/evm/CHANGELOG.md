@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.50
+
+### Patch Changes
+
+- 3b68fabe: Fix: update buildTx to avoid can't get EIP1559 gas fee error
+
 ## 2.0.49
 
 ### Patch Changes
