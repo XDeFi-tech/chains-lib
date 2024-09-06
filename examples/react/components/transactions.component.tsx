@@ -1,19 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
+import { Box, Typography, Button, List, ListItem } from '@mui/material';
 import { Chain, Transaction } from '@xdefi-tech/chains-core';
+
+import HowToContainer from './containers/how-to.container';
 
 export interface ITransactionsComponent {
   provider: Chain.Provider;
   address: string;
+  children?: React.ReactNode;
 }
+
 const TransactionsComponent = (props: ITransactionsComponent) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transactionsError, setTransactionsError] = useState<null | string>(
@@ -43,8 +39,8 @@ const TransactionsComponent = (props: ITransactionsComponent) => {
   }, [props.address, props.provider]);
 
   return (
-    <Box>
-      <Typography variant="h4">Transactions</Typography>
+    <Box sx={{ marginTop: '1em' }}>
+      <Typography variant="h6">Transactions</Typography>
 
       <Button
         onClick={handleTransactionsClick}
@@ -57,61 +53,32 @@ const TransactionsComponent = (props: ITransactionsComponent) => {
         <Typography color="red">{transactionsError}</Typography>
       )}
 
-      <List
-        component="div"
-        sx={{
-          width: '100%',
-          bgcolor: 'background.paper',
-          maxHeight: 500,
-          overflow: 'auto',
-        }}
-      >
-        {transactions.map((tx: any) => {
-          const data = tx.data;
-          const fee = {
-            value: data.fee.value / 10 ** data.fee.asset.decimals,
-            price:
-              (data.fee.value / 10 ** data.fee.asset.decimals) *
-              data.fee.asset.price.amount,
-            symbol: data.fee.asset.symbol,
-          };
-          return (
-            <ListItem button key={data.hash}>
-              <Typography>{data.timestamp}</Typography>
-              <Typography mx={2}>{data.status}</Typography>
-              <Typography width={200} sx={{ wordBreak: 'break-all' }}>
-                {data.hash}
-              </Typography>
-              <ListItemText
-                primary={`${fee.value} ${fee.symbol}`}
-                secondary={`${fee.price}$`}
-                sx={{ textAlign: 'end', maxWidth: '100px', margin: '0 16px' }}
-              />
-              <Box>
-                <Typography>Messages</Typography>
-                {data.msgs.map((m, i) => (
-                  <Box key={i}>
-                    <Typography>From: {m.from}</Typography>
-                    <Typography>To: {m.to}</Typography>
-                    <Typography>
-                      Amount: {m.amount / 10 ** m.asset.decimals}{' '}
-                      {m.asset.symbol}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </ListItem>
-          );
-        })}
-      </List>
+      {transactions.length > 0 && (
+        <List
+          component="div"
+          sx={{
+            width: '100%',
+            bgcolor: 'background.paper',
+            maxHeight: 500,
+            overflow: 'auto',
+            marginBottom: '1em',
+          }}
+        >
+          {transactions.map((tx: any) => {
+            return (
+              <ListItem button key={tx.data.hash}>
+                <Typography variant="body1">
+                  {JSON.stringify(tx.data)}
+                </Typography>
+              </ListItem>
+            );
+          })}
+        </List>
+      )}
 
-      <Divider
-        sx={{
-          borderWidth: 3,
-          my: 3,
-          borderRadius: 10,
-        }}
-      />
+      <HowToContainer title="get transactions?">
+        {props.children}
+      </HowToContainer>
     </Box>
   );
 };
