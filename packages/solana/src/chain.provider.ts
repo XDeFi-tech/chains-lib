@@ -96,7 +96,8 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
       const hash = await this.rpcProvider.sendRawTransaction(
         Buffer.from(serializeTx),
         {
-          skipPreflight: true,
+          skipPreflight: msg.data.skipPreflight ?? true,
+          preflightCommitment: msg.data.preflightCommitment ?? 'finalized',
           maxRetries: 2,
         }
       );

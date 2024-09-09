@@ -15,6 +15,7 @@ import {
   Transaction as SolanaTransaction,
   TransactionInstruction,
   VersionedTransaction,
+  Commitment,
 } from '@solana/web3.js';
 import {
   createAssociatedTokenAccountInstruction,
@@ -42,6 +43,8 @@ export interface MsgBody {
   memo?: string;
   data?: string; // for swaps when encoded is base64a
   priorityFeeAmount?: number;
+  skipPreflight?: boolean;
+  preflightCommitment?: Commitment;
 }
 
 export interface TxBody {
