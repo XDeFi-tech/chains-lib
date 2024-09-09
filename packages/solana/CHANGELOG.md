@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.6
+
+### Patch Changes
+
+- 6503b295: feat: pass preflight settings from params for Solana chain
+
 ## 2.1.5
 
 ### Patch Changes
