@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.52
+
+### Patch Changes
+
+- 4d6446e2: Fix external dependencies included in bundles
+- Updated dependencies [4d6446e2]
+  - @xdefi-tech/chains-core@2.0.31
+
 ## 2.0.51
 
 ### Patch Changes

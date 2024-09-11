@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.31
+
+### Patch Changes
+
+- 4d6446e2: Fix external dependencies included in bundles
+
 ## 2.0.30
 
 ### Patch Changes
