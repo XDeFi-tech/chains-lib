@@ -5,14 +5,14 @@ import {
   MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
+import { UTXO, stringToHex } from '@xdefi-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
-import isEmpty from 'lodash/isEmpty';
 import { utils as ethersUtils } from 'ethers';
 import utils from 'coinselect/utils';
 import sortBy from 'lodash/sortBy';
+import { hexToBytes } from '@noble/hashes/utils';
 
 import type { BitcoinProvider } from './chain.provider';
 import { NfTv3 } from './gql';
@@ -32,10 +32,10 @@ export interface TxBody {
   to: string;
   from: string;
   inputs: UTXO[];
-  outputs: { address?: string; script?: Buffer; value: number }[];
+  outputs: { address?: string; script?: Buffer | Uint8Array; value: number }[];
   utxos: UTXO[];
   fee: string;
-  compiledMemo?: '' | Buffer;
+  compiledMemo?: string | Uint8Array;
 }
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
@@ -244,14 +244,14 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   }
 
   private createTargetOutputs(
-    compiledMemo: Buffer | undefined,
+    compiledMemo: Uint8Array | undefined,
     feeToSendOrdinals: number
   ) {
     const msgData = this.toData();
     const targetOutputs: {
       address?: string;
       value: number;
-      script?: Buffer;
+      script?: Buffer | Uint8Array;
     }[] = [];
     const valueToSend = new BigNumber(msgData.amount?.toString())
       .multipliedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
@@ -279,14 +279,17 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     ordinalOutputUtxos: { address?: string; value: number }[],
     feeRate: number,
     dustThreshold: number,
-    compiledMemo: Buffer | undefined
+    compiledMemo: Uint8Array | undefined
   ): TxBody {
     const msgData = this.toData();
     const finalInputs = inputs
       ? [...ordinalInputUtxos, ...inputs]
       : ordinalInputUtxos;
-    const finalOutputs: { address?: string; value: number; script?: Buffer }[] =
-      [];
+    const finalOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[] = [];
 
     const valueToSend = new BigNumber(msgData.amount?.toString())
       .multipliedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
@@ -343,7 +346,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   }
 
   private handleSingleInput(
-    finalOutputs: { address?: string; value: number; script?: Buffer }[],
+    finalOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[],
     ordinalOutputUtxos: { address?: string; value: number }[],
     dustThreshold: number
   ) {
@@ -379,7 +386,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   }
 
   private adjustOutputsForFee(
-    finalOutputs: { address?: string; value: number; script?: Buffer }[],
+    finalOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[],
     totalFee: number,
     dustThreshold: number
   ) {
@@ -397,10 +408,14 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
 
   private createTxBody(
     inputs: UTXO[],
-    outputs: { address?: string; value: number; script?: Buffer }[],
+    outputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[],
     utxos: UTXO[],
     fee: string,
-    compiledMemo: Buffer | undefined
+    compiledMemo: Uint8Array | undefined
   ): TxBody {
     const msgData = this.toData();
     return {
@@ -441,17 +456,24 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
    * Current method in used to compile a bitcoinjs-lib script. Bitcoin scripts are used to define the conditions
    * under which funds can be spent in a Bitcoin transaction. Mark a transaction output as unspendable
    * @param {string | Uint8Array} memo
-   * @returns {Buffer} OP_RETURN compiled script
+   * @returns {Uint8Array} OP_RETURN compiled script
    */
-  public compileMemo(memo: string | Uint8Array) {
-    let formattedMemo: Buffer;
+  public compileMemo(memo: string | Uint8Array): Uint8Array {
+    let formattedMemo: Uint8Array;
     if (typeof memo === 'string') {
-      formattedMemo = Buffer.from(memo, 'utf8');
+      const bytesMemo = hexToBytes(stringToHex(memo));
+      formattedMemo = Uint8Array.from([
+        UTXOLib.opcodes.OP_RETURN,
+        bytesMemo.length,
+        ...bytesMemo,
+      ]);
     } else {
-      formattedMemo = Buffer.from(memo);
+      formattedMemo = memo;
     }
 
-    return UTXOLib.script.compile([UTXOLib.opcodes.OP_RETURN, formattedMemo]);
+    if (formattedMemo.length > 80) throw new Error('Memo is too long');
+
+    return formattedMemo;
   }
 
   async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {

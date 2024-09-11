@@ -9,9 +9,11 @@ import {
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
+import { hexToBytes } from '@noble/hashes/utils';
 
 import type { UtxoProvider } from './chain.provider';
 import { UTXO } from './data-provider/utxo/utxo.data-provider';
+import { stringToHex } from './utils';
 
 export interface MsgBody {
   amount: NumberIsh;
@@ -27,10 +29,10 @@ export interface TxBody {
   to: string;
   from: string;
   inputs: UTXO[];
-  outputs: { address?: string; script?: Buffer; value: number }[];
+  outputs: { address?: string; script?: Buffer | Uint8Array; value: number }[];
   utxos: UTXO[];
   fee: string;
-  compiledMemo?: '' | Buffer;
+  compiledMemo?: string | Uint8Array;
 }
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
@@ -98,17 +100,24 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
    * Current method in used to compile a bitcoinjs-lib script. Bitcoin scripts are used to define the conditions
    * under which funds can be spent in a Bitcoin transaction. Mark a transaction output as unspendable
    * @param {string | Uint8Array} memo
-   * @returns {Buffer} OP_RETURN compiled script
+   * @returns {Uint8Array} OP_RETURN compiled script
    */
-  public compileMemo(memo: string | Uint8Array) {
-    let formattedMemo: Buffer;
+  public compileMemo(memo: string | Uint8Array): Uint8Array {
+    let formattedMemo: Uint8Array;
     if (typeof memo === 'string') {
-      formattedMemo = Buffer.from(memo, 'utf8');
+      const bytesMemo = hexToBytes(stringToHex(memo));
+      formattedMemo = Uint8Array.from([
+        UTXOLib.opcodes.OP_RETURN,
+        bytesMemo.length,
+        ...bytesMemo,
+      ]);
     } else {
-      formattedMemo = Buffer.from(memo);
+      formattedMemo = memo;
     }
 
-    return UTXOLib.script.compile([UTXOLib.opcodes.OP_RETURN, formattedMemo]);
+    if (formattedMemo.length > 80) throw new Error('Memo is too long');
+
+    return formattedMemo;
   }
 
   async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
