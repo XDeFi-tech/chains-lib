@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.6
+
+### Patch Changes
+
+- 4d6446e2: Fix external dependencies included in bundles
+- Updated dependencies [4d6446e2]
+  - @xdefi-tech/chains-core@2.0.31
+
 ## 2.1.5
 
 ### Patch Changes

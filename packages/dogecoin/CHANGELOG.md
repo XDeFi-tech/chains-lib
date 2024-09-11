@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.1.5
+
+### Patch Changes
+
+- 4d6446e2: Fix external dependencies included in bundles
+- Updated dependencies [4d6446e2]
+  - eslint-config-custom@1.0.3
+  - @xdefi-tech/chains-core@2.0.31
+  - @xdefi-tech/chains-utxo@2.0.17
+
 ## 2.1.4
 
 ### Patch Changes
