@@ -4,7 +4,13 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  ignorePatterns: ['node_modules/**/*', 'dist/**/*', 'coverage/**/*', '.next/**/*', '.turbo/**/*'],
+  ignorePatterns: [
+    'node_modules/**/*',
+    'dist/**/*',
+    'coverage/**/*',
+    '.next/**/*',
+    '.turbo/**/*',
+  ],
   plugins: ['@typescript-eslint', 'import'],
   extends: [
     'turbo',
@@ -20,10 +26,10 @@ module.exports = {
     'prettier/prettier': [
       'error',
       {
-        'singleQuote': true,
-        'tabWidth': 2,
-        'semi': true
-      }
+        singleQuote: true,
+        tabWidth: 2,
+        semi: true,
+      },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -55,8 +61,9 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
+    'import/no-extraneous-dependencies': 'error',
     '@typescript-eslint/prefer-enum-initializers': 'error',
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-debugger': 'error',
   },
-}
+};
