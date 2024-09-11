@@ -8,3 +8,5 @@ export const FACTOR_ESTIMATE = 1.5; // estimate factor for gas limit
 
 export const MULTICALL3_CONTRACT_ADDRESS =
   '0xcA11bde05977b3631167028862bE2a173976CA11';
+
+export const gwei = 10 ** 9;

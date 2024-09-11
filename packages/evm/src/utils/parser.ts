@@ -2,6 +2,8 @@ import { NumberIsh } from '@xdefi-tech/chains-core';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 
+import { gwei } from '../constants';
+
 export const parseGwei = (n: NumberIsh): BigNumber => {
   let num = null;
   // parseInt mandatory to cut off decimals
@@ -16,8 +18,8 @@ export const parseGwei = (n: NumberIsh): BigNumber => {
       num = parseInt(n.toString(), 10);
       break;
     case typeof n === 'number':
-      num = parseInt(((n as number) * 100).toString());
-      num = num / 100;
+      num = parseInt(((n as number) * gwei).toString());
+      num = num / gwei;
       break;
     default:
       throw new Error('Invalid NumberIsh value');

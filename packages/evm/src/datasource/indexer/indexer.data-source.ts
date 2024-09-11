@@ -328,17 +328,19 @@ export class IndexerDataSource extends DataSource {
     } else if (typeof fee.high === 'object') {
       result = {} as EIP1559FeeOptions;
       result[GasFeeSpeed.high] = {
-        priorityFeePerGas: parseGwei(fee.high.priorityFeePerGas).toNumber(),
+        priorityFeePerGas:
+          parseGwei(fee.high.priorityFeePerGas).toNumber() || 1,
         maxFeePerGas: parseGwei(fee.high.maxFeePerGas).toNumber(),
         baseFeePerGas: parseGwei(fee.high.baseFeePerGas).toNumber(),
       } as EIP1559Fee;
       result[GasFeeSpeed.medium] = {
-        priorityFeePerGas: parseGwei(fee.medium.priorityFeePerGas).toNumber(),
+        priorityFeePerGas:
+          parseGwei(fee.medium.priorityFeePerGas).toNumber() || 1,
         maxFeePerGas: parseGwei(fee.medium.maxFeePerGas).toNumber(),
         baseFeePerGas: parseGwei(fee.medium.baseFeePerGas).toNumber(),
       } as EIP1559Fee;
       result[GasFeeSpeed.low] = {
-        priorityFeePerGas: parseGwei(fee.low.priorityFeePerGas).toNumber(),
+        priorityFeePerGas: parseGwei(fee.low.priorityFeePerGas).toNumber() || 1,
         maxFeePerGas: parseGwei(fee.low.maxFeePerGas).toNumber(),
         baseFeePerGas: parseGwei(fee.low.baseFeePerGas).toNumber(),
       } as EIP1559Fee;
