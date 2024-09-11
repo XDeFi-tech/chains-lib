@@ -118,6 +118,7 @@ describe('chain.provider', () => {
     expect(balanceData[0].asset.symbol).toEqual('ATOM');
     expect(balanceData[0].asset.price).toEqual('443.21');
     expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
+    mockedGetBalance.mockRestore();
   });
 
   it('estimateFee() should return fee estimation with encoding string message using IndexerDataSource', async () => {
@@ -221,7 +222,8 @@ describe('chain.provider', () => {
     const balance = await provider.getBalance(
       'cro1g5rjj3dsdxnmxz4ydvhxem6hddqs2hgw5wem0f'
     );
-    expect(await balance.getData()).toBeTruthy();
+    const balanceData = await balance.getData();
+    expect(balanceData.some((data) => data.asset.native === true)).toBe(true);
   });
 
   it('getBalance() on mars chain', async () => {
@@ -231,7 +233,8 @@ describe('chain.provider', () => {
     const balance = await provider.getBalance(
       'mars1km3nehyxu92vu2whjqhuqkmljvcd4nwvnxz8yt'
     );
-    expect(await balance.getData()).toBeTruthy();
+    const balanceData = await balance.getData();
+    expect(balanceData.some((data) => data.asset.native === true)).toBe(true);
   });
 });
 
