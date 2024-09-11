@@ -36,7 +36,9 @@ export class SeedPhraseSigner extends Signer.Provider {
 
   async sign(message: ChainMsg, derivation: string) {
     const { inputs, outputs, from } = await message.buildTx();
-    const txP2WPKH = new btc.Transaction();
+    const txP2WPKH = new btc.Transaction({
+      allowUnknownOutputs: true,
+    });
     for (const input of inputs) {
       txP2WPKH.addInput({
         txid: input.hash,
@@ -48,6 +50,14 @@ export class SeedPhraseSigner extends Signer.Provider {
       });
     }
     for (const output of outputs) {
+      // OP_RETURN always has value 0
+      if (output.value === 0) {
+        txP2WPKH.addOutput({
+          script: output.script,
+          amount: BigInt(0),
+        });
+        continue;
+      }
       if (!output.address) {
         output.address = from;
       }

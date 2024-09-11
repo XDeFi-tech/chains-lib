@@ -39,7 +39,9 @@ export class SeedPhraseSigner extends Signer.Provider {
   async sign(message: ChainMsg, derivation: string) {
     const { inputs, outputs, from } = await message.buildTx();
     const network = coininfo.dogecoin.main.toBitcoinJS();
-    const psbt = new btc.Transaction();
+    const psbt = new btc.Transaction({
+      allowUnknownOutputs: true,
+    });
 
     for (const utxo of inputs) {
       psbt.addInput({
@@ -50,6 +52,14 @@ export class SeedPhraseSigner extends Signer.Provider {
     }
 
     for (const output of outputs) {
+      // OP_RETURN always has value 0
+      if (output.value === 0) {
+        psbt.addOutput({
+          script: output.script,
+          amount: BigInt(0),
+        });
+        continue;
+      }
       if (!output.address) {
         output.address = from;
       }
