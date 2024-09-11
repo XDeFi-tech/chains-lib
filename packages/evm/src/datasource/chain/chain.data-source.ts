@@ -333,10 +333,11 @@ export class ChainDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.high)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.high)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.high)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
       [GasFeeSpeed.medium]: {
         baseFeePerGas: new BigNumber(
@@ -349,10 +350,11 @@ export class ChainDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.medium)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.medium)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.medium)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
       [GasFeeSpeed.low]: {
         baseFeePerGas: new BigNumber(
@@ -365,10 +367,11 @@ export class ChainDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.low)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.low)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.low)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
     };
   }
