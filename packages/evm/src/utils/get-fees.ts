@@ -3,7 +3,7 @@ import { FeeData, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { EVMChains } from '../manifests';
-import { DEFAULT_CONTRACT_FEE } from '../constants';
+import { DEFAULT_CONTRACT_FEE, gwei } from '../constants';
 import { ChainMsg } from '../msg';
 import { RestEstimateGasRequest } from '../types';
 
@@ -21,8 +21,6 @@ export interface FeeMultipliers {
   medium: number;
   high: number;
 }
-
-const gwei = 10 ** 9;
 
 export const getGasLimitFromRPC = async (
   msg: ChainMsg,
