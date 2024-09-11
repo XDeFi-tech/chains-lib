@@ -5,8 +5,8 @@ import {
   Success,
   parseConnectSettings,
 } from '@trezor/connect-web';
-import { ChainMsg, MsgBody } from '@xdefi-tech/chains-utxo';
 
+import { ChainMsg, MsgBody } from '../msg';
 import { DogecoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
 import { DOGECOIN_MANIFEST } from '../manifests';

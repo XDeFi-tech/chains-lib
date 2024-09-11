@@ -33,7 +33,7 @@
     "@psf/bitcoincashjs-lib": "4.0.3",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.3.0",
-    "@scure/btc-signer": "1.2.1",
+    "@scure/btc-signer": "1.3.2",
     "@xdefi-tech/chains-core": "*",
     "@xdefi-tech/chains-utxo": "*",
     "axios": "1.3.4",
