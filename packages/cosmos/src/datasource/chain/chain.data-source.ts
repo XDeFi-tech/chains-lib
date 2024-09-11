@@ -79,6 +79,12 @@ export class ChainDataSource extends DataSource {
     );
 
     const balances = response.data.balances as CosmosCoin[];
+    if (!balances.some((b) => b.denom === this.manifest.denom)) {
+      balances.unshift({
+        denom: this.manifest.denom,
+        amount: '0',
+      });
+    }
     const chain =
       COSMOS_ADDRESS_CHAIN[
         this.manifest.chain as keyof typeof COSMOS_ADDRESS_CHAIN
