@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.51
+
+### Patch Changes
+
+- b80c98c0: feat: return balance of native token on custom cosmos chains
+
 ## 2.0.50
 
 ### Patch Changes
