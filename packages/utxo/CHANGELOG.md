@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.16
+
+### Patch Changes
+
+- 72238c5a: Fix: add memo to utxo chains using @scure/btc-signer
+
 ## 2.0.15
 
 ### Patch Changes
