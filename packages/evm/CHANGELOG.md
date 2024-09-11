@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.51
+
+### Patch Changes
+
+- 69686372: Fix: add maxPriorityFeePerGas default value to 1 gwei
+
 ## 2.0.50
 
 ### Patch Changes
