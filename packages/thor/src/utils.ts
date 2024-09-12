@@ -38,7 +38,7 @@ export const assetFromString = (s: string): common.IAsset | null => {
  */
 export const getThorChainID = async (
   rpcUrl: string,
-  defaultChainId = 'thorchain-mainnet-v1'
+  defaultChainId = 'thorchain-1'
 ): Promise<string> => {
   try {
     const restAxiosInstance = axios.create({
@@ -48,7 +48,7 @@ export const getThorChainID = async (
     return data?.result?.network;
   } catch (err) {
     console.error(
-      'Error while getting thor chain id, returning "thorchain-mainnet-v1" by default.'
+      'Error while getting thor chain id, returning "thorchain-1" by default.'
     );
     console.error(err);
     return defaultChainId;

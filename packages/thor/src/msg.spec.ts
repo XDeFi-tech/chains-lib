@@ -15,7 +15,7 @@ describe('msg', () => {
             Promise.resolve([
               {
                 asset: {
-                  chainId: 'thorchain-mainnet-v1',
+                  chainId: 'thorchain-1',
                   name: 'Thor',
                   symbol: 'RUNE',
                   icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/thorchain/info/logo.png',
@@ -28,7 +28,7 @@ describe('msg', () => {
               },
               {
                 asset: {
-                  chainId: 'thorchain-mainnet-v1',
+                  chainId: 'thorchain-1',
                   name: 'BLZ',
                   symbol: 'BLZ',
                   icon: null,
@@ -66,7 +66,7 @@ describe('msg', () => {
         nodeURL: 'https://rpc-proxy.xdefi.services/thornode',
         chainSymbol: 'RUNE',
         blockExplorerURL: 'https://viewblock.io/thorchain',
-        chainId: 'thorchain-mainnet-v1',
+        chainId: 'thorchain-1',
         chain: 'thorchain',
         denom: 'rune',
         prefix: 'thor',
@@ -103,7 +103,7 @@ describe('msg', () => {
     expect(response.to).toEqual('thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l');
     expect(response.decimals).toEqual(8);
     expect(response.value).toEqual(100); // 0.000001 * 10^8
-    expect(response.chainId).toEqual('thorchain-mainnet-v1');
+    expect(response.chainId).toEqual('thorchain-1');
     expect(response.denom).toEqual('rune');
   });
 
@@ -130,7 +130,7 @@ describe('msg', () => {
     expect(response.to).toEqual('thor1cg5ws99z3p2lx76f54hmuffrk2n223vzyus73l');
     expect(response.decimals).toEqual(8);
     expect(response.value).toEqual(100); // 0.000001 * 10^8
-    expect(response.chainId).toEqual('thorchain-mainnet-v1');
+    expect(response.chainId).toEqual('thorchain-1');
     expect(response.denom).toEqual('BLZ');
   });
 
