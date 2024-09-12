@@ -61,7 +61,7 @@ describe('seed-phrase.signer', () => {
     await signer.sign(messages.thorchain, derivation);
 
     expect(messages.thorchain.signedTransaction).toEqual(
-      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJjClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIPCgkKBHJ1bmUSATAQwJoMGkCcsjR8tN2XlDJIN6WBlTtcvoqP3wNNEX5icxtynFY+hReK41XbLWqDiihvzBkpyikDBz6jyvCoWXdCY9A07hYx'
+      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJjClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIPCgkKBHJ1bmUSATAQwJoMGkCf3T7Io+N6pehOobxD6uCKvsJIsfeMksP9J7QKN0f6JXDXubGvM5X3AclfeT+ALuqtkEn/FzzqVIj6Urdkzsqp'
     );
   });
 

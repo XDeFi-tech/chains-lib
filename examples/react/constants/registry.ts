@@ -753,7 +753,7 @@ export const registry = [
   {
     id: 'thorchain',
     name: 'THORChain',
-    chainId: 'thorchain-mainnet-v1',
+    chainId: 'thorchain-1',
     blockchain: 'Thorchain',
     icon: 'https://static.xdefi.services/icons/network/thorchain.svg',
     nativeCoins: [
