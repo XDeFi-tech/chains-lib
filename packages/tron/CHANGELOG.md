@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.36
+
+### Patch Changes
+
+- e41a3dfb: Fix: add hash to transaction from broadcast method
+
 ## 2.0.35
 
 ### Patch Changes
