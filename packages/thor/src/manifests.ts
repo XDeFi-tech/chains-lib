@@ -15,7 +15,7 @@ export const THORCHAIN_MANIFESTS: {
     nodeURL: 'https://rpc-proxy.xdefi.services/thornode',
     chainSymbol: 'RUNE',
     blockExplorerURL: 'https://viewblock.io/thorchain',
-    chainId: 'thorchain-mainnet-v1',
+    chainId: 'thorchain-1',
     chain: 'thorchain',
     denom: 'rune',
     prefix: 'thor',

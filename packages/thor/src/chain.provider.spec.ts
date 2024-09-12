@@ -156,7 +156,7 @@ describe('chain.provider', () => {
         jest.fn().mockImplementation(async () => [
           {
             asset: {
-              chainId: 'thorchain-mainnet-v1',
+              chainId: 'thorchain-1',
               name: 'Thor',
               symbol: 'RUNE',
               icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/thorchain/info/logo.png',
@@ -175,7 +175,7 @@ describe('chain.provider', () => {
         jest.fn().mockImplementation(async () => [
           {
             asset: {
-              chainId: 'thorchain-mainnet-v1',
+              chainId: 'thorchain-1',
               name: 'Thor',
               symbol: 'RUNE',
               icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/thorchain/info/logo.png',
