@@ -70,7 +70,7 @@ describe('private-key.signer', () => {
     await signer.sign(messages.thorchain);
 
     expect(messages.thorchain.signedTransaction).toEqual(
-      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJYClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIEEMCaDBpARKIPDEXsG3U3PH+TtNqy3/qEC/a71PoAsvuAl1vZcigQBcWXF85nWL4gluaTGFJRhJQroBDWwlB4ftwB2LlKEA=='
+      'Ck0KSwoOL3R5cGVzLk1zZ1NlbmQSOQoUwijoFKKIVfN7SaVvviUjsqalRYISFMIo6BSiiFXze0mlb74lI7KmpUWCGgsKBHJ1bmUSAzEwMBJYClAKRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiED8LlkeE7S/gZp4aIxPpkXW0X8Lq/XknCOOPCr8C7q/UcSBAoCCAEYABIEEMCaDBpAIIoLCZv1bKeHIZWNiwi+R90t0jv7eVCmBgNJ9Kjmhxh14m76WabZ9r7X/39b7/+J1/TRhWSL22E45HnxyLrVug=='
     );
   });
 
