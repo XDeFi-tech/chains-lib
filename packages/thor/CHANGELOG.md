@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.7
+
+### Patch Changes
+
+- be076b8b: Feat: update thorchain chain id to thorchain-1
+
 ## 2.1.6
 
 ### Patch Changes
