@@ -172,7 +172,12 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       const tx = await this.rpcProvider.trx.sendRawTransaction(
         msg.signedTransaction
       );
-      transactions.push(Transaction.fromData(tx));
+      transactions.push(
+        Transaction.fromData({
+          ...tx,
+          hash: tx.txid,
+        })
+      );
     }
 
     return transactions;
