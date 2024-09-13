@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.53
+
+### Patch Changes
+
+- cf8df3c8: fix: rounding amount before get transfer route
+
 ## 2.0.52
 
 ### Patch Changes
