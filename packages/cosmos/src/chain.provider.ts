@@ -230,7 +230,7 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
   async createIBCTransferMsg(payload: IBCPayload) {
     const { sourceAssetDenom, sourceAssetChain, destAssetChain, addresses } =
       payload;
-    const amountIn = (Number(payload.amountIn) * 1e6).toString();
+    const amountIn = Math.floor(Number(payload.amountIn) * 1e6).toString();
     const {
       getIBCTransferRouter,
       createIBCTransferMsg: _createIBCTransferMsg,
