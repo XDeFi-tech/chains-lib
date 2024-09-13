@@ -123,6 +123,16 @@ export const getIBCTokenInfo = async (
   );
 };
 
+/**
+ * Retrieves the IBC transfer route from the source asset to the destination asset.
+ *
+ * @param amountIn - The input amount, which must be an integer.
+ * @param sourceAssetDenom - The denomination of the source asset.
+ * @param sourceAssetChain - The chain of the source asset.
+ * @param destAssetDenom - The denomination of the destination asset.
+ * @param destAssetChain - The chain of the destination asset.
+ * @returns The IBC transfer route.
+ */
 export const getIBCTransferRouter = async (
   amountIn: string,
   sourceAssetDenom: string,
