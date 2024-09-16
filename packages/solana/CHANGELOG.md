@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.8
+
+### Patch Changes
+
+- 459335c9: Feat: add check for minimum balance for rent exemption
+
 ## 2.1.7
 
 ### Patch Changes
