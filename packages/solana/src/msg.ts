@@ -32,6 +32,7 @@ import bs58 from 'bs58';
 import type { SolanaProvider } from './chain.provider';
 import { DEFAULT_FEE } from './constants';
 import { SolanaSignature } from './types';
+import { checkMinimumBalanceForRentExemption } from './utils';
 
 export interface MsgBody {
   amount: NumberIsh;
@@ -171,6 +172,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       value = new BigNumber(msgData.amount)
         .multipliedBy(LAMPORTS_PER_SOL)
         .toNumber();
+      const minimumAmount = await checkMinimumBalanceForRentExemption(
+        this.provider.rpcProvider
+      );
+      if (value < minimumAmount) {
+        throw new Error(
+          `Insufficient balance. Minimum amount required is ${minimumAmount}`
+        );
+      }
       instruction = new TransactionInstruction({
         keys: [
           { pubkey: senderPublicKey, isSigner: true, isWritable: true },

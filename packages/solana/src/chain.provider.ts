@@ -25,6 +25,7 @@ import bs58 from 'bs58';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
+import { checkMinimumBalanceForRentExemption } from './utils';
 
 @ChainDecorator('SolanaProvider', {
   deps: [],
@@ -141,5 +142,11 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     } catch (error) {
       return false;
     }
+  }
+
+  static get staticUtils() {
+    return {
+      checkMinimumBalanceForRentExemption,
+    };
   }
 }
