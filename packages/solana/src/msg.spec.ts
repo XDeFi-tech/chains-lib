@@ -59,6 +59,9 @@ describe('msg', () => {
             blockhash: 'mockBlockhash',
           })
         ),
+        getMinimumBalanceForRentExemption: jest.fn(() =>
+          Promise.resolve(890880)
+        ),
       },
       gasFeeOptions: jest.fn(() =>
         Promise.resolve({
@@ -91,7 +94,7 @@ describe('msg', () => {
       {
         from: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
         to: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
-        amount: 0.000001,
+        amount: 0.001,
       },
       mockProvider,
       MsgEncoding.object
@@ -100,7 +103,7 @@ describe('msg', () => {
     const txBody = await chainMsg.buildTx();
     expect(txBody.from).toBe('9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh');
     expect(txBody.to).toBe('9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh');
-    expect(txBody.value).toBe(1000); // 0.000001 * 10 ** 8
+    expect(txBody.value).toBe(1000000); // 0.001 * 10 ** 8
     expect(txBody.gasPrice).toBe(5000);
   });
 

@@ -3,3 +3,4 @@ export * from './manifests';
 export * from './datasource';
 export * from './msg';
 export * from './types';
+export * from './utils';

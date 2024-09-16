@@ -31,7 +31,7 @@ describe('private-key.signer', () => {
     txInput = {
       from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
-      amount: 0.000001,
+      amount: 0.001,
       priorityFeeAmount: 10000,
     };
 
@@ -50,7 +50,7 @@ describe('private-key.signer', () => {
     await signer.sign(message);
 
     expect(message.signedTransaction.sig).toBe(
-      '57iTmcMGXr4oM34uhaAmxiUqhxkFRLu7pSaXgxtLuNmo3w76nRDWL9voW2Dmk8c8UqNEbVYnAWXoSHrRh7WgX3EJ'
+      'LgP4CtcghLSqAY5HCdnvxGFcyuQ1BfNNoj6fQ62psPTgM34vbiWducpCCTzp98ixecQHL6ZubSsHeK1tDRoVk2A'
     );
   });
 
