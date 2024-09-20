@@ -54,7 +54,9 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     const { fee } = await this.getFee(); // unit is btc/kvB
     if (!fee)
       throw new Error('Fee estimation is required for building transaction');
-    const feeRate = Number(fee) * 1e5; // sat/vB
+    // Convert fee rate to lit/vb
+    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
+    const feeRate = Math.ceil(Number(fee) * 1e5);
     const feeRateWhole =
       parseInt(feeRate.toString()) < 1 ? 1 : parseInt(feeRate.toString());
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);

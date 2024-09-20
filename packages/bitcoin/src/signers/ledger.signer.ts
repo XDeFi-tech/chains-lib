@@ -77,7 +77,7 @@ export class LedgerSigner extends Signer.Provider {
         utxo.witnessUtxo.script.toString('hex'),
         undefined,
       ]),
-      associatedKeysets: [derivation],
+      associatedKeysets: Array(inputs.length).fill(derivation),
       outputScriptHex,
       additionals: ['bech32'],
     };
