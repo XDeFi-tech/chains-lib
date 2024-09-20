@@ -28,13 +28,18 @@ export class LedgerSigner extends Signer.Provider {
     wif: 0xb0,
   };
 
-  async getAddress(derivation: string): Promise<string> {
+  async getAddress(
+    derivation: string,
+    type: 'legacy' | 'p2sh' | 'bech32' | 'bech32m' | 'cashaddr' = 'cashaddr'
+  ): Promise<string> {
     const app = new BtcOld({
       transport: this.transport as Transport,
       currency: 'litecoin',
     });
 
-    const { bitcoinAddress } = await app.getWalletPublicKey(derivation);
+    const { bitcoinAddress } = await app.getWalletPublicKey(derivation, {
+      format: type,
+    });
 
     if (bitcoinAddress) {
       return bitcoinAddress;
@@ -85,11 +90,11 @@ export class LedgerSigner extends Signer.Provider {
       inputs: inputs.map((utxo: UTXO) => [
         app.splitTransaction(utxo.txHex, true),
         utxo.index,
-        utxo.witnessUtxo.script.toString('hex'),
       ]),
-      associatedKeysets: [derivation],
+      associatedKeysets: Array(inputs.length).fill(derivation),
       outputScriptHex,
-      additionals: [],
+      segwit: true,
+      additionals: ['bech32'],
     };
 
     const signedTx = await app.createPaymentTransaction(data);

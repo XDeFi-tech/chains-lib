@@ -114,7 +114,7 @@ export class LedgerSigner extends Signer.Provider {
         utxo.index,
         undefined,
       ]),
-      associatedKeysets: [derivation],
+      associatedKeysets: Array(inputs.length).fill(derivation),
       outputScriptHex,
       additionals: ['abc'],
       sigHashType: 0x41,
