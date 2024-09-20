@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.1.6
+
+### Patch Changes
+
+- 9fb78931: fix: ledger signing for utxo chains & update logic to round up fee rate
+
 ## 2.1.5
 
 ### Patch Changes
