@@ -250,7 +250,8 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
       destAssetDenom,
       destAssetChain
     );
-    return await _createIBCTransferMsg(route, addresses);
+    const msgBodies = await _createIBCTransferMsg(route, addresses);
+    return msgBodies.map((msg) => new ChainMsg(msg, this, MsgEncoding.object));
   }
 
   /**
