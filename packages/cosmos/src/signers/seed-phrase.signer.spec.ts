@@ -651,15 +651,16 @@ describe('IBC token transfer', () => {
     destChain = CosmosHubChains.akash;
     sourceAssetDenom =
       'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'; // uatom on osmosis
-    const msgBodies = await provider.createIBCTransferMsg({
+    const msgs = await provider.createIBCTransferMsg({
       amountIn: '0.1',
       sourceAssetDenom,
       sourceAssetChain: sourceChain,
       destAssetChain: destChain,
       addresses,
     });
-    expect(msgBodies[0].msgs).toBeDefined();
-    const ibcTrasferMsg = msgBodies[0].msgs?.[0];
+    expect(msgs.length).toBe(1);
+    expect(msgs[0].toData().msgs).toBeDefined();
+    const ibcTrasferMsg = msgs[0].toData().msgs?.[0];
     expect(ibcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
@@ -669,9 +670,8 @@ describe('IBC token transfer', () => {
     expect(ibcTrasferMsg.value.receiver).toBe(addresses['cosmos']);
     expect(ibcTrasferMsg.value.memo).toContain(addresses['akash']);
 
-    const chainMsg = await provider.createMsg(msgBodies[0]);
-    await signer.sign(chainMsg, derivations);
-    expect(chainMsg.signedTransaction).toBeTruthy();
+    await signer.sign(msgs[0], derivations);
+    expect(msgs[0].signedTransaction).toBeTruthy();
     TxRaw.encode = originalEncode;
   });
 
@@ -680,15 +680,15 @@ describe('IBC token transfer', () => {
     destChain = CosmosHubChains.cosmos;
     sourceAssetDenom =
       'ibc/1DBD74F7D8022AFE3D79A2502C0FCFFF6EDC74F7342117A676B623830B859994'; // uatom/transfer/channel-208/transfer/channel-2
-    const msgBodies = await provider.createIBCTransferMsg({
+    const msgs = await provider.createIBCTransferMsg({
       amountIn: '0.1',
       sourceAssetDenom,
       sourceAssetChain: sourceChain,
       destAssetChain: destChain,
       addresses,
     });
-    expect(msgBodies[0].msgs).toBeDefined();
-    const firstIbcTrasferMsg = msgBodies[0].msgs?.[0];
+    expect(msgs.length).toBe(2);
+    const firstIbcTrasferMsg = msgs[0].toData().msgs?.[0];
     expect(firstIbcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
@@ -697,7 +697,7 @@ describe('IBC token transfer', () => {
     expect(firstIbcTrasferMsg.value.token.amount).toBe('100000'); // 0.1 * 1e6
     expect(firstIbcTrasferMsg.value.receiver).toBe(addresses['axelar']);
 
-    const secondIbcTrasferMsg = msgBodies[1].msgs?.[0];
+    const secondIbcTrasferMsg = msgs[1].toData().msgs?.[0];
     expect(secondIbcTrasferMsg.typeUrl).toBe(
       '/ibc.applications.transfer.v1.MsgTransfer'
     );
