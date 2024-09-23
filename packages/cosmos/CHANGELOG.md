@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.54
+
+### Patch Changes
+
+- b9d24365: fix: return chain msg instead of msg body
+
 ## 2.0.53
 
 ### Patch Changes
