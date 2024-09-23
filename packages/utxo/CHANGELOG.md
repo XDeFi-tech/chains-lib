@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.18
+
+### Patch Changes
+
+- 359f5176: Update FallbackDataSource getProvider method
+- Updated dependencies [359f5176]
+  - @xdefi-tech/chains-core@2.0.32
+
 ## 2.0.17
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.32
+
+### Patch Changes
+
+- 359f5176: Update FallbackDataSource getProvider method
+
 ## 2.0.31
 
 ### Patch Changes

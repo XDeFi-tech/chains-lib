@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.25
+
+### Patch Changes
+
+- 359f5176: Update FallbackDataSource getProvider method
+- Updated dependencies [359f5176]
+  - @xdefi-tech/chains-core@2.0.32
+
 ## 2.0.24
 
 ### Patch Changes
