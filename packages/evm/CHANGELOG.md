@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.53
+
+### Patch Changes
+
+- 359f5176: Update FallbackDataSource getProvider method
+- Updated dependencies [359f5176]
+  - @xdefi-tech/chains-core@2.0.32
+
 ## 2.0.52
 
 ### Patch Changes
