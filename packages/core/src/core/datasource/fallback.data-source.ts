@@ -23,7 +23,7 @@ export class FallbackDataSource extends DataSource {
     this.providers = providers;
   }
 
-  private getProvider(): DataSource {
+  getProvider(): DataSource {
     if (this.attempts > 5) {
       this.attempts = 0;
       this.currentProviderIndex++;

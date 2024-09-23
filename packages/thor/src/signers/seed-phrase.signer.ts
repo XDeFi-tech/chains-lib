@@ -79,7 +79,8 @@ export class SeedPhraseSigner extends Signer.Provider {
       },
     });
     const tx = new cosmosclient.TxBuilder(
-      msg.provider.dataSource.rpcProvider,
+      msg.provider.dataSource.rpcProvider ||
+        msg.provider.dataSource.getProvider(), // cover FallbackDataSource
       txBody,
       authInfo
     );
