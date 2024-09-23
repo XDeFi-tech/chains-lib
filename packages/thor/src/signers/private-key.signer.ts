@@ -56,8 +56,10 @@ export class PrivateKeySigner extends Signer.Provider {
         gas_limit: new Long(parseInt(gasLimit)),
       },
     });
+
     const tx = new cosmosclient.TxBuilder(
-      msg.provider.dataSource.rpcProvider,
+      msg.provider.dataSource.rpcProvider ||
+        msg.provider.dataSource.getProvider(), // cover FallbackDataSource
       txBody,
       authInfo
     );
