@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-bitcoincash",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
