@@ -106,8 +106,14 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
       return tx;
     }
   }
-  getFee() {
-    return this.data;
+
+  async getFee() {
+    const [msgFee] = await this.provider.estimateFee([this]);
+
+    return {
+      fee: new BigNumber(msgFee.fee).toString(),
+      maxFee: null,
+    };
   }
 
   async getMaxAmountToSend(contract?: string) {
