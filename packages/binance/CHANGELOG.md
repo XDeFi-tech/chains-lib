@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.26
+
+### Patch Changes
+
+- 33c98eb3: Feat: update core package bignumber deps
+- Updated dependencies [33c98eb3]
+  - @xdefi-tech/chains-core@2.0.33
+
 ## 2.0.25
 
 ### Patch Changes

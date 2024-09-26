@@ -1,5 +1,22 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.9
+
+### Patch Changes
+
+- 33c98eb3: Feat: update core package bignumber deps
+- Updated dependencies [33c98eb3]
+  - @xdefi-tech/chains-core@2.0.33
+  - @xdefi-tech/chains-binance@2.0.26
+  - @xdefi-tech/chains-bitcoin@2.1.8
+  - @xdefi-tech/chains-bitcoincash@2.1.8
+  - @xdefi-tech/chains-cosmos@2.0.56
+  - @xdefi-tech/chains-dogecoin@2.1.8
+  - @xdefi-tech/chains-evm@2.0.54
+  - @xdefi-tech/chains-litecoin@2.1.8
+  - @xdefi-tech/chains-solana@2.1.10
+  - @xdefi-tech/chains-thor@2.1.9
+
 ## 2.0.8
 
 ### Patch Changes
