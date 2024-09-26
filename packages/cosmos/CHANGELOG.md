@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.57
+
+### Patch Changes
+
+- 68f23fbc: feat: add fallback asset fetcher for custom chain
+
 ## 2.0.56
 
 ### Patch Changes
