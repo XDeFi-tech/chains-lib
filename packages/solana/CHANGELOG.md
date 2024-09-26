@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.11
+
+### Patch Changes
+
+- 4d5696bf: feat: create multisign msg for transfer sol and spl token
+
 ## 2.1.10
 
 ### Patch Changes
