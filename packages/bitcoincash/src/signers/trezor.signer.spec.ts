@@ -101,10 +101,7 @@ describe('trezor.signer', () => {
   });
 
   it('should get an address from the trezor device', async () => {
-    await signer.initTrezor('test@test.com', 'localhost', {
-      ...parseConnectSettings(),
-      lazyLoad: true,
-    });
+    await signer.initTrezor('test@test.com', 'localhost');
 
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });

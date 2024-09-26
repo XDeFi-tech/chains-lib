@@ -4,7 +4,6 @@ import {
   GetAddress,
   Params,
   Success,
-  parseConnectSettings,
 } from '@trezor/connect-web';
 
 import { EvmProvider } from '../chain.provider';
@@ -110,19 +109,13 @@ describe('trezor.signer', () => {
   });
 
   it('should get an address from the trezor device', async () => {
-    await signer.initTrezor('test@test.com', 'localhost', {
-      ...parseConnectSettings(),
-      lazyLoad: true,
-    });
+    await signer.initTrezor('test@test.com', 'localhost');
 
     expect(await signer.getAddress(derivationPath)).toBe(txInput.from);
   });
 
   it('should sign a transaction using a trezor device', async () => {
-    await signer.initTrezor('test@test.com', 'localhost', {
-      ...parseConnectSettings(),
-      lazyLoad: true,
-    });
+    await signer.initTrezor('test@test.com', 'localhost');
     await signer.sign(message, derivationPath);
 
     expect(message.signedTransaction).toBeTruthy();
