@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.8
+
+### Patch Changes
+
+- 33c98eb3: Feat: update core package bignumber deps
+- Updated dependencies [33c98eb3]
+  - @xdefi-tech/chains-core@2.0.33
+  - @xdefi-tech/chains-utxo@2.0.19
+
 ## 2.1.7
 
 ### Patch Changes
