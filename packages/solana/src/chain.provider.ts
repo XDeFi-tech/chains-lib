@@ -19,14 +19,27 @@ import {
   Connection,
   PublicKey,
   Transaction as SolanaTransaction,
+  SystemProgram,
 } from '@solana/web3.js';
 import { some } from 'lodash';
 import bs58 from 'bs58';
+import {
+  createTransferInstruction,
+  getAssociatedTokenAddressSync,
+} from '@solana/spl-token';
+import BigNumber from 'bignumber.js';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
 import { checkMinimumBalanceForRentExemption } from './utils';
 
+export interface MultisigMsgData {
+  from: string;
+  to: string;
+  amount: number;
+  decimals?: number;
+  tokenMintAddress?: string;
+}
 @ChainDecorator('SolanaProvider', {
   deps: [],
   providerType: 'Solana',
@@ -42,6 +55,69 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
 
   createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object) {
     return new ChainMsg(data, this, encoding);
+  }
+
+  /**
+   * Create a multisig transaction to transfer sol and spl token
+   * @param {MultisigMsgData[]} data - The data to be sent
+   * @param {string} feePayer - The fee payer address
+   * @returns {Promise<ChainMsg>} The msg encoded in base64
+   */
+  async createMultisigMsg(
+    data: MultisigMsgData[],
+    feePayer: string
+  ): Promise<ChainMsg> {
+    const transaction = new SolanaTransaction();
+    const { blockhash, lastValidBlockHeight } =
+      await this.rpcProvider.getLatestBlockhash();
+    transaction.feePayer = new PublicKey(feePayer);
+    transaction.recentBlockhash = blockhash;
+    transaction.lastValidBlockHeight = lastValidBlockHeight;
+
+    for (const msgData of data) {
+      const { from, to, amount, tokenMintAddress, decimals } = msgData;
+      const fromPubkey = new PublicKey(from);
+      const toPubkey = new PublicKey(to);
+      const lamports = new BigNumber(amount)
+        .multipliedBy(10 ** (decimals ?? this.manifest.decimals))
+        .toNumber();
+
+      if (!tokenMintAddress) {
+        const txInstruction = SystemProgram.transfer({
+          fromPubkey,
+          toPubkey,
+          lamports,
+        });
+        transaction.add(txInstruction);
+      } else {
+        const tokenSenderAccount = getAssociatedTokenAddressSync(
+          new PublicKey(tokenMintAddress),
+          fromPubkey
+        );
+
+        const tokenReceiverAccount = getAssociatedTokenAddressSync(
+          new PublicKey(tokenMintAddress),
+          toPubkey
+        );
+
+        const txInstruction = createTransferInstruction(
+          tokenSenderAccount,
+          tokenReceiverAccount,
+          fromPubkey,
+          lamports
+        );
+        transaction.add(txInstruction);
+      }
+    }
+
+    return this.createMsg(
+      transaction
+        .serialize({
+          requireAllSignatures: false,
+        })
+        .toString('base64'),
+      MsgEncoding.base64
+    );
   }
 
   async getTransactions(
