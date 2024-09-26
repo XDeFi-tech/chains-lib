@@ -13,6 +13,7 @@
     "@emotion/styled": "11.10.6",
     "@mui/icons-material": "^5.16.0",
     "@mui/material": "5.16.0",
+    "@trezor/connect-web": "^9.4.0",
     "@xdefi-tech/chains-binance": "*",
     "@xdefi-tech/chains-bitcoin": "*",
     "@xdefi-tech/chains-bitcoincash": "*",
