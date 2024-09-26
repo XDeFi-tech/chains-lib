@@ -177,12 +177,18 @@ export class ChainDataSource extends DataSource {
       hash: tx.txID,
       from: '',
       to: '',
-      status: tx.blockNumber
-        ? TransactionStatus.success
-        : TransactionStatus.pending,
-      date: tx.blockTimeStamp,
+      status: TransactionStatus.pending,
+      date: tx.raw_data.timestamp,
       amount: '',
     };
+
+    const txStatus = tx.ret && tx.ret[0];
+
+    if (txStatus.contractRet === 'SUCCESS') {
+      result.status = TransactionStatus.success;
+    } else if (txStatus.contractRet === 'REVERT') {
+      result.status = TransactionStatus.failure;
+    }
 
     if (
       tx.raw_data.contract.length > 0 &&
