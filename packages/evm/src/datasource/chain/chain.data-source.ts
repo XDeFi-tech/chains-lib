@@ -264,7 +264,7 @@ export class ChainDataSource extends DataSource {
           data: contractData.data as string,
         });
         if (calculatedGasLimit) {
-          gasLimit = calculatedGasLimit;
+          gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
         } else {
           gasLimit = DEFAULT_CONTRACT_FEE;
         }
