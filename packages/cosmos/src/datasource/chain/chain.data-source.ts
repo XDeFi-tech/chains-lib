@@ -42,6 +42,7 @@ import { MsgSwapExactAmountIn } from '../../proto_export/osmosis/gamm/v1beta1/tx
 import { MsgSwapExactAmountIn as MsgSwapExactAmountInPoolManager } from '../../proto_export/osmosis/poolmanager/v1beta1/tx';
 import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
 import { isIBCPayload } from '../../utils';
+import { getFallbackAsset } from '../fallback-asset/cosmos.fallback-asset';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -93,11 +94,21 @@ export class ChainDataSource extends DataSource {
       chain: chain,
       contract: this.manifest.denom === denom ? null : denom,
     }));
-    const {
-      data: {
-        assets: { cryptoAssets: assets },
-      },
-    } = await getCryptoAssets(cryptoAssetsInput);
+    let assets: any;
+    try {
+      const {
+        data: {
+          assets: { cryptoAssets },
+        },
+      } = await getCryptoAssets(cryptoAssetsInput);
+      assets = cryptoAssets;
+    } catch (error) {
+      assets = await getFallbackAsset(
+        this.manifest.chainId,
+        cryptoAssetsInput,
+        this.manifest.denom
+      );
+    }
 
     return balances.reduce((result: Coin[], { amount }, index) => {
       const asset = assets && assets[index];
@@ -123,7 +134,7 @@ export class ChainDataSource extends DataSource {
           decimals: asset.decimals!,
         }),
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        new BigNumber(amount).dividedBy(10 ** asset.decimals!)
+        new BigNumber(amount).dividedBy(10 ** (asset.decimals || 0))
       );
 
       result.push(coin);

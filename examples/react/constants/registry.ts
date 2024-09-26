@@ -1874,4 +1874,27 @@ export const registry = [
       },
     ],
   },
+  {
+    id: 'agoric',
+    name: 'Agoric',
+    chainId: 'agoric-3',
+    blockchain: 'Cosmos',
+    icon: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/agoric/images/bld.png',
+    nativeCoins: [
+      {
+        name: 'BLD',
+        decimals: 6,
+        symbol: 'BLD',
+        icon: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/agoric/images/bld.png',
+        fallbackIcon:
+          'https://raw.githubusercontent.com/cosmos/chain-registry/master/agoric/images/bld.png',
+      },
+    ],
+    derivation: [
+      {
+        path: "m/44'/118'/0'/0/0",
+      },
+    ],
+    explorer: [],
+  },
 ];
