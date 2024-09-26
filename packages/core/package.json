@@ -17,6 +17,11 @@
     "README.md"
   ],
   "devDependencies": {
+    "@graphql-codegen/cli": "3.2.2",
+    "@graphql-codegen/client-preset": "2.1.1",
+    "@graphql-codegen/named-operations-object": "2.3.1",
+    "@graphql-codegen/near-operation-file-preset": "2.5.0",
+    "@graphql-codegen/typescript-document-nodes": "3.0.2",
     "@types/lodash": "4.14.182",
     "@types/uuid": "9.0.1",
     "cross-fetch": "3.1.5",
@@ -29,12 +34,7 @@
     "prettier": "2.6.2",
     "ts-jest": "27.1.4",
     "tsup": "6.6.3",
-    "typedoc": "0.22.15",
-    "@graphql-codegen/cli": "3.2.2",
-    "@graphql-codegen/client-preset": "2.1.1",
-    "@graphql-codegen/named-operations-object": "2.3.1",
-    "@graphql-codegen/near-operation-file-preset": "2.5.0",
-    "@graphql-codegen/typescript-document-nodes": "3.0.2"
+    "typedoc": "0.22.15"
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
