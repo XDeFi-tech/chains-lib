@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.39
+
+### Patch Changes
+
+- e9e9b5b3: Fix: getTransaction status
+
 ## 2.0.38
 
 ### Patch Changes
