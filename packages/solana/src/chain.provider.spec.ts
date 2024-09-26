@@ -4,9 +4,16 @@ import {
   TransactionStatus,
   Coin,
 } from '@xdefi-tech/chains-core';
+import {
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 
 import { ChainMsg } from './msg';
-import { SolanaProvider } from './chain.provider';
+import { SolanaProvider, MultisigMsgData } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { SOLANA_MANIFEST } from './manifests';
 
@@ -38,6 +45,54 @@ describe('chain.provider', () => {
     });
 
     expect(msg).toBeInstanceOf(ChainMsg);
+  });
+
+  it('CreateMultisignMsg() should create a ChainMsg with multisign instruction', async () => {
+    const data: MultisigMsgData[] = [
+      {
+        from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+        to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+        amount: 0.000001,
+        decimals: 9,
+      },
+      {
+        from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+        to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+        amount: 0.000002,
+        tokenMintAddress: 'So11111111111111111111111111111111111111112',
+        decimals: 9,
+      },
+    ];
+
+    const feePayer = 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5';
+
+    const msg = await chainProvider.createMultisigMsg(data, feePayer);
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+    const decodedMsg = Buffer.from(msg.toData(), 'base64');
+    expect(decodedMsg).toBeTruthy();
+    const transaction = SolanaTransaction.from(decodedMsg);
+    expect(transaction.instructions.length).toEqual(2);
+
+    const [solInstruction, splInstruction] = transaction.instructions;
+
+    // Check SOL transfer instruction
+    expect(solInstruction).toBeInstanceOf(TransactionInstruction);
+    expect(solInstruction.programId).toEqual(SystemProgram.programId);
+    const solKeys = solInstruction.keys.map((key) => key.pubkey.toString());
+    expect(solKeys).toContain('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5');
+    expect(solInstruction.data).toBeTruthy();
+
+    // Check SPL token transfer instruction
+    expect(splInstruction).toBeInstanceOf(TransactionInstruction);
+    const splKeys = splInstruction.keys.map((key) => key.pubkey.toString());
+    const tokenAccount = await getAssociatedTokenAddressSync(
+      new PublicKey('So11111111111111111111111111111111111111112'),
+      new PublicKey('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5')
+    );
+    expect(splKeys).toContain(tokenAccount.toBase58());
+    expect(splKeys).toContain('C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5');
+    expect(splInstruction.data).toBeTruthy();
   });
 
   it('getBalance() should return balance data', async () => {

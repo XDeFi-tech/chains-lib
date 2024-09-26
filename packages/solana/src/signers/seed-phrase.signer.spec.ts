@@ -1,5 +1,12 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
-import { Connection } from '@solana/web3.js';
+import { Msg, MsgEncoding } from '@xdefi-tech/chains-core';
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
+import bs58 from 'bs58';
 
 import { SolanaProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -115,6 +122,102 @@ describe('seed-phrase.signer', () => {
       pubKey: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       sig: 'LvYxkcdz3E2NmhwAX2EAnPgudhaWyGRkxkNdEu7ZnPaBcyU4giu8VjCM7TMyYPmVn2rsvJvWfYpmhLK5HL7GPiE',
     });
+  });
+
+  it('should return a tx with multiple signatures', async () => {
+    const alice = new SeedPhraseSigner(
+      'question unusual episode tree fresh lawn enforce vocal attitude quarter solutioni shove early arch topic'
+    );
+    const bob = new SeedPhraseSigner(
+      'access before split cram spoon snap secret month sphere fog embark donor early arch topic'
+    );
+
+    const aliceKeyPair = Keypair.fromSecretKey(
+      Buffer.from(await alice.getPrivateKey(derivation), 'hex')
+    );
+
+    const bobKeyPair = Keypair.fromSecretKey(
+      Buffer.from(await bob.getPrivateKey(derivation), 'hex')
+    );
+
+    const alicePublickey = new PublicKey(
+      bs58.decode(await alice.getAddress(derivation))
+    );
+    const bobPublickey = new PublicKey(
+      bs58.decode(await bob.getAddress(derivation))
+    );
+
+    // const { blockhash, lastValidBlockHeight } =
+    //   await provider.rpcProvider.getLatestBlockhash('finalized');
+
+    // Create a transaction need multisign
+    const transaction = new SolanaTransaction({
+      blockhash: 'DHMZ9b8KE6XrsyiE1YzQUV9GfaxFjqXrpo2ZL3YG4KJE',
+      lastValidBlockHeight: 256032877,
+      feePayer: alicePublickey, // Alice pays the transaction fee
+    });
+    // Transfer 0.01 SOL
+    transaction.add(
+      SystemProgram.transfer({
+        fromPubkey: alicePublickey,
+        toPubkey: bobPublickey,
+        lamports: 10000000,
+      })
+    );
+    // Transfer 0.02 SOL
+    transaction.add(
+      SystemProgram.transfer({
+        fromPubkey: bobPublickey,
+        toPubkey: alicePublickey,
+        lamports: 20000000,
+      })
+    );
+    const serializedTx = transaction.serialize({
+      requireAllSignatures: false,
+    });
+
+    // Using solana web3 lib
+    const testTransaction = SolanaTransaction.from(serializedTx);
+    testTransaction.partialSign(aliceKeyPair);
+
+    // Using chain-lib
+    const msg = provider.createMsg(
+      {
+        data: serializedTx.toString('base64'),
+      },
+      MsgEncoding.base64
+    );
+
+    // Sign with Alice
+    await alice.sign(msg as ChainMsg, derivation);
+    expect(testTransaction.signatures[0].publicKey.toBase58()).toEqual(
+      msg.signedTransaction.pubKey
+    );
+    expect(Buffer.from(bs58.decode(msg.signedTransaction.sig))).toEqual(
+      testTransaction.signatures[0].signature
+    );
+
+    // Send signed transations to Bob
+    const msgContainAliceSignature = provider.createMsg(
+      {
+        data: testTransaction
+          .serialize({
+            requireAllSignatures: false,
+          })
+          .toString('base64'),
+      },
+      MsgEncoding.base64
+    );
+
+    // Sign with Bob
+    testTransaction.partialSign(bobKeyPair);
+    await bob.sign(msgContainAliceSignature as ChainMsg, derivation);
+    expect(testTransaction.signatures[1].publicKey.toBase58()).toEqual(
+      msgContainAliceSignature.signedTransaction.pubKey
+    );
+    expect(
+      Buffer.from(bs58.decode(msgContainAliceSignature.signedTransaction.sig))
+    ).toEqual(testTransaction.signatures[1].signature);
   });
 });
 
