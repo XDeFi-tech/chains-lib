@@ -48,6 +48,16 @@ describe('msg', () => {
           medium: 1000,
         })
       ),
+      estimateFee: jest.fn(() =>
+        Promise.resolve([
+          {
+            bandwidth: 1000,
+            energy: 0,
+            fee: 0,
+            willRevert: false,
+          },
+        ])
+      ),
       manifest: {
         name: 'Tron',
         description: '',

@@ -14,10 +14,11 @@ import {
   TransactionAction,
   TransactionStatus,
 } from '@xdefi-tech/chains-core';
-import { AbiCoder, formatUnits } from 'ethers';
+import { AbiCoder } from 'ethers';
 import { Observable } from 'rxjs';
 import TronWeb from 'tronweb';
 import axios, { AxiosInstance } from 'axios';
+import BigNumber from 'bignumber.js';
 
 import { CryptoAsset } from '../../gql/graphql';
 import type { TronManifest } from '../../manifests';
@@ -65,7 +66,9 @@ export class IndexerDataSource extends DataSource {
                   dayPriceChange: asset.price?.dayPriceChange,
                 },
               }),
-              formatUnits(amount.value, asset.decimals || 0)
+              new BigNumber(amount.value)
+                .dividedBy(10 ** (asset.decimals || 0))
+                .toString()
             )
           );
         }
