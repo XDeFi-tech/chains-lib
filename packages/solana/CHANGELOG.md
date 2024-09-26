@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.10
+
+### Patch Changes
+
+- 33c98eb3: Feat: update core package bignumber deps
+- Updated dependencies [33c98eb3]
+  - @xdefi-tech/chains-core@2.0.33
+
 ## 2.1.9
 
 ### Patch Changes
