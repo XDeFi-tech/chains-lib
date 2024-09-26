@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.55
+
+### Patch Changes
+
+- 0bfe4af6: add multiple to evm gas estimate that has contractAddress in payload(send)
+
 ## 2.0.54
 
 ### Patch Changes
