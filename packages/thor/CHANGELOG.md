@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.10
+
+### Patch Changes
+
+- 1eb91b09: fix: sign transaction with ledger on Thorchain
+
 ## 2.1.9
 
 ### Patch Changes
