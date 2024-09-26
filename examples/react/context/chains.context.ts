@@ -242,6 +242,32 @@ export const initDefaultProviders = () => {
       }
     )
   );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(
+      new CosmosProvider.dataSourceList.ChainDataSource({
+        name: 'Agoric',
+        description: '',
+        rpcURL: 'https://agoric-mainnet-lcd.autostake.com:443',
+        lcdURL: 'https://agoric-mainnet-lcd.autostake.com:443',
+        chainSymbol: 'BLD',
+        blockExplorerURL: 'https://www.mintscan.io/agoric',
+        chainId: 'agoric-3',
+        chain: 'agoric',
+        denom: 'ubld',
+        decimals: 6,
+        prefix: 'agoric',
+        feeGasStep: {
+          high: 0.03,
+          medium: 0.025,
+          low: 0.01,
+        },
+      }),
+      {
+        providerId: 'agoric',
+        signers: [CosmosSeedPhraseSigner, CosmosPrivateKeySigner],
+      }
+    )
+  );
 };
 
 export const ChainsContext = React.createContext<ChainController>(
