@@ -17,12 +17,18 @@ jest.mock('@thorchain/ledger-thorchain', () => {
   return jest.fn().mockImplementation(() => ({
     sign: jest.fn().mockResolvedValue({
       signature: Buffer.from(
-        '9a0ec4778a533891fae6ef51386f9598d8f01cb6bdbfc7c3ff914f8f63a6d0dafcb766221cdaeb4c07776f94a1fb1ba61c8f542e35ac00d50e1be6546eef5b03',
+        '304402206ec941e3236bc139e9ebe53de9ee89fb11721b607f3cb271ddca1aaeead6156e022026c4db5b736d7e7e2d9b1eb9fd6fbbfb0ccb667d8a4c8b1bd06beb0bca3a980c',
         'hex'
       ),
     }),
     getAddressAndPubKey: jest.fn().mockResolvedValue({
-      bech32Address: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
+      bech32Address: 'thor13yqxqdly5q424yyx25f7thkujeush3nzckyhrk',
+    }),
+    getPublicKey: jest.fn().mockResolvedValue({
+      compressedPk: Buffer.from(
+        '033310b6a370e7460656499d994879682c07fd375be22cc1749cf06eba6c3f1919',
+        'hex'
+      ),
     }),
     showAddress: jest.fn().mockResolvedValue({}),
   }));
@@ -46,9 +52,9 @@ describe('ledger.signer', () => {
     derivationPath = "m/44'/931'/0'/0/0";
 
     txInput = {
-      from: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
-      to: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
-      amount: 0.000001,
+      from: 'thor13yqxqdly5q424yyx25f7thkujeush3nzckyhrk',
+      to: 'thor13yqxqdly5q424yyx25f7thkujeush3nzckyhrk',
+      amount: 0.01,
       decimals: 18,
     };
 
