@@ -59,9 +59,9 @@ This library currently supports the following blockchain networks:
 To use this library in your TypeScript project, you can install it via npm or yarn:
 
 ```bash
-npm install @xdefi-tech/chains
+npm install @ctrl-tech/chains
 # or
-yarn add @xdefi-tech/chains
+yarn add @ctrl-tech/chains
 ```
 
 ## Manifest
@@ -146,8 +146,8 @@ await provider.broadcast([message]);
 - The number of retry attempts and the order in which the alternative data sources are used can be customized based on the requirements and preferences of the application.
 
 ```typescript
-import { FallbackDataSource } from '@xdefi-tech/chains-core';
-import { EvmProvider, EVM_MANIFESTS } from '@xdefi-tech/chains-evm';
+import { FallbackDataSource } from '@ctrl-tech/chains-core';
+import { EvmProvider, EVM_MANIFESTS } from '@ctrl-tech/chains-evm';
 
 const provider = new EvmProvider(
   new FallbackDataSource(

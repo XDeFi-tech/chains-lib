@@ -10,7 +10,7 @@ import {
   Injectable,
   Transaction,
   TransactionsFilter,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import cosmosclient from '@cosmos-client/core';
 import axios, { Axios } from 'axios';
@@ -20,7 +20,7 @@ import {
   AddressChain,
   CryptoAssetArgs,
   getCryptoAssets,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 import Long from 'long';
 
 import { ChainMsg } from '../../msg';

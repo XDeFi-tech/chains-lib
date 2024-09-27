@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import cosmosclient from '@cosmos-client/core';
 import { bech32 } from 'bech32';
 import * as bip39 from 'bip39';

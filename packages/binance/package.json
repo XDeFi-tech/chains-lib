@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-binance",
+  "name": "@ctrl-tech/chains-binance",
   "version": "2.0.12",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,6 +10,9 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "eslint-config-custom": "*",
     "jest": "27.5.1",
@@ -23,8 +26,8 @@
     "@binance-chain/javascript-sdk": "4.2.1",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.28.3",
-    "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
+    "@ctrl-tech/chains-core": "*",
+    "@ctrl-tech/chains-graphql": "*",
     "axios": "1.4.0",
     "bignumber.js": "9.1.2",
     "reflect-metadata": "0.1.13",

@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { Connection } from '@solana/web3.js';
 

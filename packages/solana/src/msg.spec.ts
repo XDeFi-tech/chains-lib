@@ -1,4 +1,4 @@
-import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
+import { MsgEncoding, GasFeeSpeed } from '@ctrl-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 

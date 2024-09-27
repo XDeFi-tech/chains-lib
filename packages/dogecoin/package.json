@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-dogecoin",
+  "name": "@ctrl-tech/chains-dogecoin",
   "version": "2.0.16",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,6 +18,9 @@
     "tsup": "6.6.3",
     "typescript": "4.8.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@ledgerhq/hw-app-btc": "10.0.0",
     "@ledgerhq/hw-transport": "6.30.3",
@@ -25,9 +28,9 @@
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@noble/curves": "1.3.0",
     "@scure/btc-signer": "1.2.1",
-    "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
-    "@xdefi-tech/chains-utxo": "*",
+    "@ctrl-tech/chains-core": "*",
+    "@ctrl-tech/chains-graphql": "*",
+    "@ctrl-tech/chains-utxo": "*",
     "axios": "1.3.4",
     "bignumber.js": "9.1.2",
     "bip32": "2.0.4",

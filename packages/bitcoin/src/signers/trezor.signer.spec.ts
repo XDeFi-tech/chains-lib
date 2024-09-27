@@ -4,7 +4,7 @@ import {
   Params,
   Success,
 } from '@trezor/connect-web';
-import { ChainMsg, MsgBody } from '@xdefi-tech/chains-utxo';
+import { ChainMsg, MsgBody } from '@ctrl-tech/chains-utxo';
 
 import { BitcoinProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';

@@ -10,7 +10,7 @@ import {
   Response,
   Transaction,
   TransactionData,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import axios, { Axios } from 'axios';
 
 import { ChainMsg, MsgBody } from './msg';

@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { fromBase64, fromHex } from '@cosmjs/encoding';

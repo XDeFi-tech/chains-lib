@@ -1,13 +1,13 @@
-import { Chain } from '@xdefi-tech/chains-core';
-import { EvmProvider } from '@xdefi-tech/chains-evm';
-import { SolanaProvider } from '@xdefi-tech/chains-solana';
-import { CosmosProvider } from '@xdefi-tech/chains-cosmos';
-import { BinanceProvider } from '@xdefi-tech/chains-binance';
-import { BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
-import { BitcoinCashProvider } from '@xdefi-tech/chains-bitcoincash';
-import { DogecoinProvider } from '@xdefi-tech/chains-dogecoin';
-import { LitecoinProvider } from '@xdefi-tech/chains-litecoin';
-import { ThorProvider } from '@xdefi-tech/chains-thor';
+import { Chain } from '@ctrl-tech/chains-core';
+import { EvmProvider } from '@ctrl-tech/chains-evm';
+import { SolanaProvider } from '@ctrl-tech/chains-solana';
+import { CosmosProvider } from '@ctrl-tech/chains-cosmos';
+import { BinanceProvider } from '@ctrl-tech/chains-binance';
+import { BitcoinProvider } from '@ctrl-tech/chains-bitcoin';
+import { BitcoinCashProvider } from '@ctrl-tech/chains-bitcoincash';
+import { DogecoinProvider } from '@ctrl-tech/chains-dogecoin';
+import { LitecoinProvider } from '@ctrl-tech/chains-litecoin';
+import { ThorProvider } from '@ctrl-tech/chains-thor';
 
 export enum DataSourceNames {
   IndexerDataSource = 'IndexerDataSource',

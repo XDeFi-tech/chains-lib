@@ -1,5 +1,5 @@
-import { GetBinanceFeeDocument } from '@xdefi-tech/chains-graphql';
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { GetBinanceFeeDocument } from '@ctrl-tech/chains-graphql';
+import { gqlClient } from '@ctrl-tech/chains-core';
 
 export const getFees = () => {
   return gqlClient.query({

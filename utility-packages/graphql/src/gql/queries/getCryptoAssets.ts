@@ -1,4 +1,4 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import { CryptoAssetArgs, GetCryptoAssetsDocument } from '../graphql';
 
 export const getCryptoAssets = (

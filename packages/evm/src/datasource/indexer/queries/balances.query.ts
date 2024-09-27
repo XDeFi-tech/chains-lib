@@ -1,4 +1,4 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import filter from 'lodash/filter';
 import {
   GetArbitrumBalanceDocument,
@@ -11,7 +11,7 @@ import {
   GetSmartChainBalanceDocument,
   GetCronosEvmBalanceDocument,
   GetCantoEvmBalanceDocument,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 
 import { EVMChains } from '../../../manifests';
 

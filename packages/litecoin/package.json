@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-litecoin",
+  "name": "@ctrl-tech/chains-litecoin",
   "version": "2.0.15",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,14 +18,17 @@
     "tsup": "6.6.3",
     "typescript": "4.8.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@ledgerhq/hw-app-btc": "10.0.0",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@ledgerhq/hw-transport-mocker": "6.28.3",
-    "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
-    "@xdefi-tech/chains-utxo": "*",
+    "@ctrl-tech/chains-core": "*",
+    "@ctrl-tech/chains-graphql": "*",
+    "@ctrl-tech/chains-utxo": "*",
     "@noble/curves": "1.3.0",
     "@scure/btc-signer": "1.2.1",
     "axios": "1.3.4",

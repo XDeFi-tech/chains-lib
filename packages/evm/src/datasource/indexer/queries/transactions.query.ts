@@ -1,4 +1,4 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import map from 'lodash/map';
 import {
   GetArbitrumTransactionsDocument,
@@ -11,7 +11,7 @@ import {
   GetOptimismTransactionsDocument,
   GetPolygonTransactionsDocument,
   GetSmartChainTransactionsDocument,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 
 import { EVMChains } from '../../../manifests';
 

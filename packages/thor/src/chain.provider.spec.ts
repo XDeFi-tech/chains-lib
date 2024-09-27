@@ -1,4 +1,4 @@
-import { Response } from '@xdefi-tech/chains-core';
+import { Response } from '@ctrl-tech/chains-core';
 
 import { ChainMsg } from './msg';
 import { ThorProvider } from './chain.provider';

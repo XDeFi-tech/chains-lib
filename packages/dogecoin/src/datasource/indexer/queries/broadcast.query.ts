@@ -1,5 +1,5 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
-import { DogecoinBroadcastTransactionDocument } from '@xdefi-tech/chains-graphql';
+import { gqlClient } from '@ctrl-tech/chains-core';
+import { DogecoinBroadcastTransactionDocument } from '@ctrl-tech/chains-graphql';
 
 export const broadcast = async (rawHex: string): Promise<string> => {
   const response = await gqlClient.query({

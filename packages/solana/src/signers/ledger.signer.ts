@@ -5,7 +5,7 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 import Transport from '@ledgerhq/hw-transport';
-import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { MsgEncoding, Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 

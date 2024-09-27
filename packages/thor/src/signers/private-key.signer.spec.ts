@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 
 import { ThorProvider } from '../chain.provider';
 import { ChainDataSource } from '../datasource';

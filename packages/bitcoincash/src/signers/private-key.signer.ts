@@ -1,6 +1,6 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
+import { UTXO } from '@ctrl-tech/chains-utxo';
 import * as BitcoinCash from '@psf/bitcoincashjs-lib';
 import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';

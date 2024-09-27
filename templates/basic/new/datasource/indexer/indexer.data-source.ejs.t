@@ -15,7 +15,7 @@ import {
     TransactionsFilter,
     BalanceFilter,
     Balance,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { ChainMsg } from '../../msg';
 import { Observable } from 'rxjs';
 

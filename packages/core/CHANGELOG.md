@@ -1,4 +1,4 @@
-# @xdefi-tech/chains-core
+# @ctrl-tech/chains-core
 
 ## 2.0.14
 

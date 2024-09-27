@@ -1,4 +1,4 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import {
   GetCosmosTransactionsDocument,
   GetOsmosisTransactionsDocument,
@@ -14,7 +14,7 @@ import {
   GetMarsTransactionsDocument,
   Scalars,
   CosmosLikeTransaction,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 import { map } from 'lodash';
 
 import { CosmosHubChains } from '../../../manifests';

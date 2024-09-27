@@ -12,7 +12,7 @@ import {
   Transaction,
   TransactionData,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import axios, { Axios } from 'axios';
 import { some } from 'lodash';
 

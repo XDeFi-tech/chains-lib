@@ -13,7 +13,7 @@ import {
   TransactionData,
   TransactionStatus,
   TransactionAction,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import TronWeb from 'tronweb';
 import axios, { AxiosInstance } from 'axios';

@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-cosmos",
+  "name": "@ctrl-tech/chains-cosmos",
   "version": "2.0.17",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,6 +20,9 @@
     "tsup": "6.6.3",
     "typescript": "4.8.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@cosmjs/amino": "0.32.3",
     "@cosmjs/encoding": "0.32.3",
@@ -34,8 +37,8 @@
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@terra-money/feather.js": "2.1.0-beta.3",
     "@terra-money/terra.proto": "5.3.0-beta.0",
-    "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
+    "@ctrl-tech/chains-core": "*",
+    "@ctrl-tech/chains-graphql": "*",
     "axios": "1.4.0",
     "bech32": "2.0.0",
     "bech32-buffer": "0.2.1",

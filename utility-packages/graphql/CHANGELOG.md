@@ -1,4 +1,4 @@
-# @xdefi-tech/chains-graphql
+# @ctrl-tech/chains-graphql
 
 ## 1.2.14
 
@@ -6,7 +6,7 @@
 
 - 89956d2: Fix TypeScript type errors with abstract provider class
 - Updated dependencies [89956d2]
-  - @xdefi-tech/chains-core@2.0.14
+  - @ctrl-tech/chains-core@2.0.14
 
 ## 1.2.13
 
@@ -14,7 +14,7 @@
 
 - 6661742: Feat: add separate queries for each EVM chain. Fix caching issue
 - Updated dependencies [8c60d66]
-  - @xdefi-tech/chains-core@2.0.13
+  - @ctrl-tech/chains-core@2.0.13
 
 ## 1.2.12
 
@@ -28,7 +28,7 @@
 
 - 7de45e1: Feat: move dataprovider from haskoin & blockchair to indexer for all UTXO chains
 - Updated dependencies [7de45e1]
-  - @xdefi-tech/chains-core@2.0.9
+  - @ctrl-tech/chains-core@2.0.9
 
 ## 1.2.10
 
@@ -36,7 +36,7 @@
 
 - 290355b: Fix: export ledger files from package
 - Updated dependencies [290355b]
-  - @xdefi-tech/chains-core@2.0.5
+  - @ctrl-tech/chains-core@2.0.5
 
 ## 1.2.9
 
@@ -45,7 +45,7 @@
 - 4fe86fc: feat: pin all package dependencies to strict versions
   feat: update ledger signer initialisation stage, currently required transport. see README for the details
 - Updated dependencies [4fe86fc]
-  - @xdefi-tech/chains-core@2.0.4
+  - @ctrl-tech/chains-core@2.0.4
 
 ## 1.2.8
 
@@ -59,15 +59,15 @@
 
 - a559cce: fix: transaction type in core lib
 - Updated dependencies [a559cce]
-  - @xdefi-tech/chains-core@2.0.3
+  - @ctrl-tech/chains-core@2.0.3
 
 ## 1.2.6
 
 ### Patch Changes
 
 - e9a3d69: tsconfig: added references
-  @xdefi-tech/chains-graphql: added gql queries for tron
-  @xdefi-tech/chains-tron: added IndexerDataSource
+  @ctrl-tech/chains-graphql: added gql queries for tron
+  @ctrl-tech/chains-tron: added IndexerDataSource
 
 ## 1.2.5
 
@@ -76,7 +76,7 @@
 - 7638e90: fix: return normalized key for signer provider from core package
   fix: update seed phrase signers with broken private keys
 - Updated dependencies [7638e90]
-  - @xdefi-tech/chains-core@2.0.2
+  - @ctrl-tech/chains-core@2.0.2
 
 ## 1.2.4
 
@@ -84,7 +84,7 @@
 
 - af2734d: Bump all packages to apply changes from develop branch
 - Updated dependencies [af2734d]
-  - @xdefi-tech/chains-core@1.2.5
+  - @ctrl-tech/chains-core@1.2.5
 
 ## 1.2.3
 
@@ -92,7 +92,7 @@
 
 - 2e30ddc: feat: update MsgEncoding type in core lib
 - Updated dependencies [2e30ddc]
-  - @xdefi-tech/chains-core@1.2.4
+  - @ctrl-tech/chains-core@1.2.4
 
 ## 1.2.2
 
@@ -100,7 +100,7 @@
 
 - a0e1019: Feat: switch lib to production environment
 - Updated dependencies [a0e1019]
-  - @xdefi-tech/chains-core@1.2.2
+  - @ctrl-tech/chains-core@1.2.2
 
 ## 1.2.1
 
@@ -108,7 +108,7 @@
 
 - bede5ce: Fix: remove react dependency from each package
 - Updated dependencies [bede5ce]
-  - @xdefi-tech/chains-core@1.2.1
+  - @ctrl-tech/chains-core@1.2.1
 
 ## 1.2.0
 
@@ -119,7 +119,7 @@
 ### Patch Changes
 
 - Updated dependencies [346e09e]
-  - @xdefi-tech/chains-core@1.2.0
+  - @ctrl-tech/chains-core@1.2.0
 
 ## 1.1.14
 
@@ -139,7 +139,7 @@
 
 - 9b2f6b6: Update assets for cor package. Add TRC20 balances
 - Updated dependencies [9b2f6b6]
-  - @xdefi-tech/chains-core@1.1.15
+  - @ctrl-tech/chains-core@1.1.15
 
 ## 1.1.11
 
@@ -153,7 +153,7 @@
 
 - 680b517: Add test coverage, bunch minor fixes
 - Updated dependencies [680b517]
-  - @xdefi-tech/chains-core@1.1.14
+  - @ctrl-tech/chains-core@1.1.14
 
 ## 1.1.9
 
@@ -167,7 +167,7 @@
 
 - 2c9033b: Added Trezor and Ledger Signers
 - Updated dependencies [2c9033b]
-  - @xdefi-tech/chains-core@1.1.10
+  - @ctrl-tech/chains-core@1.1.10
 
 ## 1.1.7
 

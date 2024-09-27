@@ -1,23 +1,23 @@
 import React from 'react';
-import { ChainController } from '@xdefi-tech/chains-controller';
-import { EVM_MANIFESTS, EvmProvider } from '@xdefi-tech/chains-evm';
-import { COSMOS_MANIFESTS, CosmosProvider } from '@xdefi-tech/chains-cosmos';
-import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
-import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
-import { THORCHAIN_MANIFESTS, ThorProvider } from '@xdefi-tech/chains-thor';
-import { BITCOIN_MANIFEST, BitcoinProvider } from '@xdefi-tech/chains-bitcoin';
+import { ChainController } from '@ctrl-tech/chains-controller';
+import { EVM_MANIFESTS, EvmProvider } from '@ctrl-tech/chains-evm';
+import { COSMOS_MANIFESTS, CosmosProvider } from '@ctrl-tech/chains-cosmos';
+import { BINANCE_MANIFEST, BinanceProvider } from '@ctrl-tech/chains-binance';
+import { SOLANA_MANIFEST, SolanaProvider } from '@ctrl-tech/chains-solana';
+import { THORCHAIN_MANIFESTS, ThorProvider } from '@ctrl-tech/chains-thor';
+import { BITCOIN_MANIFEST, BitcoinProvider } from '@ctrl-tech/chains-bitcoin';
 import {
   LITECOIN_MANIFEST,
   LitecoinProvider,
-} from '@xdefi-tech/chains-litecoin';
+} from '@ctrl-tech/chains-litecoin';
 import {
   DOGECOIN_MANIFEST,
   DogecoinProvider,
-} from '@xdefi-tech/chains-dogecoin';
+} from '@ctrl-tech/chains-dogecoin';
 import {
   BITCOINCASH_MANIFEST,
   BitcoinCashProvider,
-} from '@xdefi-tech/chains-bitcoincash';
+} from '@ctrl-tech/chains-bitcoincash';
 
 export const ChainsContextDefaultValue = new ChainController();
 

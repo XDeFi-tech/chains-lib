@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 
 export const STARGAZE_NFTS_QUERY = gql`
   query NFTS($address: String!) {

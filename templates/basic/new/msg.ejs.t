@@ -2,7 +2,7 @@
 to: packages/<%= name.toLowerCase() %>/src/msg.ts
 ---
 
-import { Msg as BasMsg } from '@xdefi-tech/chains-core';
+import { Msg as BasMsg } from '@ctrl-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 export interface MsgBody {

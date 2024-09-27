@@ -1,6 +1,6 @@
-import { Chain } from '@xdefi-tech/chains-core';
-import { EvmProvider, EVM_MANIFESTS } from '@xdefi-tech/chains-evm';
-import { SolanaProvider, SOLANA_MANIFEST } from '@xdefi-tech/chains-solana';
+import { Chain } from '@ctrl-tech/chains-core';
+import { EvmProvider, EVM_MANIFESTS } from '@ctrl-tech/chains-evm';
+import { SolanaProvider, SOLANA_MANIFEST } from '@ctrl-tech/chains-solana';
 
 import { ChainController } from './chain-controller';
 

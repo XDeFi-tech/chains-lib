@@ -1,4 +1,4 @@
-import { UTXOManifest } from '@xdefi-tech/chains-utxo';
+import { UTXOManifest } from '@ctrl-tech/chains-utxo';
 
 export const BITCOINCASH_MANIFEST: UTXOManifest = {
   name: 'Bitcoin Cash',

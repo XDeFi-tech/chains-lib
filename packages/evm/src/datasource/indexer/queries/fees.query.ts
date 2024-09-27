@@ -1,4 +1,4 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import {
   ArbitrumDefaultGasFeesDocument,
   AuroraDefaultGasFeesDocument,
@@ -10,7 +10,7 @@ import {
   OptimismEip1559GasFeesDocument,
   PolygonEip1559GasFeesDocument,
   SmartChainDefaultGasFeesDocument,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 
 import { EVMChains } from '../../../manifests';
 

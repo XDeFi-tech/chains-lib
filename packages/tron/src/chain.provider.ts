@@ -13,7 +13,7 @@ import {
   FeeData,
   TransactionData,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { some } from 'lodash';
 import TronWeb, { TronTransaction, TronTransactionRawData } from 'tronweb';
 import { AbiCoder } from 'ethers';

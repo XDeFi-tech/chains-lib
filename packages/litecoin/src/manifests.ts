@@ -1,4 +1,4 @@
-import { UTXOManifest } from '@xdefi-tech/chains-utxo';
+import { UTXOManifest } from '@ctrl-tech/chains-utxo';
 
 export const LITECOIN_MANIFEST: UTXOManifest = {
   name: 'Litecoin',

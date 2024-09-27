@@ -12,7 +12,7 @@ import {
   Balance,
   FeeData,
   NumberIsh,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 

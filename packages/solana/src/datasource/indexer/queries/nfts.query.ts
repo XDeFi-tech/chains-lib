@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { gqlClient, LEGACY_NFTS_FRAGMENT } from '@xdefi-tech/chains-core';
+import { gqlClient, LEGACY_NFTS_FRAGMENT } from '@ctrl-tech/chains-core';
 
 export const SOLANA_NFTS_QUERY = gql`
   query NFTS($address: String!) {

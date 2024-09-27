@@ -14,7 +14,7 @@ import {
   Transaction,
   TransactionData,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { providers } from 'ethers';
 import { some } from 'lodash';
 

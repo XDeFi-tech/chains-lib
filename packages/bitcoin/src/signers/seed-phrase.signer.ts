@@ -1,5 +1,5 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { secp256k1 } from '@noble/curves/secp256k1';

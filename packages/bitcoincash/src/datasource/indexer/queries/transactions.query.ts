@@ -2,8 +2,8 @@ import {
   GetBitcoinCashTransactionsDocument,
   Scalars,
   UtxoTransactionV2,
-} from '@xdefi-tech/chains-graphql';
-import { gqlClient } from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-graphql';
+import { gqlClient } from '@ctrl-tech/chains-core';
 
 export const getTransactions = async (
   chain: string,

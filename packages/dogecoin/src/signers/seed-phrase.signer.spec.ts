@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 
 import { DogecoinProvider } from '../chain.provider';
 import { DOGECOIN_MANIFEST } from '../manifests';

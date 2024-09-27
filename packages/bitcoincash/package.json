@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-bitcoincash",
+  "name": "@ctrl-tech/chains-bitcoincash",
   "version": "2.0.17",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,6 +18,9 @@
     "tsup": "6.6.3",
     "typescript": "4.8.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@ledgerhq/hw-app-btc": "10.0.0",
     "@ledgerhq/hw-transport": "6.30.3",
@@ -26,9 +29,9 @@
     "@noble/curves": "1.3.0",
     "@psf/bitcoincashjs-lib": "4.0.3",
     "@scure/btc-signer": "1.2.1",
-    "@xdefi-tech/chains-core": "*",
-    "@xdefi-tech/chains-graphql": "*",
-    "@xdefi-tech/chains-utxo": "*",
+    "@ctrl-tech/chains-core": "*",
+    "@ctrl-tech/chains-graphql": "*",
+    "@ctrl-tech/chains-utxo": "*",
     "axios": "1.3.4",
     "bchaddrjs": "0.5.2",
     "bignumber.js": "9.1.2",

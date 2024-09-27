@@ -12,13 +12,13 @@ import {
   Injectable,
   Transaction,
   TransactionsFilter,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
 import { providers } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
-import { AddressChain, getCryptoAssets } from '@xdefi-tech/chains-graphql';
+import { AddressChain, getCryptoAssets } from '@ctrl-tech/chains-graphql';
 import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
 

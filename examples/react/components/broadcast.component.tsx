@@ -9,8 +9,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Chain, GasFeeSpeed, MsgEncoding } from '@xdefi-tech/chains-core';
-import { PrivateKeySigner } from '@xdefi-tech/chains-binance/dist/signers/web';
+import { Chain, GasFeeSpeed, MsgEncoding } from '@ctrl-tech/chains-core';
+import { PrivateKeySigner } from '@ctrl-tech/chains-binance/dist/signers/web';
 
 export interface IBroadcastComponent {
   provider: Chain.Provider;

@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 import * as types from '@binance-chain/javascript-sdk/lib/types';
 import Transaction from '@binance-chain/javascript-sdk/lib/tx';

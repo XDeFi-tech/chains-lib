@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 
 import { EVMChains } from '../../../manifests';
 

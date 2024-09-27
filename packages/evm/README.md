@@ -45,7 +45,7 @@ The main difference between supported chains and custom chains:
 - You have to provide your own manifest for custom chains.
 
 ```typescript
-import { EvmProvider } from '@xdefi-tech/chains-evm';
+import { EvmProvider } from '@ctrl-tech/chains-evm';
 
 const provider = new EvmProvider(
   new EvmProvider.dataSourceList.dataSourceList({
@@ -79,7 +79,7 @@ The library allows to use the JsonRpcProvider methods of [ethers](https://docs.e
 ### Example using ethers provider
 
 ```typescript
-import { EvmProvider, IndexerDataSource } from '@xdefi-tech/chains-evm';
+import { EvmProvider, IndexerDataSource } from '@ctrl-tech/chains-evm';
 
 const provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
 

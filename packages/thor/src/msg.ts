@@ -5,7 +5,7 @@ import {
   MsgEncoding,
   NumberIsh,
   Coin,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import cosmosclient from '@cosmos-client/core';
 import * as protobufjs from 'protobufjs';

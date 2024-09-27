@@ -15,7 +15,7 @@ import {
     Transaction,
     Balance,
     MsgEncoding,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { ChainMsg } from './msg';
 
 @ChainDecorator('<%= Name %>Provider', {

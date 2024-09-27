@@ -1,4 +1,4 @@
-import { Msg, MsgEncoding } from '@xdefi-tech/chains-core';
+import { Msg, MsgEncoding } from '@ctrl-tech/chains-core';
 import { Connection } from '@solana/web3.js';
 
 import { SolanaProvider } from '../chain.provider';
