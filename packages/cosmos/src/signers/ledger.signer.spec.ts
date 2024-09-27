@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 import { bech32 } from 'bech32';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';

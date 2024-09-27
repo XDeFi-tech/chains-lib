@@ -1,4 +1,4 @@
-import { Injectable, Transaction } from '@xdefi-tech/chains-core';
+import { Injectable, Transaction } from '@ctrl-tech/chains-core';
 import axios, { Axios } from 'axios';
 import * as UTXOLib from 'bitcoinjs-lib';
 

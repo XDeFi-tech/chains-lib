@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@ethersproject/shims": "5.7.0",
-    "@xdefi-tech/chains-controller": "*",
+    "@ctrl-tech/chains-controller": "*",
     "expo": "~48.0.15",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",

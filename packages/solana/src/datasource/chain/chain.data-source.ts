@@ -13,7 +13,7 @@ import {
   TransactionData,
   TransactionStatus,
   TransactionsFilter,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';

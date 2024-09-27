@@ -12,9 +12,9 @@ import {
   DefaultFeeOptions,
   TransactionData,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import * as Bitcoin from 'bitcoinjs-lib';
-import { UTXO, UTXOManifest } from '@xdefi-tech/chains-utxo';
+import { UTXO, UTXOManifest } from '@ctrl-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 

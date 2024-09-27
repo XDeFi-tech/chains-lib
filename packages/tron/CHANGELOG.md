@@ -1,4 +1,4 @@
-# @xdefi-tech/chains-tron
+# @ctrl-tech/chains-tron
 
 ## 2.0.18
 
@@ -6,8 +6,8 @@
 
 - 89956d2: Fix TypeScript type errors with abstract provider class
 - Updated dependencies [89956d2]
-  - @xdefi-tech/chains-core@2.0.14
-  - @xdefi-tech/chains-graphql@1.2.14
+  - @ctrl-tech/chains-core@2.0.14
+  - @ctrl-tech/chains-graphql@1.2.14
 
 ## 2.0.17
 
@@ -28,7 +28,7 @@
   - [x] tron
 
 - Updated dependencies [db8e556]
-  - @xdefi-tech/chains-core@2.0.12
+  - @ctrl-tech/chains-core@2.0.12
 
 ## 2.0.16
 
@@ -36,7 +36,7 @@
 
 - 74a48b0: Feat: update legacyNFTs franment in core lib
 - Updated dependencies [74a48b0]
-  - @xdefi-tech/chains-core@2.0.11
+  - @ctrl-tech/chains-core@2.0.11
 
 ## 2.0.15
 
@@ -44,7 +44,7 @@
 
 - fdbbdd7: Feat: add price.dayPriceChange field for getting balances
 - Updated dependencies [fdbbdd7]
-  - @xdefi-tech/chains-graphql@1.2.12
+  - @ctrl-tech/chains-graphql@1.2.12
 
 ## 2.0.14
 
@@ -58,7 +58,7 @@
 
 - 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
 - Updated dependencies [5b781e6]
-  - @xdefi-tech/chains-core@2.0.8
+  - @ctrl-tech/chains-core@2.0.8
 
 ## 2.0.12
 
@@ -72,8 +72,8 @@
 
 - 290355b: Fix: export ledger files from package
 - Updated dependencies [290355b]
-  - @xdefi-tech/chains-graphql@1.2.10
-  - @xdefi-tech/chains-core@2.0.5
+  - @ctrl-tech/chains-graphql@1.2.10
+  - @ctrl-tech/chains-core@2.0.5
 
 ## 2.0.10
 
@@ -82,8 +82,8 @@
 - 4fe86fc: feat: pin all package dependencies to strict versions
   feat: update ledger signer initialisation stage, currently required transport. see README for the details
 - Updated dependencies [4fe86fc]
-  - @xdefi-tech/chains-graphql@1.2.9
-  - @xdefi-tech/chains-core@2.0.4
+  - @ctrl-tech/chains-graphql@1.2.9
+  - @ctrl-tech/chains-core@2.0.4
 
 ## 2.0.9
 
@@ -109,7 +109,7 @@
 
 - 5ea32e5: fix: simplify tron indexer data source transaction response
 - Updated dependencies [5ea32e5]
-  - @xdefi-tech/chains-graphql@1.2.8
+  - @ctrl-tech/chains-graphql@1.2.8
 
 ## 2.0.5
 
@@ -117,18 +117,18 @@
 
 - a559cce: fix: transaction type in core lib
 - Updated dependencies [a559cce]
-  - @xdefi-tech/chains-core@2.0.3
-  - @xdefi-tech/chains-graphql@1.2.7
+  - @ctrl-tech/chains-core@2.0.3
+  - @ctrl-tech/chains-graphql@1.2.7
 
 ## 2.0.4
 
 ### Patch Changes
 
 - e9a3d69: tsconfig: added references
-  @xdefi-tech/chains-graphql: added gql queries for tron
-  @xdefi-tech/chains-tron: added IndexerDataSource
+  @ctrl-tech/chains-graphql: added gql queries for tron
+  @ctrl-tech/chains-tron: added IndexerDataSource
 - Updated dependencies [e9a3d69]
-  - @xdefi-tech/chains-graphql@1.2.6
+  - @ctrl-tech/chains-graphql@1.2.6
 
 ## 2.0.3
 
@@ -137,7 +137,7 @@
 - 7638e90: fix: return normalized key for signer provider from core package
   fix: update seed phrase signers with broken private keys
 - Updated dependencies [7638e90]
-  - @xdefi-tech/chains-core@2.0.2
+  - @ctrl-tech/chains-core@2.0.2
 
 ## 2.0.2
 
@@ -151,7 +151,7 @@
 
 - 6728ac5: add tron fee estimation logic
 - Updated dependencies [6728ac5]
-  - @xdefi-tech/chains-core@2.0.1
+  - @ctrl-tech/chains-core@2.0.1
 
 ## 2.0.0
 
@@ -162,7 +162,7 @@
 ### Patch Changes
 
 - Updated dependencies [381bcfc]
-  - @xdefi-tech/chains-core@2.0.0
+  - @ctrl-tech/chains-core@2.0.0
 
 ## 1.3.3
 
@@ -170,7 +170,7 @@
 
 - af2734d: Bump all packages to apply changes from develop branch
 - Updated dependencies [af2734d]
-  - @xdefi-tech/chains-core@1.2.5
+  - @ctrl-tech/chains-core@1.2.5
   - eslint-config-custom@1.0.2
 
 ## 1.3.2
@@ -179,7 +179,7 @@
 
 - 2e30ddc: feat: update MsgEncoding type in core lib
 - Updated dependencies [2e30ddc]
-  - @xdefi-tech/chains-core@1.2.4
+  - @ctrl-tech/chains-core@1.2.4
 
 ## 1.3.1
 
@@ -187,7 +187,7 @@
 
 - 9adefdc: Update TRON library to get more relevant data about transactions
 - Updated dependencies [9adefdc]
-  - @xdefi-tech/chains-core@1.2.3
+  - @ctrl-tech/chains-core@1.2.3
 
 ## 1.3.0
 
@@ -202,7 +202,7 @@
 
 - a0e1019: Feat: switch lib to production environment
 - Updated dependencies [a0e1019]
-  - @xdefi-tech/chains-core@1.2.2
+  - @ctrl-tech/chains-core@1.2.2
 
 ## 1.2.2
 
@@ -210,7 +210,7 @@
 
 - bede5ce: Fix: remove react dependency from each package
 - Updated dependencies [bede5ce]
-  - @xdefi-tech/chains-core@1.2.1
+  - @ctrl-tech/chains-core@1.2.1
 
 ## 1.2.1
 
@@ -227,7 +227,7 @@
 ### Patch Changes
 
 - Updated dependencies [346e09e]
-  - @xdefi-tech/chains-core@1.2.0
+  - @ctrl-tech/chains-core@1.2.0
 
 ## 1.1.9
 
@@ -241,7 +241,7 @@
 
 - 9b2f6b6: Update assets for cor package. Add TRC20 balances
 - Updated dependencies [9b2f6b6]
-  - @xdefi-tech/chains-core@1.1.15
+  - @ctrl-tech/chains-core@1.1.15
 
 ## 1.1.7
 
@@ -249,7 +249,7 @@
 
 - 680b517: Add test coverage, bunch minor fixes
 - Updated dependencies [680b517]
-  - @xdefi-tech/chains-core@1.1.14
+  - @ctrl-tech/chains-core@1.1.14
   - eslint-config-custom@1.0.1
 
 ## 1.1.6
@@ -258,7 +258,7 @@
 
 - 64ca641: Add option to create message from object, buffer or base64
 - Updated dependencies [64ca641]
-  - @xdefi-tech/chains-core@1.1.13
+  - @ctrl-tech/chains-core@1.1.13
 
 ## 1.1.5
 
@@ -267,7 +267,7 @@
 - 3b7b00d: Add test coverage
 - 3b7b00d: Add NFT Support
 - Updated dependencies [3b7b00d]
-  - @xdefi-tech/chains-core@1.1.12
+  - @ctrl-tech/chains-core@1.1.12
 
 ## 1.1.4
 
@@ -275,7 +275,7 @@
 
 - 5b6cb9b: Added Ledger signer. Added testing coverage for signers
 - Updated dependencies [5b6cb9b]
-  - @xdefi-tech/chains-core@1.1.11
+  - @ctrl-tech/chains-core@1.1.11
 
 ## 1.1.3
 
@@ -283,7 +283,7 @@
 
 - b2bfe69: Add seed phrase signer type, update core signer's interface
 - Updated dependencies [b2bfe69]
-  - @xdefi-tech/chains-core@1.1.8
+  - @ctrl-tech/chains-core@1.1.8
 
 ## 1.1.2
 
@@ -291,7 +291,7 @@
 
 - 1efef82: Change import from mjs to common js
 - Updated dependencies [1efef82]
-  - @xdefi-tech/chains-core@1.1.7
+  - @ctrl-tech/chains-core@1.1.7
 
 ## 1.1.1
 
@@ -299,7 +299,7 @@
 
 - 14c668d: Update fee fields for each chain. Add solana. Add EVM chain controller
 - Updated dependencies [14c668d]
-  - @xdefi-tech/chains-core@1.1.3
+  - @ctrl-tech/chains-core@1.1.3
 
 ## 1.1.0
 
@@ -310,7 +310,7 @@
 ### Patch Changes
 
 - Updated dependencies [3b06078]
-  - @xdefi-tech/chains-core@1.1.0
+  - @ctrl-tech/chains-core@1.1.0
 
 ## 1.0.4
 
@@ -318,7 +318,7 @@
 
 - 2210abb: Include files for publishind, exclude src files
 - Updated dependencies [2210abb]
-  - @xdefi-tech/chains-core@1.0.6
+  - @ctrl-tech/chains-core@1.0.6
 
 ## 1.0.3
 
@@ -326,7 +326,7 @@
 
 - e7459e3: Test changeset with publishing
 - Updated dependencies [e7459e3]
-  - @xdefi-tech/chains-core@1.0.3
+  - @ctrl-tech/chains-core@1.0.3
 
 ## 1.0.2
 
@@ -334,7 +334,7 @@
 
 - 39a0985: Test changeset with publishing
 - Updated dependencies [39a0985]
-  - @xdefi-tech/chains-core@1.0.2
+  - @ctrl-tech/chains-core@1.0.2
 
 ## 1.0.1
 
@@ -342,4 +342,4 @@
 
 - a9cd85c: Test changeset with publishing
 - Updated dependencies [a9cd85c]
-  - @xdefi-tech/chains-core@1.0.1
+  - @ctrl-tech/chains-core@1.0.1

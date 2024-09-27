@@ -1,4 +1,4 @@
-import { NumberIsh } from '@xdefi-tech/chains-core';
+import { NumberIsh } from '@ctrl-tech/chains-core';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 

@@ -1,4 +1,4 @@
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 // import * as ExpoTrustWallet from 'expo-trust-wallet';
 
 @SignerDecorator(Signer.SignerType.TRUST_WALLET)

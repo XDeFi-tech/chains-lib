@@ -8,7 +8,7 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import { Chain, Transaction } from '@xdefi-tech/chains-core';
+import { Chain, Transaction } from '@ctrl-tech/chains-core';
 
 export interface ITransactionsComponent {
   provider: Chain.Provider;

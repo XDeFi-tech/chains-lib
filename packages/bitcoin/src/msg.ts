@@ -5,8 +5,8 @@ import {
   MsgEncoding,
   NumberIsh,
   Coin,
-} from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
+} from '@ctrl-tech/chains-core';
+import { UTXO } from '@ctrl-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';

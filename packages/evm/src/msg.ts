@@ -7,7 +7,7 @@ import {
   NumberIsh,
   utils,
   Coin,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { BigNumberish, BytesLike, ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 

@@ -1,8 +1,8 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
+import { gqlClient } from '@ctrl-tech/chains-core';
 import {
   DogecoinScanUtxOsDocument,
   UnspentTransactionOutputV5,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 
 export const scanUTXOs = async (
   address: string

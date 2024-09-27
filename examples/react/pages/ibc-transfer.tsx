@@ -4,9 +4,9 @@ import {
   ChainMsg,
   CosmosProvider,
   IndexerDataSource,
-} from '@xdefi-tech/chains-cosmos';
-import { SeedPhraseSigner } from '@xdefi-tech/chains-cosmos/dist/signers/web';
-import { GasFeeSpeed } from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-cosmos';
+import { SeedPhraseSigner } from '@ctrl-tech/chains-cosmos/dist/signers/web';
+import { GasFeeSpeed } from '@ctrl-tech/chains-core';
 
 const IBCTokenTranfer = () => {
   const [sourceChain, setSourceChain] = useState('osmosis');

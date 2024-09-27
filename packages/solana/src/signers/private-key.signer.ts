@@ -1,4 +1,4 @@
-import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { MsgEncoding, Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import {
   Keypair,
   PublicKey,

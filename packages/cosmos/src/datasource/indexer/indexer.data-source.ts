@@ -10,7 +10,7 @@ import {
   Injectable,
   Transaction,
   TransactionsFilter,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { LcdClient, setupBankExtension } from '@cosmjs/launchpad';

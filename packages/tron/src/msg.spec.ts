@@ -1,4 +1,4 @@
-import { MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding } from '@ctrl-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainMsg } from './msg';

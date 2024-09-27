@@ -3,10 +3,10 @@ import {
   SOLANA_MANIFEST,
   SolanaProvider,
   ChainDataSource, // <=== has been changed
-} from '@xdefi-tech/chains-solana';
+} from '@ctrl-tech/chains-solana';
 import { Buffer } from "buffer";
 import 'react-native-get-random-values';
-// import { SeedPhraseSigner } from "@xdefi-tech/chains-solana/dist/signers/react-native";
+// import { SeedPhraseSigner } from "@ctrl-tech/chains-solana/dist/signers/react-native";
 
 function App() {
   const [nft, setNft] = useState(null)

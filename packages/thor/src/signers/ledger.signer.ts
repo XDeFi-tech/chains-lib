@@ -1,6 +1,6 @@
 import THORChainApp from '@thorchain/ledger-thorchain';
 import Transport from '@ledgerhq/hw-transport';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import { bech32 } from 'bech32';
 
 import { ChainMsg } from '../msg';

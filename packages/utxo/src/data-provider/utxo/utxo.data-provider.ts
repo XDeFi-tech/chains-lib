@@ -1,4 +1,4 @@
-import { Transaction } from '@xdefi-tech/chains-core';
+import { Transaction } from '@ctrl-tech/chains-core';
 
 import { ChainMsg } from '../../msg';
 

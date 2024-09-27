@@ -1,5 +1,5 @@
 /*eslint import/namespace: [2, { allowComputed: true }]*/
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import coininfo from 'coininfo';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';

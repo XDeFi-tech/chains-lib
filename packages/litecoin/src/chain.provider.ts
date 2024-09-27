@@ -4,8 +4,8 @@ import {
   MsgEncoding,
   Transaction,
   TransactionData,
-} from '@xdefi-tech/chains-core';
-import { MsgBody, UtxoProvider } from '@xdefi-tech/chains-utxo';
+} from '@ctrl-tech/chains-core';
+import { MsgBody, UtxoProvider } from '@ctrl-tech/chains-utxo';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';

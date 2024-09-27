@@ -1,7 +1,6 @@
 {
-  "name": "@xdefi-tech/chains",
+  "name": "@ctrl-tech/chains",
   "version": "1.0.0",
-  "private": true,
   "workspaces": [
     "utility-packages/*",
     "packages/*",
@@ -26,6 +25,9 @@
     "typedoc": "turbo run typedoc",
     "chain:generate": "HYGEN_TMPLS=templates hygen basic new",
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@babel/core": "7.21.8",

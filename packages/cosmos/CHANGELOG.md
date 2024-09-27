@@ -1,4 +1,4 @@
-# @xdefi-tech/chains-cosmos
+# @ctrl-tech/chains-cosmos
 
 ## 2.0.17
 
@@ -6,8 +6,8 @@
 
 - 89956d2: Fix TypeScript type errors with abstract provider class
 - Updated dependencies [89956d2]
-  - @xdefi-tech/chains-core@2.0.14
-  - @xdefi-tech/chains-graphql@1.2.14
+  - @ctrl-tech/chains-core@2.0.14
+  - @ctrl-tech/chains-graphql@1.2.14
 
 ## 2.0.16
 
@@ -28,7 +28,7 @@
   - [x] tron
 
 - Updated dependencies [db8e556]
-  - @xdefi-tech/chains-core@2.0.12
+  - @ctrl-tech/chains-core@2.0.12
 
 ## 2.0.15
 
@@ -36,7 +36,7 @@
 
 - 74a48b0: Feat: update legacyNFTs franment in core lib
 - Updated dependencies [74a48b0]
-  - @xdefi-tech/chains-core@2.0.11
+  - @ctrl-tech/chains-core@2.0.11
 
 ## 2.0.14
 
@@ -44,7 +44,7 @@
 
 - fdbbdd7: Feat: add price.dayPriceChange field for getting balances
 - Updated dependencies [fdbbdd7]
-  - @xdefi-tech/chains-graphql@1.2.12
+  - @ctrl-tech/chains-graphql@1.2.12
 
 ## 2.0.13
 
@@ -82,7 +82,7 @@
 
 - 5b781e6: Feat: add getAccount method to fallbackDataSource in core lib
 - Updated dependencies [5b781e6]
-  - @xdefi-tech/chains-core@2.0.8
+  - @ctrl-tech/chains-core@2.0.8
 
 ## 2.0.7
 
@@ -108,8 +108,8 @@
 
 - 290355b: Fix: export ledger files from package
 - Updated dependencies [290355b]
-  - @xdefi-tech/chains-graphql@1.2.10
-  - @xdefi-tech/chains-core@2.0.5
+  - @ctrl-tech/chains-graphql@1.2.10
+  - @ctrl-tech/chains-core@2.0.5
 
 ## 2.0.3
 
@@ -118,8 +118,8 @@
 - 4fe86fc: feat: pin all package dependencies to strict versions
   feat: update ledger signer initialisation stage, currently required transport. see README for the details
 - Updated dependencies [4fe86fc]
-  - @xdefi-tech/chains-graphql@1.2.9
-  - @xdefi-tech/chains-core@2.0.4
+  - @ctrl-tech/chains-graphql@1.2.9
+  - @ctrl-tech/chains-core@2.0.4
 
 ## 2.0.2
 
@@ -127,8 +127,8 @@
 
 - a559cce: fix: transaction type in core lib
 - Updated dependencies [a559cce]
-  - @xdefi-tech/chains-core@2.0.3
-  - @xdefi-tech/chains-graphql@1.2.7
+  - @ctrl-tech/chains-core@2.0.3
+  - @ctrl-tech/chains-graphql@1.2.7
 
 ## 2.0.1
 
@@ -137,8 +137,8 @@
 - 7638e90: fix: return normalized key for signer provider from core package
   fix: update seed phrase signers with broken private keys
 - Updated dependencies [7638e90]
-  - @xdefi-tech/chains-core@2.0.2
-  - @xdefi-tech/chains-graphql@1.2.5
+  - @ctrl-tech/chains-core@2.0.2
+  - @ctrl-tech/chains-graphql@1.2.5
 
 ## 2.0.0
 
@@ -149,7 +149,7 @@
 ### Patch Changes
 
 - Updated dependencies [381bcfc]
-  - @xdefi-tech/chains-core@2.0.0
+  - @ctrl-tech/chains-core@2.0.0
 
 ## 1.2.2
 
@@ -157,8 +157,8 @@
 
 - af2734d: Bump all packages to apply changes from develop branch
 - Updated dependencies [af2734d]
-  - @xdefi-tech/chains-core@1.2.5
-  - @xdefi-tech/chains-graphql@1.2.4
+  - @ctrl-tech/chains-core@1.2.5
+  - @ctrl-tech/chains-graphql@1.2.4
 
 ## 1.2.1
 
@@ -166,8 +166,8 @@
 
 - 2e30ddc: feat: add swaps support and private key signer
 - Updated dependencies [2e30ddc]
-  - @xdefi-tech/chains-core@1.2.4
-  - @xdefi-tech/chains-graphql@1.2.3
+  - @ctrl-tech/chains-core@1.2.4
+  - @ctrl-tech/chains-graphql@1.2.3
 
 ## 1.2.0
 
@@ -182,8 +182,8 @@
 
 - a0e1019: Feat: switch lib to production environment
 - Updated dependencies [a0e1019]
-  - @xdefi-tech/chains-graphql@1.2.2
-  - @xdefi-tech/chains-core@1.2.2
+  - @ctrl-tech/chains-graphql@1.2.2
+  - @ctrl-tech/chains-core@1.2.2
 
 ## 1.1.1
 
@@ -191,8 +191,8 @@
 
 - bede5ce: Fix: remove react dependency from each package
 - Updated dependencies [bede5ce]
-  - @xdefi-tech/chains-graphql@1.2.1
-  - @xdefi-tech/chains-core@1.2.1
+  - @ctrl-tech/chains-graphql@1.2.1
+  - @ctrl-tech/chains-core@1.2.1
 
 ## 1.1.0
 
@@ -203,8 +203,8 @@
 ### Patch Changes
 
 - Updated dependencies [346e09e]
-  - @xdefi-tech/chains-core@1.2.0
-  - @xdefi-tech/chains-graphql@1.2.0
+  - @ctrl-tech/chains-core@1.2.0
+  - @ctrl-tech/chains-graphql@1.2.0
 
 ## 1.0.21
 
@@ -212,8 +212,8 @@
 
 - 9b2f6b6: Update assets for cor package. Add TRC20 balances
 - Updated dependencies [9b2f6b6]
-  - @xdefi-tech/chains-core@1.1.15
-  - @xdefi-tech/chains-graphql@1.1.12
+  - @ctrl-tech/chains-core@1.1.15
+  - @ctrl-tech/chains-graphql@1.1.12
 
 ## 1.0.20
 
@@ -221,8 +221,8 @@
 
 - 680b517: Add test coverage, bunch minor fixes
 - Updated dependencies [680b517]
-  - @xdefi-tech/chains-core@1.1.14
-  - @xdefi-tech/chains-graphql@1.1.10
+  - @ctrl-tech/chains-core@1.1.14
+  - @ctrl-tech/chains-graphql@1.1.10
 
 ## 1.0.19
 
@@ -230,7 +230,7 @@
 
 - 64ca641: Add option to create message from object, buffer or base64
 - Updated dependencies [64ca641]
-  - @xdefi-tech/chains-core@1.1.13
+  - @ctrl-tech/chains-core@1.1.13
 
 ## 1.0.18
 
@@ -239,7 +239,7 @@
 - 3b7b00d: Add test coverage
 - 3b7b00d: Add NFT Support
 - Updated dependencies [3b7b00d]
-  - @xdefi-tech/chains-core@1.1.12
+  - @ctrl-tech/chains-core@1.1.12
 
 ## 1.0.17
 
@@ -247,7 +247,7 @@
 
 - 5b6cb9b: Added Ledger signer. Added testing coverage for signers
 - Updated dependencies [5b6cb9b]
-  - @xdefi-tech/chains-core@1.1.11
+  - @ctrl-tech/chains-core@1.1.11
 
 ## 1.0.16
 
@@ -255,8 +255,8 @@
 
 - 2c9033b: Added Trezor and Ledger Signers
 - Updated dependencies [2c9033b]
-  - @xdefi-tech/chains-core@1.1.10
-  - @xdefi-tech/chains-graphql@1.1.8
+  - @ctrl-tech/chains-core@1.1.10
+  - @ctrl-tech/chains-graphql@1.1.8
 
 ## 1.0.15
 
@@ -276,7 +276,7 @@
 
 - b2bfe69: Add seed phrase signer type, update core signer's interface
 - Updated dependencies [b2bfe69]
-  - @xdefi-tech/chains-core@1.1.8
+  - @ctrl-tech/chains-core@1.1.8
 
 ## 1.0.12
 
@@ -284,8 +284,8 @@
 
 - 1efef82: Change import from mjs to common js
 - Updated dependencies [1efef82]
-  - @xdefi-tech/chains-graphql@1.1.7
-  - @xdefi-tech/chains-core@1.1.7
+  - @ctrl-tech/chains-graphql@1.1.7
+  - @ctrl-tech/chains-core@1.1.7
 
 ## 1.0.11
 
@@ -293,7 +293,7 @@
 
 - cca1491: Update chains-controller, add providerList to each chain. Fix solana memo message
 - Updated dependencies [cca1491]
-  - @xdefi-tech/chains-core@1.1.6
+  - @ctrl-tech/chains-core@1.1.6
 
 ## 1.0.10
 
@@ -313,8 +313,8 @@
 
 - 14c668d: Update fee fields for each chain. Add solana. Add EVM chain controller
 - Updated dependencies [14c668d]
-  - @xdefi-tech/chains-core@1.1.3
-  - @xdefi-tech/chains-graphql@1.1.3
+  - @ctrl-tech/chains-core@1.1.3
+  - @ctrl-tech/chains-graphql@1.1.3
 
 ## 1.0.7
 
@@ -322,7 +322,7 @@
 
 - 20c8f4c: [cosmos] Fix getAccount method for new accounts
 - Updated dependencies [20c8f4c]
-  - @xdefi-tech/chains-core@1.1.2
+  - @ctrl-tech/chains-core@1.1.2
 
 ## 1.0.6
 
@@ -348,7 +348,7 @@
 
 - 0662495: Add getFees for cosmos chain indexer datasource
 - Updated dependencies [0662495]
-  - @xdefi-tech/chains-graphql@1.1.2
+  - @ctrl-tech/chains-graphql@1.1.2
 
 ## 1.0.2
 
@@ -362,5 +362,5 @@
 
 - 7fd4347: Add cosmos chain
 - Updated dependencies [7fd4347]
-  - @xdefi-tech/chains-graphql@1.1.1
-  - @xdefi-tech/chains-core@1.1.1
+  - @ctrl-tech/chains-graphql@1.1.1
+  - @ctrl-tech/chains-core@1.1.1

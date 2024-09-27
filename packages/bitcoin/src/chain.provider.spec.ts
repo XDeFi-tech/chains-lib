@@ -1,4 +1,4 @@
-import { Coin } from '@xdefi-tech/chains-core';
+import { Coin } from '@ctrl-tech/chains-core';
 
 import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';

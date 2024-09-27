@@ -13,12 +13,12 @@ import {
   TransactionData,
   TransactionAction,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { AbiCoder, formatUnits } from 'ethers';
 import { Observable } from 'rxjs';
 import TronWeb from 'tronweb';
 import axios, { AxiosInstance } from 'axios';
-import { CryptoAsset } from '@xdefi-tech/chains-graphql';
+import { CryptoAsset } from '@ctrl-tech/chains-graphql';
 
 import type { TronManifest } from '../../manifests';
 import { TronEnergyEstimate } from '../../msg';

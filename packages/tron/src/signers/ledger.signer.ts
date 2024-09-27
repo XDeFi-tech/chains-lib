@@ -1,6 +1,6 @@
 import Transport from '@ledgerhq/hw-transport';
 import Trx from '@ledgerhq/hw-app-trx';
-import { Chain, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Chain, Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 import TronWeb from 'tronweb';
 
 import { ChainMsg } from '../msg';

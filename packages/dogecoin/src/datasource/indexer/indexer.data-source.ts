@@ -12,9 +12,9 @@ import {
   DefaultFeeOptions,
   TransactionData,
   TransactionStatus,
-} from '@xdefi-tech/chains-core';
-import { UTXO } from '@xdefi-tech/chains-utxo';
-import type { UTXOManifest } from '@xdefi-tech/chains-utxo';
+} from '@ctrl-tech/chains-core';
+import { UTXO } from '@ctrl-tech/chains-utxo';
+import type { UTXOManifest } from '@ctrl-tech/chains-utxo';
 import { utils } from 'ethers';
 import { Observable } from 'rxjs';
 import * as Dogecoin from 'bitcoinjs-lib';

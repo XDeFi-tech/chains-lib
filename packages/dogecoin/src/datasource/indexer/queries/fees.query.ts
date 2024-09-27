@@ -1,5 +1,5 @@
-import { GetDogecoinFeesDocument } from '@xdefi-tech/chains-graphql';
-import { DefaultFeeOptions, gqlClient } from '@xdefi-tech/chains-core';
+import { GetDogecoinFeesDocument } from '@ctrl-tech/chains-graphql';
+import { DefaultFeeOptions, gqlClient } from '@ctrl-tech/chains-core';
 
 export const getFees = async (): Promise<DefaultFeeOptions> => {
   const response = await gqlClient.query({

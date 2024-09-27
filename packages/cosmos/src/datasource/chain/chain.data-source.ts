@@ -10,7 +10,7 @@ import {
   Balance,
   FeeOptions,
   FeeData,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
@@ -22,7 +22,7 @@ import {
   AddressChain,
   getCryptoAssets,
   CryptoAssetArgs,
-} from '@xdefi-tech/chains-graphql';
+} from '@ctrl-tech/chains-graphql';
 import cosmosclient from '@cosmos-client/core';
 import { uniqBy, capitalize } from 'lodash';
 import { Account } from '@cosmjs/stargate';

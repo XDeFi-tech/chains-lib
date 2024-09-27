@@ -1,4 +1,4 @@
-import { Msg, GasFeeSpeed } from '@xdefi-tech/chains-core';
+import { Msg, GasFeeSpeed } from '@ctrl-tech/chains-core';
 
 import { BinanceProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';

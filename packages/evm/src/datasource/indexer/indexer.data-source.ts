@@ -14,7 +14,7 @@ import {
   EIP1559Fee,
   EIP1559FeeOptions,
   DefaultFeeOptions,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';

@@ -7,8 +7,8 @@ import {
   TextField,
   Box,
 } from '@mui/material';
-import { PrivateKeySigner } from '@xdefi-tech/chains-evm/dist/signers/web';
-import {EvmProvider, IndexerDataSource, EVM_MANIFESTS} from '@xdefi-tech/chains-evm'
+import { PrivateKeySigner } from '@ctrl-tech/chains-evm/dist/signers/web';
+import {EvmProvider, IndexerDataSource, EVM_MANIFESTS} from '@ctrl-tech/chains-evm'
 
 const SignerPage: NextPage = () => {
     const [pk, setPk] = useState('');

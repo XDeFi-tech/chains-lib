@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 import Transport from '@ledgerhq/hw-transport-webhid';
 
 import { EvmProvider } from '../chain.provider';

@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import { Coin, Chain } from '@xdefi-tech/chains-core';
+import { Coin, Chain } from '@ctrl-tech/chains-core';
 import { isEmpty } from 'lodash';
 
 export interface IBalancesComponent {

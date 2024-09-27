@@ -11,10 +11,10 @@ import {
   Balance,
   FeeData,
   FeeOptions,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { OptBlockRange } from '@xdefi-tech/chains-graphql';
+import { OptBlockRange } from '@ctrl-tech/chains-graphql';
 
 import { ChainMsg } from '../../msg';
 

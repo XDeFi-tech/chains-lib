@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { gqlClient, BalancesData } from '@xdefi-tech/chains-core';
+import { gqlClient, BalancesData } from '@ctrl-tech/chains-core';
 
 import { EVMChains } from '../../../manifests';
 

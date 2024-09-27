@@ -1,4 +1,4 @@
-import { Msg as BaseMsg, Coin } from '@xdefi-tech/chains-core';
+import { Msg as BaseMsg, Coin } from '@ctrl-tech/chains-core';
 import TronWeb, { TronTransaction } from 'tronweb';
 import { parseUnits } from 'ethers';
 import BigNumber from 'bignumber.js';

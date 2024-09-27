@@ -1,5 +1,5 @@
-import { gqlClient } from '@xdefi-tech/chains-core';
-import { GetTronTransactionsDocument } from '@xdefi-tech/chains-graphql';
+import { gqlClient } from '@ctrl-tech/chains-core';
+import { GetTronTransactionsDocument } from '@ctrl-tech/chains-graphql';
 import map from 'lodash/map';
 
 export interface BlockRange {

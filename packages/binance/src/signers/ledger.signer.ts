@@ -3,7 +3,7 @@ import * as types from '@binance-chain/javascript-sdk/lib/types';
 import LedgerApp from '@binance-chain/javascript-sdk/lib/ledger/ledger-app';
 import Transaction from '@binance-chain/javascript-sdk/lib/tx';
 import Transport from '@ledgerhq/hw-transport';
-import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { Signer, SignerDecorator } from '@ctrl-tech/chains-core';
 
 import { ChainMsg } from '../msg';
 

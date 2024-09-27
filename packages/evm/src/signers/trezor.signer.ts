@@ -6,7 +6,7 @@ import {
   IsTrezorInitialized,
   Signer,
   SignerDecorator,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import { utils } from 'ethers';
 
 import { ChainMsg, EIP712Data, Signature } from '../msg';

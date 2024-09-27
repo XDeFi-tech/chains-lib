@@ -2,7 +2,7 @@ import {
   Signer,
   SignerDecorator,
   IsTrezorInitialized,
-} from '@xdefi-tech/chains-core';
+} from '@ctrl-tech/chains-core';
 import TrezorConnect, * as connectWeb from '@trezor/connect-web';
 import * as crypto from '@binance-chain/javascript-sdk/lib/crypto';
 

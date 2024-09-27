@@ -1,4 +1,4 @@
-import { Msg } from '@xdefi-tech/chains-core';
+import { Msg } from '@ctrl-tech/chains-core';
 import { Hash, PrivKeySecp256k1 } from '@keplr-wallet/crypto';
 import { bech32 } from 'bech32';
 import { makeADR36AminoSignDoc, serializeSignDoc } from '@keplr-wallet/cosmos';

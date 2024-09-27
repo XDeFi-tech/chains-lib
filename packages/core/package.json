@@ -1,5 +1,5 @@
 {
-  "name": "@xdefi-tech/chains-core",
+  "name": "@ctrl-tech/chains-core",
   "version": "2.0.14",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,6 +16,9 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/lodash": "4.14.182",
     "@types/uuid": "9.0.1",
