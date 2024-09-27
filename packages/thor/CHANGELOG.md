@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.11
+
+### Patch Changes
+
+- 7e297f0b: Fix: decimals for indexer datasource
+
 ## 2.1.10
 
 ### Patch Changes
