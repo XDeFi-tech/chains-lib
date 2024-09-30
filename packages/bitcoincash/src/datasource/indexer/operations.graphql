@@ -17,6 +17,8 @@ query BitcoinCashBalance($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }
@@ -32,9 +34,17 @@ query GetBitcoinCashFees {
   }
 }
 
-query GetBitcoinCashTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
+query GetBitcoinCashTransactions(
+  $address: String!
+  $pageSize: Int!
+  $pageNumber: Int!
+) {
   bitcoincash {
-    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+    transactionsV2(
+      address: $address
+      pageSize: $pageSize
+      pageNumber: $pageNumber
+    ) {
       balanceChange {
         value
       }

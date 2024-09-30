@@ -9,6 +9,7 @@ import { ChainMsg } from './msg';
 import { CosmosProvider } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { COSMOS_MANIFESTS } from './manifests';
+import { AssetInternalType, TokenCategory } from './gql';
 
 describe('chain.provider', () => {
   let provider: CosmosProvider;
@@ -59,6 +60,8 @@ describe('chain.provider', () => {
               priceChange: {
                 dayPriceChange: '-1',
               },
+              type: AssetInternalType.CRYPTOCURRENCY,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -71,6 +74,8 @@ describe('chain.provider', () => {
               native: false,
               address: '0xf2f6671173363577a07ff3cb1e1e082f68bc2a48',
               decimals: 18,
+              type: AssetInternalType.TOKEN,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -90,6 +95,8 @@ describe('chain.provider', () => {
               priceChange: {
                 dayPriceChange: '-1',
               },
+              type: AssetInternalType.CRYPTOCURRENCY,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -102,6 +109,8 @@ describe('chain.provider', () => {
               native: false,
               address: '0xf2f6671173363577a07ff3cb1e1e082f68bc2a48',
               decimals: 18,
+              type: AssetInternalType.TOKEN,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -119,6 +128,10 @@ describe('chain.provider', () => {
     expect(balanceData[0].asset.price).toEqual('443.21');
     expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
     mockedGetBalance.mockRestore();
+    expect(balanceData[0].asset.type).toEqual(AssetInternalType.CRYPTOCURRENCY);
+    expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+      JSON.stringify([TokenCategory.TRENDING_TOKEN])
+    );
   });
 
   it('estimateFee() should return fee estimation with encoding string message using IndexerDataSource', async () => {

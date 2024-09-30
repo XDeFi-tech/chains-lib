@@ -93,6 +93,8 @@ export class IndexerDataSource extends DataSource {
               priceChange: {
                 dayPriceChange: asset.price?.dayPriceChange,
               },
+              type: asset.type,
+              categories: asset.categories,
             }),
             utils.formatUnits(amount.value, asset.decimals || 0)
           )

@@ -8,6 +8,7 @@ import {
 import { ChainMsg } from './msg';
 import { ThorProvider } from './chain.provider';
 import { THORCHAIN_MANIFESTS, ThorChains } from './manifests';
+import { AssetInternalType, TokenCategory } from './gql';
 
 jest.mock('./datasource/indexer/queries/balances.query', () => ({
   getBalance: () => {
@@ -167,6 +168,8 @@ describe('chain.provider', () => {
               priceChange: {
                 dayPriceChange: '0.01',
               },
+              type: AssetInternalType.CRYPTOCURRENCY,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -186,6 +189,8 @@ describe('chain.provider', () => {
               priceChange: {
                 dayPriceChange: '0.01',
               },
+              type: AssetInternalType.CRYPTOCURRENCY,
+              categories: [TokenCategory.TRENDING_TOKEN],
             },
             amount: '1000',
           },
@@ -203,6 +208,10 @@ describe('chain.provider', () => {
     expect(balanceData[0].asset.symbol).toEqual('RUNE');
     expect(balanceData[0].asset.price).toEqual('6.03');
     expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('0.01');
+    expect(balanceData[0].asset.type).toEqual(AssetInternalType.CRYPTOCURRENCY);
+    expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+      JSON.stringify([TokenCategory.TRENDING_TOKEN])
+    );
   });
 
   it('estimateFee() should return fee estimation', async () => {

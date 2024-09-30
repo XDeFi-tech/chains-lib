@@ -4,6 +4,7 @@ import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
+import { AssetInternalType, TokenCategory } from './gql';
 
 describe('chain.provider', () => {
   const NETWORKED_QUERIES =
@@ -56,6 +57,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-4.187565214298426',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '100',
             },
@@ -75,6 +78,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-4.187565214298426',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '100',
             },
@@ -93,6 +98,12 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.price).toEqual('65000.00');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual(
         '-4.187565214298426'
+      );
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
       );
     } else {
       const balance = await provider.getBalance(

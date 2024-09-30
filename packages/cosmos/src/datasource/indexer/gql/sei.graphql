@@ -18,6 +18,8 @@ query SeiBalance($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }

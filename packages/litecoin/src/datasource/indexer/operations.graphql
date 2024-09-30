@@ -17,6 +17,8 @@ query LitecoinBalance($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }
@@ -32,9 +34,17 @@ query GetLitecoinFees {
   }
 }
 
-query GetLitecoinTransactions($address: String!, $pageSize: Int!, $pageNumber: Int!) {
+query GetLitecoinTransactions(
+  $address: String!
+  $pageSize: Int!
+  $pageNumber: Int!
+) {
   litecoin {
-    transactionsV2(address: $address, pageSize: $pageSize, pageNumber: $pageNumber) {
+    transactionsV2(
+      address: $address
+      pageSize: $pageSize
+      pageNumber: $pageNumber
+    ) {
       balanceChange {
         value
       }
@@ -107,4 +117,3 @@ query LitecoinGetTransactionByHash($txHash: String!) {
     }
   }
 }
-
