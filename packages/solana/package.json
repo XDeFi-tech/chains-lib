@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-solana",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
