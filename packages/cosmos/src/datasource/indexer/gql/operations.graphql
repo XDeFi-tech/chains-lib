@@ -18,14 +18,26 @@ query CosmosBalance($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }
 }
 
-query GetCosmosTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetCosmosTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   cosmos {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -122,9 +134,19 @@ query OsmosisBalance($address: String!) {
   }
 }
 
-query GetOsmosisTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetOsmosisTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   osmosis {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -221,9 +243,19 @@ query AxelarBalance($address: String!) {
   }
 }
 
-query GetAxelarTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetAxelarTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   axelar {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -320,9 +352,19 @@ query CrescentBalance($address: String!) {
   }
 }
 
-query GetCrescentTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetCrescentTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   crescent {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -419,9 +461,19 @@ query KavaBalance($address: String!) {
   }
 }
 
-query GetKavaTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetKavaTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   kava {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -518,9 +570,19 @@ query AkashBalance($address: String!) {
   }
 }
 
-query GetAkashTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetAkashTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   akash {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -592,7 +654,6 @@ query GetAkashStatus {
   }
 }
 
-
 query CronosBalance($address: String!) {
   cronos {
     balances(address: $address) {
@@ -618,9 +679,19 @@ query CronosBalance($address: String!) {
   }
 }
 
-query GetCronosTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetCronosTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   cronos {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -717,9 +788,19 @@ query KujiraBalance($address: String!) {
   }
 }
 
-query GetKujiraTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetKujiraTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   kujira {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -816,9 +897,19 @@ query StrideBalance($address: String!) {
   }
 }
 
-query GetStrideTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetStrideTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   stride {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -915,9 +1006,19 @@ query MarsBalance($address: String!) {
   }
 }
 
-query GetMarsTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetMarsTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   mars {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -1014,9 +1115,19 @@ query JunoBalance($address: String!) {
   }
 }
 
-query GetJunoTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetJunoTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   juno {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -1113,9 +1224,19 @@ query StargazeBalance($address: String!) {
   }
 }
 
-query GetStargazeTransactions($address: String!, $blockRange: OptBlockRange!, $first: Int!, $after: String) {
+query GetStargazeTransactions(
+  $address: String!
+  $blockRange: OptBlockRange!
+  $first: Int!
+  $after: String
+) {
   stargaze {
-    transactions(address: $address, blockRange: $blockRange, first: $first, after: $after) {
+    transactions(
+      address: $address
+      blockRange: $blockRange
+      first: $first
+      after: $after
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -1186,10 +1307,3 @@ query GetStargazeStatus {
     }
   }
 }
-
-
-
-
-
-
-

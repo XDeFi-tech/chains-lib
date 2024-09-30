@@ -15,6 +15,8 @@ query GetTronBalance($address: String!) {
           scalingFactor
           dayPriceChange
         }
+        type
+        categories
       }
       amount {
         value

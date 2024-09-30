@@ -7,6 +7,7 @@ import {
 
 import { LitecoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
+import { AssetInternalType, TokenCategory } from './gql';
 import { LITECOIN_MANIFEST } from './manifests';
 import { ChainMsg } from './msg';
 
@@ -66,6 +67,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -85,6 +88,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -102,6 +107,12 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.symbol).toEqual('LTC');
       expect(balanceData[0].asset.price).toEqual('443.21');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
     } else {
       const balance = await provider.getBalance(
         'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5'

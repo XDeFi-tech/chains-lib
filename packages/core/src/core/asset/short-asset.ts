@@ -29,7 +29,7 @@ export class ShortAsset {
   /**
    * Convert JSON string to Asset object
    *
-   * @param json stirng that represents asset object
+   * @param json string that represents asset object
    */
   public static fromJson(json: string): ShortAsset {
     const data = JSON.parse(json);

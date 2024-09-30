@@ -8,6 +8,7 @@ import { ChainMsg } from './msg';
 import { BinanceProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BINANCE_MANIFEST } from './manifests';
+import { AssetInternalType, TokenCategory } from './gql';
 
 describe('chain.provider', () => {
   const NETWORKED_QUERIES =
@@ -49,6 +50,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-0.00000001',
                 },
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -68,6 +71,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-0.00000001',
                 },
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -86,6 +91,10 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.price).toEqual('0.00008282');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual(
         '-0.00000001'
+      );
+      expect(balanceData[0].asset.type).toEqual(AssetInternalType.TOKEN);
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
       );
     } else {
       const balance = await provider.getBalance(

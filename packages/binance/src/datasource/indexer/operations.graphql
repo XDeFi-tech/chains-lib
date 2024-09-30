@@ -18,14 +18,26 @@ query GetBinanceBalances($address: String!) {
           scalingFactor
           dayPriceChange
         }
+        type
+        categories
       }
     }
   }
 }
 
-query GetBinanceTransactions($address: String!, $first: Int, $after: String, $blockRange: OptBlockSelector) {
+query GetBinanceTransactions(
+  $address: String!
+  $first: Int
+  $after: String
+  $blockRange: OptBlockSelector
+) {
   binance {
-    transactions(address: $address, first: $first, after: $after, blockRange: $blockRange) {
+    transactions(
+      address: $address
+      first: $first
+      after: $after
+      blockRange: $blockRange
+    ) {
       pageInfo {
         endCursor
         hasNextPage
@@ -84,4 +96,3 @@ query GetBinanceStatus {
     }
   }
 }
-

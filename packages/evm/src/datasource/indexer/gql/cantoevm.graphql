@@ -14,6 +14,8 @@ query GetCantoEVMBalance($address: String!) {
           amount
           dayPriceChange
         }
+        type
+        categories
       }
       amount {
         value
