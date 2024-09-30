@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.12
+
+### Patch Changes
+
+- 9b116b86: fix: solana ledger signer
+
 ## 2.1.11
 
 ### Patch Changes
