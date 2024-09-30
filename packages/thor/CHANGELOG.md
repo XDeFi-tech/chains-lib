@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.12
+
+### Patch Changes
+
+- 429b1c40: Feat: reflected data from CryptoAsset type to getBalances responses
+- Updated dependencies [429b1c40]
+  - @xdefi-tech/chains-core@2.0.34
+
 ## 2.1.11
 
 ### Patch Changes
