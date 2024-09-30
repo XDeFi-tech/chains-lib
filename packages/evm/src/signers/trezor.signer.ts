@@ -111,6 +111,22 @@ export class TrezorSigner extends Signer.TrezorProvider {
       throw new Error(result.payload.error);
     }
   }
+
+  async signPersonalMessage(
+    message: string,
+    derivation: string
+  ): Promise<Signature | any> {
+    const result = await TrezorConnect.ethereumSignMessage({
+      path: derivation,
+      message: message,
+    });
+
+    if (result.success) {
+      return result.payload;
+    } else {
+      throw new Error(result.payload.error);
+    }
+  }
 }
 
 export default TrezorSigner;

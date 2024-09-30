@@ -96,6 +96,18 @@ export class LedgerSigner extends Signer.Provider {
     return encrypted;
   }
 
+  async signPersonalMessage(
+    message: string,
+    derivation: string
+  ): Promise<Signature> {
+    const app = new App(this.transport as Transport);
+    const signature = await app.signPersonalMessage(
+      derivation,
+      Buffer.from(message).toString('hex')
+    );
+    return signature;
+  }
+
   // signTypedData (v4): Signs a typed data message. Returns (async) the signature as v, r, s object.
   async signTypedData(
     derivation: string,
