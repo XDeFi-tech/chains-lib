@@ -6,7 +6,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import { BigNumber, providers } from 'ethers';
 
-import { Eip1559Fee } from './gql/graphql';
+import { AssetInternalType, Eip1559Fee, TokenCategory } from './gql/graphql';
 import { ChainMsg } from './msg';
 import { EvmProvider } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
@@ -105,6 +105,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -117,6 +119,8 @@ describe('chain.provider', () => {
                 native: false,
                 address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
                 decimals: 18,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -136,6 +140,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -148,6 +154,8 @@ describe('chain.provider', () => {
                 native: false,
                 address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
                 decimals: 18,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -165,8 +173,18 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.symbol).toEqual('ETH');
       expect(balanceData[0].asset.price).toEqual('345.55');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
       expect(balanceData[1].amount.toString()).toEqual('1000');
       expect(balanceData[1].asset.symbol).toEqual('stETH');
+      expect(balanceData[1].asset.type).toEqual(AssetInternalType.TOKEN);
+      expect(JSON.stringify(balanceData[1].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
     } else {
       const balance = await evmProvider.getBalance(
         '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'

@@ -16,6 +16,7 @@ import { ChainMsg } from './msg';
 import { SolanaProvider, MultisigMsgData } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { SOLANA_MANIFEST } from './manifests';
+import { AssetInternalType, TokenCategory } from './gql';
 
 describe('chain.provider', () => {
   const NETWORKED_QUERIES =
@@ -114,6 +115,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '3',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -126,6 +129,8 @@ describe('chain.provider', () => {
                 native: false,
                 address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
                 decimals: 8,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.SHITCOIN],
               },
               amount: '1000',
             },
@@ -145,6 +150,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '3',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -157,6 +164,8 @@ describe('chain.provider', () => {
                 native: false,
                 address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
                 decimals: 8,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.SHITCOIN],
               },
               amount: '1000',
             },
@@ -172,10 +181,21 @@ describe('chain.provider', () => {
       expect(balanceData.length).toEqual(2);
       expect(balanceData[0].amount).toEqual('1000');
       expect(balanceData[0].asset.symbol).toEqual('SOL');
-      expect(balanceData[1].amount).toEqual('1000');
-      expect(balanceData[1].asset.symbol).toEqual('BONK');
+
       expect(balanceData[0].asset.price).toEqual('123');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('3');
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
+      expect(balanceData[1].amount).toEqual('1000');
+      expect(balanceData[1].asset.symbol).toEqual('BONK');
+      expect(balanceData[1].asset.type).toEqual(AssetInternalType.TOKEN);
+      expect(JSON.stringify(balanceData[1].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.SHITCOIN])
+      );
     } else {
       const balance = await chainProvider.getBalance(
         'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5'

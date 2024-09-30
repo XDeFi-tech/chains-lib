@@ -54,6 +54,8 @@ export class IndexerDataSource extends DataSource {
               priceChange: {
                 dayPriceChange: asset.price?.dayPriceChange,
               },
+              type: asset.type,
+              categories: asset.categories,
             }),
             new BigNumber(amount.value)
               .dividedBy(10 ** (asset.decimals || 0))

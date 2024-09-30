@@ -17,12 +17,18 @@ query GetMayachainBalances($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }
 }
 
-query GetMayachainTransactions($address: String!, $first: Int!, $after: String) {
+query GetMayachainTransactions(
+  $address: String!
+  $first: Int!
+  $after: String
+) {
   mayachain {
     transactions(address: $address, first: $first, after: $after) {
       pageInfo {
@@ -99,4 +105,3 @@ query GetMayachainFee {
     }
   }
 }
-

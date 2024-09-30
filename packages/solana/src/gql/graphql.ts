@@ -191,7 +191,111 @@ export enum AddressChain {
   Tron = 'Tron',
   Umee = 'Umee',
   opBNB = 'opBNB',
-  xDAI = 'xDAI',
+  zetachain = 'zetachain',
+  zkSync = 'zkSync',
+}
+
+export enum AddressChainV1 {
+  Akash = 'Akash',
+  Arbitrum = 'Arbitrum',
+  Archway = 'Archway',
+  ArchwayTestnet = 'ArchwayTestnet',
+  AssetMantle = 'AssetMantle',
+  Aurora = 'Aurora',
+  Avalanche = 'Avalanche',
+  Axelar = 'Axelar',
+  Band = 'Band',
+  Base = 'Base',
+  BerachainTestnet = 'BerachainTestnet',
+  BinanceChain = 'BinanceChain',
+  BinanceChainTestnet = 'BinanceChainTestnet',
+  BinanceSmartChain = 'BinanceSmartChain',
+  BinanceSmartChainTestnet = 'BinanceSmartChainTestnet',
+  Bitcanna = 'Bitcanna',
+  Bitcoin = 'Bitcoin',
+  BitcoinCash = 'BitcoinCash',
+  BitcoinCashTestnet = 'BitcoinCashTestnet',
+  BitcoinTestnet = 'BitcoinTestnet',
+  Bitsong = 'Bitsong',
+  Blast = 'Blast',
+  Canto = 'Canto',
+  CantoEVM = 'CantoEVM',
+  Celestia = 'Celestia',
+  Celo = 'Celo',
+  Cerberus = 'Cerberus',
+  Chihuahua = 'Chihuahua',
+  Comdex = 'Comdex',
+  Cosmos = 'Cosmos',
+  Crescent = 'Crescent',
+  CronosEVM = 'CronosEVM',
+  CronosPOS = 'CronosPOS',
+  Cudos = 'Cudos',
+  Desmos = 'Desmos',
+  Dogecoin = 'Dogecoin',
+  DogecoinTestnet = 'DogecoinTestnet',
+  Dymension = 'Dymension',
+  Emoney = 'Emoney',
+  Ethereum = 'Ethereum',
+  Evmos = 'Evmos',
+  Fantom = 'Fantom',
+  FetchAI = 'FetchAI',
+  Gnosis = 'Gnosis',
+  GravityBridge = 'GravityBridge',
+  Harmony = 'Harmony',
+  HuobiECOChain = 'HuobiECOChain',
+  Injective = 'Injective',
+  Iris = 'Iris',
+  Ixo = 'Ixo',
+  JUNO = 'JUNO',
+  Kava = 'Kava',
+  KiChain = 'KiChain',
+  Klaytn = 'Klaytn',
+  Konstellation = 'Konstellation',
+  Kujira = 'Kujira',
+  LikeCoin = 'LikeCoin',
+  Linea = 'Linea',
+  Litecoin = 'Litecoin',
+  LitecoinTestnet = 'LitecoinTestnet',
+  Lum = 'Lum',
+  MAYAChain = 'MAYAChain',
+  MantaPacific = 'MantaPacific',
+  Mantle = 'Mantle',
+  MarsProtocol = 'MarsProtocol',
+  Medibloc = 'Medibloc',
+  Mumbai = 'Mumbai',
+  Near = 'Near',
+  Neutron = 'Neutron',
+  Noble = 'Noble',
+  OKExChain = 'OKExChain',
+  Oasis = 'Oasis',
+  Optimism = 'Optimism',
+  Osmosis = 'Osmosis',
+  Persistence = 'Persistence',
+  Polygon = 'Polygon',
+  Provenance = 'Provenance',
+  Quasar = 'Quasar',
+  Regen = 'Regen',
+  Rizon = 'Rizon',
+  Ropsten = 'Ropsten',
+  Secret = 'Secret',
+  Sei = 'Sei',
+  SeiTestnet = 'SeiTestnet',
+  Sentinel = 'Sentinel',
+  Shentu = 'Shentu',
+  Sifchain = 'Sifchain',
+  Solana = 'Solana',
+  Sommelier = 'Sommelier',
+  Stargaze = 'Stargaze',
+  Starname = 'Starname',
+  Stride = 'Stride',
+  THORChain = 'THORChain',
+  THORChainTestnet = 'THORChainTestnet',
+  Terra = 'Terra',
+  TerraClassic = 'TerraClassic',
+  TomoChain = 'TomoChain',
+  Tron = 'Tron',
+  Umee = 'Umee',
+  opBNB = 'opBNB',
   zkSync = 'zkSync',
 }
 
@@ -277,9 +381,23 @@ export type AllAssetsFilter = {
   sortBy?: InputMaybe<AssetSortBy>;
 };
 
+export type AllAssetsFilterV2 = {
+  assetTypes?: InputMaybe<Array<AssetInternalTypeV2>>;
+  chains?: InputMaybe<Array<AddressChainV1>>;
+  ids?: InputMaybe<Array<Scalars['String']>>;
+  priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
+  sortBy?: InputMaybe<AssetSortBy2>;
+};
+
 export type AllAssetsResponse = {
   __typename?: 'AllAssetsResponse';
   page: AssetAllAssetsTypeConnection;
+  pageData?: Maybe<PageDataType>;
+};
+
+export type AllAssetsV2Response = {
+  __typename?: 'AllAssetsV2Response';
+  page: AssetAllAssetsV2TypeConnection;
   pageData?: Maybe<PageDataType>;
 };
 
@@ -305,6 +423,14 @@ export type AmountType = {
   __typename?: 'AmountType';
   amount: Scalars['String'];
   scalingFactor: Scalars['Float'];
+};
+
+export type AnnualPercentageRate = {
+  __typename?: 'AnnualPercentageRate';
+  asset?: Maybe<SupportedAssets>;
+  error?: Maybe<Scalars['String']>;
+  provider?: Maybe<Providers>;
+  rate?: Maybe<Scalars['Float']>;
 };
 
 export type Arbitrum = {
@@ -374,7 +500,7 @@ export type AssetAllAssetsType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  /** Get price history by day, week, month, year. Limit 20. */
+  /** Get price history by day, week, month, year. Limit 50. */
   priceHistory: PriceHistoryType;
   /** Only for "CRYPTOCURRENCY" type */
   scalingFactor?: Maybe<Scalars['Float']>;
@@ -397,6 +523,53 @@ export type AssetAllAssetsTypeEdge = {
 
 export type AssetAllAssetsTypePageInfo = {
   __typename?: 'AssetAllAssetsTypePageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type AssetAllAssetsV2Type = AssetBaseTypeV2 & {
+  __typename?: 'AssetAllAssetsV2Type';
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories: Array<TokenCategory>;
+  /** Only for "CRYPTOCURRENCY" type */
+  chain?: Maybe<Scalars['String']>;
+  /** For "TOKEN" and "LP_TOKEN" types */
+  contracts?: Maybe<Array<AssetV2TokenContractType>>;
+  /** Additional info about asset: description, social and tech links, etc. */
+  externalData: Scalars['JSON'];
+  /** Icon URL */
+  icon?: Maybe<Scalars['String']>;
+  /** Unique identifier in the database */
+  id: Scalars['ID'];
+  /** Market capitalization is total value of a publicly traded company's outstanding common shares owned by stockholders */
+  marketCap?: Maybe<Scalars['Float']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  priceHistory: PriceHistoryType2;
+  /** Only for "CRYPTOCURRENCY" type */
+  scalingFactor?: Maybe<Scalars['Float']>;
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+  type: AssetInternalTypeV2;
+};
+
+export type AssetAllAssetsV2TypeConnection = {
+  __typename?: 'AssetAllAssetsV2TypeConnection';
+  edges?: Maybe<Array<AssetAllAssetsV2TypeEdge>>;
+  pageInfo?: Maybe<AssetAllAssetsV2TypePageInfo>;
+};
+
+export type AssetAllAssetsV2TypeEdge = {
+  __typename?: 'AssetAllAssetsV2TypeEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<AssetAllAssetsV2Type>;
+};
+
+export type AssetAllAssetsV2TypePageInfo = {
+  __typename?: 'AssetAllAssetsV2TypePageInfo';
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
@@ -459,12 +632,28 @@ export type AssetBaseType = {
   type: AssetInternalType;
 };
 
+export type AssetBaseTypeV2 = {
+  /** Icon URL */
+  icon?: Maybe<Scalars['String']>;
+  /** Unique identifier in the database */
+  id: Scalars['ID'];
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+  type: AssetInternalTypeV2;
+};
+
 export type AssetCompositeTokenType = AssetBaseType & {
   __typename?: 'AssetCompositeTokenType';
   address?: Maybe<Scalars['String']>;
   chain?: Maybe<Scalars['String']>;
   contract?: Maybe<AssetTokenContractType>;
-  /** Chain fee */
+  /**
+   * Chain fee
+   * @deprecated Don't use fee from assets-service, use fees-service instead
+   */
   fee: AssetFeeType;
   /** Icon URL */
   icon?: Maybe<Scalars['String']>;
@@ -507,6 +696,7 @@ export type AssetCryptoCurrencyType = AssetBaseType & {
   chain: Scalars['String'];
   /** Additional info about asset: description, social and tech links, etc. */
   externalData: Scalars['JSON'];
+  /** @deprecated Don't use fee from assets-service, use fees-service instead */
   fee?: Maybe<AssetFeeType>;
   /** Icon URL */
   icon?: Maybe<Scalars['String']>;
@@ -517,7 +707,7 @@ export type AssetCryptoCurrencyType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  /** Get price history by day, week, month, year. Limit 20. */
+  /** Get price history by day, week, month, year. Limit 50. */
   priceHistory: PriceHistoryType;
   scalingFactor?: Maybe<Scalars['Float']>;
   /** The symbol that identifies token */
@@ -607,7 +797,17 @@ export enum AssetInternalType {
   TOKEN = 'TOKEN',
 }
 
+export enum AssetInternalTypeV2 {
+  CRYPTOCURRENCY = 'CRYPTOCURRENCY',
+  LP_TOKEN = 'LP_TOKEN',
+  TOKEN = 'TOKEN',
+}
+
 export enum AssetSortBy {
+  MARKET_CAP = 'MARKET_CAP',
+}
+
+export enum AssetSortBy2 {
   MARKET_CAP = 'MARKET_CAP',
 }
 
@@ -618,7 +818,10 @@ export type AssetTokenContractType = {
   chain: Scalars['String'];
   /** DefiProtocol */
   defiProtocol?: Maybe<AssetDefiProtocolType>;
-  /** Chain fee */
+  /**
+   * Chain fee
+   * @deprecated Don't use fee from assets-service, use fees-service instead
+   */
   fee: AssetFeeType;
   /** Unique identifier in the database */
   id: Scalars['Float'];
@@ -645,7 +848,7 @@ export type AssetTokenType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  /** Get price history by day, week, month, year. Limit 20. */
+  /** Get price history by day, week, month, year. Limit 50. */
   priceHistory: PriceHistoryType;
   /** The symbol that identifies token */
   symbol: Scalars['String'];
@@ -668,6 +871,52 @@ export type AssetTokenTypeEdge = {
 
 export type AssetTokenTypePageInfo = {
   __typename?: 'AssetTokenTypePageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type AssetTokenTypeV2 = AssetBaseTypeV2 & {
+  __typename?: 'AssetTokenTypeV2';
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories: Array<TokenCategory>;
+  /** Assets contracts */
+  contracts?: Maybe<Array<AssetV2TokenContractType>>;
+  /** Additional info about asset: description, social and tech links, etc. */
+  externalData: Scalars['JSON'];
+  /** Icon URL */
+  icon?: Maybe<Scalars['String']>;
+  /** Unique identifier in the database */
+  id: Scalars['ID'];
+  /** Market capitalization is total value of a publicly traded company's outstanding common shares owned by stockholders */
+  marketCap?: Maybe<Scalars['Float']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  /** Get price history by day, week, month, year. Limit 50. */
+  priceHistory: PriceHistoryType2;
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+  /** This filed contains detailed information about underlying tokens if assets type is LP token */
+  tokens?: Maybe<Array<Maybe<CryptoAssetV2>>>;
+  type: AssetInternalTypeV2;
+};
+
+export type AssetTokenTypeV2Connection = {
+  __typename?: 'AssetTokenTypeV2Connection';
+  edges?: Maybe<Array<AssetTokenTypeV2Edge>>;
+  pageInfo?: Maybe<AssetTokenTypeV2PageInfo>;
+};
+
+export type AssetTokenTypeV2Edge = {
+  __typename?: 'AssetTokenTypeV2Edge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<AssetTokenTypeV2>;
+};
+
+export type AssetTokenTypeV2PageInfo = {
+  __typename?: 'AssetTokenTypeV2PageInfo';
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
@@ -718,6 +967,8 @@ export type AssetType = {
   popular?: Maybe<Array<TrendingTokensType>>;
   search?: Maybe<SearchResponse>;
   supportedChains: Array<Scalars['String']>;
+  /** The function passes several chain IDs to check if the system supports assets and indexers. */
+  supportedIndexer?: Maybe<IndexerType>;
   /** Scaling factor for market cap */
   tokens?: Maybe<TokenResponse>;
   /** Experimental tokenV0 assets */
@@ -726,6 +977,7 @@ export type AssetType = {
   topMarketCap?: Maybe<Array<TrendingTokensType>>;
   /** Trending coingecko tokens */
   trending?: Maybe<Array<TrendingCoingeckoType>>;
+  validator?: Maybe<ValidatorsType>;
 };
 
 export type AssetTypeAllAssetsArgs = {
@@ -755,7 +1007,7 @@ export type AssetTypeCryptoCurrenciesArgs = {
 
 export type AssetTypeDappsArgs = {
   address: Scalars['String'];
-  chain: Scalars['String'];
+  chain: AddressChain;
 };
 
 export type AssetTypeFiatCurrenciesArgs = {
@@ -781,6 +1033,10 @@ export type AssetTypeSearchArgs = {
   page: ConnectionArgs;
 };
 
+export type AssetTypeSupportedIndexerArgs = {
+  chain: Scalars['String'];
+};
+
 export type AssetTypeTokensArgs = {
   after?: InputMaybe<Scalars['DateTime']>;
   afterPrice?: InputMaybe<Scalars['DateTime']>;
@@ -790,6 +1046,100 @@ export type AssetTypeTokensArgs = {
 
 export type AssetTypeTokensV0Args = {
   input: Array<TokenV0Args>;
+};
+
+export type AssetTypeValidatorArgs = {
+  address: Scalars['String'];
+  chain: AddressChain;
+};
+
+export type AssetTypeV2 = {
+  __typename?: 'AssetTypeV2';
+  /** All assets including tokens, lpTokens and cryptoCurrencies */
+  allAssets?: Maybe<AllAssetsV2Response>;
+  /** Scaling factor for market cap */
+  compositeTokens?: Maybe<CompositeTokenV2Response>;
+  /** Crypto assets */
+  cryptoAssets?: Maybe<Array<CryptoAssetV2>>;
+  /** Scaling factor for market cap */
+  cryptoCurrencies?: Maybe<CryptoCurrencyV2Response>;
+  /** Scaling factor for market cap */
+  fiatCurrencies?: Maybe<FiatCurrencyV2Response>;
+  /** Trending gainers (by day price change) */
+  gainers?: Maybe<Array<TrendingTokensTypeV2>>;
+  /** Trending losers (by day price change) */
+  losers?: Maybe<Array<TrendingTokensTypeV2>>;
+  /** Scaling factor for market cap */
+  lpTokens?: Maybe<TokenResponseV2>;
+  /**
+   * Trending popular (by market cap)
+   * @deprecated Use topMarketCap query instead
+   */
+  popular?: Maybe<Array<TrendingTokensTypeV2>>;
+  search?: Maybe<SearchV2Response>;
+  /** Scaling factor for market cap */
+  tokens?: Maybe<TokenResponseV2>;
+  /** Experimental tokenV0 assets */
+  tokensV0?: Maybe<Array<TokenV0V2>>;
+  /** Trending popular (by market cap) */
+  topMarketCap?: Maybe<Array<TrendingTokensTypeV2>>;
+  /** Trending coingecko tokens */
+  trending?: Maybe<Array<TrendingCoingeckoTypeV2>>;
+};
+
+export type AssetTypeV2AllAssetsArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<AllAssetsFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2CompositeTokensArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<CompositeTokenFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2CryptoAssetsArgs = {
+  input: Array<CryptoAssetV2Args>;
+};
+
+export type AssetTypeV2CryptoCurrenciesArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<CryptoCurrencyFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2FiatCurrenciesArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<FiatCurrencyFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2LpTokensArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<TokenFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2SearchArgs = {
+  filter?: InputMaybe<SearchFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2TokensArgs = {
+  after?: InputMaybe<Scalars['DateTime']>;
+  afterPrice?: InputMaybe<Scalars['DateTime']>;
+  filter?: InputMaybe<TokenFilterV2>;
+  page: ConnectionArgs;
+};
+
+export type AssetTypeV2TokensV0Args = {
+  input: Array<TokenV0V2Args>;
 };
 
 /** Unified asset representation for different chains */
@@ -803,6 +1153,26 @@ export type AssetV0 = {
 
 /** Union type that represent any asset (currently nft or token) */
 export type AssetV0Payload = NfTv0 | TokenV0;
+
+export type AssetV2TokenContractType = {
+  __typename?: 'AssetV2TokenContractType';
+  address: Scalars['String'];
+  /** Address chain name */
+  chain: Scalars['String'];
+  /** DefiProtocol */
+  defiProtocol?: Maybe<AssetDefiProtocolType>;
+  /**
+   * Chain fee
+   * @deprecated Don't use fee from assets-service, use fees-service instead
+   */
+  fee: AssetFeeType;
+  /** Unique identifier in the database */
+  id: Scalars['Float'];
+  /** The scaling factor is needed to convert contract to token price */
+  scalingFactor: Scalars['Float'];
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+};
 
 export type AssetV3 = {
   __typename?: 'AssetV3';
@@ -947,6 +1317,7 @@ export type Base = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -966,6 +1337,11 @@ export type BaseBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type BaseLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type BaseNftsArgs = {
@@ -1317,6 +1693,7 @@ export type Blast = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -1336,6 +1713,11 @@ export type BlastBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type BlastLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type BlastNftsArgs = {
@@ -1439,6 +1821,7 @@ export type Celo = {
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   feeHistory: DefaultGasFee;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -1458,6 +1841,11 @@ export type CeloBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type CeloLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type CeloNftsArgs = {
@@ -1490,6 +1878,25 @@ export type ChainType = {
   name: Scalars['String'];
 };
 
+export enum Chains {
+  akash = 'akash',
+  alexar = 'alexar',
+  avalanche = 'avalanche',
+  cosmoshub = 'cosmoshub',
+  crescent = 'crescent',
+  ethereum = 'ethereum',
+  juno = 'juno',
+  kava = 'kava',
+  kujira = 'kujira',
+  osmosis = 'osmosis',
+  polygon = 'polygon',
+  sei = 'sei',
+  solana = 'solana',
+  stargaze = 'stargaze',
+  stride = 'stride',
+  terra2 = 'terra2',
+}
+
 export type ClaimStatus = {
   __typename?: 'ClaimStatus';
   amountUsd: Scalars['Float'];
@@ -1501,6 +1908,12 @@ export type ClaimStatus = {
 
 export type CompositeTokenFilter = {
   chains?: InputMaybe<Array<AddressChain>>;
+  ids?: InputMaybe<Array<Scalars['String']>>;
+  priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
+};
+
+export type CompositeTokenFilterV2 = {
+  chains?: InputMaybe<Array<AddressChainV1>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
   priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
 };
@@ -1521,6 +1934,12 @@ export type CompositeTokenType = {
   protocol: DefiProtocolType;
   symbol: Scalars['String'];
   token?: Maybe<TokenType>;
+};
+
+export type CompositeTokenV2Response = {
+  __typename?: 'CompositeTokenV2Response';
+  page: AssetCompositeTokenTypeConnection;
+  pageData?: Maybe<PageDataType>;
 };
 
 /** Pagination options. Requires first or last */
@@ -1604,10 +2023,32 @@ export type CosmosBasedChainWithNft = {
   name: Scalars['String'];
 };
 
+export type CosmosDelegationInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  delegatorAddress: Scalars['String'];
+  delegatorPubkeyHex: Scalars['String'];
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  memo: Scalars['String'];
+};
+
 export type CosmosFee = {
   __typename?: 'CosmosFee';
   amount: Array<AssetWithAmount>;
   payer?: Maybe<Scalars['String']>;
+};
+
+export type CosmosIbcTransferInput = {
+  amount: Scalars['Decimal'];
+  destChain: Chains;
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  memo: Scalars['String'];
+  recieverAddr: Scalars['String'];
+  senderAddr: Scalars['String'];
+  senderAsset: SupportedAssets;
+  senderPubkeyHex: Scalars['String'];
+  srcChain: Chains;
+  timeoutHeight: Scalars['Int'];
 };
 
 export type CosmosLikeTransaction = {
@@ -1637,6 +2078,15 @@ export type CosmosLikeTransactionEdge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge */
   node: CosmosLikeTransaction;
+};
+
+export type CosmosNativeStakedBalance = {
+  __typename?: 'CosmosNativeStakedBalance';
+  amount: Scalars['Int'];
+  decimal: Scalars['Int'];
+  denom: Scalars['String'];
+  validatorAddress: Scalars['String'];
+  validatorName?: Maybe<Scalars['String']>;
 };
 
 export type CreateReferrer = {
@@ -1699,7 +2149,7 @@ export type CronosEvmTransactionsArgs = {
 export type CryptoAsset = {
   __typename?: 'CryptoAsset';
   /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
-  categories: Array<TokenCategory>;
+  categories?: Maybe<Array<TokenCategory>>;
   /** supported list of chain are in [`crate::chain::Chain`] enum */
   chain?: Maybe<Scalars['String']>;
   /** ID of token (contract address in most chain) */
@@ -1750,8 +2200,42 @@ export type CryptoAssetInputV2 = {
   symbol?: InputMaybe<Scalars['String']>;
 };
 
+export type CryptoAssetV2 = {
+  __typename?: 'CryptoAssetV2';
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories?: Maybe<Array<TokenCategory>>;
+  /** Chain name */
+  chain?: Maybe<Scalars['String']>;
+  /** Crypto currency address */
+  contract?: Maybe<Scalars['String']>;
+  /** Number of decimals for current asset */
+  decimals?: Maybe<Scalars['Float']>;
+  /** Unique asset identifier */
+  id?: Maybe<Scalars['ID']>;
+  /** Asset image */
+  image?: Maybe<Scalars['String']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  /** The symbol that identifies token */
+  symbol?: Maybe<Scalars['String']>;
+  type?: Maybe<AssetInternalTypeV2>;
+};
+
+export type CryptoAssetV2Args = {
+  chain: AddressChainV1;
+  contract?: InputMaybe<Scalars['String']>;
+};
+
 export type CryptoCurrencyFilter = {
   chains?: InputMaybe<Array<AddressChain>>;
+  ids?: InputMaybe<Array<Scalars['String']>>;
+  priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
+  symbols?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type CryptoCurrencyFilterV2 = {
+  chains?: InputMaybe<Array<AddressChainV1>>;
   ids?: InputMaybe<Array<Scalars['String']>>;
   priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
   symbols?: InputMaybe<Array<Scalars['String']>>;
@@ -1775,6 +2259,12 @@ export type CryptoCurrencyType = {
   symbol: Scalars['String'];
 };
 
+export type CryptoCurrencyV2Response = {
+  __typename?: 'CryptoCurrencyV2Response';
+  page: AssetCryptoCurrencyTypeConnection;
+  pageData?: Maybe<PageDataType>;
+};
+
 export type CursorPagination = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1795,6 +2285,7 @@ export type DAppReputation = {
 };
 
 export type DAppReputationInput = {
+  force?: Scalars['Boolean'];
   url: Scalars['String'];
 };
 
@@ -2031,6 +2522,14 @@ export type EvmTransactionV2Edge = {
   node: EvmTransactionV2;
 };
 
+export type Erc20ApproveInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  fromAddress: Scalars['String'];
+  nonce: Scalars['Int'];
+  spenderAddress: Scalars['String'];
+};
+
 export type Ethereum = {
   __typename?: 'Ethereum';
   /** activity history for address in descending order */
@@ -2077,6 +2576,16 @@ export type EthereumTransactionsArgs = {
   blockRange?: InputMaybe<OptBlockRange>;
   dateRange?: InputMaybe<OptDateRange>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type EthereumTxPreview = {
+  __typename?: 'EthereumTxPreview';
+  chainId: Scalars['Int'];
+  data: Scalars['String'];
+  fromAddress: Scalars['String'];
+  nonce: Scalars['Int'];
+  toAddress: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type EvmFeeDetailsV0 = {
@@ -2241,6 +2750,10 @@ export type FiatCurrencyFilter = {
   ids?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type FiatCurrencyFilterV2 = {
+  ids?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type FiatCurrencyResponse = {
   __typename?: 'FiatCurrencyResponse';
   page: AssetFiatCurrencyTypeConnection;
@@ -2256,6 +2769,12 @@ export type FiatCurrencyType = {
   /** @deprecated Use scalingFactor of price field */
   scalingFactor: Scalars['Float'];
   symbol: Scalars['String'];
+};
+
+export type FiatCurrencyV2Response = {
+  __typename?: 'FiatCurrencyV2Response';
+  page: AssetFiatCurrencyTypeConnection;
+  pageData?: Maybe<PageDataType>;
 };
 
 export type FilterArgs = {
@@ -2349,6 +2868,16 @@ export type ImageType = {
   format: Scalars['String'];
 };
 
+export type IndexerType = {
+  __typename?: 'IndexerType';
+  /** Supported assets */
+  assets: Scalars['Boolean'];
+  /** Supported indexer */
+  indexer: Scalars['Boolean'];
+  /** Supported indexer name */
+  indexerName?: Maybe<Scalars['String']>;
+};
+
 export type Input = {
   __typename?: 'Input';
   address: Scalars['String'];
@@ -2433,6 +2962,26 @@ export type LeaderboardEntry = {
   volumeUsd: Scalars['Decimal'];
 };
 
+export type LidoErc20AllowanceInput = {
+  asset: SupportedAssets;
+  ownerAddress: Scalars['String'];
+};
+
+export type LidoStakedAssetBalance = {
+  __typename?: 'LidoStakedAssetBalance';
+  amount: Scalars['String'];
+  asset: Scalars['String'];
+  chain: Scalars['String'];
+  decimal: Scalars['Int'];
+};
+
+export type LidoStakingInput = {
+  address: Scalars['String'];
+  asset: SupportedAssets;
+  nonce: Scalars['Int'];
+  stakeValue: Scalars['Decimal'];
+};
+
 export type Linea = {
   __typename?: 'Linea';
   /** activity history for address in descending order */
@@ -2441,6 +2990,7 @@ export type Linea = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -2460,6 +3010,11 @@ export type LineaBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type LineaLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type LineaNftsArgs = {
@@ -2554,7 +3109,13 @@ export type Manta = {
   __typename?: 'Manta';
   average24hFee?: Maybe<Eip1559GasFee>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
+};
+
+export type MantaLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type Mantle = {
@@ -2565,6 +3126,7 @@ export type Mantle = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -2584,6 +3146,11 @@ export type MantleBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type MantleLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type MantleNftsArgs = {
@@ -2860,9 +3427,13 @@ export type NfTv3 = {
   __typename?: 'NFTv3';
   attributes: Array<NftAttribute>;
   balance: Amount;
+  /** Chain name */
+  chain?: Maybe<Scalars['String']>;
   /** @deprecated NFTCollectionV2 is deprecated. Please move to the NFTCollectionV3 */
   collection?: Maybe<NftCollectionV2>;
   collectionV3?: Maybe<NftCollectionV3>;
+  /** Crypto currency address on specific chain */
+  contract?: Maybe<Scalars['String']>;
   contractType?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -2874,6 +3445,7 @@ export type NfTv3 = {
   owner: Scalars['String'];
   spamScore?: Maybe<Scalars['Float']>;
   symbol: Scalars['String'];
+  tokenId?: Maybe<Scalars['String']>;
 };
 
 export type NearChain = {
@@ -2952,15 +3524,25 @@ export type NftAsset = {
 
 export enum NftChainType {
   Arbitrum = 'Arbitrum',
+  Aurora = 'Aurora',
   Avalanche = 'Avalanche',
   Base = 'Base',
   BinanceSmartChain = 'BinanceSmartChain',
   Bitcoin = 'Bitcoin',
+  Blast = 'Blast',
+  CantoEVM = 'CantoEVM',
+  Celo = 'Celo',
+  CronosEVM = 'CronosEVM',
   Ethereum = 'Ethereum',
+  Fantom = 'Fantom',
   Gnosis = 'Gnosis',
+  Linea = 'Linea',
+  Manta = 'Manta',
+  Mantle = 'Mantle',
   Optimism = 'Optimism',
   Polygon = 'Polygon',
   Solana = 'Solana',
+  ZkSync = 'ZkSync',
 }
 
 /** Receive off-chain asset activity with on-chain proof (for example compressed NFT on Solana with Merkle tree) */
@@ -2999,6 +3581,7 @@ export type OpBnb = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<Eip1559GasFee>;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -3018,6 +3601,11 @@ export type OpBnbBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type OpBnbLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type OpBnbNftsArgs = {
@@ -3333,6 +3921,19 @@ export type PriceHistoryType = {
   year?: Maybe<TimeFrameItem>;
 };
 
+/** Prices history contains history information for each asset: its price, market caps and total volumes. All those metrics provided for different time frames: day, week, month and year. */
+export type PriceHistoryType2 = {
+  __typename?: 'PriceHistoryType2';
+  /** History metrics of asset for last day */
+  day?: Maybe<TimeFrameItem2>;
+  /** History metrics of asset for last month */
+  month?: Maybe<TimeFrameItem2>;
+  /** History metrics of asset for last week */
+  week?: Maybe<TimeFrameItem2>;
+  /** History metrics of asset for last year */
+  year?: Maybe<TimeFrameItem2>;
+};
+
 export type PriceInputV2 = {
   amount?: Scalars['String'];
   scalingFactor?: Scalars['Int'];
@@ -3374,11 +3975,19 @@ export type ProviderTypeV2 = {
   time: Scalars['String'];
 };
 
+export enum Providers {
+  Lido = 'Lido',
+  Meria = 'Meria',
+  StakeLab = 'StakeLab',
+  Stride = 'Stride',
+}
+
 export type Query = {
   __typename?: 'Query';
   akash: CosmosBasedChain;
   arbitrum: Arbitrum;
   assets: AssetType;
+  assetsV2: AssetTypeV2;
   aurora: Aurora;
   avalanche: Avalanche;
   axelar: CosmosBasedChain;
@@ -3439,7 +4048,9 @@ export type Query = {
   routingV2?: Maybe<RoutingTypeV2>;
   scroll: Scroll;
   sei: CosmosBalanceChain;
+  seiV2?: Maybe<CosmosBasedChain>;
   solana: SolanaChain;
+  staking: StakingService;
   stargaze: StargazeChain;
   stride: CosmosBasedChain;
   /** Terra2 */
@@ -3978,6 +4589,47 @@ export type RoutingChainTypeV2 = {
   tokens: Array<Maybe<RoutingTokenTypeV2>>;
 };
 
+export enum RoutingChainsList {
+  Akash = 'Akash',
+  Arbitrum = 'Arbitrum',
+  Aurora = 'Aurora',
+  Avalanche = 'Avalanche',
+  Axelar = 'Axelar',
+  Base = 'Base',
+  Binance = 'Binance',
+  BinanceSmartChain = 'BinanceSmartChain',
+  Bitcoin = 'Bitcoin',
+  BitcoinCash = 'BitcoinCash',
+  CantoEVM = 'CantoEVM',
+  Celo = 'Celo',
+  CosmosHub = 'CosmosHub',
+  Crescent = 'Crescent',
+  Cronos = 'Cronos',
+  CronosEVM = 'CronosEVM',
+  Dogecoin = 'Dogecoin',
+  Ethereum = 'Ethereum',
+  Fantom = 'Fantom',
+  Gnosis = 'Gnosis',
+  Injective = 'Injective',
+  Juno = 'Juno',
+  Kava = 'Kava',
+  Klaytn = 'Klaytn',
+  Kujira = 'Kujira',
+  Litecoin = 'Litecoin',
+  Mars = 'Mars',
+  Moonbeam = 'Moonbeam',
+  Near = 'Near',
+  Oasis = 'Oasis',
+  Optimism = 'Optimism',
+  Osmosis = 'Osmosis',
+  Polygon = 'Polygon',
+  Solana = 'Solana',
+  Stargaze = 'Stargaze',
+  Stride = 'Stride',
+  THORChain = 'THORChain',
+  Terra = 'Terra',
+}
+
 export type RoutingFeeInputTypeV2 = {
   feeRateTransaction: Scalars['Decimal'];
   inboundFeeAsset: Scalars['Decimal'];
@@ -4100,6 +4752,7 @@ export type RoutingTypeV2 = {
   refuel: RouteTypeV2;
   refuelInfo: RefuelInfoType;
   routeV2: RouteTypeV2;
+  routeV2TokensFilter: SwapFilteredTokenRes;
   tokenV2: RoutingTokenTypeV2;
   tokensV2: Array<RoutingTokenTypeV2>;
   tradeV2: RouteTransactionTradeTypeV2;
@@ -4157,6 +4810,19 @@ export type RoutingTypeV2RouteV2Args = {
   referral?: InputMaybe<ReferralInputType>;
   slippage: Scalars['String'];
   srcToken: Scalars['String'];
+};
+
+export type RoutingTypeV2RouteV2TokensFilterArgs = {
+  addresses: Array<AddressRouteInputTypeV2>;
+  afterCursor?: InputMaybe<Scalars['String']>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destChain: RoutingChainsList;
+  limit?: Scalars['Int'];
+  referral?: InputMaybe<ReferralInputType>;
+  slippage: Scalars['String'];
+  srcToken: Scalars['String'];
+  timeout?: Scalars['Int'];
 };
 
 export type RoutingTypeV2TokenV2Args = {
@@ -4221,6 +4887,11 @@ export type SearchFilter = {
   symbol?: InputMaybe<Scalars['String']>;
 };
 
+export type SearchFilterV2 = {
+  name?: InputMaybe<Scalars['String']>;
+  symbol?: InputMaybe<Scalars['String']>;
+};
+
 export type SearchResponse = {
   __typename?: 'SearchResponse';
   page: SearchTypeConnection;
@@ -4246,7 +4917,7 @@ export type SearchType = AssetBaseType & {
   /** Known name that identifies token */
   name?: Maybe<Scalars['String']>;
   price?: Maybe<AssetAmountType>;
-  /** Get price history by day, week, month, year. Limit 20. */
+  /** Get price history by day, week, month, year. Limit 50. */
   priceHistory: PriceHistoryType;
   /** Only for "CRYPTOCURRENCY" type */
   scalingFactor?: Maybe<Scalars['Float']>;
@@ -4273,6 +4944,12 @@ export type SearchTypePageInfo = {
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
   startCursor?: Maybe<Scalars['String']>;
+};
+
+export type SearchV2Response = {
+  __typename?: 'SearchV2Response';
+  page: SearchTypeConnection;
+  pageData?: Maybe<PageDataType>;
 };
 
 /** Send asset activity with burn detection, valid with wallet context */
@@ -4388,6 +5065,100 @@ export type SourceMetadata = {
   historicalBalanceSumPrefetchedPulsar: Scalars['Boolean'];
 };
 
+export type StakingService = {
+  __typename?: 'StakingService';
+  /** Returns a delegate tx in json format for Cosmos chains, either provider a Cosmos validator from providers or a valoper address but not both. */
+  createCosmosDelegateTx: Scalars['String'];
+  createCosmosIbcTransferTx: Scalars['String'];
+  /** Returns a delegate tx in json format for Cosmos chains, either provider a Cosmos validator from providers or a valoper address but not both. */
+  createCosmosUndelegateTx: Scalars['String'];
+  createErc20ApproveTx: EthereumTxPreview;
+  createLidoStakeTx: EthereumTxPreview;
+  createStrideLiquidStakingTx: Scalars['String'];
+  /** Returns a list of all APRs for all of the supported Providers per supported asset for each provider. */
+  getAnnualPercentageRates: Array<AnnualPercentageRate>;
+  /** Returns the currenct cosmos zone height based on the asset */
+  getCosmosChainHeight: Scalars['Int'];
+  /** Returns nativly staked assets balances by the supported providers */
+  getCosmosDelegations: Array<CosmosNativeStakedBalance>;
+  /** Returns the transaction count for ETH only */
+  getEthAddressNonce: Scalars['Int'];
+  /** Returns balance for the staked token on Lido contract on Ethereum */
+  getLidoStakedBalance: LidoStakedAssetBalance;
+  /** Returns a list of supported assets for any given provider */
+  getProviderSupportedAssets: Array<SupportedAssets>;
+  getStrideStakedAssetBalance: StrideStakedAssetBalance;
+  lidoCheckErc20Allowance: Scalars['String'];
+  name: Scalars['String'];
+  stakingServiceStatus: StakingServiceStatus;
+};
+
+export type StakingServiceCreateCosmosDelegateTxArgs = {
+  delegationInput: CosmosDelegationInput;
+  provider?: InputMaybe<Providers>;
+  validatorAddress?: InputMaybe<Scalars['String']>;
+};
+
+export type StakingServiceCreateCosmosIbcTransferTxArgs = {
+  input: CosmosIbcTransferInput;
+  provider: Providers;
+};
+
+export type StakingServiceCreateCosmosUndelegateTxArgs = {
+  delegationInput: CosmosDelegationInput;
+  provider?: InputMaybe<Providers>;
+  validatorAddress?: InputMaybe<Scalars['String']>;
+};
+
+export type StakingServiceCreateErc20ApproveTxArgs = {
+  input: Erc20ApproveInput;
+};
+
+export type StakingServiceCreateLidoStakeTxArgs = {
+  input: LidoStakingInput;
+};
+
+export type StakingServiceCreateStrideLiquidStakingTxArgs = {
+  input: StrideStakingInput;
+};
+
+export type StakingServiceGetCosmosChainHeightArgs = {
+  asset: SupportedAssets;
+};
+
+export type StakingServiceGetCosmosDelegationsArgs = {
+  address: Scalars['String'];
+  asset: SupportedAssets;
+};
+
+export type StakingServiceGetEthAddressNonceArgs = {
+  address: Scalars['String'];
+};
+
+export type StakingServiceGetLidoStakedBalanceArgs = {
+  address: Scalars['String'];
+  asset: SupportedAssets;
+};
+
+export type StakingServiceGetProviderSupportedAssetsArgs = {
+  provider: Providers;
+};
+
+export type StakingServiceGetStrideStakedAssetBalanceArgs = {
+  asset: SupportedAssets;
+  strideAddress: Scalars['String'];
+};
+
+export type StakingServiceLidoCheckErc20AllowanceArgs = {
+  input: LidoErc20AllowanceInput;
+};
+
+export type StakingServiceStatus = {
+  __typename?: 'StakingServiceStatus';
+  error?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+};
+
 export type StargazeChain = {
   __typename?: 'StargazeChain';
   /** activity history for address in descending order */
@@ -4437,6 +5208,23 @@ export type Statusv2 = {
   blockchairHealth: ProviderHealth;
 };
 
+export type StrideStakedAssetBalance = {
+  __typename?: 'StrideStakedAssetBalance';
+  amount: Scalars['Int'];
+  decimal: Scalars['Int'];
+  denom: Scalars['String'];
+};
+
+export type StrideStakingInput = {
+  amount: Scalars['Decimal'];
+  asset: SupportedAssets;
+  gasLimit?: InputMaybe<Scalars['Decimal']>;
+  recieverStrideAddr: Scalars['String'];
+  senderAddr: Scalars['String'];
+  senderPubkeyHex: Scalars['String'];
+  timeoutHeight: Scalars['Int'];
+};
+
 /** Represents sum of few addresses. Valid only in context */
 export type SumPortfolioFiat = {
   __typename?: 'SumPortfolioFiat';
@@ -4446,6 +5234,25 @@ export type SumPortfolioFiat = {
   lastBalance?: Maybe<DatedAmountFiat>;
   sparkLine: Array<DatedAmountFiat>;
 };
+
+export enum SupportedAssets {
+  AKASH = 'AKASH',
+  ATOM = 'ATOM',
+  AVAX = 'AVAX',
+  AXL = 'AXL',
+  CRE = 'CRE',
+  ETH = 'ETH',
+  JUNO = 'JUNO',
+  KAVA = 'KAVA',
+  KUJI = 'KUJI',
+  LUNA = 'LUNA',
+  MATIC_ERC20 = 'MATIC_ERC20',
+  OSMO = 'OSMO',
+  SEI = 'SEI',
+  SOL = 'SOL',
+  STARS = 'STARS',
+  STRD = 'STRD',
+}
 
 export type SwapAssetActivityV0 = {
   __typename?: 'SwapAssetActivityV0';
@@ -4459,6 +5266,22 @@ export type SwapAssetActivityV0 = {
 
 /** (experimental) Place where input/output assets are swapped */
 export type SwapExecutorV0 = PoolV0 | SmartContractV0;
+
+export type SwapFilteredToken = {
+  __typename?: 'SwapFilteredToken';
+  /** Destination token for which the route exists. */
+  destToken: RoutingTokenTypeV2;
+  /** The number of hops to reach to the destination token. */
+  nhops: Scalars['Int'];
+};
+
+export type SwapFilteredTokenRes = {
+  __typename?: 'SwapFilteredTokenRes';
+  /** The last searched after cursor for the tokens gql query of assets service, if null it must be the native currency of the chain. */
+  lastSearchedAfterCursor?: Maybe<Scalars['String']>;
+  /** a list of Destination tokens for which the route exists. */
+  tokens: Array<SwapFilteredToken>;
+};
 
 /** Transaction object with necessary fields for simulation and classification using tenderly */
 export type TenderlyMinimalSimulateInput = {
@@ -4476,6 +5299,7 @@ export type TerraChain = {
   /** Native (always present) and token balances for address */
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
+  /** @deprecated The `legacyNFTs` query deprecated for Terra & Terra Classic chains. We are no longer supporting it for these chains. */
   legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   status: Status;
@@ -4596,6 +5420,15 @@ export type TimeFrameData = {
   timestamp: Scalars['Float'];
 };
 
+/** Contains data item for each metric field of each time frame */
+export type TimeFrameData2 = {
+  __typename?: 'TimeFrameData2';
+  /** Assets price */
+  price: Scalars['Float'];
+  /** Timestamp for assets price */
+  timestamp: Scalars['Float'];
+};
+
 /** Contains history metrcis of asset for one specific time frame */
 export type TimeFrameItem = {
   __typename?: 'TimeFrameItem';
@@ -4605,6 +5438,17 @@ export type TimeFrameItem = {
   prices: Array<TimeFrameData>;
   /** Contains total_volumes of asset for one time frame */
   total_volumes: Array<TimeFrameData>;
+};
+
+/** Contains history metrcis of asset for one specific time frame */
+export type TimeFrameItem2 = {
+  __typename?: 'TimeFrameItem2';
+  /** Contains market caps of asset for one time frame */
+  market_caps: Array<TimeFrameData2>;
+  /** Contains prices of asset for one time frame */
+  prices: Array<TimeFrameData2>;
+  /** Contains total_volumes of asset for one time frame */
+  total_volumes: Array<TimeFrameData2>;
 };
 
 /** Chronoscales */
@@ -4647,9 +5491,23 @@ export type TokenFilter = {
   symbols?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type TokenFilterV2 = {
+  address?: InputMaybe<Array<Scalars['String']>>;
+  chains?: InputMaybe<Array<AddressChainV1>>;
+  ids?: InputMaybe<Array<Scalars['String']>>;
+  priceHistoryInterval?: InputMaybe<PriceHistoryInterval>;
+  symbols?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type TokenResponse = {
   __typename?: 'TokenResponse';
   page: AssetTokenTypeConnection;
+  pageData?: Maybe<PageDataType>;
+};
+
+export type TokenResponseV2 = {
+  __typename?: 'TokenResponseV2';
+  page: AssetTokenTypeV2Connection;
   pageData?: Maybe<PageDataType>;
 };
 
@@ -4698,6 +5556,31 @@ export type TokenV0 = {
 export type TokenV0Args = {
   chain: AddressChain;
   contract?: InputMaybe<AddressV0Args>;
+  tokenId?: InputMaybe<Scalars['String']>;
+};
+
+export type TokenV0V2 = {
+  __typename?: 'TokenV0V2';
+  /** Chain name */
+  chain?: Maybe<Scalars['String']>;
+  /** Crypto currency address */
+  contract?: Maybe<Scalars['String']>;
+  /** Number of decimals for current asset */
+  decimals?: Maybe<Scalars['Int']>;
+  /** Asset image */
+  image?: Maybe<Scalars['String']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  /** The symbol that identifies token */
+  symbol?: Maybe<Scalars['String']>;
+  /** Token id for solana mint */
+  tokenId?: Maybe<Scalars['String']>;
+};
+
+export type TokenV0V2Args = {
+  chain: AddressChainV1;
+  contract?: InputMaybe<Scalars['String']>;
   tokenId?: InputMaybe<Scalars['String']>;
 };
 
@@ -4763,6 +5646,19 @@ export type TrendingCoingeckoType = {
   type: AssetInternalType;
 };
 
+export type TrendingCoingeckoTypeV2 = {
+  __typename?: 'TrendingCoingeckoTypeV2';
+  assetId: Scalars['String'];
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories: Array<TokenCategory>;
+  chains: Array<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  price?: Maybe<AssetAmountType>;
+  symbol: Scalars['String'];
+  type: AssetInternalTypeV2;
+};
+
 export type TrendingTokensType = {
   __typename?: 'TrendingTokensType';
   assetId: Scalars['String'];
@@ -4774,6 +5670,19 @@ export type TrendingTokensType = {
   price?: Maybe<AssetAmountType>;
   symbol: Scalars['String'];
   type: AssetInternalType;
+};
+
+export type TrendingTokensTypeV2 = {
+  __typename?: 'TrendingTokensTypeV2';
+  assetId: Scalars['String'];
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories: Array<TokenCategory>;
+  chains: Array<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  price: AssetAmountType;
+  symbol: Scalars['String'];
+  type: AssetInternalTypeV2;
 };
 
 export type Tron = {
@@ -5147,9 +6056,24 @@ export type UtxovoutV2 = {
 
 export type ValidatorV0 = {
   __typename?: 'ValidatorV0';
+  /** Crypto currency address */
   address?: Maybe<Scalars['String']>;
+  /** Chain name */
   chain?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
+  validatorDetail: ValidatorsType;
+};
+
+export type ValidatorsType = {
+  __typename?: 'ValidatorsType';
+  /** Validator address */
+  address?: Maybe<Scalars['String']>;
+  /** Validator chain name */
+  chain?: Maybe<Scalars['String']>;
+  /** Validator icon url */
+  iconUrl?: Maybe<Scalars['String']>;
+  /** Validator name */
+  name?: Maybe<Scalars['String']>;
 };
 
 export type Version = {
@@ -5289,6 +6213,7 @@ export type ZkSync = {
   balances: Array<Balance>;
   fee?: Maybe<DefaultGasFee>;
   feeHistory: DefaultGasFee;
+  legacyNFTs: Array<NfTv3>;
   name: Scalars['String'];
   nfts: Array<NfTv2>;
   status: Status;
@@ -5308,6 +6233,11 @@ export type ZkSyncBalancesArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type ZkSyncLegacyNfTsArgs = {
+  address: Scalars['String'];
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type ZkSyncNftsArgs = {
@@ -5344,6 +6274,8 @@ export type GetSolanaBalanceQuery = {
         name?: string | null;
         image?: string | null;
         symbol?: string | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
         price?: {
           __typename?: 'AssetAmountType';
           amount: string;
@@ -5551,6 +6483,14 @@ export const GetSolanaBalanceDocument = {
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
                             },
                           ],
                         },

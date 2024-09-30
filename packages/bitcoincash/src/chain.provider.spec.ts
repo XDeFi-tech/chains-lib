@@ -2,6 +2,7 @@ import { Response, Coin, TransactionStatus } from '@xdefi-tech/chains-core';
 
 import { BitcoinCashProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
+import { AssetInternalType, TokenCategory } from './gql';
 import { BITCOINCASH_MANIFEST } from './manifests';
 import { ChainMsg } from './msg';
 
@@ -75,6 +76,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -94,6 +97,8 @@ describe('chain.provider', () => {
                 priceChange: {
                   dayPriceChange: '-1',
                 },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
               },
               amount: '1000',
             },
@@ -111,6 +116,12 @@ describe('chain.provider', () => {
       expect(balanceData[0].asset.symbol).toEqual('BCH');
       expect(balanceData[0].asset.price).toEqual('443.21');
       expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
     } else {
       const balance = await provider.getBalance(
         'bitcoincash:qpauz5p7js7efhxtcy780lwra7qhvswqwvstca7ffu'

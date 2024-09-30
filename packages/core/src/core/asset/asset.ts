@@ -1,3 +1,4 @@
+import { AssetInternalType, TokenCategory } from 'common/graphql';
 import { ChainID } from 'core/chain/interfaces/chain.interface';
 
 export interface AssetData {
@@ -17,6 +18,8 @@ export interface AssetData {
     monthPriceChange?: string | null;
     yearPriceChange?: string | null;
   };
+  type?: AssetInternalType | null;
+  categories?: TokenCategory[] | null;
 }
 
 export class Asset {
@@ -37,6 +40,8 @@ export class Asset {
       ...(data.decimals && { decimals: data.decimals }),
       ...(data.priceHistory && { priceHistory: data.priceHistory }),
       ...(data.priceChange && { priceChange: data.priceChange }),
+      ...(data.type && { type: data.type }),
+      ...(data.categories && { categories: data.categories }),
     };
   }
 
@@ -88,6 +93,14 @@ export class Asset {
     return {
       ...this.data.priceChange,
     };
+  }
+
+  get type() {
+    return this.data.type;
+  }
+
+  get categories() {
+    return this.data.categories;
   }
 
   /**

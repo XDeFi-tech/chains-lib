@@ -17,13 +17,18 @@ query GetThorchainBalances($address: String!) {
           dayPriceChange
         }
         symbol
+        type
+        categories
       }
     }
   }
 }
 
-
-query GetThorchainTransactions($address: String!, $first: Int!, $after: String) {
+query GetThorchainTransactions(
+  $address: String!
+  $first: Int!
+  $after: String
+) {
   thorchain {
     transactions(address: $address, first: $first, after: $after) {
       pageInfo {
