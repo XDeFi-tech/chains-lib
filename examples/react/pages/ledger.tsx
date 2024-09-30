@@ -20,6 +20,11 @@ import {
   MsgType,
 } from '@xdefi-tech/chains-thor';
 import { LedgerSigner as ThorLedgerSigner } from '@xdefi-tech/chains-thor/dist/signers/web';
+import { LedgerSigner as SolanaLedgerSigner } from '@xdefi-tech/chains-solana/dist/signers/web';
+import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
+import Solana from '@ledgerhq/hw-app-solana';
+import { base58 } from 'ethers/lib/utils';
 
 const LedgerConnect = () => {
   const [connected, setConnected] = useState(false);
@@ -29,13 +34,13 @@ const LedgerConnect = () => {
   const [toAddress, setToAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [asset, setAsset] = useState('');
-  const [chain, setChain] = useState('litecoin');
+  const [chain, setChain] = useState('solana');
+  const [data, setData] = useState('');
   const [derivedPath, setDerivedPath] = useState("m/84'/2'/0'/0/0");
 
   const connectLedger = async () => {
     try {
       const transport = await Transport.create();
-      console.log('🚀 ~ connectLedger ~ transport:', transport);
       let signer;
       if (chain === 'litecoin') {
         setDerivedPath("m/84'/2'/0'/0/0");
@@ -49,6 +54,10 @@ const LedgerConnect = () => {
         setDerivedPath("m/44'/931'/0'/0/0");
         signer = new ThorLedgerSigner(transport as any);
         setAddress(await signer.getAddress("44'/931'/0'/0/0"));
+      } else if (chain === 'solana') {
+        setDerivedPath("44'/501'/0'/0'");
+        signer = new SolanaLedgerSigner(transport as any);
+        setAddress(await signer.getAddress("44'/501'/0'/0'"));
       }
       setSigner(signer);
       setConnected(true);
@@ -77,9 +86,23 @@ const LedgerConnect = () => {
           THORCHAIN_MANIFESTS.thorchain
         )
       );
+    } else if (chain === 'solana') {
+      provider = new SolanaProvider(
+        new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
+      );
     }
     const msg =
-      asset === ''
+      data !== ''
+        ? provider.createMsg(
+            {
+              from: address,
+              to: toAddress,
+              amount: 0,
+              data: data,
+            },
+            MsgEncoding.base58
+          )
+        : asset === ''
         ? provider.createMsg({
             from: address,
             to: toAddress,
@@ -111,6 +134,7 @@ const LedgerConnect = () => {
             <option value="litecoin">Litecoin</option>
             <option value="bitcoin">Bitcoin</option>
             <option value="thor">Thor</option>
+            <option value="solana">Solana</option>
           </select>
         </label>
       </div>
@@ -144,6 +168,16 @@ const LedgerConnect = () => {
                 type="text"
                 value={asset}
                 onChange={(e) => setAsset(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Asset:
+              <input
+                type="text"
+                value={data}
+                onChange={(e) => setData(e.target.value)}
               />
             </label>
           </div>
