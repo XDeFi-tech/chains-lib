@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.34
+
+### Patch Changes
+
+- 429b1c40: Feat: reflected data from CryptoAsset type to getBalances responses
+
 ## 2.0.33
 
 ### Patch Changes

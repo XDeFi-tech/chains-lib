@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.56
+
+### Patch Changes
+
+- f43a7bd3: feat: add ethereum message signing method
+- 429b1c40: Feat: reflected data from CryptoAsset type to getBalances responses
+- Updated dependencies [429b1c40]
+  - @xdefi-tech/chains-core@2.0.34
+
 ## 2.0.55
 
 ### Patch Changes
