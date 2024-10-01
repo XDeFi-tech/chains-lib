@@ -218,38 +218,18 @@ export class ChainDataSource extends DataSource {
       let gasLimit: number;
 
       if (msgData.contractAddress && msgData.nftId) {
-        const { contract } = await msg.getDataFromContract();
-        if (!contract) {
+        const { contractData } = await msg.getDataFromContract();
+        if (contractData.data) {
           throw new Error(
-            `Invalid contract for address ${msgData.contractAddress}`
+            'Please select correct tokenType field for NFT from TokenType enum'
           );
         }
-        switch (msgData.tokenType) {
-          case TokenType.ERC721:
-            const gasLimit721 = await contract.estimateGas[
-              ERC721_SAFE_TRANSFER_METHOD
-            ](msgData.from, msgData.to, msgData.nftId);
-            gasLimit =
-              gasLimit721.toNumber() < DEFAULT_CONTRACT_FEE
-                ? DEFAULT_CONTRACT_FEE
-                : gasLimit721.toNumber();
-            break;
-          case TokenType.ERC1155:
-            const gasLimit1155 = await contract.estimateGas[
-              ERC1155_SAFE_TRANSFER_METHOD
-            ](msgData.from, msgData.to, msgData.nftId, 1, [], {
-              from: msgData.from,
-            });
-            gasLimit =
-              gasLimit1155.toNumber() < DEFAULT_CONTRACT_FEE
-                ? DEFAULT_CONTRACT_FEE
-                : gasLimit1155.toNumber();
-            break;
-          default:
-            throw new Error(
-              'Please select correct tokenType field for NFT from TokenType enum'
-            );
-        }
+        const calculatedGasLimit = await this._estimateGasLimit({
+          from: msgData.from,
+          to: msgData.contractAddress,
+          data: contractData.data,
+        });
+        gasLimit = calculatedGasLimit ?? DEFAULT_CONTRACT_FEE;
       } else if (msgData.contractAddress) {
         const { contract, contractData } = await msg.getDataFromContract();
         if (!contract) {
