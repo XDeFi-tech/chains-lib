@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.57
+
+### Patch Changes
+
+- 02a22251: fix: estimate gas in data sources
+
 ## 2.0.56
 
 ### Patch Changes
