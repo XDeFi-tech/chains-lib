@@ -6,7 +6,6 @@ import {
 } from '@solana/spl-token';
 import {
   LAMPORTS_PER_SOL,
-  PublicKey,
   Transaction as SolanaTransaction,
 } from '@solana/web3.js';
 
@@ -54,7 +53,7 @@ describe('msg', () => {
         })
       ),
       rpcProvider: {
-        getRecentBlockhash: jest.fn(() =>
+        getLatestBlockhash: jest.fn(() =>
           Promise.resolve({
             blockhash: 'mockBlockhash',
           })
