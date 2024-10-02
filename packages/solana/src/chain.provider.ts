@@ -69,7 +69,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
   ): Promise<ChainMsg> {
     const transaction = new SolanaTransaction();
     const { blockhash, lastValidBlockHeight } =
-      await this.rpcProvider.getLatestBlockhash();
+      await this.rpcProvider.getLatestBlockhash('confirmed');
     transaction.feePayer = new PublicKey(feePayer);
     transaction.recentBlockhash = blockhash;
     transaction.lastValidBlockHeight = lastValidBlockHeight;
@@ -169,12 +169,12 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
       const buffer = Buffer.from(base58Sig);
       const tx = _tx as SolanaTransaction;
       tx.addSignature(pubKey, buffer);
-      const serializeTx = tx.serialize({ verifySignatures: false });
+      const serializeTx = tx.serialize({ verifySignatures: true });
       const hash = await this.rpcProvider.sendRawTransaction(
         Buffer.from(serializeTx),
         {
-          skipPreflight: msg.data.skipPreflight ?? true,
-          preflightCommitment: msg.data.preflightCommitment ?? 'finalized',
+          skipPreflight: msg.data.skipPreflight ?? false,
+          preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
           maxRetries: 2,
         }
       );
