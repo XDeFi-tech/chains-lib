@@ -73,6 +73,7 @@ export enum TransactionType {
 export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   declare signedTransaction: SolanaSignature;
   declare provider: SolanaProvider;
+  declare blockhash?: string;
 
   constructor(data: MsgBody, provider: SolanaProvider, encoding: MsgEncoding) {
     super(data, provider, encoding);
@@ -80,6 +81,15 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
   public toData() {
     return this.data;
+  }
+
+  async getLatestBlockhash(): Promise<string> {
+    if (this.blockhash) return this.blockhash;
+    const { blockhash } = await this.provider.rpcProvider.getLatestBlockhash(
+      'confirmed'
+    );
+    this.blockhash = blockhash;
+    return this.blockhash;
   }
 
   async buildTx(): Promise<TxBody> {
@@ -116,7 +126,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const recipientPublicKey = new PublicKey(msgData.to);
     let value;
     const contractInfo: any = {};
-    const { blockhash } = await this.provider.rpcProvider.getRecentBlockhash();
+    const blockhash = await this.getLatestBlockhash();
 
     const transaction = new SolanaTransaction({
       feePayer: senderPublicKey,

@@ -1,4 +1,4 @@
-import { Msg, MsgEncoding } from '@xdefi-tech/chains-core';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
 import {
   Connection,
   Keypair,
@@ -55,14 +55,14 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should sign a transaction using a seed phrase', async () => {
-    jest.spyOn(Connection.prototype, 'getRecentBlockhash').mockResolvedValue({
-      blockhash: '9uGQVaoBdc2u6cjZmX4A8yLzrNCBLEeD5UY6conMuGLD',
-      feeCalculator: { lamportsPerSignature: 5000 },
+    jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
+      blockhash: 'FxSFe5PnHuQZLiVf1h4AnzAmPBoQe5QfuviwvzbtheBe',
+      lastValidBlockHeight: 272094550,
     });
     await signer.sign(message, derivation);
 
     expect(message.signedTransaction.sig).toBe(
-      'LgP4CtcghLSqAY5HCdnvxGFcyuQ1BfNNoj6fQ62psPTgM34vbiWducpCCTzp98ixecQHL6ZubSsHeK1tDRoVk2A'
+      '3ccMvgzpkDv1Z7EZ3KDgZ7p4JbJyrYo659cKFbLmNxmhS6PFJ7gZn5vwJTYmhxrk6yPWh3go6A6esTAjpCNLR5ms'
     );
   });
 

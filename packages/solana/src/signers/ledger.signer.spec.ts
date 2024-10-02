@@ -72,9 +72,9 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
-    jest.spyOn(Connection.prototype, 'getRecentBlockhash').mockResolvedValue({
+    jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
       blockhash: 'FxSFe5PnHuQZLiVf1h4AnzAmPBoQe5QfuviwvzbtheBe',
-      feeCalculator: { lamportsPerSignature: 5000 },
+      lastValidBlockHeight: 272094550,
     });
 
     await signer.sign(message, "44'/501'/0'");
