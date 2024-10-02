@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.14
+
+### Patch Changes
+
+- bdfd5d86: fix: return same blockhash for each buildTx
+
 ## 2.1.13
 
 ### Patch Changes
