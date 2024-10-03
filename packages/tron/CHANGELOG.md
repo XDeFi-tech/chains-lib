@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.43
+
+### Patch Changes
+
+- d742126f: Fix: avoid modifying data.from field inside estimateFee method
+
 ## 2.0.42
 
 ### Patch Changes
