@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.42
+
+### Patch Changes
+
+- 511318b0: Fix: freeNetLimit limit
+
 ## 2.0.41
 
 ### Patch Changes
