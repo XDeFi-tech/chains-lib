@@ -70,15 +70,16 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       let tx: TronTransaction;
 
       if (!msg.hasSignature) {
-        const originalAddress = msg.data.from;
         const account = await this.rpcProvider.createAccount();
-        msg.data.from = account.address.base58;
-        const dummyTx = await msg.buildTx();
+        const dummyMsg = this.createMsg({
+          ...msg.data,
+          from: account.address.base58,
+        });
+        const dummyTx = await dummyMsg.buildTx();
         tx = await this.rpcProvider.trx.sign(
           dummyTx as TronTransaction,
           account.privateKey
         );
-        msg.data.from = originalAddress;
       } else {
         tx = msg.signedTransaction as TronTransaction;
       }
