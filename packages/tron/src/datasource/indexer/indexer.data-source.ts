@@ -221,7 +221,7 @@ export class IndexerDataSource extends DataSource {
       );
 
       const {
-        freeNetLimit,
+        freeNetLimit = 0,
         freeNetUsed = 0,
         NetUsed = 0,
         NetLimit = 0,
