@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.41
+
+### Patch Changes
+
+- 572b07b3: fix: manifest decimals
+
 ## 2.0.40
 
 ### Patch Changes
