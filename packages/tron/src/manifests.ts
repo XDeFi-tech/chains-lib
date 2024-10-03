@@ -15,7 +15,7 @@ export const TRON_MANIFEST: TronManifest = {
   dataProviderURL: 'https://rpc-proxy.xdefi.services/trongrid/rpc/mainnet',
   chainId: '0x2b6653dc',
   chain: 'tron',
-  decimals: 16,
+  decimals: 6,
   feeGasStep: {
     high: 1,
     medium: 1,
