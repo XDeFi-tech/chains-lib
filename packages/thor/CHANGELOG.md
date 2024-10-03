@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.13
+
+### Patch Changes
+
+- 611408fa: Fix: update fees calculation for thor/maya chains
+
 ## 2.1.12
 
 ### Patch Changes
