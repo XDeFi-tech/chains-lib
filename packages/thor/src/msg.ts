@@ -14,6 +14,7 @@ import { types } from './proto';
 import type { ThorProvider } from './chain.provider';
 import { AccountInfo } from './types';
 import { assetFromString } from './utils';
+import { NATIVE_MAYA_FEE, NATIVE_TRON_FEE } from './constants';
 
 const MsgSend = types.MsgSend;
 const MsgDeposit = types.MsgDeposit;
@@ -174,33 +175,24 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     };
   }
 
-  async getFee(speed?: GasFeeSpeed) {
-    const data = this.toData();
+  async getFee(_speed?: GasFeeSpeed) {
+    const manifest = this.provider.manifest;
     const estimation: FeeEstimation = {
       fee: null,
       maxFee: null,
     };
 
-    if (!data.gasLimit && !data.gasPrice && this.provider) {
-      const [feeEstimation] = await this.provider.estimateFee(
-        [this],
-        speed || GasFeeSpeed.medium
-      );
-      if (
-        !isNaN(Number(feeEstimation.gasPrice)) &&
-        !isNaN(Number(feeEstimation.gasLimit))
-      ) {
-        estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
-          .multipliedBy(feeEstimation.gasPrice!.toString())
-          .dividedBy(10 ** this.provider.manifest.decimals)
-          .toString();
-      }
-    }
-    if (!isNaN(Number(data.gasPrice)) && !isNaN(Number(data.gasLimit))) {
-      estimation.fee = new BigNumber(data.gasLimit)
-        .multipliedBy(data.gasPrice)
-        .dividedBy(10 ** this.provider.manifest.decimals)
+    // We support only native send so fees are constants
+    if (manifest.chain === 'thorchain') {
+      estimation.fee = new BigNumber(NATIVE_TRON_FEE)
+        .dividedBy(10 ** manifest.decimals)
         .toString();
+    } else if (manifest.chain === 'mayachain') {
+      estimation.fee = new BigNumber(NATIVE_MAYA_FEE)
+        .dividedBy(10 ** manifest.decimals)
+        .toString();
+    } else {
+      throw new Error('Unsupported chain');
     }
 
     return estimation;
