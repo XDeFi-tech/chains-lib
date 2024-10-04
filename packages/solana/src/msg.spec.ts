@@ -34,7 +34,7 @@ describe('msg', () => {
                   price: '123',
                   decimals: 8,
                 },
-                amount: '1000',
+                amount: new BigNumber('1'),
               },
               {
                 asset: {
@@ -46,7 +46,7 @@ describe('msg', () => {
                   address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
                   decimals: 8,
                 },
-                amount: '1000',
+                amount: new BigNumber('1000'),
               },
             ])
           ),
@@ -106,6 +106,21 @@ describe('msg', () => {
     expect(txBody.gasPrice).toBe(5000);
   });
 
+  it('buildTx with native token should be fail if not enough SOL left for ren', async () => {
+    const chainMsg = new ChainMsg(
+      {
+        from: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
+        to: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
+        amount: 0.9999,
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+
+    // 1e9 - 999900000 - 5000 < 890880
+    expect(chainMsg.buildTx()).rejects.toThrowError();
+  });
+
   it('getFee should return fee estimation', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -161,8 +176,9 @@ describe('msg', () => {
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(
-      new BigNumber('1000')
+      new BigNumber('1')
         .minus(feeEstimation.fee || 0)
+        .minus(0.00089088) // Rent balance
         .minus(gap)
         .toString()
     );
