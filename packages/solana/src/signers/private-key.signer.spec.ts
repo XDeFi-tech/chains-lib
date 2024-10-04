@@ -15,6 +15,35 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import PrivateKeySigner from './private-key.signer';
 
+jest.mock('../datasource/indexer/queries/balances.query', () => ({
+  getBalance: jest.fn().mockResolvedValue({
+    data: {
+      solana: {
+        balances: [
+          {
+            address: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
+            asset: {
+              categories: ['TRENDING_TOKEN'],
+              chain: 'Solana',
+              contract: null,
+              decimals: 9,
+              id: '58df658c-304c-4672-983f-b5e47fbc182f',
+              image:
+                'https://assets.coingecko.com/coins/images/4128/large/solana.png?1696504756',
+              name: 'Solana',
+              symbol: 'SOL',
+              type: 'CRYPTOCURRENCY',
+            },
+            amount: {
+              value: '100000000',
+            },
+          },
+        ],
+      },
+    },
+  }),
+}));
+
 jest.mock('../datasource/indexer/queries/fees.query', () => ({
   getFees: jest.fn().mockResolvedValue({
     data: { solana: { fee: '0' } },

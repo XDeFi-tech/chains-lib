@@ -122,6 +122,14 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       };
     }
 
+    const balance = await this.provider.getBalance(msgData.from);
+    const balanceData = await balance.getData();
+    let remainingBalance = new BigNumber(
+      balanceData.find((b) => b.asset.native)?.amount.toNumber() || 0
+    )
+      .multipliedBy(LAMPORTS_PER_SOL)
+      .toNumber();
+
     const senderPublicKey = new PublicKey(msgData.from);
     const recipientPublicKey = new PublicKey(msgData.to);
     let value;
@@ -182,14 +190,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       value = new BigNumber(msgData.amount)
         .multipliedBy(LAMPORTS_PER_SOL)
         .toNumber();
-      const minimumAmount = await checkMinimumBalanceForRentExemption(
-        this.provider.rpcProvider
-      );
-      if (value < minimumAmount) {
-        throw new Error(
-          `Insufficient balance. Minimum amount required is ${minimumAmount}`
-        );
-      }
+      remainingBalance = remainingBalance - value;
       instruction = new TransactionInstruction({
         keys: [
           { pubkey: senderPublicKey, isSigner: true, isWritable: true },
@@ -225,11 +226,20 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       );
     }
 
+    const rentBalance = await checkMinimumBalanceForRentExemption(
+      this.provider.rpcProvider
+    );
+
     if (!gasPrice) {
       const options = await this.provider.gasFeeOptions();
       gasPrice = options
         ? (options[GasFeeSpeed.medium] as number)
         : DEFAULT_FEE;
+    }
+
+    remainingBalance = remainingBalance - gasPrice;
+    if (remainingBalance < rentBalance) {
+      throw new Error('Not enough SOL left for rent');
     }
 
     return {
@@ -276,6 +286,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const msgData = this.toData();
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
+    const rentBalance = await checkMinimumBalanceForRentExemption(
+      this.provider.rpcProvider
+    );
 
     let balance: Coin | undefined;
 
@@ -299,6 +312,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     if (balance.asset.native) {
       const feeEstimation = await this.getFee();
       maxAmount = maxAmount.minus(feeEstimation.fee || 0);
+      maxAmount = maxAmount.minus(
+        new BigNumber(rentBalance).dividedBy(LAMPORTS_PER_SOL)
+      );
     }
 
     if (maxAmount.isLessThan(0)) {
