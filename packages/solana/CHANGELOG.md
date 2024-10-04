@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.15
+
+### Patch Changes
+
+- 3ce57158: fix: Solana Max Send Issue Due to Rent Requirement Miscalculation
+
 ## 2.1.14
 
 ### Patch Changes
