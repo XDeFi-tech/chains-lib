@@ -1,6 +1,8 @@
 import { gql } from 'graphql-tag';
 import { gqlClient, LEGACY_NFTS_FRAGMENT } from '@xdefi-tech/chains-core';
 
+import { EVM_INDEXER_CHAIN } from '../../../manifests';
+
 export const ARBITRUM_NFTS_QUERY = gql`
   query ArbitrumNFTS($address: String!) {
     arbitrum {
@@ -134,52 +136,40 @@ export const GNOSIS_NFTS_QUERY = gql`
 
 export const getNFTBalance = async (chain: string, address: string) => {
   let query;
-  let chainName;
-
+  const chainName: string = EVM_INDEXER_CHAIN[chain];
   switch (chain.trim().toLowerCase()) {
     case 'arbitrum':
       query = ARBITRUM_NFTS_QUERY;
-      chainName = 'arbitrum';
       break;
     case 'aurora':
       query = AURORA_NFTS_QUERY;
-      chainName = 'aurora';
       break;
     case 'avalanche':
       query = AVALANCHE_NFTS_QUERY;
-      chainName = 'avalanche';
       break;
     case 'fantom':
       query = FANTOM_NFTS_QUERY;
-      chainName = 'fantom';
       break;
     case 'smartchain':
       query = BINANCE_SMART_CHAIN_NFTS_QUERY;
-      chainName = 'binanceSmartChain';
       break;
     case 'cronos':
       query = CRONOS_EVM_NFTS_QUERY;
-      chainName = 'cronosEVM';
       break;
     case 'ethereum':
       query = ETHEREUM_NFTS_QUERY;
-      chainName = 'ethereum';
       break;
     case 'polygon':
       query = POLYGON_NFTS_QUERY;
-      chainName = 'polygon';
       break;
     case 'cantoevm':
       query = CANTO_EVM_NFTS_QUERY;
-      chainName = 'cantoEVM';
       break;
     case 'optimism':
       query = OPTIMISM_NFTS_QUERY;
-      chainName = 'optimism';
       break;
     case 'gnosis':
       query = GNOSIS_NFTS_QUERY;
-      chainName = 'gnosis';
       break;
     default:
       throw new Error('Chain do not support NFTs');

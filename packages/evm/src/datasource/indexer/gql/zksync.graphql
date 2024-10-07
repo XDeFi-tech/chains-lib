@@ -1,0 +1,87 @@
+query GetZkSyncBalance($address: String!) {
+  zkSync {
+    balances(address: $address) {
+      address
+      asset {
+        categories
+        type
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query ZkSyncDefaultGasFees {
+  zkSync {
+    fee {
+      high
+      low
+      medium
+    }
+  }
+}
+
+query GetZkSyncTransactions($address: String!, $first: Int) {
+  zkSync {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetZkSyncStatus {
+  zkSync {
+    status {
+      lastBlock
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
-import { map } from 'lodash';
+import { capitalize, map } from 'lodash';
+import gql from 'graphql-tag';
 
 import {
   GetCosmosTransactionsDocument,
@@ -17,7 +18,7 @@ import {
   Scalars,
   CosmosLikeTransaction,
 } from '../../../gql/graphql';
-import { CosmosHubChains } from '../../../manifests';
+import { COSMOS_INDEXER_CHAIN, CosmosHubChains } from '../../../manifests';
 
 type CosmosChainParams = {
   query: any;
@@ -27,58 +28,116 @@ type CosmosChainParams = {
 const getChainParams = (chain: string): CosmosChainParams => {
   const params: CosmosChainParams = {
     query: null,
-    queryName: '',
+    queryName: COSMOS_INDEXER_CHAIN[chain],
   };
   const formattedChain = chain.toLowerCase();
   switch (formattedChain) {
     case CosmosHubChains.cosmos:
       params.query = GetCosmosTransactionsDocument;
-      params.queryName = 'cosmos';
       break;
     case CosmosHubChains.osmosis:
       params.query = GetOsmosisTransactionsDocument;
-      params.queryName = 'osmosis';
       break;
     case CosmosHubChains.axelar:
       params.query = GetAxelarTransactionsDocument;
-      params.queryName = 'axelar';
       break;
     case CosmosHubChains.juno:
       params.query = GetJunoTransactionsDocument;
-      params.queryName = 'juno';
       break;
     case CosmosHubChains.crescent:
       params.query = GetCrescentTransactionsDocument;
-      params.queryName = 'crescent';
       break;
     case CosmosHubChains.kava:
       params.query = GetKavaTransactionsDocument;
-      params.queryName = 'kava';
       break;
     case CosmosHubChains.stargaze:
       params.query = GetStargazeTransactionsDocument;
-      params.queryName = 'stargaze';
       break;
     case CosmosHubChains.akash:
       params.query = GetAkashTransactionsDocument;
-      params.queryName = 'akash';
       break;
     case CosmosHubChains.cronos:
       params.query = GetCronosTransactionsDocument;
-      params.queryName = 'cronos';
       break;
     case CosmosHubChains.kujira:
       params.query = GetKujiraTransactionsDocument;
-      params.queryName = 'kujira';
       break;
     case CosmosHubChains.stride:
       params.query = GetStrideTransactionsDocument;
-      params.queryName = 'stride';
       break;
     case CosmosHubChains.mars:
       params.query = GetMarsTransactionsDocument;
-      params.queryName = 'mars';
       break;
+    default:
+      if (params.queryName) {
+        params.query = gql`
+          query GetC${capitalize(chain)}Transactions(
+          $address: String!
+          $blockRange: OptBlockRange!
+          $first: Int!
+          $after: String
+        ) {
+          ${params.queryName} {
+            transactions(
+              address: $address
+              blockRange: $blockRange
+              first: $first
+              after: $after
+            ) {
+              pageInfo {
+                endCursor
+                hasNextPage
+              }
+              edges {
+                node {
+                  blockHeight
+                  blockIndex
+                  hash
+                  status
+                  transfers {
+                    amount {
+                      value
+                    }
+                    asset {
+                      chain
+                      contract
+                      name
+                      symbol
+                      image
+                      decimals
+                    }
+                    fromAddress
+                    toAddress
+                  }
+                  timestamp
+                  fee {
+                    amount {
+                      amount {
+                        value
+                      }
+                      asset {
+                        chain
+                        contract
+                        decimals
+                        id
+                        image
+                        name
+                        symbol
+                        price {
+                          amount
+                        }
+                      }
+                    }
+                    payer
+                  }
+                  signers
+                }
+              }
+            }
+          }
+        }
+      `;
+      }
   }
 
   return params;

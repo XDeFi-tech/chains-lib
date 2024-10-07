@@ -1,4 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
+import gql from 'graphql-tag';
+import { capitalize } from 'lodash';
 
 import {
   CosmosBalanceDocument,
@@ -17,7 +19,7 @@ import {
   SeiBalanceDocument,
   Balance,
 } from '../../../gql/graphql';
-import { CosmosHubChains } from '../../../manifests';
+import { COSMOS_INDEXER_CHAIN, CosmosHubChains } from '../../../manifests';
 
 type CosmosChainParams = {
   query: any;
@@ -27,66 +29,83 @@ type CosmosChainParams = {
 const getChainParams = (chain: string): CosmosChainParams => {
   const params: CosmosChainParams = {
     query: null,
-    queryName: '',
+    queryName: COSMOS_INDEXER_CHAIN[chain],
   };
   const formattedChain = chain.toLowerCase();
   switch (formattedChain) {
     case CosmosHubChains.cosmos:
       params.query = CosmosBalanceDocument;
-      params.queryName = 'cosmos';
       break;
     case CosmosHubChains.osmosis:
       params.query = OsmosisBalanceDocument;
-      params.queryName = 'osmosis';
       break;
     case CosmosHubChains.axelar:
       params.query = AxelarBalanceDocument;
-      params.queryName = 'axelar';
       break;
     case CosmosHubChains.juno:
       params.query = JunoBalanceDocument;
-      params.queryName = 'juno';
       break;
     case CosmosHubChains.crescent:
       params.query = CrescentBalanceDocument;
-      params.queryName = 'crescent';
       break;
     case CosmosHubChains.kava:
       params.query = KavaBalanceDocument;
-      params.queryName = 'kava';
       break;
     case CosmosHubChains.stargaze:
       params.query = StargazeBalanceDocument;
-      params.queryName = 'stargaze';
       break;
     case CosmosHubChains.akash:
       params.query = AkashBalanceDocument;
-      params.queryName = 'akash';
       break;
     case CosmosHubChains.cronos:
       params.query = CronosBalanceDocument;
-      params.queryName = 'cronos';
       break;
     case CosmosHubChains.kujira:
       params.query = KujiraBalanceDocument;
-      params.queryName = 'kujira';
       break;
     case CosmosHubChains.stride:
       params.query = StrideBalanceDocument;
-      params.queryName = 'stride';
       break;
     case CosmosHubChains.mars:
       params.query = MarsBalanceDocument;
-      params.queryName = 'mars';
       break;
     case CosmosHubChains.terra:
       params.query = TerraBalanceDocument;
-      params.queryName = 'terra';
       break;
     case CosmosHubChains.sei:
       params.query = SeiBalanceDocument;
-      params.queryName = 'sei';
       break;
+    default:
+      if (params.queryName) {
+        params.query = gql`
+          query GetC${capitalize(chain)}Balance($address: String!) {
+            ${params.queryName} {
+              balances(address: $address) {
+                address
+                amount {
+                  value
+                }
+                asset {
+                  categories
+                  type
+                  chain
+                  contract
+                  decimals
+                  id
+                  image
+                  name
+                  price {
+                    amount
+                    scalingFactor
+                    dayPriceChange
+                  }
+                  symbol
+                }
+              }
+            }
+          }
+        `;
+      }
   }
 
   return params;

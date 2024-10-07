@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  'query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}':
+  'query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}\n\nquery SupportedIndexer($chain: String!) {\n  assets {\n    supportedIndexer(chain: $chain) {\n      assets\n      indexer\n      indexerName\n    }\n  }\n}':
     types.GetCryptoAssetsDocument,
 };
 
@@ -35,8 +35,8 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: 'query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}'
-): typeof documents['query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}'];
+  source: 'query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}\n\nquery SupportedIndexer($chain: String!) {\n  assets {\n    supportedIndexer(chain: $chain) {\n      assets\n      indexer\n      indexerName\n    }\n  }\n}'
+): typeof documents['query GetCryptoAssets($input: [CryptoAssetArgs!]!) {\n  assets {\n    cryptoAssets(input: $input) {\n      chain\n      contract\n      id\n      name\n      symbol\n      image\n      decimals\n      price {\n        amount\n        scalingFactor\n      }\n    }\n  }\n}\n\nquery SupportedIndexer($chain: String!) {\n  assets {\n    supportedIndexer(chain: $chain) {\n      assets\n      indexer\n      indexerName\n    }\n  }\n}'];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

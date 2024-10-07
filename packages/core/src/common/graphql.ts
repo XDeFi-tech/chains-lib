@@ -6266,6 +6266,23 @@ export type GetCryptoAssetsQuery = {
   };
 };
 
+export type SupportedIndexerQueryVariables = Exact<{
+  chain: Scalars['String'];
+}>;
+
+export type SupportedIndexerQuery = {
+  __typename?: 'Query';
+  assets: {
+    __typename?: 'AssetType';
+    supportedIndexer?: {
+      __typename?: 'IndexerType';
+      assets: boolean;
+      indexer: boolean;
+      indexerName?: string | null;
+    } | null;
+  };
+};
+
 export const GetCryptoAssetsDocument = {
   kind: 'Document',
   definitions: [
@@ -6340,3 +6357,53 @@ export const GetCryptoAssetsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetCryptoAssetsQuery, GetCryptoAssetsQueryVariables>;
+export const SupportedIndexerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'SupportedIndexer' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'assets' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'supportedIndexer' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'chain' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'assets' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'indexer' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'indexerName' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SupportedIndexerQuery, SupportedIndexerQueryVariables>;

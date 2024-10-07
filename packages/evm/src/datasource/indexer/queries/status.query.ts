@@ -12,6 +12,9 @@ import {
   GetPolygonStatusDocument,
   GetSmartChainStatusDocument,
   GetGnosisStatusDocument,
+  GetBaseStatusDocument,
+  GetBlastStatusDocument,
+  GetZkSyncStatusDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
