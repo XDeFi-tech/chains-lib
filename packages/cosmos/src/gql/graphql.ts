@@ -1733,6 +1733,15 @@ export type BlastTransactionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
+/** Message object with necessary fields for risk analysis by Blowfish. */
+export type BlowfishEvmMsgPayload = {
+  chain: TxClassifierChains;
+  dappDomain?: InputMaybe<Scalars['String']>;
+  message: Scalars['JSON'];
+  method: TxClassifierEvmmsgType;
+  userAccount: Scalars['String'];
+};
+
 /** Transaction object with necessary fields for risk analysis by Blowfish. */
 export type BlowfishEvmTxPayload = {
   blockNumber?: InputMaybe<Scalars['Int']>;
@@ -2458,6 +2467,19 @@ export type Eip1559GasFee = {
   high?: Maybe<Eip1559Fee>;
   low?: Maybe<Eip1559Fee>;
   medium?: Maybe<Eip1559Fee>;
+};
+
+export type EvmmSgSecurityIssueV1 = {
+  __typename?: 'EVMMSgSecurityIssueV1';
+  kind: Scalars['String'];
+  message: Scalars['String'];
+  riskScore: Scalars['String'];
+};
+
+export type EvmMsgAnalysisV1 = {
+  __typename?: 'EVMMsgAnalysisV1';
+  securityIssues: Array<EvmmSgSecurityIssueV1>;
+  txRiskLevel: Scalars['String'];
 };
 
 export type EvmTransactionLog = {
@@ -5763,6 +5785,7 @@ export type TxAnalysisV3 = {
 
 export type TxClassifier = {
   __typename?: 'TxClassifier';
+  analyzeEVMMsgBlowfish: EvmMsgAnalysisV1;
   analyzeEVMTxBlowfish: TxAnalysisV3;
   analyzeSolanaTxBlowfish: TxAnalysisV3;
   /** @deprecated use analyzeEVMTxBlowfish for EVMs and analyzeSolanaTxBlowfish for Solana */
@@ -5787,6 +5810,10 @@ export type TxClassifier = {
   explainTransactionV5?: Maybe<ExplainedTransactionV5>;
   /** @deprecated only for tests please do not use this endpoint at all */
   getBlockchairTxsByQuery: Scalars['String'];
+};
+
+export type TxClassifierAnalyzeEvmMsgBlowfishArgs = {
+  payload: BlowfishEvmMsgPayload;
 };
 
 export type TxClassifierAnalyzeEvmTxBlowfishArgs = {
@@ -5863,6 +5890,12 @@ export enum TxClassifierChains {
   optimism = 'optimism',
   polygon = 'polygon',
   solana = 'solana',
+}
+
+export enum TxClassifierEvmmsgType {
+  eth_sign = 'eth_sign',
+  eth_signTypedData_v4 = 'eth_signTypedData_v4',
+  personal_sign = 'personal_sign',
 }
 
 export enum TxClassifierTxType {
@@ -6437,6 +6470,8 @@ export type OsmosisBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -6565,6 +6600,8 @@ export type AxelarBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -6693,6 +6730,8 @@ export type CrescentBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -6821,6 +6860,8 @@ export type KavaBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -6949,6 +6990,8 @@ export type AkashBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7077,6 +7120,8 @@ export type CronosBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7205,6 +7250,8 @@ export type KujiraBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7333,6 +7380,8 @@ export type StrideBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7461,6 +7510,8 @@ export type MarsBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7589,6 +7640,8 @@ export type JunoBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -7717,6 +7770,8 @@ export type StargazeBalanceQuery = {
       amount: { __typename?: 'Amount'; value: string };
       asset: {
         __typename?: 'CryptoAsset';
+        categories?: Array<TokenCategory> | null;
+        type?: AssetInternalType | null;
         chain?: string | null;
         contract?: string | null;
         decimals?: number | null;
@@ -8843,6 +8898,14 @@ export const OsmosisBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -9466,6 +9529,14 @@ export const AxelarBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -10087,6 +10158,14 @@ export const CrescentBalanceDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
@@ -10718,6 +10797,14 @@ export const KavaBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -11338,6 +11425,14 @@ export const AkashBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -11956,6 +12051,14 @@ export const CronosBalanceDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
@@ -12581,6 +12684,14 @@ export const KujiraBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -13202,6 +13313,14 @@ export const StrideBalanceDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
@@ -13827,6 +13946,14 @@ export const MarsBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -14447,6 +14574,14 @@ export const JunoBalanceDocument = {
                           selections: [
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },
                             },
                             {
@@ -15065,6 +15200,14 @@ export const StargazeBalanceDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'chain' },

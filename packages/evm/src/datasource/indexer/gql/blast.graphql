@@ -1,0 +1,99 @@
+query GetBlastBalance($address: String!) {
+  blast {
+    balances(address: $address) {
+      address
+      asset {
+        categories
+        type
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query BlastEIP1559GasFees {
+  blast {
+    fee {
+      high {
+        baseFeePerGas
+        priorityFeePerGas
+        maxFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        priorityFeePerGas
+        maxFeePerGas
+      }
+      low {
+        baseFeePerGas
+        priorityFeePerGas
+        maxFeePerGas
+      }
+    }
+  }
+}
+
+query GetBlastTransactions($address: String!, $first: Int) {
+  blast {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetBlastStatus {
+  blast {
+    status {
+      lastBlock
+    }
+  }
+}

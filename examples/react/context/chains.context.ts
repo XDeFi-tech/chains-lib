@@ -150,6 +150,76 @@ export const initDefaultProviders = () => {
       }
     )
   );
+  ChainsContextDefaultValue.addProvider(
+    new EvmProvider(
+      new EvmProvider.dataSourceList.CtrlDataSource({
+        name: 'Base',
+        description: '',
+        rpcURL: 'https://rpc-proxy.xdefi.services/base/rpc/mainnet',
+        chainSymbol: 'ETH',
+        blockExplorerURL: 'https://basescan.org',
+        chainId: '8453',
+        chain: 'base',
+        decimals: 18,
+        feeGasStep: {
+          high: 1.5,
+          medium: 1.25,
+          low: 1,
+        },
+        multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+        maxGapAmount: 0,
+      }),
+      {
+        providerId: 'base-ctrl',
+      }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
+    new EvmProvider(
+      new EvmProvider.dataSourceList.CtrlDataSource({
+        name: 'Blast',
+        description: '',
+        rpcURL: 'https://blast.drpc.org	',
+        chainSymbol: 'ETH',
+        blockExplorerURL: 'https://blastscan.io',
+        chainId: '81457',
+        chain: 'blast',
+        decimals: 18,
+        feeGasStep: {
+          high: 1.5,
+          medium: 1.25,
+          low: 1,
+        },
+        multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+        maxGapAmount: 0,
+      }),
+      {
+        providerId: 'blast-ctrl',
+      }
+    )
+  );
+  // ChainsContextDefaultValue.addProvider(
+  //   new EvmProvider(
+  //     new EvmProvider.dataSourceList.IndexerDataSource({
+  //       ...EVM_MANIFESTS.blast,
+  //       name: `${EVM_MANIFESTS.blast.name} chain`,
+  //     }),
+  //     {
+  //       providerId: 'blast-chain',
+  //     }
+  //   )
+  // );
+  // ChainsContextDefaultValue.addProvider(
+  //   new EvmProvider(
+  //     new EvmProvider.dataSourceList.IndexerDataSource({
+  //       ...EVM_MANIFESTS.zkSync,
+  //       name: `${EVM_MANIFESTS.zkSync.name} chain`,
+  //     }),
+  //     {
+  //       providerId: 'zksync-chain',
+  //     }
+  //   )
+  // );
 
   ChainsContextDefaultValue.addProvider(
     new CosmosProvider(
@@ -170,6 +240,32 @@ export const initDefaultProviders = () => {
       {
         providerId: 'kava',
         signers: [CosmosSeedPhraseSigner, CosmosPrivateKeySigner],
+      }
+    )
+  );
+  ChainsContextDefaultValue.addProvider(
+    new CosmosProvider(
+      new CosmosProvider.dataSourceList.CtrlDataSource({
+        name: 'Quasar',
+        description: '',
+        rpcURL: 'https://rpc-proxy.xdefi.services/quasar/rpc/mainnet',
+        lcdURL: 'https://rpc-proxy.xdefi.services/quasar/lcd/mainnet',
+        chainSymbol: 'KAVA',
+        blockExplorerURL: 'https://www.mintscan.io/quasar',
+        chainId: 'quasar-1',
+        chain: 'quasar',
+        denom: 'uqsr',
+        decimals: 6,
+        prefix: 'quasar',
+        feeGasStep: {
+          high: 0.05,
+          medium: 0.01,
+          low: 0.25,
+        },
+        maxGapAmount: 0,
+      }),
+      {
+        providerId: 'quasar-ctrl',
       }
     )
   );

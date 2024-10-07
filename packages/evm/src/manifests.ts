@@ -13,6 +13,9 @@ export enum EVMChains {
   klaytn = 'klaytn',
   cronos = 'cronos',
   gnosis = 'gnosis',
+  base = 'base',
+  blast = 'blast',
+  zkSync = 'zkSync',
 }
 
 export interface EVMChainManifest extends Chain.Manifest {
@@ -226,4 +229,75 @@ export const EVM_MANIFESTS: {
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
     maxGapAmount: 0,
   },
+  [EVMChains.base]: {
+    name: 'Base',
+    description: '',
+    rpcURL: 'https://rpc-proxy.xdefi.services/base/rpc/mainnet',
+    chainSymbol: 'ETH',
+    blockExplorerURL: 'https://basescan.org',
+    chainId: '8453',
+    chain: 'base',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
+  },
+  [EVMChains.blast]: {
+    name: 'Blast',
+    description: '',
+    rpcURL: 'https://rpc-proxy.xdefi.services/blast/rpc/mainnet',
+    chainSymbol: 'ETH',
+    blockExplorerURL: 'https://blastscan.io',
+    chainId: '81457',
+    chain: 'blast',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+    multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    maxGapAmount: 0,
+  },
+  [EVMChains.zkSync]: {
+    name: 'zkSync',
+    description: '',
+    rpcURL: 'https://rpc-proxy.xdefi.services/zksync/rpc/mainnet',
+    chainSymbol: 'ETH',
+    blockExplorerURL: 'https://explorer.zksync.io',
+    chainId: '324',
+    chain: 'zkSync',
+    decimals: 18,
+    feeGasStep: {
+      high: 1.5,
+      medium: 1.25,
+      low: 1,
+    },
+    multicallContractAddress: '0xF9cda624FBC7e059355ce98a31693d299FACd963',
+    maxGapAmount: 0,
+  },
+};
+
+export const EVM_INDEXER_CHAIN: {
+  [key in string]: string;
+} = {
+  [EVMChains.ethereum]: 'ethereum',
+  [EVMChains.smartchain]: 'binanceSmartChain',
+  [EVMChains.polygon]: 'polygon',
+  [EVMChains.avalanche]: 'avalanche',
+  [EVMChains.fantom]: 'fantom',
+  [EVMChains.arbitrum]: 'arbitrum',
+  [EVMChains.aurora]: 'aurora',
+  [EVMChains.cantoevm]: 'cantoEVM',
+  [EVMChains.optimism]: 'optimism',
+  [EVMChains.klaytn]: 'klaytn',
+  [EVMChains.cronos]: 'cronosEVM',
+  [EVMChains.gnosis]: 'gnosis',
+  [EVMChains.base]: 'base',
+  [EVMChains.blast]: 'blast',
+  [EVMChains.zkSync]: 'zkSync',
 };

@@ -1,5 +1,7 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import filter from 'lodash/filter';
+import gql from 'graphql-tag';
+import { capitalize } from 'lodash';
 
 import {
   GetArbitrumBalanceDocument,
@@ -14,17 +16,16 @@ import {
   GetCantoEvmBalanceDocument,
   GetGnosisBalanceDocument,
 } from '../../../gql/graphql';
-import { EVMChains } from '../../../manifests';
+import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
 export const getBalance = async (chain: EVMChains, address: string) => {
-  let indexerChain: string = chain;
+  const indexerChain: string = EVM_INDEXER_CHAIN[chain];
   let query;
   switch (chain) {
     case EVMChains.ethereum:
       query = GetEthereumBalanceDocument;
       break;
     case EVMChains.smartchain:
-      indexerChain = 'binanceSmartChain';
       query = GetSmartChainBalanceDocument;
       break;
     case EVMChains.polygon:
@@ -43,24 +44,51 @@ export const getBalance = async (chain: EVMChains, address: string) => {
       query = GetAuroraBalanceDocument;
       break;
     case EVMChains.cantoevm:
-      indexerChain = 'cantoEVM';
       query = GetCantoEvmBalanceDocument;
       break;
     case EVMChains.optimism:
       query = GetOptimismBalanceDocument;
       break;
     case EVMChains.cronos:
-      indexerChain = 'cronosEVM';
       query = GetCronosEvmBalanceDocument;
       break;
     case EVMChains.gnosis:
-      indexerChain = 'gnosis';
       query = GetGnosisBalanceDocument;
       break;
     default:
-      throw new Error(
-        `Unsupported chain: ${chain}. Please check the configuration.`
-      );
+      if (indexerChain) {
+        query = gql`
+          query Get${capitalize(chain)}Balance ($address: String!) {
+            ${indexerChain} {
+              balances(address: $address) {
+                address
+                asset {
+                  categories
+                  type
+                  symbol
+                  contract
+                  id
+                  name
+                  image
+                  chain
+                  decimals
+                  price {
+                    amount
+                    dayPriceChange
+                  }
+                }
+                amount {
+                  value
+                }
+              }
+            }
+          }
+        `;
+      } else {
+        throw new Error(
+          `Unsupported chain: ${chain}. Please check the configuration.`
+        );
+      }
   }
   const response = await gqlClient.query({
     query: query,
