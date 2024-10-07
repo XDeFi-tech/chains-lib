@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.44
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.0.43
 
 ### Patch Changes

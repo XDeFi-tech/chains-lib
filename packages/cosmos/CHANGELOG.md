@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.59
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.0.58
 
 ### Patch Changes

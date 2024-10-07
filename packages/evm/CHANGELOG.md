@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.58
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.0.57
 
 ### Patch Changes
