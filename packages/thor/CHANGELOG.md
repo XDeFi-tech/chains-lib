@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.14
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.1.13
 
 ### Patch Changes
