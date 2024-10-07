@@ -38,6 +38,24 @@ export const COSMOS_ADDRESS_CHAIN: {
   [CosmosHubChains.sei]: AddressChain.Sei,
 };
 
+export const COSMOS_INDEXER_CHAIN: {
+  [key: string]: string;
+} = {
+  [CosmosHubChains.cosmos]: 'cosmos',
+  [CosmosHubChains.osmosis]: 'osmosis',
+  [CosmosHubChains.axelar]: 'axelar',
+  [CosmosHubChains.juno]: 'juno',
+  [CosmosHubChains.crescent]: 'crescent',
+  [CosmosHubChains.kava]: 'kava',
+  [CosmosHubChains.stargaze]: 'stargaze',
+  [CosmosHubChains.akash]: 'akash',
+  [CosmosHubChains.cronos]: 'cronos',
+  [CosmosHubChains.kujira]: 'kujira',
+  [CosmosHubChains.stride]: 'stride',
+  [CosmosHubChains.mars]: 'mars',
+  [CosmosHubChains.terra]: 'terra',
+  [CosmosHubChains.sei]: 'sei',
+};
 export interface CosmosManifest extends Chain.Manifest {
   lcdURL: string;
   rpcURL: string;

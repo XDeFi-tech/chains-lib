@@ -1,5 +1,7 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import map from 'lodash/map';
+import gql from 'graphql-tag';
+import { capitalize } from 'lodash';
 
 import {
   GetArbitrumTransactionsDocument,
@@ -13,8 +15,11 @@ import {
   GetPolygonTransactionsDocument,
   GetSmartChainTransactionsDocument,
   GetGnosisTransactionsDocument,
+  GetBaseTransactionsDocument,
+  GetBlastTransactionsDocument,
+  GetZkSyncTransactionsDocument,
 } from '../../../gql/graphql';
-import { EVMChains } from '../../../manifests';
+import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
 export const getTransactions = async (
   chain: EVMChains,
@@ -22,14 +27,13 @@ export const getTransactions = async (
   first = 100
 ) => {
   let query: any;
-  let indexerChain: string = chain;
+  const indexerChain = EVM_INDEXER_CHAIN[chain];
 
   switch (chain) {
     case EVMChains.ethereum:
       query = GetEthereumTransactionsDocument;
       break;
     case EVMChains.smartchain:
-      indexerChain = 'binanceSmartChain';
       query = GetSmartChainTransactionsDocument;
       break;
     case EVMChains.polygon:
@@ -48,24 +52,71 @@ export const getTransactions = async (
       query = GetAuroraTransactionsDocument;
       break;
     case EVMChains.cantoevm:
-      indexerChain = 'cantoEVM';
       query = GetCantoEvmTransactionsDocument;
       break;
     case EVMChains.optimism:
       query = GetOptimismTransactionsDocument;
       break;
     case EVMChains.cronos:
-      indexerChain = 'cronosEVM';
       query = GetCronosEvmTransactionsDocument;
       break;
     case EVMChains.gnosis:
-      indexerChain = 'gnosis';
       query = GetGnosisTransactionsDocument;
       break;
     default:
-      throw new Error(
-        `Unsupported chain: ${chain}. Please check the configuration.`
-      );
+      if (indexerChain) {
+        query = gql`
+          query Get${capitalize(
+            chain
+          )}Transactions($address: String!, $first: Int) {
+            ${indexerChain} {
+              transactions(address: $address, first: $first) {
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                }
+                edges {
+                  node {
+                    hash
+                    blockIndex
+                    blockNumber
+                    status
+                    value
+                    timestamp
+                    fromAddress
+                    transfers {
+                      amount {
+                        value
+                      }
+                      asset {
+                        ... on CryptoAsset {
+                          chain
+                          contract
+                          decimals
+                          id
+                          image
+                          name
+                          price {
+                            amount
+                            scalingFactor
+                          }
+                          symbol
+                        }
+                      }
+                      fromAddress
+                      toAddress
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `;
+      } else {
+        throw new Error(
+          `Unsupported chain: ${chain}. Please check the configuration.`
+        );
+      }
   }
 
   const response = await gqlClient.query({

@@ -15,3 +15,13 @@ query GetCryptoAssets($input: [CryptoAssetArgs!]!) {
     }
   }
 }
+
+query SupportedIndexer($chain: String!) {
+  assets {
+    supportedIndexer(chain: $chain) {
+      assets
+      indexer
+      indexerName
+    }
+  }
+}

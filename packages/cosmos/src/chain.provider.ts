@@ -40,6 +40,7 @@ import {
   isIBCPayload,
   skipAxiosClient,
 } from './utils';
+import { CtrlDataSource } from './datasource/ctrl/ctrl.data-source';
 
 export interface ChannelData {
   channelId: string;
@@ -311,6 +312,7 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
     return {
       IndexerDataSource: IndexerDataSource,
       ChainDataSource: ChainDataSource,
+      CtrlDataSource: CtrlDataSource,
     };
   }
 

@@ -27,6 +27,7 @@ import {
   getFeesFromRPC,
   getGasLimitFromRPC,
 } from './utils';
+import { CtrlDataSource } from './datasource/ctrl/ctrl.data-source';
 
 @ChainDecorator('EvmProvider', {
   deps: [],
@@ -141,6 +142,7 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     return {
       IndexerDataSource: IndexerDataSource,
       ChainDataSource: ChainDataSource,
+      CtrlDataSource: CtrlDataSource,
     };
   }
 

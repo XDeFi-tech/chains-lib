@@ -117,6 +117,8 @@ query OsmosisBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -226,6 +228,8 @@ query AxelarBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -335,6 +339,8 @@ query CrescentBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -444,6 +450,8 @@ query KavaBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -553,6 +561,8 @@ query AkashBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -662,6 +672,8 @@ query CronosBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -771,6 +783,8 @@ query KujiraBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -880,6 +894,8 @@ query StrideBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -989,6 +1005,8 @@ query MarsBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -1098,6 +1116,8 @@ query JunoBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals
@@ -1207,6 +1227,8 @@ query StargazeBalance($address: String!) {
         value
       }
       asset {
+        categories
+        type
         chain
         contract
         decimals

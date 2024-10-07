@@ -1875,6 +1875,109 @@ export const registry = [
     ],
   },
   {
+    id: 'base-ctrl',
+    name: 'Base',
+    chainId: '8453',
+    blockchain: 'Base',
+    icon: 'https://static.xdefi.services/icons/network/base.svg',
+    nativeCoins: [
+      {
+        name: 'Base',
+        decimals: 18,
+        symbol: 'ETH',
+        icon: 'https://static.xdefi.services/icons/network/base.svg',
+        fallbackIcon:
+          'https://static.xdefi.services/icons/fallback_network/base.svg',
+      },
+    ],
+    derivation: [
+      {
+        path: "m/44'/60'/0'/0/0",
+      },
+    ],
+    explorer: [
+      {
+        name: 'Base Explorer',
+        url: 'https://explorer.base.org',
+        txPath: '/tx/',
+        accountPath: '/address/',
+        sampleTx:
+          '0x8071cd760310896da6608c8acf28bc4256e72000870cd987b639625863b66194',
+        sampleAccount: '0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff',
+        icon: 'https://static.xdefi.services/icons/network/base.svg',
+      },
+    ],
+  },
+  {
+    id: 'blast-ctrl',
+    name: 'Blast',
+    chainId: '81457',
+    blockchain: 'Blast',
+    icon: 'https://static.xdefi.services/icons/network/blast.svg',
+    nativeCoins: [
+      {
+        name: 'Blast',
+        decimals: 18,
+        symbol: 'BLAST',
+        icon: 'https://static.xdefi.services/icons/network/blast.svg',
+        fallbackIcon:
+          'https://static.xdefi.services/icons/fallback_network/blast.svg',
+      },
+    ],
+    derivation: [
+      {
+        path: "m/44'/60'/0'/0/0",
+      },
+    ],
+    explorer: [
+      {
+        name: 'Blast Explorer',
+        url: 'https://blastscan.io/',
+        txPath: '/tx/',
+        accountPath: '/address/',
+        sampleTx:
+          '0xfdc0b014c5f730f160068afc30784eac6b7bc99152828d1e4eab5ac2025306dd',
+        sampleAccount: '0xD669fd4484d2C1fB2032B57a4C42AB4Cfb9395ff',
+        icon: 'https://static.xdefi.services/icons/network/blast.svg',
+      },
+    ],
+  },
+  {
+    id: 'quasar-ctrl',
+    name: 'Quasar',
+    chainId: 'quasar-1',
+    blockchain: 'Quasar',
+    icon: 'https://static.xdefi.services/icons/network/quasar.svg',
+    prefix: 'quasar',
+    nativeCoins: [
+      {
+        name: 'QUASAR',
+        decimals: 6,
+        symbol: 'QSR',
+        icon: 'https://static.xdefi.services/icons/network/quasar.svg',
+        fallbackIcon:
+          'https://static.xdefi.services/icons/fallback_network/quasar.svg',
+      },
+    ],
+    derivation: [
+      {
+        path: "m/44'/118'/0'/0/0",
+      },
+    ],
+    explorer: [
+      {
+        name: 'Mintscan',
+        url: 'https://www.mintscan.io/quasar',
+        txPath: '/tx/',
+        accountPath: '/address/',
+        sampleTx:
+          '31A474E8F23C1C7E0A5BC14C94866FC70630169C27717A7254A15EC231AC5EDB',
+        sampleAccount: 'quasar1z84shuuq0pu3lx8qsqxee53vthhr7fczgnymgf',
+        icon: 'https://static.xdefi.services/icons/explorers/mintscan.jpeg',
+      },
+    ],
+  },
+  {
     id: 'agoric',
     name: 'Agoric',
     chainId: 'agoric-3',

@@ -13,11 +13,11 @@ import {
   SmartChainDefaultGasFeesDocument,
   GnosisEip1559GasFeesDocument,
 } from '../../../gql/graphql';
-import { EVMChains } from '../../../manifests';
+import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
 export const getFees = async (chain: string) => {
   // if you update this function, make sure to update packages/evm/src/utils/get-fees.ts
-  let indexerChain = chain;
+  const indexerChain = EVM_INDEXER_CHAIN[chain];
   let query: any;
 
   switch (chain) {
@@ -25,7 +25,6 @@ export const getFees = async (chain: string) => {
       query = EthereumEip1559GasFeesDocument;
       break;
     case EVMChains.smartchain:
-      indexerChain = 'binanceSmartChain';
       query = SmartChainDefaultGasFeesDocument;
       break;
     case EVMChains.polygon:
@@ -44,18 +43,15 @@ export const getFees = async (chain: string) => {
       query = AuroraDefaultGasFeesDocument;
       break;
     case EVMChains.cantoevm:
-      indexerChain = 'cantoEVM';
       query = CantoEvmeip1559GasFeesDocument;
       break;
     case EVMChains.optimism:
       query = OptimismEip1559GasFeesDocument;
       break;
     case EVMChains.cronos:
-      indexerChain = 'cronosEVM';
       query = CronosEvmeip1559GasFeesDocument;
       break;
     case EVMChains.gnosis:
-      indexerChain = 'gnosis';
       query = GnosisEip1559GasFeesDocument;
       break;
     default:

@@ -1,0 +1,99 @@
+query GetBaseBalance($address: String!) {
+  base {
+    balances(address: $address) {
+      address
+      asset {
+        categories
+        type
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query BaseEIP1559GasFees {
+  base {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}
+
+query GetBaseTransactions($address: String!, $first: Int) {
+  base {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetBaseStatus {
+  base {
+    status {
+      lastBlock
+    }
+  }
+}
