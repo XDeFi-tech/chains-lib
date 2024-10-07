@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-binance
 
+## 2.0.28
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.0.27
 
 ### Patch Changes

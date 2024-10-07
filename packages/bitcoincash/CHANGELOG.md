@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.1.10
+
+### Patch Changes
+
+- dcd1161d: feat: create ctrl data source
+
 ## 2.1.9
 
 ### Patch Changes
