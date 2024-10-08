@@ -170,8 +170,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       source: msgData.source || 0,
       denom: msgData.denom || this.provider.manifest.denom,
       decimals: msgData.decimals || this.provider.manifest.decimals,
-      gasLimit: msgData.gasLimit || '200000',
-      gasPrice: msgData.gasPrice || '0',
+      gasLimit: msgData?.gasLimit ? String(msgData.gasLimit) : '200000',
+      gasPrice: msgData?.gasPrice ? String(msgData.gasPrice) : '0',
     };
   }
 
