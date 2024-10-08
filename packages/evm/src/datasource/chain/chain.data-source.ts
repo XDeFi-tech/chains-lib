@@ -25,12 +25,10 @@ import axios, { Axios } from 'axios';
 import { AddressChain } from '../../gql/graphql';
 import { RestEstimateGasRequest } from '../../types';
 import { EVMChains } from '../../manifests';
-import { ChainMsg, TokenType } from '../../msg';
+import { ChainMsg } from '../../msg';
 import {
   DEFAULT_CONTRACT_FEE,
   DEFAULT_TRANSACTION_FEE,
-  ERC1155_SAFE_TRANSFER_METHOD,
-  ERC721_SAFE_TRANSFER_METHOD,
   FACTOR_ESTIMATE,
 } from '../../constants';
 
