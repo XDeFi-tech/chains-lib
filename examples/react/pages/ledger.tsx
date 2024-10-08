@@ -34,9 +34,10 @@ const LedgerConnect = () => {
   const [toAddress, setToAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [asset, setAsset] = useState('');
-  const [chain, setChain] = useState('solana');
+  const [chain, setChain] = useState('thor');
   const [data, setData] = useState('');
-  const [derivedPath, setDerivedPath] = useState("m/84'/2'/0'/0/0");
+  const [memo, setMemo] = useState('');
+  const [derivedPath, setDerivedPath] = useState("44'/931'/0'/0/0");
 
   const connectLedger = async () => {
     try {
@@ -92,7 +93,7 @@ const LedgerConnect = () => {
       );
     }
     const msg =
-      data !== ''
+      chain === 'solana' && data !== ''
         ? provider.createMsg(
             {
               from: address,
@@ -102,11 +103,14 @@ const LedgerConnect = () => {
             },
             MsgEncoding.base58
           )
-        : asset === ''
+        : memo === ''
         ? provider.createMsg({
             from: address,
             to: toAddress,
             amount: amount,
+            denom: asset,
+            decimals: 8,
+            gasLimit: '500000000',
           })
         : provider.createMsg({
             from: address,
@@ -114,11 +118,12 @@ const LedgerConnect = () => {
             amount: amount,
             denom: asset,
             type: MsgType.MsgDeposit,
-            memo: '=:GAIA.ATOM:cosmos1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn0cwydm:0/1/0:t:30', // TODO: change this to the actual memo
+            memo: memo,
           });
+    console.log('🚀 ~ handleConfirm ~ msg:', msg);
     if (signer) {
       await signer.sign(msg, derivedPath);
-      console.log('🚀 ~ handleConfirm ~ signedTx:', msg.signedTransaction);
+      console.log(msg.signedTransaction);
       const transaction = await provider.broadcast([msg]);
       console.log('🚀 ~ handleConfirm ~ transaction:', transaction);
     }
@@ -173,11 +178,21 @@ const LedgerConnect = () => {
           </div>
           <div>
             <label>
-              Asset:
+              Data:
               <input
                 type="text"
                 value={data}
                 onChange={(e) => setData(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Memo:
+              <input
+                type="text"
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
               />
             </label>
           </div>
