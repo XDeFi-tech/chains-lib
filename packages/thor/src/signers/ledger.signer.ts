@@ -5,7 +5,7 @@ import { encodePubkey, makeAuthInfoBytes } from '@cosmjs/proto-signing';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { TxRaw, TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 
-import { assetFromString, getSignature } from '../utils';
+import { getSignature } from '../utils';
 import { ChainMsg, MsgType } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
@@ -126,7 +126,7 @@ export class LedgerSigner extends Signer.Provider {
         coins: [
           {
             amount,
-            asset: denom,
+            asset: denom.toLowerCase(),
           },
         ],
         signer: from,
@@ -147,7 +147,7 @@ export class LedgerSigner extends Signer.Provider {
         amount: [
           {
             amount,
-            denom: denom,
+            denom: denom.toLowerCase(),
           },
         ],
         from_address: from,
