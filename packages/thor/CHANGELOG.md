@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.15
+
+### Patch Changes
+
+- 061e67e1: fix: error when sending secondary tokens on THORChain ledger
+
 ## 2.1.14
 
 ### Patch Changes
