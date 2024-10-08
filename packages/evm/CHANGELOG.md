@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.59
+
+### Patch Changes
+
+- 1d49bb77: fix: int divided by int can lead to a decimal, math.ceil fixes
+
 ## 2.0.58
 
 ### Patch Changes
