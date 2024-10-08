@@ -90,7 +90,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       feeToSendOrdinals
     );
 
-    const { inputs, outputs } = accumulative(
+    const {
+      inputs,
+      outputs,
+      fee: test,
+    } = accumulative(
       utxosWithoutOrdinals.map((utxo) => ({
         ...utxo,
         ...utxo?.witnessUtxo,
@@ -502,42 +506,48 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     return feeEstimation;
   }
 
-  async getMaxAmountToSend() {
-    const msgData = this.toData();
-    const balances = await this.provider.getBalance(msgData.from);
-    const [balance] = await balances.getData();
-    const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
-
-    const ordinals = await this.provider.getNFTBalance(msgData.from);
-    const ordinalValues = await Promise.all(
-      (ordinals as any[]).map(async (ordinal) => {
-        // Get the transactions creating ordinals to determine inscribed sats
-        const [txId, outputIndex] = ordinal.id.split('/')[1].split('i');
-        const txInfo = await this.provider.getTransaction(txId);
-        return new BigNumber(
-          ethersUtils.formatUnits(
-            txInfo!.outputs[outputIndex].amount.value,
-            this.provider.manifest.decimals
-          )
-        );
-      })
+  async getMaxAmountToSend(): Promise<string> {
+    const utxos = await this.provider.scanUTXOs(this.data.from, {
+      includeOrigins: true,
+    });
+    const ordinalsMapping = await this.getOrdinalsMapping();
+    const utxosWithoutOrdinals = this.filterUtxosWithoutOrdinals(
+      utxos,
+      ordinalsMapping
     );
-    const totalOrdinalValue = ordinalValues.reduce((prev, curr) =>
-      prev.plus(curr)
+    const valueToSend = utxosWithoutOrdinals.reduce(
+      (acc, utxo) => acc + utxo.witnessUtxo.value,
+      0
     );
 
-    if (!balance) throw new Error('No balance found');
+    const targetOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[] = [];
 
-    let maxAmount: BigNumber = new BigNumber(balance.amount)
-      .minus(totalOrdinalValue)
-      .minus(gap);
-
-    const feeEstimation = await this.getFee();
-    maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-    if (maxAmount.isLessThan(0)) {
-      return '0';
+    if (valueToSend > 0) {
+      targetOutputs.push({ address: this.data.to, value: valueToSend });
     }
 
-    return maxAmount.toString();
+    const { fee } = await this.getFee();
+    if (!fee)
+      throw new Error('Fee estimation is required for building transaction');
+
+    // Convert fee rate to sat/b
+    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
+    const feeRate = Math.ceil(Number(fee) * 1e5);
+
+    const { fee: gweiFee } = accumulative(
+      utxosWithoutOrdinals.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      })),
+      targetOutputs,
+      feeRate
+    );
+    return new BigNumber(valueToSend - gweiFee)
+      .dividedBy(10 ** this.provider.manifest.decimals)
+      .toString();
   }
 }

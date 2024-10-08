@@ -262,17 +262,8 @@ describe('msg', () => {
 
     const response = await chainMsg.getMaxAmountToSend();
 
-    const feeEstimation = await chainMsg.getFee();
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
     expect(response);
-    expect(response).toEqual(
-      new BigNumber(1) // Balance mocks
-        .minus((2 * 546) / 1e8) // ordinals values
-        .minus(feeEstimation.fee || 0)
-        .minus(gap)
-        .toString()
-    );
+    expect(response).toEqual('0.00002679'); // UTXOS minus fee
   });
 
   it('Should can not spend utxos', async () => {
