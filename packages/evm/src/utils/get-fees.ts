@@ -141,21 +141,25 @@ export const getFeesFromRPC = async (
     const priorityFee = priorityFeeData.data.result;
     const maxPriorityFeePerGas = new BigNumber(priorityFee)
       .integerValue(BigNumber.ROUND_CEIL)
-      .dividedBy(gwei);
+      .dividedBy(gwei)
+      .integerValue(BigNumber.ROUND_CEIL);
 
     const baseFees = {
       low: new BigNumber(baseFee)
         .multipliedBy(multipliers.low)
         .integerValue(BigNumber.ROUND_CEIL)
-        .dividedBy(gwei),
+        .dividedBy(gwei)
+        .integerValue(BigNumber.ROUND_CEIL),
       medium: new BigNumber(baseFee)
         .multipliedBy(multipliers.medium)
         .integerValue(BigNumber.ROUND_CEIL)
-        .dividedBy(gwei),
+        .dividedBy(gwei)
+        .integerValue(BigNumber.ROUND_CEIL),
       high: new BigNumber(baseFee)
         .multipliedBy(multipliers.high)
         .integerValue(BigNumber.ROUND_CEIL)
-        .dividedBy(gwei),
+        .dividedBy(gwei)
+        .integerValue(BigNumber.ROUND_CEIL),
     };
 
     const eip1559Fees = {
