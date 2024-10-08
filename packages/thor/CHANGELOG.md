@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.16
+
+### Patch Changes
+
+- 2468e681: fix: convert gasLimit and gasPrice to String for Thor Provider
+
 ## 2.1.15
 
 ### Patch Changes
