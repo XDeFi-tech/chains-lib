@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.11
+
+### Patch Changes
+
+- b5b26397: update logic for calculating max send
+
 ## 2.1.10
 
 ### Patch Changes
