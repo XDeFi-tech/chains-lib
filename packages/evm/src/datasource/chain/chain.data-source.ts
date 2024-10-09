@@ -24,7 +24,7 @@ import axios, { Axios } from 'axios';
 
 import { AddressChain } from '../../gql/graphql';
 import { RestEstimateGasRequest } from '../../types';
-import { EVMChains } from '../../manifests';
+import { EVM_MANIFESTS, EVMChains } from '../../manifests';
 import { ChainMsg } from '../../msg';
 import {
   DEFAULT_CONTRACT_FEE,
@@ -93,8 +93,30 @@ export class ChainDataSource extends DataSource {
       assets = cryptoAssets;
     }
 
+    // Get ETH data in case L2 is adding ETH as a token
+    const {
+      data: {
+        assets: { cryptoAssets: ethAssets },
+      },
+    } = await getCryptoAssets({
+      chain: AddressChain.Ethereum,
+      contract: null,
+    });
+
     const result: Coin[] = [];
-    const nativeAsset = assets && assets[0] && assets[0].id ? assets[0] : null; // first is native token
+    let nativeAsset = null;
+    if (
+      this.manifest.chainSymbol === EVM_MANIFESTS.ethereum.chainSymbol &&
+      !Object.values(EVM_MANIFESTS)
+        .map((manifest) => manifest.chainId)
+        .includes(this.manifest.chainId) &&
+      !!ethAssets?.[0]?.symbol
+    ) {
+      nativeAsset = ethAssets[0];
+    } else if (assets && assets[0] && assets[0].id) {
+      nativeAsset = assets[0]; // first is native token
+    }
+
     const nativeToken = new Coin(
       new Asset({
         id: nativeAsset ? (nativeAsset.id as string) : this.manifest.name,
