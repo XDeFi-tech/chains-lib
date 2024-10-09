@@ -32,12 +32,25 @@ const mockedAccountResource = jest.spyOn(
 
 describe('chain.providers.chain', () => {
   let providers: TronProviders;
+  let energyPrice: number;
+  let bandwidthPrice: number;
   const messageData = {
     to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
     from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
     amount: 0.000001,
   };
   const pk = '9e30f488d7079ddcba9f012506d5dda99df9eba6e8d98aaab69e2c4ac1c6f656';
+
+  beforeAll(async () => {
+    energyPrice = await TronProvider.staticUtils.getEnergyPrice(
+      TRON_MANIFEST.rpcURL
+    );
+    bandwidthPrice = await TronProvider.staticUtils.getBandwidthPrice(
+      TRON_MANIFEST.rpcURL
+    );
+    expect(energyPrice).toBeTruthy();
+    expect(bandwidthPrice).toBeTruthy();
+  });
 
   beforeEach(() => {
     providers = {
@@ -108,7 +121,7 @@ describe('chain.providers.chain', () => {
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(130285);
-    expect(fees[0].fee).toEqual(54.7197);
+    expect(fees[0].fee).toEqual((130285 * energyPrice) / 1000000); // Free bandwidth (600) > 345, no need for bandwidth fee
     expect(fees[0].willRevert).toBeFalsy();
 
     msg = new ChainMsg({
@@ -122,7 +135,7 @@ describe('chain.providers.chain', () => {
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(130285);
-    expect(fees[0].fee).toEqual(54.7197);
+    expect(fees[0].fee).toEqual((130285 * energyPrice) / 1000000); // Free bandwidth (600) > 345, no need for bandwidth fee
     expect(fees[0].willRevert).toBeFalsy();
   });
 
@@ -165,7 +178,7 @@ describe('chain.providers.chain', () => {
     const fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(130285);
-    expect(fees[0].fee).toEqual(54.7197);
+    expect(fees[0].fee).toEqual((130285 * energyPrice) / 1000000); // Free bandwidth (600) > 345, no need for bandwidth fee
     expect(fees[0].willRevert).toBeFalsy();
   });
 
@@ -184,7 +197,7 @@ describe('chain.providers.chain', () => {
     const fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(130285);
-    expect(fees[0].fee).toEqual(54.7197);
+    expect(fees[0].fee).toEqual((130285 * energyPrice) / 1000000); // Free bandwidth (600) > 345, no need for bandwidth fee
     expect(fees[0].willRevert).toBeFalsy();
   });
 
@@ -208,7 +221,9 @@ describe('chain.providers.chain', () => {
     const fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
     expect(fees[0].energy).toEqual(130285);
-    expect(fees[0].fee).toEqual(31.7638); // (345 - 245) * 1000 + (130285 - 54895) * 420 = 31763800 SUN => 31.7638 TRX
+    expect(fees[0].fee).toEqual(
+      ((345 - 245) * bandwidthPrice + (130285 - 54895) * energyPrice) / 1000000
+    );
     expect(fees[0].willRevert).toBeFalsy();
     mockedAccountResource.mockRestore();
   });
