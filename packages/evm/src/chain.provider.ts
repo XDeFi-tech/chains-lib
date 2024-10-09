@@ -152,10 +152,13 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
       return null;
     }
 
+    // TODO TEMP LOG, remove after 16.10.2024
+    console.debug(`[CHAINSLIB] EVM getTransaction`, JSON.stringify(tx));
+
     const result: TransactionData = {
       hash: tx.hash,
-      from: tx.from || '',
-      to: tx.to || '',
+      from: tx?.from || '',
+      to: tx?.to || '',
       status: TransactionStatus.pending,
     };
 
