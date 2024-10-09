@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.60
+
+### Patch Changes
+
+- a4206c6a: chore: increased default contract fee from 100k to 1mill
+
 ## 2.0.59
 
 ### Patch Changes
