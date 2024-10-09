@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.46
+
+### Patch Changes
+
+- ffa56309: feat: get energy & bandwidth price from rpc
+
 ## 2.0.45
 
 ### Patch Changes
