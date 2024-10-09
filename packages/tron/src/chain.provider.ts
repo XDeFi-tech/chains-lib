@@ -18,6 +18,7 @@ import { AbiCoder } from 'ethers';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
 import { IndexerDataSource, ChainDataSource } from './datasource';
+import { getBandwidthPrice, getEnergyPrice } from './util';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -57,8 +58,10 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
 
     // Can change with a network update / fork, but not worth using an API call here.
     // 1000 SUN (not TRX) for bandwidth and 420 SUN for energy per unit.
-    const bandwidthPrice = 1000;
-    const energyPrice = 420;
+    const bandwidthPrice = await getBandwidthPrice(
+      this.dataSource.manifest.rpcURL
+    );
+    const energyPrice = await getEnergyPrice(this.dataSource.manifest.rpcURL);
 
     for (let i = 0; i < msgs.length; i++) {
       const msg = msgs[i];
@@ -66,7 +69,6 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       const msgBody = msg.toData() as MsgBody;
       const { freeBandwidth, freeEnergy } =
         await this.dataSource.getAccountResource(msgBody.from);
-
       let tx: TronTransaction;
 
       if (!msg.hasSignature) {
@@ -277,6 +279,13 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
     return {
       ChainDataSource: ChainDataSource,
       IndexerDataSource: IndexerDataSource,
+    };
+  }
+
+  static get staticUtils() {
+    return {
+      getBandwidthPrice: getBandwidthPrice,
+      getEnergyPrice: getEnergyPrice,
     };
   }
 }
