@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.61
+
+### Patch Changes
+
+- 02685505: Fix: getTransaction method for EVM chains
+- 83b84ced: chore: XDEFI-10371 Overwrite ETH token data for custom networks if native token is ETH
+
 ## 2.0.60
 
 ### Patch Changes
