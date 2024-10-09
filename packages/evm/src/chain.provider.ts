@@ -153,6 +153,7 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     }
 
     // TODO TEMP LOG, remove after 16.10.2024
+    // eslint-disable-next-line no-console
     console.debug(`[CHAINSLIB] EVM getTransaction`, JSON.stringify(tx));
 
     const result: TransactionData = {
