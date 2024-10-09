@@ -211,7 +211,7 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
 
     if (txStatus.contractRet === 'SUCCESS') {
       result.status = TransactionStatus.success;
-    } else if (txStatus.contractRet === 'REVERT') {
+    } else if ((txStatus.contractRet || []).length > 0) {
       result.status = TransactionStatus.failure;
     }
 
