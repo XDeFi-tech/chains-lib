@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.45
+
+### Patch Changes
+
+- 03572fe8: Fix: getTransaction method status checking
+
 ## 2.0.44
 
 ### Patch Changes
