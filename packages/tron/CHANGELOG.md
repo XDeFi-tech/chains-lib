@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.47
+
+### Patch Changes
+
+- 3b304649: Fix: move estimateEnergy method to utils
+
 ## 2.0.46
 
 ### Patch Changes
