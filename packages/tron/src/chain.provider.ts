@@ -15,10 +15,11 @@ import {
 import { some } from 'lodash';
 import TronWeb, { TronTransaction, TronTransactionRawData } from 'tronweb';
 import { AbiCoder } from 'ethers';
+import axios, { AxiosInstance } from 'axios';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
 import { IndexerDataSource, ChainDataSource } from './datasource';
-import { getBandwidthPrice, getEnergyPrice } from './util';
+import { getBandwidthPrice, getEnergyPrice, estimateEnergy } from './utils';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -27,11 +28,15 @@ import { getBandwidthPrice, getEnergyPrice } from './util';
 export class TronProvider extends Chain.Provider<ChainMsg> {
   declare rpcProvider: any;
   declare dataSource: ChainDataSource | IndexerDataSource;
+  declare httpProvider: AxiosInstance;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
     this.rpcProvider = new TronWeb({
       fullHost: dataSource.manifest.rpcURL,
+    });
+    this.httpProvider = axios.create({
+      baseURL: this.dataSource.manifest.dataProviderURL,
     });
 
     // Doesnt matter what this address is, just needs to be valid.
@@ -118,9 +123,8 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
         msgBody.contractAddress
       ) {
         // Reference: https://developers.tron.network/docs/tron-protocol-transaction#energy-fee
-        const { energy, willRevert } = await (
-          this.dataSource as ChainDataSource
-        ).estimateEnergy(
+        const { energy, willRevert } = await estimateEnergy(
+          this.httpProvider,
           msgBody.from,
           msgBody.contractAddress,
           'transfer(address,uint256)',
@@ -284,8 +288,9 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
 
   static get staticUtils() {
     return {
-      getBandwidthPrice: getBandwidthPrice,
-      getEnergyPrice: getEnergyPrice,
+      getBandwidthPrice,
+      getEnergyPrice,
+      estimateEnergy,
     };
   }
 }
