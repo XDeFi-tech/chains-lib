@@ -22,7 +22,6 @@ import BigNumber from 'bignumber.js';
 
 import { CryptoAsset } from '../../gql/graphql';
 import type { TronManifest } from '../../manifests';
-import { TronEnergyEstimate } from '../../msg';
 
 import { getBalance, getTransactions } from './queries';
 
@@ -163,40 +162,6 @@ export class IndexerDataSource extends DataSource {
       obj.push(arg);
       return obj;
     }, []);
-  }
-
-  async estimateEnergy(
-    sender: string,
-    contractAddress: string,
-    selector: string,
-    params: string
-  ): Promise<TronEnergyEstimate> {
-    const response = await this.httpProvider.post(
-      '/wallet/triggerconstantcontract',
-      JSON.stringify({
-        owner_address: sender,
-        contract_address: contractAddress,
-        function_selector: selector,
-        parameter: params,
-        visible: true,
-      }),
-      {
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (response.status === 200 && response.data.energy_used) {
-      return {
-        energy: parseInt(response.data.energy_used),
-        willRevert:
-          response.data.transaction.ret[0].ret === 'FAILED' ? true : false,
-      };
-    } else {
-      throw new Error('Error Estimating Energy!');
-    }
   }
 
   async gasFeeOptions(): Promise<DefaultFeeOptions | null> {
