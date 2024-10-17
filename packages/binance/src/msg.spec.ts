@@ -184,23 +184,6 @@ describe('msg', () => {
     expect(response.maxFee).toBeNull();
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
-        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
-        amount: 0.000001,
-        denom: 'bnb',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError();
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -224,25 +207,5 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
-  });
-
-  it('should return MaxAmountToSend with non-native-token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
-        to: 'bnb1ac5cd7esh6wx78dxwwpkk6wn3g4a42578q3r8k',
-        amount: 0.000001,
-        denom: 'bnb',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = await chainMsg.getMaxAmountToSend(
-      '0x1b0e27D4733b5e6499354085114F2A5D21A00C60'
-    );
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });
 });

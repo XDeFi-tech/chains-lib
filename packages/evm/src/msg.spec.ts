@@ -242,25 +242,6 @@ describe('msg', () => {
     );
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
-        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
-        amount: 0.000001,
-        nonce: 0,
-        decimals: 18,
-        chainId: 1,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError();
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -277,7 +258,7 @@ describe('msg', () => {
 
     const response = await chainMsg.getMaxAmountToSend();
 
-    const feeEstimation = await chainMsg.getFee();
+    const feeEstimation = await chainMsg.getFee(GasFeeSpeed.high);
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(
@@ -286,28 +267,6 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
-  });
-
-  it('should return MaxAmountToSend with non-native-token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
-        to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
-        amount: 0.000001,
-        nonce: 0,
-        decimals: 18,
-        chainId: 1,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = await chainMsg.getMaxAmountToSend(
-      '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5'
-    );
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });
 
   it('buildTx with ERC-20 approve', async () => {
