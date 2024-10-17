@@ -52,6 +52,10 @@
     "publish:packages": {
       "cache": false,
       "outputs": []
+    },
+    "test:cicd": {
+      "cache": false,
+      "outputs": []
     }
   },
   "globalDependencies": [".env", "tsconfig.json"],

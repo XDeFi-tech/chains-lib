@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import { TextEncoder, TextDecoder } from 'util';
-Object.assign(global, { TextDecoder, TextEncoder });
+// @ts-ignore
+import XMLHttpRequest from 'xhr2';
+
+Object.assign(global, { TextDecoder, TextEncoder, XMLHttpRequest });
 
 const crypto = require('crypto');
 

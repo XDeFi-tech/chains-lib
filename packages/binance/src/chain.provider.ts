@@ -123,8 +123,12 @@ export class BinanceProvider extends Chain.Provider<ChainMsg> {
     }
     return {
       hash: response.hash,
-      from: response.tx.value.msg[0].value.inputs[0].address,
-      to: response.tx.value.msg[0].value.outputs[0].address,
+      from:
+        response?.tx?.value?.msg[0]?.value?.inputs?.[0]?.address ??
+        response.tx.value.msg[0]?.value?.from,
+      to:
+        response?.tx?.value?.msg[0]?.value?.outputs?.[0]?.address ??
+        response.tx.value.msg[0]?.value?.to,
       status:
         response.code === 0
           ? TransactionStatus.success
