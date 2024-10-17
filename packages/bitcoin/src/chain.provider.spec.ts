@@ -209,4 +209,24 @@ describe('chain.provider', () => {
       BitcoinProvider.verifyAddress('34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo')
     ).toBe(true);
   });
+
+  it('should return true when verifying a valid message signature', () => {
+    const message = 'Hello World!';
+    const signature =
+      'H/6H/Liqxk5YDaZqdhGL8xFCDpOwy3Yg3tVjt4eZiCcdbQ+vpXRs5IwtEiCbGGdykwRflwIK0IoR1SLTfm1oCWM=';
+    const address = 'bc1qyfeeuvkq27fcqvpzj4ghkh0je2r8wd8tt53nfd';
+    expect(
+      BitcoinProvider.verifyMessageSignature(message, signature, address)
+    ).toBe(true);
+  });
+
+  it('should return false when verifying an invalid message signature', () => {
+    const message = 'Hello World!';
+    const signature =
+      'IAraMTvuBH/sI14J7TyWYEI1v2KvMk73Mo2brkdZkUWARCjL4Zc4NwdZrPHDjnYLDMjhEeXFbEp/Lfrev8frvRA=';
+    const address = 'bc1qyfeeuvkq27fcqvpzj4ghkh0je2r8wd8tt53nfd';
+    expect(
+      BitcoinProvider.verifyMessageSignature(message, signature, address)
+    ).toBe(false);
+  });
 });

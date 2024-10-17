@@ -4,6 +4,8 @@ import {
   Params,
   Success,
   parseConnectSettings,
+  SignMessage,
+  PROTO,
 } from '@trezor/connect-web';
 
 import { BitcoinProvider } from '../chain.provider';
@@ -24,6 +26,17 @@ jest.mock('@trezor/connect-web', () => ({
     };
 
     return txResponse;
+  }),
+  signMessage: jest.fn().mockImplementation((params: Params<SignMessage>) => {
+    const signatureResponse: Success<PROTO.MessageSignature> = {
+      success: true,
+      payload: {
+        address: 'bc1qyfeeuvkq27fcqvpzj4ghkh0je2r8wd8tt53nfd',
+        signature:
+          'H/6H/Liqxk5YDaZqdhGL8xFCDpOwy3Yg3tVjt4eZiCcdbQ+vpXRs5IwtEiCbGGdykwRflwIK0IoR1SLTfm1oCWM=',
+      },
+    };
+    return Promise.resolve(signatureResponse);
   }),
   getAddress: jest.fn().mockImplementation((params: Params<GetAddress>) => {
     const addressResponse: Success<GetAddress> = {
@@ -131,5 +144,14 @@ describe('trezor.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should sign a message using a trezor device', async () => {
+    const message = 'Hello World';
+    const signature = await signer.signMessage(message, derivationPath);
+
+    expect(signature).toEqual(
+      'H/6H/Liqxk5YDaZqdhGL8xFCDpOwy3Yg3tVjt4eZiCcdbQ+vpXRs5IwtEiCbGGdykwRflwIK0IoR1SLTfm1oCWM='
+    );
   });
 });

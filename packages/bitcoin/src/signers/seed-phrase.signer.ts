@@ -6,6 +6,7 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 import * as btc from '@scure/btc-signer';
 import * as Bitcoin from 'bitcoinjs-lib';
 import coininfo from 'coininfo';
+import * as BitcoinMessage from 'bitcoinjs-message';
 
 import { ChainMsg } from '../msg';
 
@@ -77,6 +78,13 @@ export class SeedPhraseSigner extends Signer.Provider {
     psbt.signAllInputs(pk);
     psbt.finalizeAllInputs();
     return psbt.extractTransaction(true).toHex();
+  }
+
+  async signMessage(message: string, derivation: string): Promise<string> {
+    const wif = await this.getPrivateKey(derivation);
+    const privateKey = Buffer.from(btc.WIF().decode(wif));
+    const signature = BitcoinMessage.sign(message, privateKey, true);
+    return signature.toString('base64');
   }
 }
 

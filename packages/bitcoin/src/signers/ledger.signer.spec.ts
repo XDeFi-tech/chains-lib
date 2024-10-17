@@ -26,6 +26,11 @@ jest.mock('@ledgerhq/hw-app-btc', () => {
       publicKey: 'PUBKEY',
       chainCode: 'code',
     }),
+    signMessage: jest.fn().mockResolvedValue({
+      v: 0,
+      r: 'cf52c8a8097f1361562e9ac9b7bf9a121bb65002d2df5c30523db0e3c8191099',
+      s: '5c3ceeed367dbe4bc7674f2209eba50499c724c59eaaccd01ea12018859ebde1',
+    }),
   }));
 });
 
@@ -129,5 +134,14 @@ describe('ledger.signer', () => {
 
   it('should fail if private key is requested', async () => {
     expect(signer.getPrivateKey(derivationPath)).rejects.toThrowError();
+  });
+
+  it('should sign a message using a ledger device', async () => {
+    const message = 'Hello World';
+    const signature = await signer.signMessage(message, derivationPath);
+
+    expect(signature).toEqual(
+      'H89SyKgJfxNhVi6aybe/mhIbtlAC0t9cMFI9sOPIGRCZXDzu7TZ9vkvHZ08iCeulBJnHJMWeqszQHqEgGIWeveE='
+    );
   });
 });
