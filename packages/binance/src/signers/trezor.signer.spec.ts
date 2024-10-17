@@ -33,7 +33,7 @@ jest.mock('@trezor/connect-web', () => ({
         payload: {
           address: 'bnb1l2zmxlheuk2u0wfy3l6czskp0z5sa4qklgdfzm',
           path: params.path,
-        },
+        } as any,
       };
 
       return addressResponse;
@@ -41,7 +41,7 @@ jest.mock('@trezor/connect-web', () => ({
   parseConnectSettings: jest.fn().mockImplementation(() => {
     return {
       configSrc: './data/config.json',
-      version: '9.1.4',
+      version: '9.4.1',
       debug: false,
       priority: 2,
       trustedHost: true,
