@@ -84,23 +84,18 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
   }
 
   async _getFeesFromRpc(
-    msgs: Msg[],
+    msgs: ChainMsg[],
     speed: GasFeeSpeed,
     isEIP1559: undefined | boolean = undefined
   ) {
     const promises = msgs.map((msg) =>
-      getFeesFromRPC(
-        msg as ChainMsg,
-        speed,
-        this.manifest.feeGasStep,
-        isEIP1559
-      )
+      getFeesFromRPC(msg, speed, this.manifest.feeGasStep, isEIP1559)
     );
     return Promise.all(promises);
   }
 
   async estimateFee(
-    msgs: Msg[],
+    msgs: ChainMsg[],
     speed: GasFeeSpeed,
     options?: { forceUseRpc: boolean; isEIP1559?: boolean } // useful for custom chains
   ): Promise<FeeData[]> {

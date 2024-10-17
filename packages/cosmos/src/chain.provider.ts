@@ -7,7 +7,6 @@ import {
   FeeData,
   FeeOptions,
   GasFeeSpeed,
-  Msg,
   MsgData,
   MsgEncoding,
   Response,
@@ -97,9 +96,9 @@ export class CosmosProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async estimateFee(msgs: Msg[], speed: GasFeeSpeed): Promise<FeeData[]> {
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
     try {
-      return this.dataSource.estimateFee(msgs as ChainMsg[], speed);
+      return this.dataSource.estimateFee(msgs, speed);
     } catch {
       console.warn('Estimate fee failed, using default fee');
 
