@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.62
+
+### Patch Changes
+
+- e4d0a001: test coverage networked requests (not mocked) for read only (get fees, get balances, get transactions, get utxos) for all chains
+- Updated dependencies [302840f1]
+  - @xdefi-tech/chains-core@2.0.36
+
 ## 2.0.61
 
 ### Patch Changes
