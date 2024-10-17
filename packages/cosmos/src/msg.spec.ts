@@ -1,4 +1,4 @@
-import { MsgEncoding, Asset, Coin } from '@xdefi-tech/chains-core';
+import { MsgEncoding, Asset, Coin, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 
 import { ChainDataSource } from './datasource';
@@ -278,18 +278,6 @@ describe('msg', () => {
     });
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = provider.createMsg({
-      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      amount: '0.000001',
-    });
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError('No balance found');
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = provider.createMsg({
       from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
@@ -299,7 +287,7 @@ describe('msg', () => {
 
     const response = await chainMsg.getMaxAmountToSend();
 
-    const feeEstimation = await chainMsg.getFee();
+    const feeEstimation = await chainMsg.getFee(GasFeeSpeed.high);
     const gap = provider.manifest?.maxGapAmount || 0;
     expect(response).toEqual(
       new BigNumber('1000')
@@ -307,73 +295,5 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
-  });
-
-  jest.setTimeout(30000);
-
-  it('should return MaxAmountToSend with ibc token as fee', async () => {
-    const chainMsg = provider.createMsg({
-      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      amount: '0.000001',
-      feeOptions: {
-        gasAdjustment: 1,
-        gasFee: {
-          denom:
-            'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
-        },
-      },
-    });
-
-    const response = await chainMsg.getMaxAmountToSend(
-      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'
-    );
-
-    const feeEstimation = await chainMsg.getFee();
-    const gap = provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(
-      new BigNumber('1000')
-        .minus(feeEstimation.fee || 0)
-        .minus(gap)
-        .toString()
-    );
-  });
-
-  it('should reject if not hold token', async () => {
-    const chainMsg = provider.createMsg({
-      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      amount: '0.000001',
-      feeOptions: {
-        gasAdjustment: 1,
-        gasFee: {
-          denom:
-            'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
-        },
-      },
-    });
-
-    await expect(
-      chainMsg.getMaxAmountToSend(
-        'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518'
-      )
-    ).rejects.toThrowError('No balance found');
-  });
-
-  it('should return the full amount', async () => {
-    const chainMsg = provider.createMsg({
-      from: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      to: 'osmo1nvt0fx864yyuyjvpw7eh2uj5zudcfkcn8ra5mf',
-      amount: '0.000001',
-    });
-
-    const response = await chainMsg.getMaxAmountToSend(
-      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2'
-    );
-
-    const gap = provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });
 });

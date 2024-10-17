@@ -139,25 +139,6 @@ describe('msg', () => {
     expect(response).toHaveProperty('raw_data');
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
-        to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
-        decimals: 18,
-        tokenId: '10',
-        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-        amount: '0.00001',
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError();
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -180,24 +161,5 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
-  });
-
-  it('should return MaxAmountToSend with non-native-token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
-        to: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
-        amount: 0.000001,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = await chainMsg.getMaxAmountToSend(
-      'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
-    );
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });
 });

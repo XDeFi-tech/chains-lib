@@ -282,7 +282,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     return result;
   }
 
-  async getMaxAmountToSend(contract?: string) {
+  async getMaxAmountToSend() {
     const msgData = this.toData();
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
@@ -290,32 +290,20 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       this.provider.rpcProvider
     );
 
-    let balance: Coin | undefined;
-
-    if (!contract) {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
-      );
-    } else {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId &&
-          b.asset.address === contract
-      );
-    }
+    const balance = (await balances.getData()).find(
+      (b) =>
+        b.asset.chainId === this.provider.manifest.chainId && b.asset.native
+    );
 
     if (!balance) throw new Error('No balance found');
 
     let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
 
-    if (balance.asset.native) {
-      const feeEstimation = await this.getFee();
-      maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-      maxAmount = maxAmount.minus(
-        new BigNumber(rentBalance).dividedBy(LAMPORTS_PER_SOL)
-      );
-    }
+    const feeEstimation = await this.getFee();
+    maxAmount = maxAmount.minus(feeEstimation.fee || 0);
+    maxAmount = maxAmount.minus(
+      new BigNumber(rentBalance).dividedBy(LAMPORTS_PER_SOL)
+    );
 
     if (maxAmount.isLessThan(0)) {
       return '0';

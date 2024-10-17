@@ -516,35 +516,22 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     return estimation;
   }
 
-  async getMaxAmountToSend(contract?: string) {
+  async getMaxAmountToSend() {
     const msgData = this.toData();
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
 
-    let balance: Coin | undefined;
-    if (!contract) {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
-      );
-    } else {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId &&
-          b.asset.address === contract
-      );
-    }
+    const balance = (await balances.getData()).find(
+      (b) =>
+        b.asset.chainId === this.provider.manifest.chainId && b.asset.native
+    );
+
     if (!balance) throw new Error('No balance found');
+    const { fee } = await this.getFee(GasFeeSpeed.high);
 
-    let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
-
-    if (
-      (balance.asset.native && contract !== this.provider.manifest.denom) ||
-      (msgData.feeOptions && msgData.feeOptions.gasFee.denom === contract)
-    ) {
-      const feeEstimation = await this.getFee();
-      maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-    }
+    const maxAmount: BigNumber = new BigNumber(balance.amount)
+      .minus(fee || 0)
+      .minus(gap);
 
     if (maxAmount.isLessThan(0)) {
       return '0';

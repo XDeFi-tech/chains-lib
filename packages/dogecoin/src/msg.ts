@@ -8,6 +8,7 @@ import {
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
+import utils from 'coinselect/utils';
 import * as UTXOLib from 'bitcoinjs-lib';
 import { UTXO, stringToHex } from '@xdefi-tech/chains-utxo';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -33,8 +34,6 @@ export interface TxBody {
   compiledMemo?: string | Uint8Array;
 }
 
-export const MINIMUM_DOGECOIN_FEE = 40000;
-
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
 
@@ -59,10 +58,6 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     // Convert fee rate to sat/vb
     // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
     const feeRate = Math.ceil(Number(fee) * 1e5);
-    const feeRateWhole =
-      parseInt(feeRate.toString()) < MINIMUM_DOGECOIN_FEE
-        ? MINIMUM_DOGECOIN_FEE
-        : parseInt(feeRate.toString());
     const compiledMemo = msgData?.memo && this.compileMemo(msgData.memo);
 
     const targetOutputs = [];
@@ -79,10 +74,17 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     if (compiledMemo) {
       targetOutputs.push({ script: compiledMemo, value: 0 });
     }
-    const { inputs, outputs } = accumulative(
-      utxos,
+    const {
+      inputs,
+      outputs,
+      fee: feeAccumulative,
+    } = accumulative(
+      utxos.map((utxo) => ({
+        ...utxo,
+        ...utxo.witnessUtxo,
+      })),
       targetOutputs,
-      feeRateWhole
+      feeRate
     );
 
     if (!inputs || !outputs) {
@@ -147,39 +149,46 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     return feeEstimation;
   }
 
-  async getMaxAmountToSend(contract?: string) {
+  async getMaxAmountToSend() {
     const msgData = this.toData();
-    const balances = await this.provider.getBalance(msgData.from);
-    const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
+    const utxos = await this.provider.scanUTXOs(msgData.from);
+    const { fee } = await this.getFee();
+    if (!fee)
+      throw new Error('Fee estimation is required for building transaction');
 
-    let balance: Coin | undefined;
+    // Convert fee rate to sat/b
+    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
+    const feeRate = Math.ceil(Number(fee) * 1e5);
+    // Remove utxts that value is less than their fee
+    const utxosCanSpend = utxos.filter(
+      (utxo) =>
+        utxo.value >
+        utils.inputBytes({ ...utxo, ...utxo.witnessUtxo }) * feeRate
+    );
+    const valueToSend = utxosCanSpend.reduce(
+      (acc, utxo) => acc + utxo.value,
+      0
+    );
+    const targetOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[] = [];
 
-    if (!contract) {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
-      );
-    } else {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId &&
-          b.asset.address === contract
-      );
+    if (valueToSend > 0) {
+      targetOutputs.push({ address: this.data.to, value: valueToSend });
     }
 
-    if (!balance) throw new Error('No balance found');
-
-    let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
-
-    if (balance.asset.native) {
-      const feeEstimation = await this.getFee();
-      maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-    }
-
-    if (maxAmount.isLessThan(0)) {
-      return '0';
-    }
-
-    return maxAmount.toString();
+    const { fee: gweiFee } = accumulative(
+      utxosCanSpend.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      })),
+      targetOutputs,
+      feeRate
+    );
+    return new BigNumber(valueToSend - gweiFee)
+      .dividedBy(10 ** this.provider.manifest.decimals)
+      .toString();
   }
 }
