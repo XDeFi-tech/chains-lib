@@ -22,12 +22,6 @@ jest.mock('@ledgerhq/hw-app-solana', () => {
         'hex'
       ),
     }),
-    signOffchainMessage: jest.fn().mockResolvedValue({
-      signature: Buffer.from(
-        '6132ba1ca152cf3fdf70bc76ac49f3c0fe7468f24e7d051ba11ebf2b8c4e30a14c97623fa089924f9320026cabfc412f242bc0db8e405d9c7ea6e608f8d4120a',
-        'hex'
-      ),
-    }),
     getAddress: jest.fn().mockResolvedValue({
       address: Buffer.from(
         // 2Ws339t6ng6WKqjLPVC2gnid9ZfvjYaKGnVi5pNJLn8i
@@ -89,11 +83,10 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a message using a ledger device', async () => {
-    const message = Buffer.from('Hello, world!');
-    const { pubKey, sig } = await signer.signMessage(message, derivationPath);
-    expect(pubKey.toBase58()).toBe(txInput.from);
-    expect(sig).toBe(
-      '2wiGcgsNdq2qHMHrLpsjf7PJz9PqndHSE6kCyZjMTo45ZzhmT95GLXYLWmsCT6mF8vGubdBdUnsL9yfHNuH8HNfB'
-    );
+    const message = provider.createMsg({
+      ...txInput,
+      data: 'Hello, world!',
+    });
+    expect(signer.signMessage(message, derivationPath)).rejects.toThrowError();
   });
 });
