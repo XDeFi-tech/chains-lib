@@ -11,6 +11,7 @@ import {
   Balance,
   TransactionData,
   TransactionStatus,
+  MsgEncoding,
 } from '@xdefi-tech/chains-core';
 import { some } from 'lodash';
 import TronWeb, { TronTransaction, TronTransactionRawData } from 'tronweb';
@@ -19,7 +20,12 @@ import axios, { AxiosInstance } from 'axios';
 
 import { ChainMsg, MsgBody, TokenType, TronFee } from './msg';
 import { IndexerDataSource, ChainDataSource } from './datasource';
-import { getBandwidthPrice, getEnergyPrice, estimateEnergy } from './utils';
+import {
+  getBandwidthPrice,
+  getEnergyPrice,
+  estimateEnergy,
+  estimateEnergyForRawTx,
+} from './utils';
 
 @ChainDecorator('TronProvider', {
   deps: [],
@@ -44,8 +50,8 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
     this.rpcProvider.setAddress('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t');
   }
 
-  createMsg(data: MsgData) {
-    return new ChainMsg(data, this);
+  createMsg(data: MsgData, encoding: MsgEncoding = MsgEncoding.object) {
+    return new ChainMsg(data, this, encoding);
   }
 
   async getTransactions(
@@ -58,8 +64,12 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
     );
   }
 
-  async estimateFee(msgs: Msg[]): Promise<TronFee[]> {
+  async estimateFee(msgs: ChainMsg[]): Promise<TronFee[]> {
     const feeData: TronFee[] = [];
+    // Reference: https://developers.tron.network/docs/faq#5-how-to-calculate-the-bandwidth-and-energy-consumed-when-callingdeploying-a-contract
+    const DATA_HEX_PROTOBUF_LENGTH = 3;
+    const MAX_RESULT_SIZE_IN_TX = 64;
+    const A_SIGNATURE = 67;
 
     // Can change with a network update / fork, but not worth using an API call here.
     // 1000 SUN (not TRX) for bandwidth and 420 SUN for energy per unit.
@@ -76,6 +86,36 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
         await this.dataSource.getAccountResource(msgBody.from);
       let tx: TronTransaction;
 
+      if (msg.encoding === MsgEncoding.string) {
+        const rawTx = JSON.parse(msg.data.data);
+        const gasUsed = await estimateEnergyForRawTx(this.httpProvider, rawTx);
+        const contract = await (this.rpcProvider as TronWeb).trx.getContract(
+          TronWeb.address.fromHex(
+            rawTx.raw_data.contract[0].parameter.value.contract_address
+          )
+        );
+        const energy = Math.ceil(
+          (gasUsed * contract.consume_user_resource_percent) / 100
+        );
+
+        const bandwidthUsed =
+          rawTx.raw_data_hex.length / 2 +
+          DATA_HEX_PROTOBUF_LENGTH +
+          MAX_RESULT_SIZE_IN_TX +
+          A_SIGNATURE * ((rawTx.signature?.length ?? 0) + 1); // Includes previous signatures + from address signature
+        feeData.push({
+          bandwidth: bandwidthUsed,
+          energy: gasUsed,
+          fee: Number(
+            this.rpcProvider.fromSun(
+              bandwidthUsed * bandwidthPrice + energy * energyPrice
+            )
+          ),
+          willRevert: false,
+        });
+        continue;
+      }
+
       if (!msg.hasSignature) {
         const account = await this.rpcProvider.createAccount();
         const dummyMsg = this.createMsg({
@@ -90,11 +130,6 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       } else {
         tx = msg.signedTransaction as TronTransaction;
       }
-
-      // Reference: https://developers.tron.network/docs/faq#5-how-to-calculate-the-bandwidth-and-energy-consumed-when-callingdeploying-a-contract
-      const DATA_HEX_PROTOBUF_LENGTH = 3;
-      const MAX_RESULT_SIZE_IN_TX = 64;
-      const A_SIGNATURE = 67;
       const signatureListSize = tx.signature?.length ?? 1;
       const bandwidthUsed =
         tx.raw_data_hex.length / 2 +
@@ -179,6 +214,7 @@ export class TronProvider extends Chain.Provider<ChainMsg> {
       const tx = await this.rpcProvider.trx.sendRawTransaction(
         msg.signedTransaction
       );
+
       transactions.push(
         Transaction.fromData({
           ...tx,
