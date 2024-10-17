@@ -89,10 +89,7 @@ const IBCTokenTranfer = () => {
       new IndexerDataSource(COSMOS_MANIFESTS[sourceChain])
     );
     const message = provider.createMsg(msgBody);
-    const gas = await provider.estimateFee(
-      [message as ChainMsg],
-      GasFeeSpeed.low
-    );
+    const gas = await provider.estimateFee([message], GasFeeSpeed.low);
     console.log('🚀 ~ handleEstimateGas ~ gas:', gas);
     setMsgBody({ ...msgBody, ...gas[0] });
   };
@@ -102,7 +99,7 @@ const IBCTokenTranfer = () => {
       new IndexerDataSource(COSMOS_MANIFESTS[sourceChain])
     );
     const message = provider.createMsg(msgBody);
-    await signer.sign(message as ChainMsg, derivations);
+    await signer.sign(message, derivations);
     console.log('🚀 ~ handleSign ~ message:', message);
     setChainMsg(message);
   };
