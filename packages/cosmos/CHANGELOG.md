@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.63
+
+### Patch Changes
+
+- 3e2eb16a: chore: remove custom terra code
+
 ## 2.0.62
 
 ### Patch Changes
