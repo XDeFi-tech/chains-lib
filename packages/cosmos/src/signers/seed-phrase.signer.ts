@@ -8,7 +8,6 @@ import {
   pathToString,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { Wallet } from 'ethers';
-import { MnemonicKey } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
@@ -39,18 +38,6 @@ export class SeedPhraseSigner extends Signer.Provider {
         prefix || 'cosmos',
         Uint8Array.from(Buffer.from(evmAddress.slice(2), 'hex'))
       );
-    } else if (
-      pathToString(hdPath).split('/')[2] == "330'" ||
-      prefix === 'terra'
-    ) {
-      const wallet = new MnemonicKey({
-        mnemonic: this._key,
-        coinType: 330, // optional, default
-        account: parseInt(pathToString(hdPath).split('/')[3]), // optional, default
-        index: parseInt(pathToString(hdPath).split('/')[4]), // optional, default
-      });
-
-      return wallet.accAddress('terra');
     } else {
       const [{ address }] = await wallet.getAccounts();
       return address;
