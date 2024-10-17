@@ -65,20 +65,13 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async signMessage(
-    message: Buffer,
-    derivation: string
+    _message: ChainMsg,
+    _derivation: string
   ): Promise<{
     pubKey: PublicKey;
     sig: string;
   }> {
-    const app = new Solana(this.transport as Transport);
-    const { signature } = await app.signOffchainMessage(derivation, message);
-    const addressBuffer = await app.getAddress(derivation);
-    const pubKey = new PublicKey(addressBuffer.address);
-    return {
-      pubKey,
-      sig: bs58.encode(signature),
-    };
+    throw new Error('Unsupported sign message for ledger');
   }
 }
 
