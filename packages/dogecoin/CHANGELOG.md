@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.1.12
+
+### Patch Changes
+
+- e4d0a001: test coverage networked requests (not mocked) for read only (get fees, get balances, get transactions, get utxos) for all chains
+- 302840f1: feat: update trezor lib & create Solana trezor signer
+- Updated dependencies [302840f1]
+  - @xdefi-tech/chains-core@2.0.36
+
 ## 2.1.11
 
 ### Patch Changes

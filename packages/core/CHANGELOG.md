@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.36
+
+### Patch Changes
+
+- 302840f1: feat: update trezor lib & create Solana trezor signer
+
 ## 2.0.35
 
 ### Patch Changes
