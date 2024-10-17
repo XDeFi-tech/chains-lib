@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.13
+
+### Patch Changes
+
+- 1c7bd72b: feat: implement signmessage for hot and hardware wallets
+
 ## 2.1.12
 
 ### Patch Changes
