@@ -15,6 +15,15 @@ import {
   GetCronosEvmBalanceDocument,
   GetCantoEvmBalanceDocument,
   GetGnosisBalanceDocument,
+  GetCeloBalanceDocument,
+  GetScrollBalanceDocument,
+  GetMantleBalanceDocument,
+  GetOpBnbBalanceDocument,
+  GetBaseBalanceDocument,
+  GetLineaBalanceDocument,
+  GetBlastBalanceDocument,
+  GetZkSyncBalanceDocument,
+  GetZetaChainBalanceDocument,
 } from '../../../gql/graphql';
 import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
@@ -54,6 +63,33 @@ export const getBalance = async (chain: EVMChains, address: string) => {
       break;
     case EVMChains.gnosis:
       query = GetGnosisBalanceDocument;
+      break;
+    case EVMChains.celo:
+      query = GetCeloBalanceDocument;
+      break;
+    case EVMChains.scroll:
+      query = GetScrollBalanceDocument;
+      break;
+    case EVMChains.mantle:
+      query = GetMantleBalanceDocument;
+      break;
+    case EVMChains.opBNB:
+      query = GetOpBnbBalanceDocument;
+      break;
+    case EVMChains.base:
+      query = GetBaseBalanceDocument;
+      break;
+    case EVMChains.linea:
+      query = GetLineaBalanceDocument;
+      break;
+    case EVMChains.blast:
+      query = GetBlastBalanceDocument;
+      break;
+    case EVMChains.zkSync:
+      query = GetZkSyncBalanceDocument;
+      break;
+    case EVMChains.zetaChain:
+      query = GetZetaChainBalanceDocument;
       break;
     default:
       if (indexerChain) {

@@ -15,6 +15,12 @@ import {
   GetBaseStatusDocument,
   GetBlastStatusDocument,
   GetZkSyncStatusDocument,
+  GetCeloStatusDocument,
+  GetOpBnbStatusDocument,
+  GetZetaChainStatusDocument,
+  GetMantleStatusDocument,
+  GetLineaStatusDocument,
+  GetScrollStatusDocument,
 } from '../../../gql/graphql';
 import { EVMChains } from '../../../manifests';
 
@@ -59,6 +65,33 @@ export const getStatus = async (chain: string) => {
     case EVMChains.gnosis:
       indexerChain = 'gnosis';
       query = GetGnosisStatusDocument;
+      break;
+    case EVMChains.celo:
+      query = GetCeloStatusDocument;
+      break;
+    case EVMChains.base:
+      query = GetBaseStatusDocument;
+      break;
+    case EVMChains.blast:
+      query = GetBlastStatusDocument;
+      break;
+    case EVMChains.zkSync:
+      query = GetZkSyncStatusDocument;
+      break;
+    case EVMChains.linea:
+      query = GetLineaStatusDocument;
+      break;
+    case EVMChains.mantle:
+      query = GetMantleStatusDocument;
+      break;
+    case EVMChains.opBNB:
+      query = GetOpBnbStatusDocument;
+      break;
+    case EVMChains.zetaChain:
+      query = GetZetaChainStatusDocument;
+      break;
+    case EVMChains.scroll:
+      query = GetScrollStatusDocument;
       break;
     default:
       throw new Error(

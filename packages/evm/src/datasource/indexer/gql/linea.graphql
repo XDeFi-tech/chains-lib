@@ -1,0 +1,99 @@
+query GetLineaBalance($address: String!) {
+  linea {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+        type
+        categories
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query LineaEIP1559GasFees {
+  linea {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}
+
+query GetLineaTransactions($address: String!, $first: Int) {
+  linea {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetLineaStatus {
+  linea {
+    status {
+      lastBlock
+    }
+  }
+}
