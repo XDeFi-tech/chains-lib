@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.14
+
+### Patch Changes
+
+- 094026aa: fix: Signing P2SH transactions for UTXO Ledger fails
+
 ## 2.1.13
 
 ### Patch Changes

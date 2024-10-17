@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.12
+
+### Patch Changes
+
+- 094026aa: fix: Signing P2SH transactions for UTXO Ledger fails
+
 ## 2.1.11
 
 ### Patch Changes
