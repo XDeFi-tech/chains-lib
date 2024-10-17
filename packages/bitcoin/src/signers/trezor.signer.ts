@@ -90,6 +90,19 @@ export class TrezorSigner extends Signer.TrezorProvider {
       throw new Error('Error signing transaction: ' + signedTx.payload.error);
     }
   }
+
+  async signMessage(message: string, derivation: string): Promise<string> {
+    const signature = await TrezorConnect.signMessage({
+      path: derivation,
+      coin: 'btc',
+      message: message,
+    });
+    if (signature.success) {
+      return signature.payload.signature;
+    } else {
+      throw new Error('Error signing message: ' + signature.payload.error);
+    }
+  }
 }
 
 export default TrezorSigner;
