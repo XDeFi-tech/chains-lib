@@ -39,7 +39,7 @@
   "dependencies": {
     "@apollo/client": "3.6.9",
     "@next/bundle-analyzer": "12.3.0",
-    "@trezor/connect-web": "9.1.4",
+    "@trezor/connect-web": "9.4.1",
     "bignumber.js": "9.1.2",
     "graphql": "16.6.0",
     "graphql-tag": "2.12.6",

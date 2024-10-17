@@ -19,7 +19,8 @@ import {
 import { TrezorSigner as LitecoinTrezorSigner } from '@xdefi-tech/chains-litecoin/dist/signers/web';
 import React, { useEffect, useState } from 'react';
 import TrezorConnect from '@trezor/connect-web';
-
+import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
+import { TrezorSigner as SolanaTrezorSigner } from '@xdefi-tech/chains-solana/dist/signers/web';
 const TrezorPage = () => {
   const [chain, setChain] = useState('ethereum');
   const [provider, setProvider] = useState(null);
@@ -41,6 +42,7 @@ const TrezorPage = () => {
     'bitcoincash',
     'litecoin',
     'dogecoin',
+    'solana',
   ];
 
   //   useEffect(() => {
@@ -105,6 +107,16 @@ const TrezorPage = () => {
         setDerivationPath("m/44'/3'/0'/0/0");
         setIsConnected(false);
         break;
+      case 'solana':
+        initProvider = new SolanaProvider(
+          new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
+        );
+        setProvider(initProvider);
+        initSigner = new SolanaTrezorSigner();
+        setSigner(initSigner);
+        setDerivationPath("m/44'/501'/0'/0'");
+        setIsConnected(false);
+        break;
       default:
         initProvider = new EvmProvider(
           new EvmProvider.dataSourceList.IndexerDataSource(EVM_MANIFESTS[chain])
@@ -135,6 +147,17 @@ const TrezorPage = () => {
       setFromAddress(address);
       setIsConnected(EvmTrezorSigner.getInstance().initialized);
     }
+    // await TrezorConnect.init({
+    //   manifest: {
+    //     appUrl: 'localhost',
+    //     email: 'user@example.com',
+    //   },
+    // });
+    // console.log("🚀 ~ handleConnect ~ TrezorConnect:", TrezorConnect)
+    // const address = await TrezorConnect.solanaGetPublicKey({
+    //   path: derivationPath
+    // });
+    // console.log('🚀 ~ handleConnect ~ address:', address);
   };
 
   const handleConfirm = async () => {

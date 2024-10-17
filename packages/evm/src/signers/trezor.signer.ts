@@ -25,7 +25,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async getAddress(derivation: string): Promise<string> {
     const address = await TrezorConnect.ethereumGetAddress({
       path: derivation,
-    });
+    } as any);
     if (address.success) {
       return address.payload.address;
     } else {
@@ -46,7 +46,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         value: txData.value === '0x0' ? '0x00' : txData.value,
         gasPrice: txData.gasPrice,
         data: txData.data,
-      };
+      } as EthereumTransaction;
     } else {
       unsignedTx = {
         to: txData.to,
@@ -57,13 +57,13 @@ export class TrezorSigner extends Signer.TrezorProvider {
         maxFeePerGas: txData.maxFeePerGas,
         maxPriorityFeePerGas: txData.maxPriorityFeePerGas,
         data: txData.data,
-      };
+      } as EthereumTransactionEIP1559;
     }
 
     const signatureResponse = await TrezorConnect.ethereumSignTransaction({
       path: derivation,
       transaction: unsignedTx,
-    });
+    } as any);
 
     if (signatureResponse.success === true) {
       const signature = {
@@ -119,7 +119,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
     const result = await TrezorConnect.ethereumSignMessage({
       path: derivation,
       message: message,
-    });
+    } as any);
 
     if (result.success) {
       return result.payload;

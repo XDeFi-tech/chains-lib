@@ -21,7 +21,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
     const address = await TrezorConnect.getAddress({
       path: derivation,
       coin: 'bch',
-    });
+    } as any);
     if (address.success) {
       return address.payload.address;
     } else {

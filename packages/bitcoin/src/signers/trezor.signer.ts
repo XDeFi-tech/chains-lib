@@ -19,7 +19,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
     const address = await TrezorConnect.getAddress({
       path: derivation,
       coin: 'btc',
-    });
+    } as any);
     if (address.success) {
       return address.payload.address;
     } else {
@@ -77,7 +77,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
 
     const unsignedTx: Params<SignTransaction> = {
       inputs: inputs,
-      outputs: outputs,
+      outputs: outputs as any,
       coin: 'btc',
       serialize: true,
     };
