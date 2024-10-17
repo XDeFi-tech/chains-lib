@@ -85,21 +85,33 @@ export class LedgerSigner extends Signer.Provider {
     });
 
     const outputScriptHex = outputWriter.buffer().toString('hex');
+    const additionals = await this.getTransactionAdditionals(derivation);
 
     const data: CreateTransactionArg = {
       inputs: inputs.map((utxo: UTXO) => [
         app.splitTransaction(utxo.txHex, true),
         utxo.index,
+        undefined,
+        undefined,
       ]),
       associatedKeysets: Array(inputs.length).fill(derivation),
       outputScriptHex,
-      segwit: true,
-      additionals: ['bech32'],
+      segwit: !derivation.startsWith(`m/44'`),
+      additionals: additionals,
     };
 
     const signedTx = await app.createPaymentTransaction(data);
 
     msg.sign(signedTx);
+  }
+
+  private async getTransactionAdditionals(derivation: string) {
+    const additionals = [];
+    if (derivation.startsWith(`m/84'`)) {
+      additionals.push('bech32');
+    }
+
+    return additionals;
   }
 }
 

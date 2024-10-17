@@ -34,31 +34,47 @@ const LedgerConnect = () => {
   const [toAddress, setToAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [asset, setAsset] = useState('');
-  const [chain, setChain] = useState('thor');
+  const [chain, setChain] = useState('litecoin');
   const [data, setData] = useState('');
   const [memo, setMemo] = useState('');
-  const [derivedPath, setDerivedPath] = useState("44'/931'/0'/0/0");
+  const [derivedPath, setDerivedPath] = useState("m/84'/2'/0'/0/0");
 
+  const getAddressType = (derivedPath: string) => {
+    if (derivedPath.startsWith("m/44'")) {
+      return 'legacy';
+    } else if (derivedPath.startsWith("m/49'")) {
+      return 'p2sh';
+    } else if (derivedPath.startsWith("m/84'")) {
+      return 'bech32';
+    } else if (derivedPath.startsWith("m/86'")) {
+      return 'bech32m';
+    }
+  };
   const connectLedger = async () => {
     try {
       const transport = await Transport.create();
       let signer;
       if (chain === 'litecoin') {
-        setDerivedPath("m/84'/2'/0'/0/0");
         signer = new LitecoinLedgerSigner(transport as any);
-        setAddress(await signer.getAddress("m/84'/2'/0'/0/0", 'bech32'));
+        setAddress(
+          await signer.getAddress(derivedPath, getAddressType(derivedPath))
+        );
       } else if (chain === 'bitcoin') {
-        setDerivedPath("m/84'/0'/0'/0/0");
         signer = new BitcoinLedgerSigner(transport as any);
-        setAddress(await signer.getAddress("m/84'/0'/0'/0/0", 'bech32'));
+        console.log('🚀 ~ connectLedger ~ derivedPath:', derivedPath);
+        console.log(
+          '🚀 ~ connectLedger ~ getAddressType(derivedPath):',
+          getAddressType(derivedPath)
+        );
+        setAddress(
+          await signer.getAddress(derivedPath, getAddressType(derivedPath))
+        );
       } else if (chain === 'thor') {
-        setDerivedPath("m/44'/931'/0'/0/0");
         signer = new ThorLedgerSigner(transport as any);
-        setAddress(await signer.getAddress("44'/931'/0'/0/0"));
+        setAddress(await signer.getAddress(derivedPath));
       } else if (chain === 'solana') {
-        setDerivedPath("44'/501'/0'/0'");
         signer = new SolanaLedgerSigner(transport as any);
-        setAddress(await signer.getAddress("44'/501'/0'/0'"));
+        setAddress(await signer.getAddress(derivedPath));
       }
       setSigner(signer);
       setConnected(true);
@@ -110,7 +126,6 @@ const LedgerConnect = () => {
             amount: amount,
             denom: asset,
             decimals: 8,
-            gasLimit: '500000000',
           })
         : provider.createMsg({
             from: address,
@@ -141,6 +156,15 @@ const LedgerConnect = () => {
             <option value="thor">Thor</option>
             <option value="solana">Solana</option>
           </select>
+        </label>
+        <br />
+        <label>
+          Derivation Path:
+          <input
+            type="text"
+            value={derivedPath}
+            onChange={(e) => setDerivedPath(e.target.value)}
+          />
         </label>
       </div>
       {connected ? (
