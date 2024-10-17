@@ -249,6 +249,14 @@ describe('chain.provider', () => {
     const balanceData = await balance.getData();
     expect(balanceData.some((data) => data.asset.native === true)).toBe(true);
   });
+
+  it('verifyAddress() should return true', async () => {
+    const isValid = CosmosProvider.verifyAddress(
+      'terra1elsr769k4kcgap5kgy9fcetzrwdw05qr85gqra',
+      'terra'
+    );
+    expect(isValid).toBe(true);
+  });
 });
 
 describe('chain.provider', () => {
