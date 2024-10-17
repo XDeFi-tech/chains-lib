@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.35
+
+### Patch Changes
+
+- 9767f9d9: feat: update getMaxAmountToSend method
+
 ## 2.0.34
 
 ### Patch Changes

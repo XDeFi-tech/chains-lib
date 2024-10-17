@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.60
+
+### Patch Changes
+
+- 9767f9d9: feat: update getMaxAmountToSend method
+- Updated dependencies [9767f9d9]
+  - @xdefi-tech/chains-core@2.0.35
+
 ## 2.0.59
 
 ### Patch Changes
