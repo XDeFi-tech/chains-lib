@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.63
+
+### Patch Changes
+
+- 817c1867: chore: fix type error
+
 ## 2.0.62
 
 ### Patch Changes

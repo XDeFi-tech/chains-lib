@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.61
+
+### Patch Changes
+
+- 817c1867: chore: fix type error
+
 ## 2.0.60
 
 ### Patch Changes
