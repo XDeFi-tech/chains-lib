@@ -1,10 +1,16 @@
-import { Msg as BaseMsg, Coin } from '@xdefi-tech/chains-core';
+import {
+  Msg as BaseMsg,
+  Coin,
+  MsgEncoding,
+  NumberIsh,
+} from '@xdefi-tech/chains-core';
 import TronWeb, { TronTransaction } from 'tronweb';
 import { parseUnits } from 'ethers';
 import BigNumber from 'bignumber.js';
 
 import { TronProvider } from './chain.provider';
 import { TRON_MANIFEST } from './manifests';
+import { buildTransactionFromJsonRpc } from './utils/build-transaction';
 
 export enum TokenType {
   None = 'None',
@@ -27,16 +33,21 @@ export interface TronEnergyEstimate {
 export interface MsgBody {
   to: string;
   from: string;
-  amount: string;
+  amount: NumberIsh;
   tokenType?: TokenType;
   contractAddress?: string;
   tokenId?: string;
   decimals?: number;
+  data?: string;
 }
 
 export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
   signedTransaction: unknown;
   declare provider: TronProvider;
+
+  constructor(data: MsgBody, provider: TronProvider, encoding: MsgEncoding) {
+    super(data, provider, encoding);
+  }
 
   public toData(): MsgBody {
     return {
@@ -47,6 +58,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
       contractAddress: this.data?.contractAddress,
       tokenId: this.data?.tokenId,
       decimals: this.data?.decimals,
+      data: this.data?.data,
     };
   }
   async buildTx(): Promise<TronTransaction> {
@@ -56,13 +68,34 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
 
     const data = this.toData();
 
+    if (this.encoding === MsgEncoding.string && data.data) {
+      const rawTx = JSON.parse(data.data);
+      const contract = rawTx.raw_data.contract[0].parameter.value;
+      const energy = await this.provider.estimateFee([this]);
+      const gas = TronWeb.toSun(energy[0].fee);
+      const tx = buildTransactionFromJsonRpc(
+        this.provider.httpProvider,
+        contract.owner_address,
+        contract.contract_address,
+        contract.call_value,
+        contract.data,
+        Number(gas)
+      );
+      return tx;
+      // return {
+      //   ...transaction,
+      //   raw_data: [transaction.raw_data],
+      // };
+      // return JSON.parse(data.data);
+    }
+
     if (data.tokenType === TokenType.TRC10) {
       if (!data.tokenId) {
         throw new Error('TRX10 Token ID not provided');
       }
       const tx = tronWeb.transactionBuilder.sendAsset(
         data.to,
-        parseInt(tronWeb.toSun(data.amount)),
+        parseInt(tronWeb.toSun(data.amount.toString())),
         data.tokenId,
         data.from
       );
@@ -100,7 +133,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
     } else {
       const tx = tronWeb.transactionBuilder.sendTrx(
         data.to,
-        parseInt(tronWeb.toSun(data.amount)),
+        parseInt(tronWeb.toSun(data.amount.toString())),
         data.from
       );
       return tx;

@@ -35,3 +35,37 @@ export const estimateEnergy = async (
 
   throw new Error('Error Estimating Energy!');
 };
+
+export const estimateEnergyForRawTx = async (
+  axiosProvider: AxiosInstance,
+  transaction: any
+) => {
+  const { raw_data } = transaction;
+  const contract = raw_data.contract[0].parameter.value;
+  const response = await axiosProvider.post(
+    '/jsonrpc',
+    JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'eth_estimateGas',
+      params: [
+        {
+          to: contract.contract_address,
+          from: contract.owner_address,
+          value: `0x${BigInt(contract.call_value).toString(16)}`,
+          data: contract.data,
+        },
+      ],
+    }),
+    {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  if (response.status === 200 && response.data.result) {
+    return Number(response.data.result);
+  }
+  throw new Error('Error Estimating Energy!');
+};

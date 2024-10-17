@@ -45,7 +45,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should sign a ChainMsg with the private key', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: txInput.amount,
@@ -56,7 +56,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should throw when signing a TRC10 TX without a token id', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -69,7 +69,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should sign a TRC20 TX with the private key', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -83,7 +83,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should sign a TRC20 TX with the private key', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -97,7 +97,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should throw when signing a TRC20 TX without decimals', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -111,7 +111,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should throw when signing a TRC20 TX without a contract address', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -124,7 +124,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should signMessage a TRC20 TX with the private key', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,
@@ -151,7 +151,7 @@ describe('tron private-key.signer', () => {
   });
 
   it('should signTransaction a TRC20 TX with the private key', async () => {
-    const msg = new ChainMsg({
+    const msg = provider.createMsg({
       to: txInput.to,
       from: txInput.from,
       amount: 0.000001,

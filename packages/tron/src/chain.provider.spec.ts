@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import TronWeb from 'tronweb';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
 
+import * as estimateEnergyModule from './utils/estimate-energy';
 import { ChainMsg, TokenType } from './msg';
 import { TronProvider } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
@@ -25,6 +27,10 @@ jest.spyOn(TronWeb, 'createAccount').mockResolvedValue({
     '0404B604296010A55D40000B798EE8454ECCC1F8900E70B1ADF47C9887625D8BAE3866351A6FA0B5370623268410D33D345F63344121455849C9C28F9389ED9731',
 });
 
+jest
+  .spyOn(estimateEnergyModule, 'estimateEnergyForRawTx')
+  .mockResolvedValue(Number('0x1ced6'));
+
 const mockedAccountResource = jest.spyOn(
   ChainDataSource.prototype,
   'getAccountResource'
@@ -37,7 +43,7 @@ describe('chain.providers.chain', () => {
   const messageData = {
     to: 'TN4JsVEuLVBG9Ru7YSjDxkTdoRTychnJkH',
     from: 'TJrf5jjCXsc19sQHb6GWBmzT1rbJivmR52',
-    amount: 0.000001,
+    amount: '0.000001',
   };
   const pk = '9e30f488d7079ddcba9f012506d5dda99df9eba6e8d98aaab69e2c4ac1c6f656';
 
@@ -93,7 +99,11 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for an unsigned TRX transaction using any data source', async () => {
-    let msg = new ChainMsg({ ...messageData, provider: providers.chain });
+    let msg = new ChainMsg(
+      { ...messageData },
+      providers.chain,
+      MsgEncoding.object
+    );
 
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees.length).toEqual(1);
@@ -101,7 +111,11 @@ describe('chain.providers.chain', () => {
     expect(fees[0].energy).toEqual(0);
     expect(fees[0].fee).toEqual(0);
 
-    msg = new ChainMsg({ ...messageData, provider: providers.indexer });
+    msg = new ChainMsg(
+      { ...messageData },
+      providers.indexer,
+      MsgEncoding.object
+    );
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
@@ -110,13 +124,16 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for an unsigned TRC20 transaction using any data source', async () => {
-    let msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.chain,
-    });
+    let msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.chain,
+      MsgEncoding.object
+    );
 
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
@@ -124,13 +141,16 @@ describe('chain.providers.chain', () => {
     expect(fees[0].fee).toEqual((130285 * energyPrice) / 1000000); // Free bandwidth (600) > 345, no need for bandwidth fee
     expect(fees[0].willRevert).toBeFalsy();
 
-    msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.indexer,
-    });
+    msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.indexer,
+      MsgEncoding.object
+    );
 
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
@@ -140,7 +160,11 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
-    const msg = new ChainMsg({ ...messageData, provider: providers.chain });
+    const msg = new ChainMsg(
+      { ...messageData },
+      providers.chain,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -152,7 +176,11 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for a TRX transaction using an indexer data source', async () => {
-    const msg = new ChainMsg({ ...messageData, provider: providers.indexer });
+    const msg = new ChainMsg(
+      { ...messageData },
+      providers.indexer,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -164,13 +192,16 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for a TRC20 transaction using a chain data source', async () => {
-    const msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.chain,
-    });
+    const msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.chain,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -183,13 +214,16 @@ describe('chain.providers.chain', () => {
   });
 
   it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
-    const msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.indexer,
-    });
+    const msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.indexer,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -207,13 +241,16 @@ describe('chain.providers.chain', () => {
       freeEnergy: 54895,
     });
 
-    const msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.indexer,
-    });
+    const msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.indexer,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -343,5 +380,48 @@ describe('chain.providers.chain', () => {
     expect(
       TronProvider.verifyAddress('THBrvgLEVC9uR6CWfZn792qqze7A7RSpuk')
     ).toBe(true);
+  });
+
+  it('should estimate energy for a raw transaction', async () => {
+    const msg = providers.indexer.createMsg(
+      {
+        from: 'TQ7i8QcuUCyRKg3ak39iQrecSj2hArwWB4',
+        to: 'TQ7i8QcuUCyRKg3ak39iQrecSj2hArwWB4',
+        amount: 0,
+        data: JSON.stringify({
+          visible: false,
+          txID: '0bae380e6bd43fd69c0f9d231030713f4531570006b52f8da6042511f85399e2',
+          raw_data: {
+            contract: [
+              {
+                parameter: {
+                  value: {
+                    data: 'cef952290000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000000000000000000000000000000000000004d12f0000000000000000000000009b2d6704e2a10f8cc19d4f9f9eef5782382e716500000000000000000000000000000000000000000000000000000000671022c900000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002763100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+                    owner_address: '419b2d6704e2a10f8cc19d4f9f9eef5782382e7165',
+                    contract_address:
+                      '4158baea0b354f7b333b3b1563c849e979ae4e2002',
+                    call_value: 2000000,
+                  },
+                  type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+                },
+                type: 'TriggerSmartContract',
+              },
+            ],
+            ref_block_bytes: '1fa1',
+            ref_block_hash: 'd9f423963b59548d',
+            expiration: 1729050789000,
+            fee_limit: 500000000,
+            timestamp: 1729050729428,
+          },
+          raw_data_hex:
+            '0a021fa12208d9f423963b59548d408889d59ba9325af405081f12ef050a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412b9050a15419b2d6704e2a10f8cc19d4f9f9eef5782382e716512154158baea0b354f7b333b3b1563c849e979ae4e20021880897a228405cef952290000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000000000000000000000000000000000000004d12f0000000000000000000000009b2d6704e2a10f8cc19d4f9f9eef5782382e716500000000000000000000000000000000000000000000000000000000671022c900000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000070d4b7d19ba932900180cab5ee01',
+        }),
+      },
+      MsgEncoding.string
+    );
+    const gas = await providers.indexer.estimateFee([msg]);
+    expect(gas[0].energy).toEqual(Number('0x1ced6'));
+    expect(gas[0].bandwidth).toEqual(928);
+    expect(gas[0].fee).toEqual(1.17685);
   });
 });
