@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.49
+
+### Patch Changes
+
+- 212f8b34: feat: Implement TRON signTransaction and fee estimation
+
 ## 2.0.48
 
 ### Patch Changes
