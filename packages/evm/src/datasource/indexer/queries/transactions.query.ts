@@ -18,6 +18,12 @@ import {
   GetBaseTransactionsDocument,
   GetBlastTransactionsDocument,
   GetZkSyncTransactionsDocument,
+  GetCeloTransactionsDocument,
+  GetMantleTransactionsDocument,
+  GetLineaTransactionsDocument,
+  GetZetaChainTransactionsDocument,
+  GetOpBnbTransactionsDocument,
+  GetScrollTransactionsDocument,
 } from '../../../gql/graphql';
 import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
@@ -62,6 +68,33 @@ export const getTransactions = async (
       break;
     case EVMChains.gnosis:
       query = GetGnosisTransactionsDocument;
+      break;
+    case EVMChains.celo:
+      query = GetCeloTransactionsDocument;
+      break;
+    case EVMChains.base:
+      query = GetBaseTransactionsDocument;
+      break;
+    case EVMChains.blast:
+      query = GetBlastTransactionsDocument;
+      break;
+    case EVMChains.zkSync:
+      query = GetZkSyncTransactionsDocument;
+      break;
+    case EVMChains.linea:
+      query = GetLineaTransactionsDocument;
+      break;
+    case EVMChains.mantle:
+      query = GetMantleTransactionsDocument;
+      break;
+    case EVMChains.opBNB:
+      query = GetOpBnbTransactionsDocument;
+      break;
+    case EVMChains.zetaChain:
+      query = GetZetaChainTransactionsDocument;
+      break;
+    case EVMChains.scroll:
+      query = GetScrollTransactionsDocument;
       break;
     default:
       if (indexerChain) {

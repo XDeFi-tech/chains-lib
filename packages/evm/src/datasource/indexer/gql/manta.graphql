@@ -1,0 +1,21 @@
+query MantaEIP1559GasFees {
+  manta {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}

@@ -4594,6 +4594,29 @@ export type RouteTypeV2 = {
   tradesRoute: Array<RouteTradeTypeV2>;
 };
 
+export type RouteTypeV3 = {
+  __typename?: 'RouteTypeV3';
+  addresses: Array<AddressRouteTypeV2>;
+  amountIn: Scalars['Decimal'];
+  approvalInfiniteFlag?: Maybe<Scalars['Boolean']>;
+  computedAutoSlippage: Scalars['Decimal'];
+  destAddress: Scalars['String'];
+  errorBuildingRoute?: Maybe<Scalars['String']>;
+  /** Fee tier that the wallet requesting the quote has. Fee tier are defined by the number XDEFI & vXDEFI tokens held by the wallet. The more tokens the wallet has, the lower the fee tier */
+  feeTier: Scalars['Int'];
+  gasPrices?: Maybe<Scalars['JSON']>;
+  /**
+   * On chain wallet address of the referrer. Must be unique
+   * @deprecated Not necessary anymore, now this data is stored in the Campaigns service
+   */
+  isOptIn?: Maybe<Scalars['Boolean']>;
+  priceImpact: Scalars['String'];
+  priceRate: Scalars['Decimal'];
+  priceRateText: Scalars['String'];
+  slippage: Scalars['Decimal'];
+  tradesRoute: Array<RouteTradeTypeV2>;
+};
+
 export type RoutingChainType = {
   __typename?: 'RoutingChainType';
   name: Scalars['String'];
@@ -4775,6 +4798,7 @@ export type RoutingTypeV2 = {
   refuelInfo: RefuelInfoType;
   routeV2: RouteTypeV2;
   routeV2TokensFilter: SwapFilteredTokenRes;
+  routeV3: RouteTypeV3;
   tokenV2: RoutingTokenTypeV2;
   tokensV2: Array<RoutingTokenTypeV2>;
   tradeV2: RouteTransactionTradeTypeV2;
@@ -4845,6 +4869,18 @@ export type RoutingTypeV2RouteV2TokensFilterArgs = {
   slippage: Scalars['String'];
   srcToken: Scalars['String'];
   timeout?: Scalars['Int'];
+};
+
+export type RoutingTypeV2RouteV3Args = {
+  addresses: Array<AddressRouteInputTypeV2>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destToken: Scalars['String'];
+  infiniteApproval?: InputMaybe<Scalars['Boolean']>;
+  isOptedIn?: InputMaybe<Scalars['Boolean']>;
+  referral?: InputMaybe<ReferralInputType>;
+  slippage: Scalars['String'];
+  srcToken: Scalars['String'];
 };
 
 export type RoutingTypeV2TokenV2Args = {
@@ -6778,6 +6814,36 @@ export type GetBaseStatusQuery = {
   };
 };
 
+export type BeamEip1559GasFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type BeamEip1559GasFeesQuery = {
+  __typename?: 'Query';
+  beam: {
+    __typename?: 'Beam';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
 export type GetBlastBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -7034,6 +7100,120 @@ export type GetCantoEvmStatusQuery = {
   __typename?: 'Query';
   cantoEVM: {
     __typename?: 'CantoEVM';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetCeloBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetCeloBalanceQuery = {
+  __typename?: 'Query';
+  celo: {
+    __typename?: 'Celo';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type CeloDefaultGasFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CeloDefaultGasFeesQuery = {
+  __typename?: 'Query';
+  celo: {
+    __typename?: 'Celo';
+    fee?: {
+      __typename?: 'DefaultGasFee';
+      high?: number | null;
+      low?: number | null;
+      medium?: number | null;
+    } | null;
+  };
+};
+
+export type GetCeloTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetCeloTransactionsQuery = {
+  __typename?: 'Query';
+  celo: {
+    __typename?: 'Celo';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetCeloStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCeloStatusQuery = {
+  __typename?: 'Query';
+  celo: {
+    __typename?: 'Celo';
     status: { __typename?: 'Status'; lastBlock: number };
   };
 };
@@ -7562,6 +7742,425 @@ export type GetGnosisStatusQuery = {
   };
 };
 
+export type GetLineaBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetLineaBalanceQuery = {
+  __typename?: 'Query';
+  linea: {
+    __typename?: 'Linea';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type LineaEip1559GasFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LineaEip1559GasFeesQuery = {
+  __typename?: 'Query';
+  linea: {
+    __typename?: 'Linea';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
+export type GetLineaTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetLineaTransactionsQuery = {
+  __typename?: 'Query';
+  linea: {
+    __typename?: 'Linea';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetLineaStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetLineaStatusQuery = {
+  __typename?: 'Query';
+  linea: {
+    __typename?: 'Linea';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type MantaEip1559GasFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MantaEip1559GasFeesQuery = {
+  __typename?: 'Query';
+  manta: {
+    __typename?: 'Manta';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
+export type GetMantleBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetMantleBalanceQuery = {
+  __typename?: 'Query';
+  mantle: {
+    __typename?: 'Mantle';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type MantleEip1559GasFeesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type MantleEip1559GasFeesQuery = {
+  __typename?: 'Query';
+  mantle: {
+    __typename?: 'Mantle';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
+export type GetMantleTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetMantleTransactionsQuery = {
+  __typename?: 'Query';
+  mantle: {
+    __typename?: 'Mantle';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetMantleStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetMantleStatusQuery = {
+  __typename?: 'Query';
+  mantle: {
+    __typename?: 'Mantle';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetOpBnbBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetOpBnbBalanceQuery = {
+  __typename?: 'Query';
+  opBNB: {
+    __typename?: 'OpBNB';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type OpBnbeip1559GasFeesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OpBnbeip1559GasFeesQuery = {
+  __typename?: 'Query';
+  opBNB: {
+    __typename?: 'OpBNB';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
+export type GetOpBnbTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetOpBnbTransactionsQuery = {
+  __typename?: 'Query';
+  opBNB: {
+    __typename?: 'OpBNB';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetOpBnbStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetOpBnbStatusQuery = {
+  __typename?: 'Query';
+  opBNB: {
+    __typename?: 'OpBNB';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
 export type GetOptimismBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -7824,6 +8423,105 @@ export type GetPolygonStatusQuery = {
   };
 };
 
+export type GetScrollBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetScrollBalanceQuery = {
+  __typename?: 'Query';
+  scroll: {
+    __typename?: 'Scroll';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type GetScrollTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetScrollTransactionsQuery = {
+  __typename?: 'Query';
+  scroll: {
+    __typename?: 'Scroll';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetScrollStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetScrollStatusQuery = {
+  __typename?: 'Query';
+  scroll: {
+    __typename?: 'Scroll';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
 export type GetSmartChainBalanceQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
@@ -7936,6 +8634,137 @@ export type GetSmartChainStatusQuery = {
   __typename?: 'Query';
   binanceSmartChain: {
     __typename?: 'BinanceSmartChain';
+    status: { __typename?: 'Status'; lastBlock: number };
+  };
+};
+
+export type GetZetaChainBalanceQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+export type GetZetaChainBalanceQuery = {
+  __typename?: 'Query';
+  zetachain: {
+    __typename?: 'ZetaChain';
+    balances: Array<{
+      __typename?: 'Balance';
+      address: string;
+      asset: {
+        __typename?: 'CryptoAsset';
+        symbol?: string | null;
+        contract?: string | null;
+        id?: string | null;
+        name?: string | null;
+        image?: string | null;
+        chain?: string | null;
+        decimals?: number | null;
+        type?: AssetInternalType | null;
+        categories?: Array<TokenCategory> | null;
+        price?: {
+          __typename?: 'AssetAmountType';
+          amount: string;
+          dayPriceChange?: string | null;
+        } | null;
+      };
+      amount: { __typename?: 'Amount'; value: string };
+    }>;
+  };
+};
+
+export type ZetaChainEip1559GasFeesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type ZetaChainEip1559GasFeesQuery = {
+  __typename?: 'Query';
+  zetachain: {
+    __typename?: 'ZetaChain';
+    fee?: {
+      __typename?: 'EIP1559GasFee';
+      high?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      low?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+      medium?: {
+        __typename?: 'EIP1559Fee';
+        baseFeePerGas: number;
+        maxFeePerGas: number;
+        priorityFeePerGas: number;
+      } | null;
+    } | null;
+  };
+};
+
+export type GetZetaChainTransactionsQueryVariables = Exact<{
+  address: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetZetaChainTransactionsQuery = {
+  __typename?: 'Query';
+  zetachain: {
+    __typename?: 'ZetaChain';
+    transactions: {
+      __typename?: 'EVMTransactionV2Connection';
+      pageInfo: {
+        __typename?: 'PageInfo';
+        endCursor?: string | null;
+        hasNextPage: boolean;
+      };
+      edges: Array<{
+        __typename?: 'EVMTransactionV2Edge';
+        node: {
+          __typename?: 'EVMTransactionV2';
+          hash: string;
+          blockIndex: number;
+          blockNumber: number;
+          status: string;
+          value: string;
+          timestamp: any;
+          fromAddress: string;
+          transfers: Array<{
+            __typename?: 'AssetTransferV2';
+            fromAddress?: string | null;
+            toAddress?: string | null;
+            amount: { __typename?: 'Amount'; value: string };
+            asset:
+              | {
+                  __typename?: 'CryptoAsset';
+                  chain?: string | null;
+                  contract?: string | null;
+                  decimals?: number | null;
+                  id?: string | null;
+                  image?: string | null;
+                  name?: string | null;
+                  symbol?: string | null;
+                  price?: {
+                    __typename?: 'AssetAmountType';
+                    amount: string;
+                    scalingFactor: number;
+                  } | null;
+                }
+              | { __typename?: 'NftAsset' };
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+export type GetZetaChainStatusQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetZetaChainStatusQuery = {
+  __typename?: 'Query';
+  zetachain: {
+    __typename?: 'ZetaChain';
     status: { __typename?: 'Status'; lastBlock: number };
   };
 };
@@ -10254,6 +11083,114 @@ export const GetBaseStatusDocument = {
     },
   ],
 } as unknown as DocumentNode<GetBaseStatusQuery, GetBaseStatusQueryVariables>;
+export const BeamEip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BeamEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'beam' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  BeamEip1559GasFeesQuery,
+  BeamEip1559GasFeesQueryVariables
+>;
 export const GetBlastBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -11419,6 +12356,518 @@ export const GetCantoEvmStatusDocument = {
   GetCantoEvmStatusQuery,
   GetCantoEvmStatusQueryVariables
 >;
+export const GetCeloBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCeloBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'celo' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetCeloBalanceQuery, GetCeloBalanceQueryVariables>;
+export const CeloDefaultGasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'CeloDefaultGasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'celo' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'high' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'low' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CeloDefaultGasFeesQuery,
+  CeloDefaultGasFeesQueryVariables
+>;
+export const GetCeloTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCeloTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'celo' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCeloTransactionsQuery,
+  GetCeloTransactionsQueryVariables
+>;
+export const GetCeloStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCeloStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'celo' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetCeloStatusQuery, GetCeloStatusQueryVariables>;
 export const GetCronosEvmBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -13755,6 +15204,1860 @@ export const GetGnosisStatusDocument = {
   GetGnosisStatusQuery,
   GetGnosisStatusQueryVariables
 >;
+export const GetLineaBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetLineaBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'linea' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetLineaBalanceQuery,
+  GetLineaBalanceQueryVariables
+>;
+export const LineaEip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'LineaEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'linea' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  LineaEip1559GasFeesQuery,
+  LineaEip1559GasFeesQueryVariables
+>;
+export const GetLineaTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetLineaTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'linea' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetLineaTransactionsQuery,
+  GetLineaTransactionsQueryVariables
+>;
+export const GetLineaStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetLineaStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'linea' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetLineaStatusQuery, GetLineaStatusQueryVariables>;
+export const MantaEip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'MantaEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'manta' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  MantaEip1559GasFeesQuery,
+  MantaEip1559GasFeesQueryVariables
+>;
+export const GetMantleBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetMantleBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'mantle' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetMantleBalanceQuery,
+  GetMantleBalanceQueryVariables
+>;
+export const MantleEip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'MantleEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'mantle' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  MantleEip1559GasFeesQuery,
+  MantleEip1559GasFeesQueryVariables
+>;
+export const GetMantleTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetMantleTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'mantle' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetMantleTransactionsQuery,
+  GetMantleTransactionsQueryVariables
+>;
+export const GetMantleStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetMantleStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'mantle' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetMantleStatusQuery,
+  GetMantleStatusQueryVariables
+>;
+export const GetOpBnbBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetOpBNBBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'opBNB' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetOpBnbBalanceQuery,
+  GetOpBnbBalanceQueryVariables
+>;
+export const OpBnbeip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'OpBNBEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'opBNB' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  OpBnbeip1559GasFeesQuery,
+  OpBnbeip1559GasFeesQueryVariables
+>;
+export const GetOpBnbTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetOpBNBTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'opBNB' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetOpBnbTransactionsQuery,
+  GetOpBnbTransactionsQueryVariables
+>;
+export const GetOpBnbStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetOpBNBStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'opBNB' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetOpBnbStatusQuery, GetOpBnbStatusQueryVariables>;
 export const GetOptimismBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -14923,6 +18226,482 @@ export const GetPolygonStatusDocument = {
   GetPolygonStatusQuery,
   GetPolygonStatusQueryVariables
 >;
+export const GetScrollBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetScrollBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'scroll' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetScrollBalanceQuery,
+  GetScrollBalanceQueryVariables
+>;
+export const GetScrollTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetScrollTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'scroll' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetScrollTransactionsQuery,
+  GetScrollTransactionsQueryVariables
+>;
+export const GetScrollStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetScrollStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'scroll' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetScrollStatusQuery,
+  GetScrollStatusQueryVariables
+>;
 export const GetSmartChainBalanceDocument = {
   kind: 'Document',
   definitions: [
@@ -15440,6 +19219,590 @@ export const GetSmartChainStatusDocument = {
 } as unknown as DocumentNode<
   GetSmartChainStatusQuery,
   GetSmartChainStatusQueryVariables
+>;
+export const GetZetaChainBalanceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetZetaChainBalance' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'zetachain' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'balances' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'symbol' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'contract' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'image' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'chain' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'decimals' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'price' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'amount' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'dayPriceChange',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'type' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'categories' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'amount' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetZetaChainBalanceQuery,
+  GetZetaChainBalanceQueryVariables
+>;
+export const ZetaChainEip1559GasFeesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'ZetaChainEIP1559GasFees' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'zetachain' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fee' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'high' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'low' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'medium' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'baseFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'maxFeePerGas' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'priorityFeePerGas',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ZetaChainEip1559GasFeesQuery,
+  ZetaChainEip1559GasFeesQueryVariables
+>;
+export const GetZetaChainTransactionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetZetaChainTransactions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'address' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'zetachain' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'transactions' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'address' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'pageInfo' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'endCursor' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasNextPage' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'node' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'hash' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'blockIndex' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'blockNumber',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'status' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'value' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'timestamp' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'fromAddress',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'transfers' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'amount',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'value',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'asset',
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'CryptoAsset',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'chain',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'contract',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'decimals',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'id',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'image',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'name',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'price',
+                                                      },
+                                                      selectionSet: {
+                                                        kind: 'SelectionSet',
+                                                        selections: [
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value: 'amount',
+                                                            },
+                                                          },
+                                                          {
+                                                            kind: 'Field',
+                                                            name: {
+                                                              kind: 'Name',
+                                                              value:
+                                                                'scalingFactor',
+                                                            },
+                                                          },
+                                                        ],
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'symbol',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'fromAddress',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'toAddress',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetZetaChainTransactionsQuery,
+  GetZetaChainTransactionsQueryVariables
+>;
+export const GetZetaChainStatusDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetZetaChainStatus' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'zetachain' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'status' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastBlock' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetZetaChainStatusQuery,
+  GetZetaChainStatusQueryVariables
 >;
 export const GetZkSyncBalanceDocument = {
   kind: 'Document',

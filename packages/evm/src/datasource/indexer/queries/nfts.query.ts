@@ -134,6 +134,83 @@ export const GNOSIS_NFTS_QUERY = gql`
   ${LEGACY_NFTS_FRAGMENT}
 `;
 
+export const LINEA_NFTS_QUERY = gql`
+  query LineaNFTS($address: String!) {
+    linea {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const BASE_NFTS_QUERY = gql`
+  query BaseNFTS($address: String!) {
+    base {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const BLAST_NFTS_QUERY = gql`
+  query BlastNFTS($address: String!) {
+    blast {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const ZKSYNC_NFTS_QUERY = gql`
+  query ZKSyncNFTS($address: String!) {
+    zkSync {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const MANTLE_NFTS_QUERY = gql`
+  query MantleNFTS($address: String!) {
+    mantle {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const OPBNB_NFTS_QUERY = gql`
+  query OpBNBNFTS($address: String!) {
+    opBNB {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
+export const CELO_NFTS_QUERY = gql`
+  query CeloNFTS($address: String!) {
+    celo {
+      legacyNFTs(address: $address) {
+        ...LegacyNftData
+      }
+    }
+  }
+  ${LEGACY_NFTS_FRAGMENT}
+`;
+
 export const getNFTBalance = async (chain: string, address: string) => {
   let query;
   const chainName: string = EVM_INDEXER_CHAIN[chain];
@@ -170,6 +247,27 @@ export const getNFTBalance = async (chain: string, address: string) => {
       break;
     case 'gnosis':
       query = GNOSIS_NFTS_QUERY;
+      break;
+    case 'linea':
+      query = LINEA_NFTS_QUERY;
+      break;
+    case 'base':
+      query = BASE_NFTS_QUERY;
+      break;
+    case 'blast':
+      query = BLAST_NFTS_QUERY;
+      break;
+    case 'zksync':
+      query = ZKSYNC_NFTS_QUERY;
+      break;
+    case 'mantle':
+      query = MANTLE_NFTS_QUERY;
+      break;
+    case 'opBNB':
+      query = OPBNB_NFTS_QUERY;
+      break;
+    case 'celo':
+      query = CELO_NFTS_QUERY;
       break;
     default:
       throw new Error('Chain do not support NFTs');

@@ -1,0 +1,99 @@
+query GetZetaChainBalance($address: String!) {
+  zetachain {
+    balances(address: $address) {
+      address
+      asset {
+        symbol
+        contract
+        id
+        name
+        image
+        chain
+        decimals
+        price {
+          amount
+          dayPriceChange
+        }
+        type
+        categories
+      }
+      amount {
+        value
+      }
+    }
+  }
+}
+
+query ZetaChainEIP1559GasFees {
+  zetachain {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}
+
+query GetZetaChainTransactions($address: String!, $first: Int) {
+  zetachain {
+    transactions(address: $address, first: $first) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          hash
+          blockIndex
+          blockNumber
+          status
+          value
+          timestamp
+          fromAddress
+          transfers {
+            amount {
+              value
+            }
+            asset {
+              ... on CryptoAsset {
+                chain
+                contract
+                decimals
+                id
+                image
+                name
+                price {
+                  amount
+                  scalingFactor
+                }
+                symbol
+              }
+            }
+            fromAddress
+            toAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetZetaChainStatus {
+  zetachain {
+    status {
+      lastBlock
+    }
+  }
+}
