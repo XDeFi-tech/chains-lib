@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.20
+
+### Patch Changes
+
+- 9767f9d9: feat: update getMaxAmountToSend method
+- Updated dependencies [9767f9d9]
+  - @xdefi-tech/chains-core@2.0.35
+
 ## 2.0.19
 
 ### Patch Changes
