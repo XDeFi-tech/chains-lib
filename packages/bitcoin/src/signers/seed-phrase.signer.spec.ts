@@ -140,4 +140,11 @@ describe('seed-phase.addressGeneration', () => {
   it('should get the second address form the seed phrase', async () => {
     expect(await signer.getAddress(derivation(1))).toBe(secondAddress);
   });
+
+  it('should sign a message', async () => {
+    const signature = await signer.signMessage('Hello World!', derivation(0));
+    expect(signature).toEqual(
+      'H/6H/Liqxk5YDaZqdhGL8xFCDpOwy3Yg3tVjt4eZiCcdbQ+vpXRs5IwtEiCbGGdykwRflwIK0IoR1SLTfm1oCWM='
+    );
+  });
 });

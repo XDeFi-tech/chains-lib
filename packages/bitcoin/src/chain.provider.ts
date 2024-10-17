@@ -12,6 +12,7 @@ import {
   UtxoProviderOptions,
 } from '@xdefi-tech/chains-utxo';
 import * as Bitcoin from 'bitcoinjs-lib';
+import * as BitcoinMessage from 'bitcoinjs-message';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg, MsgBody } from './msg';
@@ -71,5 +72,26 @@ export class BitcoinProvider
     } catch (err) {
       return false;
     }
+  }
+
+  /**
+   * Verify a message signature
+   * @param message - The message to verify
+   * @param signature - The base64 signature to verify
+   * @param address - The address that signed the message
+   * @returns true if the signature is valid, false otherwise
+   */
+  static verifyMessageSignature(
+    message: string,
+    signature: string,
+    address: string
+  ): boolean {
+    return BitcoinMessage.verify(
+      message,
+      address,
+      Buffer.from(signature, 'base64'),
+      undefined,
+      true
+    );
   }
 }

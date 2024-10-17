@@ -86,6 +86,23 @@ export class LedgerSigner extends Signer.Provider {
 
     msg.sign(signedTx);
   }
+
+  async signMessage(message: string, derivation: string): Promise<string> {
+    const app = new Btc({
+      transport: this.transport,
+      currency: 'bitcoin',
+    });
+    const result = await app.signMessage(
+      derivation,
+      Buffer.from(message).toString('hex')
+    );
+    const v = result.v + 27 + 4;
+    const signature = Buffer.from(
+      v.toString(16) + result.r + result.s,
+      'hex'
+    ).toString('base64');
+    return signature;
+  }
 }
 
 export default LedgerSigner;

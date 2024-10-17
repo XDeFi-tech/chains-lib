@@ -110,4 +110,11 @@ describe('private-key.signer', () => {
   it('should get a private key', async () => {
     expect(await signer.getPrivateKey('')).toEqual(privateKey);
   });
+
+  it('should sign a message', async () => {
+    const signature = await signer.signMessage('Hello World!');
+    expect(signature).toEqual(
+      'IAraMTvuBH/sI14J7TyWYEI1v2KvMk73Mo2brkdZkUWARCjL4Zc4NwdZrPHDjnYLDMjhEeXFbEp/Lfrev8frvRA='
+    );
+  });
 });
