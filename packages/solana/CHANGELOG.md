@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.18
+
+### Patch Changes
+
+- 6802d741: fix: remove sign message in solana ledger signer
+
 ## 2.1.17
 
 ### Patch Changes
