@@ -116,29 +116,23 @@ export class ChainMsg extends BaseMsg<MsgBody, TronTransaction> {
     };
   }
 
-  async getMaxAmountToSend(contract?: string) {
+  async getMaxAmountToSend() {
     const msgData = this.toData();
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
 
-    let balance: Coin | undefined;
+    const balance = (await balances.getData()).find(
+      (b) =>
+        b.asset.chainId === this.provider.manifest.chainId && b.asset.native
+    );
 
-    if (!contract) {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
-      );
-    } else {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId &&
-          b.asset.address === contract
-      );
-    }
+    const { fee } = await this.getFee();
 
     if (!balance) throw new Error('No balance found');
 
-    const maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
+    const maxAmount: BigNumber = new BigNumber(balance.amount)
+      .minus(fee)
+      .minus(gap);
 
     if (maxAmount.isLessThan(0)) {
       return '0';

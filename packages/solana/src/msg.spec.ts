@@ -143,22 +143,6 @@ describe('msg', () => {
     expect(response.maxFee).toBeNull();
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
-        to: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
-        amount: 0.000001,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError();
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -182,25 +166,6 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
-  });
-
-  it('should return MaxAmountToSend with non-native-token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
-        to: '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh',
-        amount: 0.000001,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = await chainMsg.getMaxAmountToSend(
-      'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
-    );
-    const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(new BigNumber('1000').minus(gap).toString());
   });
 
   it('Should create associated token account instruction when sending secondary token to new account', async () => {

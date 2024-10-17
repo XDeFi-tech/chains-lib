@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
 import { hexToBytes } from '@noble/hashes/utils';
+import * as utils from 'coinselect/utils';
 
 import type { UtxoProvider } from './chain.provider';
 import { UTXO } from './data-provider/utxo/utxo.data-provider';
@@ -143,39 +144,46 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     return feeEstimation;
   }
 
-  async getMaxAmountToSend(contract?: string) {
+  async getMaxAmountToSend() {
     const msgData = this.toData();
-    const balances = await this.provider.getBalance(msgData.from);
-    const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
+    const utxos = await this.provider.scanUTXOs(msgData.from);
+    const { fee } = await this.getFee();
+    if (!fee)
+      throw new Error('Fee estimation is required for building transaction');
 
-    let balance: Coin | undefined;
+    // Convert fee rate to sat/b
+    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
+    const feeRate = Math.ceil(Number(fee) * 1e5);
+    // Remove utxts that value is less than their fee
+    const utxosCanSpend = utxos.filter(
+      (utxo) =>
+        utxo.value >
+        utils.inputBytes({ ...utxo, ...utxo.witnessUtxo }) * feeRate
+    );
+    const valueToSend = utxosCanSpend.reduce(
+      (acc, utxo) => acc + utxo.value,
+      0
+    );
+    const targetOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[] = [];
 
-    if (!contract) {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId && b.asset.native
-      );
-    } else {
-      balance = (await balances.getData()).find(
-        (b) =>
-          b.asset.chainId === this.provider.manifest.chainId &&
-          b.asset.address === contract
-      );
+    if (valueToSend > 0) {
+      targetOutputs.push({ address: this.data.to, value: valueToSend });
     }
 
-    if (!balance) throw new Error('No balance found');
-
-    let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
-
-    if (balance.asset.native) {
-      const feeEstimation = await this.getFee();
-      maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-    }
-
-    if (maxAmount.isLessThan(0)) {
-      return '0';
-    }
-
-    return maxAmount.toString();
+    const { fee: gweiFee } = accumulative(
+      utxosCanSpend.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      })),
+      targetOutputs,
+      feeRate
+    );
+    return new BigNumber(valueToSend - gweiFee)
+      .dividedBy(10 ** this.provider.manifest.decimals)
+      .toString();
   }
 }

@@ -1,5 +1,6 @@
 import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import * as utils from 'coinselect/utils';
 
 import { ChainMsg } from './msg';
 
@@ -148,22 +149,6 @@ describe('msg', () => {
     expect(response.maxFee).toBeNull();
   });
 
-  it('getMaxAmountToSend should throw an error with invalid token', async () => {
-    const chainMsg = new ChainMsg(
-      {
-        from: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
-        to: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
-        amount: 0.000001,
-      },
-      mockProvider,
-      MsgEncoding.object
-    );
-
-    const response = chainMsg.getMaxAmountToSend('invalid');
-
-    await expect(response).rejects.toThrowError();
-  });
-
   it('should return MaxAmountToSend with native token', async () => {
     const chainMsg = new ChainMsg(
       {
@@ -179,12 +164,19 @@ describe('msg', () => {
 
     const feeEstimation = await chainMsg.getFee();
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
-
-    expect(response).toEqual(
-      new BigNumber('1000')
-        .minus(feeEstimation.fee || 0)
-        .minus(gap)
-        .toString()
+    const newMsg = new ChainMsg(
+      {
+        from: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+        to: 'ltc1qt33t2l2fa2t0plm2s3euxvewc079q89ytyjxt5',
+        amount: response,
+      },
+      mockProvider,
+      MsgEncoding.object
     );
+
+    const { inputs, outputs } = await newMsg.buildTx();
+    const txSize = utils.transactionBytes(inputs, outputs);
+    expect(txSize).toEqual(119);
+    expect(response).toEqual('0.00000308'); // (546 - 2 * txSize) / 10^8
   });
 });
