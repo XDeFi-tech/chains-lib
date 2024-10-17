@@ -17,7 +17,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async getAddress(derivation: string): Promise<string> {
     const address = await TrezorConnect.binanceGetAddress({
       path: derivation,
-    });
+    } as any);
     if (address.success) {
       return address.payload.address;
     } else {
@@ -60,7 +60,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
           ],
         },
       ],
-    };
+    } as any;
 
     const unsignedTx: connectWeb.Params<connectWeb.BinanceSignTransaction> = {
       path: derivation,
@@ -72,7 +72,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
         memo: txData.memo,
         transfer: message,
       },
-    };
+    } as any;
 
     const signedTx = await TrezorConnect.binanceSignTransaction(unsignedTx);
 
