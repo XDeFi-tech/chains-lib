@@ -104,7 +104,7 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should get a terra address from a seed phrase', async () => {
-    expect(await signer.getAddress(derivations.terra)).toBe(
+    expect(await signer.getAddress(derivations.terra, 'terra')).toBe(
       'terra1elsr769k4kcgap5kgy9fcetzrwdw05qr85gqra'
     );
   });
@@ -117,7 +117,6 @@ describe('seed-phrase.signer', () => {
 
     await signer.sign(message, derivations.cosmos);
     expect(message.signedTransaction).toBeTruthy();
-
     TxRaw.encode = originalEncode;
   });
 
@@ -329,7 +328,7 @@ describe('seed-phase.addressGeneration', () => {
 
     derivations = {
       cosmos: (index) => `m/44'/118'/0'/0/${index}`,
-      terra: (index) => `m/44'/330'/0'/${index}/0`,
+      terra: (index) => `m/44'/330'/0'/0/${index}`,
       ethermint: (index) => `m/44'/60'/0'/0/${index}`,
       secret: (index) => `m/44'/529'/0'/0/${index}`,
     };
@@ -413,7 +412,7 @@ describe('seed-phase.addressGeneration', () => {
     for (let i = 0; i < signers.length; i++) {
       const signer = signers[i];
       const firstAddress = firstAddresses[i];
-      expect(await signer.getAddress(derivations.terra(0))).toBe(
+      expect(await signer.getAddress(derivations.terra(0), 'terra')).toBe(
         firstAddress.terra
       );
     }
@@ -423,7 +422,7 @@ describe('seed-phase.addressGeneration', () => {
     for (let i = 0; i < signers.length; i++) {
       const signer = signers[i];
       const secondAddress = secondAddresses[i];
-      expect(await signer.getAddress(derivations.terra(1))).toBe(
+      expect(await signer.getAddress(derivations.terra(1), 'terra')).toBe(
         secondAddress.terra
       );
     }

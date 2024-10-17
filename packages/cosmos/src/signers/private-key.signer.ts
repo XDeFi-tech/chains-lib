@@ -9,7 +9,6 @@ import {
   stringToPath,
 } from '@cosmjs/launchpad/node_modules/@cosmjs/crypto';
 import { Wallet } from 'ethers';
-import { RawKey } from '@terra-money/feather.js';
 import { encode } from 'bech32-buffer';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import { Secp256k1Wallet } from '@cosmjs/amino';
@@ -42,13 +41,6 @@ export class PrivateKeySigner extends Signer.Provider {
         prefix || 'cosmos',
         Uint8Array.from(Buffer.from(evmAddress.slice(2), 'hex'))
       );
-    } else if (
-      pathToString(hdPath).split('/')[2] == "330'" ||
-      prefix === 'terra'
-    ) {
-      const key = new RawKey(Buffer.from(this.key, 'hex'));
-
-      return key.accAddress('terra');
     } else {
       const [{ address }] = await wallet.getAccounts();
       return address;

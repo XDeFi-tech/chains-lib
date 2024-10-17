@@ -107,7 +107,7 @@ describe('private-key.signer', () => {
   });
 
   it('should get a terra address from a private key', async () => {
-    expect(await terraSigner.getAddress(derivations.terra)).toBe(
+    expect(await terraSigner.getAddress(derivations.terra, 'terra')).toBe(
       'terra1elsr769k4kcgap5kgy9fcetzrwdw05qr85gqra'
     );
   });
