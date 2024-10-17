@@ -27,7 +27,8 @@
     "typedoc": "turbo run typedoc",
     "chain:generate": "HYGEN_TMPLS=templates hygen basic new",
     "publish-packages": "turbo run build lint && changeset version && changeset publish",
-    "size": "yarn size-build && size-limit"
+    "size": "yarn size-build && size-limit",
+    "test:cicd": "turbo run test:cicd"
   },
   "size-limit": [
     {

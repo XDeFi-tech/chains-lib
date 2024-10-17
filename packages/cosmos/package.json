@@ -77,7 +77,8 @@
     "compile": "graphql-codegen --config codegen.yml && yarn format",
     "compile:build": "yarn compile && yarn build",
     "compile:watch": "graphql-codegen -w",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test:cicd": "jest src/coverage-test.spec.ts"
   },
   "jest": {
     "setupFiles": [
