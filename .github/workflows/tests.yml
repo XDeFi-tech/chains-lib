@@ -8,8 +8,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        # with:
-        #   token: ${{ secrets.GIT_TOKEN }}
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
 
       - name: Enable node
         uses: actions/setup-node@v3
@@ -22,12 +23,36 @@ jobs:
       - name: Setup Python for Deps
         run: sudo apt-get update && sudo apt-get install python3-dev -y
 
+      - name: Determine changed packages using Changesets
+        id: changes
+        run: |
+          set -e  # Ensure the script exits on error
+          changed_packages=$(npx -y changeset status --since origin/develop | grep '@xdefi-tech/' | cut -d'/' -f2 | sort -u | tr '\n' ',')
+          changed_packages=${changed_packages%,}  # Remove trailing comma
+          if [ -z "$changed_packages" ]; then
+            echo "No changesets found. Testing all packages."
+            echo "changed_packages=all" >> $GITHUB_ENV
+          else
+            echo "changed_packages=$changed_packages" >> $GITHUB_ENV
+          fi
+
       - name: Build
+        if: env.changed_packages != ''
         run: yarn build --concurrency 2
 
-      - name: Run tests
-        run: yarn test --concurrency 2
+      - name: Run tests for changed packages
+        run: |
+          if [ "${{ env.changed_packages }}" = "all" ]; then
+            yarn test --concurrency 2
+          else
+            for package in $(echo ${{ env.changed_packages }} | tr ',' '\n'); do
+              echo "Running tests for package: @xdefi-tech/$package"
+              yarn workspace @xdefi-tech/$package test
+            done
+          fi
+
       - name: Upload coverage reports to Codecov
+        if: env.changed_packages != ''
         uses: codecov/codecov-action@v4.0.1
         env:
           token: ${{ secrets.CODECOV_TOKEN }}
