@@ -218,7 +218,7 @@ describe('seed-phrase.signer', () => {
     );
 
     // Sign with Alice
-    await alice.sign(msg as ChainMsg, derivation);
+    await alice.sign(msg, derivation);
     expect(testTransaction.signatures[0].publicKey.toBase58()).toEqual(
       msg.signedTransaction.pubKey
     );
@@ -240,7 +240,7 @@ describe('seed-phrase.signer', () => {
 
     // Sign with Bob
     testTransaction.partialSign(bobKeyPair);
-    await bob.sign(msgContainAliceSignature as ChainMsg, derivation);
+    await bob.sign(msgContainAliceSignature, derivation);
     expect(testTransaction.signatures[1].publicKey.toBase58()).toEqual(
       msgContainAliceSignature.signedTransaction.pubKey
     );

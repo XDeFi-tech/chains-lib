@@ -179,7 +179,7 @@ describe('private-key.signer', () => {
     );
 
     // Sign with Alice
-    await alice.sign(msg as ChainMsg);
+    await alice.sign(msg);
     expect(msg.signedTransaction.pubKey).toEqual(alicePublickey.toBase58());
     expect(Buffer.from(bs58.decode(msg.signedTransaction.sig))).toEqual(
       testTransaction.signatures[0].signature
@@ -198,7 +198,7 @@ describe('private-key.signer', () => {
       MsgEncoding.base64
     );
 
-    await bob.sign(msgContainAliceSignature as ChainMsg);
+    await bob.sign(msgContainAliceSignature);
     expect(msgContainAliceSignature.signedTransaction.pubKey).toEqual(
       bobPublickey.toBase58()
     );
