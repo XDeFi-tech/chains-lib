@@ -1,0 +1,21 @@
+query BeamEIP1559GasFees {
+  beam {
+    fee {
+      high {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      low {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+      medium {
+        baseFeePerGas
+        maxFeePerGas
+        priorityFeePerGas
+      }
+    }
+  }
+}

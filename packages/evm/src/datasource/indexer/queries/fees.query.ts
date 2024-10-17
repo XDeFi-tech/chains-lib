@@ -12,6 +12,16 @@ import {
   PolygonEip1559GasFeesDocument,
   SmartChainDefaultGasFeesDocument,
   GnosisEip1559GasFeesDocument,
+  CeloDefaultGasFeesDocument,
+  BaseEip1559GasFeesDocument,
+  LineaEip1559GasFeesDocument,
+  MantleEip1559GasFeesDocument,
+  ZetaChainEip1559GasFeesDocument,
+  BlastEip1559GasFeesDocument,
+  OpBnbeip1559GasFeesDocument,
+  ZkSyncDefaultGasFeesDocument,
+  BeamEip1559GasFeesDocument,
+  MantaEip1559GasFeesDocument,
 } from '../../../gql/graphql';
 import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
@@ -53,6 +63,36 @@ export const getFees = async (chain: string) => {
       break;
     case EVMChains.gnosis:
       query = GnosisEip1559GasFeesDocument;
+      break;
+    case EVMChains.celo:
+      query = CeloDefaultGasFeesDocument;
+      break;
+    case EVMChains.base:
+      query = BaseEip1559GasFeesDocument;
+      break;
+    case EVMChains.linea:
+      query = LineaEip1559GasFeesDocument;
+      break;
+    case EVMChains.blast:
+      query = BlastEip1559GasFeesDocument;
+      break;
+    case EVMChains.mantle:
+      query = MantleEip1559GasFeesDocument;
+      break;
+    case EVMChains.opBNB:
+      query = OpBnbeip1559GasFeesDocument;
+      break;
+    case EVMChains.zkSync:
+      query = ZkSyncDefaultGasFeesDocument;
+      break;
+    case EVMChains.zetaChain:
+      query = ZetaChainEip1559GasFeesDocument;
+      break;
+    case EVMChains.beam:
+      query = BeamEip1559GasFeesDocument;
+      break;
+    case EVMChains.manta:
+      query = MantaEip1559GasFeesDocument;
       break;
     default:
       throw new Error(
