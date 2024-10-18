@@ -26,7 +26,7 @@ export const buildTransactionFromJsonRpc = async (
         {
           from,
           to,
-          value: `0x${BigInt(amount).toString(16)}`,
+          value: amount ? `0x${BigInt(amount).toString(16)}` : '0x0',
           data,
           gas: gas ? `0x${BigInt(gas).toString(16)}` : undefined,
         },
