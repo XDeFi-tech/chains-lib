@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.65
+
+### Patch Changes
+
+- 26eb77a9: export CtrlDataSource
+
 ## 2.0.64
 
 ### Patch Changes

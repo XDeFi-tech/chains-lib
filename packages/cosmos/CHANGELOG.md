@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.64
+
+### Patch Changes
+
+- 26eb77a9: export CtrlDataSource
+
 ## 2.0.63
 
 ### Patch Changes
