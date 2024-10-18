@@ -71,7 +71,7 @@ export const EVM_MANIFESTS: {
     name: 'Polygon',
     description: '',
     rpcURL: 'https://polygon-mainnet.xdefiservices.com',
-    chainSymbol: 'MATIC',
+    chainSymbol: 'POL',
     blockExplorerURL: 'https://polygonscan.com',
     chainId: '137',
     chain: 'polygon',
