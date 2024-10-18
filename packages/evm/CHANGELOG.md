@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.66
+
+### Patch Changes
+
+- 4482f00f: Feat: change MATIC to POL
+
 ## 2.0.65
 
 ### Patch Changes
