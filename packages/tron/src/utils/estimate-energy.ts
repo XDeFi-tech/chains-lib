@@ -52,7 +52,9 @@ export const estimateEnergyForRawTx = async (
         {
           to: contract.contract_address,
           from: contract.owner_address,
-          value: `0x${BigInt(contract.call_value).toString(16)}`,
+          value: contract.call_value
+            ? `0x${BigInt(contract.call_value).toString(16)}`
+            : '0x0',
           data: contract.data,
         },
       ],
