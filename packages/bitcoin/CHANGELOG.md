@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.16
+
+### Patch Changes
+
+- 4482f00f: Fix: trezor build
+
 ## 2.1.15
 
 ### Patch Changes
