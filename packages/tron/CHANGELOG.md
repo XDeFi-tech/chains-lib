@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.51
+
+### Patch Changes
+
+- 34ac38df: fix: fee estimation for transaction not send trx
+
 ## 2.0.50
 
 ### Patch Changes
