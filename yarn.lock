@@ -6459,7 +6459,7 @@
     "@trezor/connect-common" "0.2.1"
     "@trezor/utils" "9.2.1"
 
-"@trezor/connect-web@^9.4.0":
+"@trezor/connect-web@9.4.2", "@trezor/connect-web@^9.4.0":
   version "9.4.2"
   resolved "https://registry.yarnpkg.com/@trezor/connect-web/-/connect-web-9.4.2.tgz#f730c795ea9359cd440dd8de8cd507367c5fa2d4"
   integrity sha512-nkqfNx7KZyHovteJsxRPqu/63u3Xp4Hi4BtJDkt/ialpIBC78Nheiyz0fY16mxPz+HKrlpswryimlfjDD59aWA==
