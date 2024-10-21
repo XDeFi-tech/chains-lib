@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.67
+
+### Patch Changes
+
+- 03d49b03: add implementation for getNonce to CtrlDatasource
+
 ## 2.0.66
 
 ### Patch Changes
