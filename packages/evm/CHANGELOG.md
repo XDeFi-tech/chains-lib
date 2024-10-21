@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.68
+
+### Patch Changes
+
+- c01a6bb9: update parseGwei to handle exponential numbers
+
 ## 2.0.67
 
 ### Patch Changes
