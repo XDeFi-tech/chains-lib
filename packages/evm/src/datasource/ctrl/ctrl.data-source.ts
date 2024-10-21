@@ -118,4 +118,8 @@ export class CtrlDataSource extends DataSource {
     }
     return this.chainDataSource.gasFeeOptions();
   }
+
+  async getNonce(address: string): Promise<number> {
+    return this.indexerDataSource.getNonce(address);
+  }
 }
