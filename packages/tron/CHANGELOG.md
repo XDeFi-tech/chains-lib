@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.52
+
+### Patch Changes
+
+- aa2aba1b: fix: too many bytes to encode
+
 ## 2.0.51
 
 ### Patch Changes
