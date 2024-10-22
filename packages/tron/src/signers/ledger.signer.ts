@@ -23,14 +23,24 @@ export class LedgerSigner extends Signer.Provider {
   async sign(msg: ChainMsg, derivation: string) {
     const trx = new Trx(this.transport as Transport);
     const tx = await msg.buildTx();
-
-    const signedTx = await trx.signTransaction(
-      derivation.replace('m/', ''),
-      tx.raw_data_hex,
-      []
-    );
-
-    tx.signature = [signedTx];
+    try {
+      const signedTx = await trx.signTransaction(
+        derivation.replace('m/', ''),
+        tx.raw_data_hex,
+        []
+      );
+      tx.signature = [signedTx];
+    } catch (e: any) {
+      if (/Too many bytes to encode/.test(e.message)) {
+        const signedTx = await trx.signTransactionHash(
+          derivation.replace('m/', ''),
+          tx.txID
+        );
+        tx.signature = [signedTx];
+      } else {
+        throw e;
+      }
+    }
 
     msg.sign(tx);
   }
