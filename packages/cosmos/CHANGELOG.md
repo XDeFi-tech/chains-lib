@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.65
+
+### Patch Changes
+
+- 773696bc: Fix: kava manifest chain name
+
 ## 2.0.64
 
 ### Patch Changes
