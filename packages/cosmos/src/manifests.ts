@@ -169,7 +169,7 @@ export const COSMOS_MANIFESTS: {
     chainSymbol: 'KAVA',
     blockExplorerURL: 'https://www.mintscan.io/kava/account',
     chainId: 'kava_2222-10',
-    chain: 'Kava',
+    chain: 'kava',
     denom: 'ukava',
     decimals: 6,
     prefix: 'kava',
