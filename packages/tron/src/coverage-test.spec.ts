@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { MsgEncoding } from '@xdefi-tech/chains-core';
+
 import { ChainMsg, TokenType } from './msg';
 import { TronProvider } from './chain.provider';
 import { ChainDataSource, IndexerDataSource } from './datasource';
@@ -45,7 +47,7 @@ describe('Test coverage Tron package', () => {
   });
 
   it('should estimate fees for an unsigned TRX transaction using any data source', async () => {
-    let msg = new ChainMsg({ ...messageData, provider: providers.chain });
+    let msg = new ChainMsg(messageData, providers.chain, MsgEncoding.object);
 
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees.length).toEqual(1);
@@ -53,7 +55,7 @@ describe('Test coverage Tron package', () => {
     expect(fees[0].energy).toEqual(0);
     expect(fees[0].fee).toEqual(0);
 
-    msg = new ChainMsg({ ...messageData, provider: providers.indexer });
+    msg = new ChainMsg(messageData, providers.indexer, MsgEncoding.object);
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees.length).toEqual(1);
     expect(fees[0].bandwidth).toEqual(265);
@@ -62,37 +64,43 @@ describe('Test coverage Tron package', () => {
   });
 
   it('should estimate fees for an unsigned TRC20 transaction using any data source', async () => {
-    let msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.chain,
-    });
+    let msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.chain,
+      MsgEncoding.object
+    );
 
     let fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].fee).toEqual(27.2559);
+    expect(fees[0].energy).toEqual(130285);
+    expect(fees[0].fee).toEqual(27.35985);
     expect(fees[0].willRevert).toBeFalsy();
 
-    msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.indexer,
-    });
+    msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.indexer,
+      MsgEncoding.object
+    );
 
     fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].fee).toEqual(27.2559);
+    expect(fees[0].energy).toEqual(130285);
+    expect(fees[0].fee).toEqual(27.35985);
     expect(fees[0].willRevert).toBeFalsy();
   });
 
   it('should estimate fees for a TRX transaction using a chain data source', async () => {
-    const msg = new ChainMsg({ ...messageData, provider: providers.chain });
+    const msg = new ChainMsg(messageData, providers.chain, MsgEncoding.object);
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -104,7 +112,11 @@ describe('Test coverage Tron package', () => {
   });
 
   it('should estimate fees for a TRX transaction using an indexer data source', async () => {
-    const msg = new ChainMsg({ ...messageData, provider: providers.indexer });
+    const msg = new ChainMsg(
+      messageData,
+      providers.indexer,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
@@ -116,40 +128,46 @@ describe('Test coverage Tron package', () => {
   });
 
   it('should estimate fees for a TRC20 transaction using a chain data source', async () => {
-    const msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.chain,
-    });
+    const msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.chain,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 
     const fees = await providers.chain.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].fee).toEqual(27.2559);
+    expect(fees[0].energy).toEqual(130285);
+    expect(fees[0].fee).toEqual(27.35985);
     expect(fees[0].willRevert).toBeFalsy();
   });
 
   it('should estimate fees for a TRC20 transaction using an indexer data source', async () => {
-    const msg = new ChainMsg({
-      ...messageData,
-      contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      tokenType: TokenType.TRC20,
-      decimals: 6,
-      provider: providers.indexer,
-    });
+    const msg = new ChainMsg(
+      {
+        ...messageData,
+        contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        tokenType: TokenType.TRC20,
+        decimals: 6,
+      },
+      providers.indexer,
+      MsgEncoding.object
+    );
     const signer = new PrivateKeySigner(pk, TRON_MANIFEST);
 
     await signer.sign(msg);
 
     const fees = await providers.indexer.estimateFee([msg]);
     expect(fees[0].bandwidth).toEqual(345);
-    expect(fees[0].energy).toEqual(64895);
-    expect(fees[0].fee).toEqual(27.2559);
+    expect(fees[0].energy).toEqual(130285);
+    expect(fees[0].fee).toEqual(27.35985);
     expect(fees[0].willRevert).toBeFalsy();
   });
 
