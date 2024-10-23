@@ -86,6 +86,35 @@ export class SeedPhraseSigner extends Signer.Provider {
     const signature = BitcoinMessage.sign(message, privateKey, true);
     return signature.toString('base64');
   }
+
+  /**
+   * Sign a PSBT with a specific derivation path
+   * @param psbt - a string representing the psbt to sign, encoded in hex
+   * @param derivation - The derivation path
+   * @param inputIndexes - The indexes of the inputs to sign
+   * @returns The signed PSBT
+   */
+  async signPsbt(
+    psbt: string,
+    inputs: Record<string, number[]>,
+    allowedSighash: btc.SigHash,
+    derivation: string
+  ): Promise<string> {
+    const wif = await this.getPrivateKey(derivation);
+    const keyPair = Bitcoin.ECPair.fromWIF(wif);
+    const address = await this.getAddress(derivation);
+    const tx = Bitcoin.Psbt.fromHex(psbt);
+    if (inputs[address]) {
+      for (const inputIndex of inputs[address]) {
+        tx.signInput(inputIndex, keyPair, [allowedSighash]).finalizeInput(
+          inputIndex
+        );
+      }
+      return tx.toHex();
+    } else {
+      throw new Error('No input found for the address');
+    }
+  }
 }
 
 export default SeedPhraseSigner;
