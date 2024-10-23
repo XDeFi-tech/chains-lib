@@ -96,7 +96,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
       path: derivation,
       coin: 'btc',
       message: message,
-    });
+    } as any);
     if (signature.success) {
       return signature.payload.signature;
     } else {
