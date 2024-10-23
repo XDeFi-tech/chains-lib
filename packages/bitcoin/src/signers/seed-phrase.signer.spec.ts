@@ -134,7 +134,6 @@ describe('seed-phrase.signer', () => {
       'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       BigInt(1000)
     );
-    btc.SigHash.ALL;
     const txbHex = Buffer.from(tx.toPSBT()).toString('hex');
     const signedTxb = await signer.signPsbt(
       txbHex,
