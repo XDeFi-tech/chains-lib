@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.17
+
+### Patch Changes
+
+- 01539b51: chore: fix lint error
+- 2c326e39: feat: implement signPsbt for hot wallets
+
 ## 2.1.16
 
 ### Patch Changes
