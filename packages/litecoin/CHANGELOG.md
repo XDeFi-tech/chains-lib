@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.14
+
+### Patch Changes
+
+- 7df6d0ef: update versions @ledgerhq/hw-app-btc lib
+
 ## 2.1.13
 
 ### Patch Changes
