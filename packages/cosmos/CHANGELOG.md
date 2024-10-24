@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.66
+
+### Patch Changes
+
+- 7699c4ed: fix: signAnimo dapp tx
+
 ## 2.0.65
 
 ### Patch Changes
