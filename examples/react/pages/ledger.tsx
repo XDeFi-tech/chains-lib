@@ -19,8 +19,14 @@ import {
   THORCHAIN_MANIFESTS,
   MsgType,
 } from '@xdefi-tech/chains-thor';
+
+import {
+  CosmosProvider,
+  COSMOS_MANIFESTS
+} from '@xdefi-tech/chains-cosmos';
 import { LedgerSigner as ThorLedgerSigner } from '@xdefi-tech/chains-thor/dist/signers/web';
 import { LedgerSigner as SolanaLedgerSigner } from '@xdefi-tech/chains-solana/dist/signers/web';
+import { LedgerSigner as CosmosLedgerSigner } from '@xdefi-tech/chains-cosmos/dist/signers/web';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
 import { MsgEncoding } from '@xdefi-tech/chains-core';
 import Solana from '@ledgerhq/hw-app-solana';
@@ -75,6 +81,9 @@ const LedgerConnect = () => {
       } else if (chain === 'solana') {
         signer = new SolanaLedgerSigner(transport as any);
         setAddress(await signer.getAddress(derivedPath));
+      } else if (chain === 'cosmos') {
+        signer = new CosmosLedgerSigner(transport as any);
+        setAddress(await signer.getAddress(derivedPath, 'osmo'));
       }
       setSigner(signer);
       setConnected(true);
@@ -107,34 +116,47 @@ const LedgerConnect = () => {
       provider = new SolanaProvider(
         new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
       );
+    } else if (chain === 'cosmos') {
+      provider = new CosmosProvider(
+        new CosmosProvider.dataSourceList.IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+      );
     }
-    const msg =
-      chain === 'solana' && data !== ''
-        ? provider.createMsg(
-            {
-              from: address,
-              to: toAddress,
-              amount: 0,
-              data: data,
-            },
-            MsgEncoding.base58
-          )
-        : memo === ''
-        ? provider.createMsg({
-            from: address,
-            to: toAddress,
-            amount: amount,
-            denom: asset,
-            decimals: 8,
-          })
-        : provider.createMsg({
-            from: address,
-            to: address,
-            amount: amount,
-            denom: asset,
-            type: MsgType.MsgDeposit,
-            memo: memo,
-          });
+    let msg;
+    let msgConfig = {
+      from: address,
+      to: toAddress,
+      amount: 0,
+      data: data,
+    };
+
+    if (chain === 'solana' && data !== '') {
+      msgConfig = {
+        ...msgConfig,
+        amount: 0,
+      };
+      msg = provider.createMsg(msgConfig, MsgEncoding.base58);
+    } else if (data !== '') {
+      msg = provider.createMsg(msgConfig, MsgEncoding.string);
+    } else if (memo !== '') {
+      msgConfig = {
+        from: address,
+        to: toAddress,
+        amount: Number(amount),
+        denom: asset,
+        decimals: 8,
+      };
+      msg = provider.createMsg(msgConfig);
+    } else {
+      msgConfig = {
+        from: address,
+        to: address,
+        amount: Number(amount),
+        denom: asset,
+        type: MsgType.MsgDeposit,
+        memo: memo,
+      };
+      msg = provider.createMsg(msgConfig);
+    }
     console.log('🚀 ~ handleConfirm ~ msg:', msg);
     if (signer) {
       await signer.sign(msg, derivedPath);
@@ -155,6 +177,7 @@ const LedgerConnect = () => {
             <option value="bitcoin">Bitcoin</option>
             <option value="thor">Thor</option>
             <option value="solana">Solana</option>
+            <option value="cosmos">Cosmos</option>
           </select>
         </label>
         <br />
