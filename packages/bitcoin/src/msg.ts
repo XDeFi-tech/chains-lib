@@ -9,7 +9,6 @@ import { UTXO, stringToHex } from '@xdefi-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
-import { utils as ethersUtils } from 'ethers';
 import utils from 'coinselect/utils';
 import sortBy from 'lodash/sortBy';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -55,13 +54,9 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
 
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
-    const { fee } = await this.getFee();
-    if (!fee)
+    const feeRate = await this.getFeeRate();
+    if (!feeRate)
       throw new Error('Fee estimation is required for building transaction');
-
-    // Convert fee rate to sat/b
-    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
-    const feeRate = Math.ceil(Number(fee) * 1e5);
 
     // Calculate dust threshold filter for utxo outputs
     const dustThreshold = utils.inputBytes({}) * feeRate;
@@ -117,7 +112,13 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       if (!inputs || !outputs) {
         throw new Error('Insufficient Balance for transaction');
       }
-      return this.createTxBody(inputs, outputs, utxos, fee, compiledMemo);
+      return this.createTxBody(
+        inputs,
+        outputs,
+        utxos,
+        feeRate.toString(),
+        compiledMemo
+      );
     }
   }
 
@@ -483,27 +484,62 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     return formattedMemo;
   }
 
-  async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
-    const feeEstimation: FeeEstimation = { fee: null, maxFee: null };
-    const msgData = this.toData();
-    if (msgData.gasLimit) {
-      feeEstimation.fee = new BigNumber(msgData.gasLimit.toString())
-        .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
-        .toString();
-    } else {
-      const feeOptions = await this.provider.gasFeeOptions();
-      if (!feeOptions) {
-        return feeEstimation;
-      }
+  async getFee(speed?: GasFeeSpeed, amount?: number): Promise<FeeEstimation> {
+    const utxos = await this.provider.scanUTXOs(this.data.from, {
+      includeOrigins: true,
+    });
+    const ordinalsMapping = await this.getOrdinalsMapping();
+    const utxosWithoutOrdinals = this.filterUtxosWithoutOrdinals(
+      utxos,
+      ordinalsMapping
+    );
 
-      feeEstimation.fee = new BigNumber(
-        feeOptions[speed || GasFeeSpeed.medium].toString()
-      )
-        .dividedBy(10 ** (msgData.decimals || this.provider.manifest.decimals))
-        .toString();
+    const targetOutputs: {
+      address?: string;
+      value: number;
+      script?: Buffer | Uint8Array;
+    }[] = [];
+
+    const amountToAddToOutput = amount || Number(this.data.amount);
+
+    if (amountToAddToOutput > 0) {
+      targetOutputs.push({ address: this.data.to, value: amountToAddToOutput });
     }
 
-    return feeEstimation;
+    const feeRate = await this.getFeeRate(speed);
+    if (!feeRate)
+      throw new Error('Fee estimation is required for building transaction');
+
+    const { fee: gweiFee } = accumulative(
+      utxosWithoutOrdinals.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      })),
+      targetOutputs,
+      feeRate
+    );
+
+    const fee = new BigNumber(gweiFee)
+      .dividedBy(10 ** this.provider.manifest.decimals)
+      .toString();
+
+    return { fee, maxFee: null };
+  }
+
+  async getFeeRate(speed = GasFeeSpeed.medium): Promise<number> {
+    const feeOptions = await this.provider.gasFeeOptions();
+
+    if (!feeOptions) {
+      throw new Error('Fee options are required for building transaction');
+    }
+
+    const feeOption = feeOptions[speed].toString();
+    const decimals = this.toData().decimals || this.provider.manifest.decimals;
+
+    const rate = new BigNumber(feeOption).dividedBy(10 ** decimals).toString();
+    const feeRate = Math.ceil(Number(rate) * 1e5);
+
+    return feeRate;
   }
 
   async getMaxAmountToSend(): Promise<string> {
@@ -515,39 +551,21 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       utxos,
       ordinalsMapping
     );
-    const valueToSend = utxosWithoutOrdinals.reduce(
+    const maxValue = utxosWithoutOrdinals.reduce(
       (acc, utxo) => acc + utxo.witnessUtxo.value,
       0
     );
 
-    const targetOutputs: {
-      address?: string;
-      value: number;
-      script?: Buffer | Uint8Array;
-    }[] = [];
+    const fees = await this.getFee(GasFeeSpeed.medium, maxValue);
 
-    if (valueToSend > 0) {
-      targetOutputs.push({ address: this.data.to, value: valueToSend });
+    if (!fees.fee) {
+      throw new Error('Fee estimation is required for building transaction');
     }
 
-    const { fee } = await this.getFee();
-    if (!fee)
-      throw new Error('Fee estimation is required for building transaction');
-
-    // Convert fee rate to sat/b
-    // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
-    const feeRate = Math.ceil(Number(fee) * 1e5);
-
-    const { fee: gweiFee } = accumulative(
-      utxosWithoutOrdinals.map((utxo) => ({
-        ...utxo,
-        ...utxo?.witnessUtxo,
-      })),
-      targetOutputs,
-      feeRate
-    );
-    return new BigNumber(valueToSend - gweiFee)
+    const maxAmount = new BigNumber(maxValue)
       .dividedBy(10 ** this.provider.manifest.decimals)
-      .toString();
+      .minus(new BigNumber(fees.fee)).toNumber()
+    if ( maxAmount <= 0) throw new Error(`Cost of transactions exceeds balance. balance: ${maxValue}sats, fee: ${Number(fees.fee)*1e8}sats`)
+    return maxAmount.toString();
   }
 }
