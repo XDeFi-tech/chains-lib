@@ -87,7 +87,7 @@ export class PrivateKeySigner extends Signer.Provider {
 
   /**
    * Sign a PSBT
-   * @param psbt - a string representing the psbt to sign, encoded in hex
+   * @param psbt - a string representing the psbt to sign, encoded in base64
    * @param inputIndexes - The indexes of the inputs to sign
    * @returns The signed PSBT
    */
@@ -100,14 +100,14 @@ export class PrivateKeySigner extends Signer.Provider {
     const wif = await this.getPrivateKey();
     const keyPair = Bitcoin.ECPair.fromWIF(wif);
     const address = await this.getAddress(_derivation);
-    const tx = Bitcoin.Psbt.fromHex(psbt);
+    const tx = Bitcoin.Psbt.fromBase64(psbt);
     if (inputs[address]) {
       for (const inputIndex of inputs[address]) {
         tx.signInput(inputIndex, keyPair, [allowedSighash]).finalizeInput(
           inputIndex
         );
       }
-      return tx.toHex();
+      return tx.toBase64();
     } else {
       throw new Error('No input found for the address');
     }
