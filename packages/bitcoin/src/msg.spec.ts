@@ -505,15 +505,13 @@ describe('msg: Bitcoin dust filter', () => {
   });
 });
 
-
 describe('msg: getMaxAmountToSend', () => {
   let provider: BitcoinProvider;
   let chainMsg: ChainMsg;
-  const from = 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
-  const to = 'bc1petmz5t6sue8s0s9xgnnydtgektadm3g85x2w0ahtmwpl5v0p9xtsrzgqry'
-  const balanceInSats = 2000 //inputUTXO
-  const txBytes = 107 //sizeOfTx
-
+  const from = 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw';
+  const to = 'bc1petmz5t6sue8s0s9xgnnydtgektadm3g85x2w0ahtmwpl5v0p9xtsrzgqry';
+  const balanceInSats = 2000; //inputUTXO
+  const txBytes = 107; //sizeOfTx
 
   beforeEach(() => {
     (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
@@ -541,14 +539,14 @@ describe('msg: getMaxAmountToSend', () => {
       provider,
       MsgEncoding.object
     );
-  })
+  });
 
   it('should return a value when there are enough inputs to cover a fee', async () => {
-    const feeRate = await chainMsg.getFeeRate()
-    expect(feeRate).toEqual(3)
+    const feeRate = await chainMsg.getFeeRate();
+    expect(feeRate).toEqual(3);
 
-    const amountStr = await chainMsg.getMaxAmountToSend()
-    const amount = Number(amountStr)
+    const amountStr = await chainMsg.getMaxAmountToSend();
+    const amount = Number(amountStr);
     chainMsg = new ChainMsg(
       {
         from,
@@ -558,11 +556,11 @@ describe('msg: getMaxAmountToSend', () => {
       provider,
       MsgEncoding.object
     );
-    const fee = txBytes * feeRate //321
-    const balanceMinusFeeInSats = balanceInSats-fee
-    expect(amount).toEqual(balanceMinusFeeInSats*1e-8)
-    expect(amount).toEqual(0.00001679)
-  })
+    const fee = txBytes * feeRate; //321
+    const balanceMinusFeeInSats = balanceInSats - fee;
+    expect(amount).toEqual(balanceMinusFeeInSats * 1e-8);
+    expect(amount).toEqual(0.00001679);
+  });
   it('should throw an error when there are not enough inputs to cover a fee', async () => {
     (feeModule.getFees as any).mockResolvedValue({
       high: 20000,
@@ -570,12 +568,11 @@ describe('msg: getMaxAmountToSend', () => {
       low: 20000,
     });
 
-    const feeRate = await chainMsg.getFeeRate()
-    expect(feeRate).toEqual(20)
-    const fee = txBytes * feeRate
-    const errorMesage = `Cost of transactions exceeds balance. balance: ${balanceInSats}sats, fee: ${fee}sats`
+    const feeRate = await chainMsg.getFeeRate();
+    expect(feeRate).toEqual(20);
+    const fee = txBytes * feeRate;
+    const errorMesage = `Cost of transactions exceeds balance. balance: ${balanceInSats}sats, fee: ${fee}sats`;
 
-    await expect(chainMsg.getMaxAmountToSend()).rejects.toThrow(errorMesage)
-  })
-
-})
+    await expect(chainMsg.getMaxAmountToSend()).rejects.toThrow(errorMesage);
+  });
+});
