@@ -1,8 +1,8 @@
 import { LedgerSigner as LedgerApp } from '@cosmjs/ledger-amino';
 import { stringToPath } from '@cosmjs/crypto';
 import Transport from '@ledgerhq/hw-transport';
-import { MsgEncoding, Signer, SignerDecorator } from '@xdefi-tech/chains-core';
-import { TxRaw, AuthInfo } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { bech32 } from 'bech32';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
@@ -43,16 +43,10 @@ export class LedgerSigner extends Signer.Provider {
   }
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
-    const { signMode, raw, signDoc } = await msg.buildTx();
-    if (raw) {
-      if (msg.encoding === MsgEncoding.string) {
-        signDoc.bodyBytes = Uint8Array.from(Object.values(signDoc.bodyBytes));
-        signDoc.authInfoBytes = Uint8Array.from(
-          Object.values(signDoc.authInfoBytes)
-        );
-        const authInfo = AuthInfo.decode(signDoc.authInfoBytes);
-        signDoc.authInfoBytes = AuthInfo.encode(authInfo).finish();
-      }
+    // Because Ledger only support amino, we need to sign the transaction with amino
+    const { signDoc, signMode } = await msg.buildTx();
+    // If have signDoc, it means the dapp transaction
+    if (signDoc) {
       const res = await this.signRawTransaction(
         signDoc,
         msg.provider.manifest.prefix,
@@ -62,6 +56,7 @@ export class LedgerSigner extends Signer.Provider {
       msg.sign(res);
       return;
     } else {
+      // If not have signDoc, it means the wallet transaction
       if (!derivation.startsWith('m/')) {
         derivation = 'm/' + derivation;
       }
@@ -72,15 +67,10 @@ export class LedgerSigner extends Signer.Provider {
         hdPaths: [hdPath],
         prefix: msg.provider.manifest.prefix,
       });
-      if (signMode === CosmosSignMode.SIGN_DIRECT) {
-        const signedTx = await this.signDirect(msg, app);
-        const txBytes = TxRaw.encode(signedTx).finish();
-        const rawTx = Buffer.from(txBytes).toString('base64');
-        msg.sign(rawTx);
-        return;
-      }
       const signedTx = await this.signAmino(msg, app);
-      msg.sign(signedTx);
+      const txBytes = TxRaw.encode(signedTx as TxRaw).finish();
+      const rawTx = Buffer.from(txBytes).toString('base64');
+      msg.sign(rawTx);
     }
     return;
   }
@@ -88,7 +78,12 @@ export class LedgerSigner extends Signer.Provider {
   async signAmino(msg: ChainMsg, app: LedgerApp) {
     const txData = await msg.buildTx();
     const [{ address: senderAddress }] = await app.getAccounts();
-    return app.signAmino(senderAddress, txData.signDoc);
+    const client = await SigningStargateClient.connectWithSigner(
+      msg.provider.manifest.rpcURL,
+      app,
+      STARGATE_CLIENT_OPTIONS
+    );
+    return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
   }
 
   async signDirect(_msg: ChainMsg, _app: LedgerApp): Promise<TxRaw> {
