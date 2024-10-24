@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.19
+
+### Patch Changes
+
+- 7384da2e: Feat: update GQL core package
+- Updated dependencies [7384da2e]
+  - @xdefi-tech/chains-core@2.0.37
+
 ## 2.1.18
 
 ### Patch Changes
