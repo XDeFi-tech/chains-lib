@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-litecoin",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",

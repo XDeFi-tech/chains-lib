@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.37
+
+### Patch Changes
+
+- 7384da2e: Feat: update GQL core package
+
 ## 2.0.36
 
 ### Patch Changes

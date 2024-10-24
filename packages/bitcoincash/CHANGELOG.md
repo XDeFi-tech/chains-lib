@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.1.14
+
+### Patch Changes
+
+- 7384da2e: Feat: update GQL core package
+- Updated dependencies [7384da2e]
+  - @xdefi-tech/chains-core@2.0.37
+  - @xdefi-tech/chains-utxo@2.0.21
+
 ## 2.1.13
 
 ### Patch Changes
