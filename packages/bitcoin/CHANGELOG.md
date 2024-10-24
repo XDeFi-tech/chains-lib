@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.18
+
+### Patch Changes
+
+- 5b1e5129: feat: add broadcast PSBT method
+
 ## 2.1.17
 
 ### Patch Changes
