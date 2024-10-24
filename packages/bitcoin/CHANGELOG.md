@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.21
+
+### Patch Changes
+
+- c872bbe2: bitcoin lint and cosmos ledger
+
 ## 2.1.20
 
 ### Patch Changes
