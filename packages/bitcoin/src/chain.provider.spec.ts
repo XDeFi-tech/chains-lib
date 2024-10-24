@@ -1,11 +1,11 @@
 import { Coin, Response, TransactionStatus } from '@xdefi-tech/chains-core';
+import * as btc from '@scure/btc-signer';
 
 import { ChainMsg } from './msg';
 import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
 import { AssetInternalType, TokenCategory } from './gql';
-import * as btc from '@scure/btc-signer';
 
 jest.mock('./datasource/indexer/queries/broadcast.query', () => ({
   broadcast: jest

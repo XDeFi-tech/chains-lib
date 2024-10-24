@@ -564,8 +564,14 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
 
     const maxAmount = new BigNumber(maxValue)
       .dividedBy(10 ** this.provider.manifest.decimals)
-      .minus(new BigNumber(fees.fee)).toNumber()
-    if ( maxAmount <= 0) throw new Error(`Cost of transactions exceeds balance. balance: ${maxValue}sats, fee: ${Number(fees.fee)*1e8}sats`)
+      .minus(new BigNumber(fees.fee))
+      .toNumber();
+    if (maxAmount <= 0)
+      throw new Error(
+        `Cost of transactions exceeds balance. balance: ${maxValue}sats, fee: ${
+          Number(fees.fee) * 1e8
+        }sats`
+      );
     return maxAmount.toString();
   }
 }
