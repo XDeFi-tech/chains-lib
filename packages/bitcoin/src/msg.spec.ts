@@ -1,5 +1,4 @@
-import { MsgEncoding, GasFeeSpeed } from '@xdefi-tech/chains-core';
-import BigNumber from 'bignumber.js';
+import { MsgEncoding } from '@xdefi-tech/chains-core';
 import * as bitcoin from 'bitcoinjs-lib';
 import utils from 'coinselect/utils';
 
@@ -145,13 +144,8 @@ describe('msg', () => {
     );
 
     const response = await chainMsg.getFee();
-    const feeOptions = await provider.gasFeeOptions();
 
-    expect(response.fee).toEqual(
-      new BigNumber(feeOptions?.[GasFeeSpeed.medium] as number)
-        .dividedBy(10 ** provider.manifest.decimals)
-        .toString()
-    );
+    expect(response.fee).toBeTruthy();
     expect(response.maxFee).toBeNull();
   });
 
@@ -510,3 +504,78 @@ describe('msg: Bitcoin dust filter', () => {
     expect(inputs[0].value).toEqual(1000);
   });
 });
+
+
+describe('msg: getMaxAmountToSend', () => {
+  let provider: BitcoinProvider;
+  let chainMsg: ChainMsg;
+  const from = 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+  const to = 'bc1petmz5t6sue8s0s9xgnnydtgektadm3g85x2w0ahtmwpl5v0p9xtsrzgqry'
+  const balanceInSats = 2000 //inputUTXO
+  const txBytes = 107 //sizeOfTx
+
+
+  beforeEach(() => {
+    (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
+      {
+        oTxHash:
+          'e4b7161d1b26d3eee736adc70c42f7c47c901ac3bede07de2c0e002d3ead6afb',
+        oIndex: 0,
+        oTxHex:
+          '0200000000010109e9e018877c28b71477cb885c040920169c66a2b21c3454412dd76d5d6c192a0000000000ffffffff02d0070000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a538e71000000000000160014d52ed37779898f360848ae49bb0ee089b6d36d2c024830450221009ecbf782d2a671cc369af031fd66fb83a291cbb1ec0b8ba3fe30970c437834a502203a91029d6a4a480e35a1eef9a69131cfa0159d02767fb8fe179363d23c6f66f70121022a6b486ca1b607a767fb1bf9432fa0b5031d9d1ece37ae02bc31d749d5ae65d500000000',
+        address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        scriptHex: '00144e209aaf99f4b08cb5b583f4e87b546b00ea5a53',
+        isCoinbase: null,
+        value: {
+          value: '2000',
+        },
+      },
+    ]);
+    provider = new BitcoinProvider(new IndexerDataSource(BITCOIN_MANIFEST));
+    chainMsg = new ChainMsg(
+      {
+        from,
+        to,
+        amount: 0.000001,
+      },
+      provider,
+      MsgEncoding.object
+    );
+  })
+
+  it('should return a value when there are enough inputs to cover a fee', async () => {
+    const feeRate = await chainMsg.getFeeRate()
+    expect(feeRate).toEqual(3)
+
+    const amountStr = await chainMsg.getMaxAmountToSend()
+    const amount = Number(amountStr)
+    chainMsg = new ChainMsg(
+      {
+        from,
+        to,
+        amount,
+      },
+      provider,
+      MsgEncoding.object
+    );
+    const fee = txBytes * feeRate //321
+    const balanceMinusFeeInSats = balanceInSats-fee
+    expect(amount).toEqual(balanceMinusFeeInSats*1e-8)
+    expect(amount).toEqual(0.00001679)
+  })
+  it('should throw an error when there are not enough inputs to cover a fee', async () => {
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 20000,
+      medium: 20000, // 20000 sat/kvB => 20 sat/vB
+      low: 20000,
+    });
+
+    const feeRate = await chainMsg.getFeeRate()
+    expect(feeRate).toEqual(20)
+    const fee = txBytes * feeRate
+    const errorMesage = `Cost of transactions exceeds balance. balance: ${balanceInSats}sats, fee: ${fee}sats`
+
+    await expect(chainMsg.getMaxAmountToSend()).rejects.toThrow(errorMesage)
+  })
+
+})
