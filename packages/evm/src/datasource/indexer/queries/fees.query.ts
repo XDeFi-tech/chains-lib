@@ -102,7 +102,6 @@ export const getFees = async (chain: string) => {
 
   const response = await gqlClient.query({
     query,
-    fetchPolicy: 'no-cache',
   });
 
   return response.data[indexerChain].fee;
