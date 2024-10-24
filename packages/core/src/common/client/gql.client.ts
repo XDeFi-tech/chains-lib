@@ -1,4 +1,4 @@
-import { ApolloClient, split, from } from '@apollo/client/core';
+import { ApolloClient, split, from, defaultDataIdFromObject } from '@apollo/client/core';
 import { InMemoryCache } from '@apollo/client/cache';
 import { HttpLink } from '@apollo/client/link/http';
 import { onError } from '@apollo/client/link/error';
@@ -34,17 +34,13 @@ const splitLink =
     : httpLink;
 
 const cache = new InMemoryCache({
-  dataIdFromObject: (obj: any) => {
-    return obj.id;
-  },
-  typePolicies: {
-    Query: {
-      fields: {
-        assets: {
-          merge: true,
-        },
-      },
-    },
+  resultCaching: true,
+  dataIdFromObject: (result) => {
+    if (result.balances && Array.isArray(result.balances) && result.balances.length > 0) {
+      const firstAsset = (result.balances as any[])[0];
+      return firstAsset.address + firstAsset.asset.chain; // to trigger cache update for different chains with the same address
+    }
+    return defaultDataIdFromObject(result);
   },
 });
 
@@ -68,4 +64,5 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
 export const gqlClient = new ApolloClient({
   link: from([errorLink, splitLink]),
   cache,
+  assumeImmutableResults: true,
 });

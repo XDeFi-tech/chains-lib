@@ -7,6 +7,5 @@ export const getCryptoAssets = (input: Array<CryptoAssetArgs> | CryptoAssetArgs)
     variables: {
       input: input,
     },
-    fetchPolicy: 'no-cache',
   });
 };
