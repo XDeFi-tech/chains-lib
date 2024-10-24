@@ -88,12 +88,7 @@ export class LedgerSigner extends Signer.Provider {
   async signAmino(msg: ChainMsg, app: LedgerApp) {
     const txData = await msg.buildTx();
     const [{ address: senderAddress }] = await app.getAccounts();
-    const client = await SigningStargateClient.connectWithSigner(
-      msg.provider.manifest.rpcURL,
-      app,
-      STARGATE_CLIENT_OPTIONS
-    );
-    return client.sign(senderAddress, txData.msgs, txData.fee, txData.memo);
+    return app.signAmino(senderAddress, txData.signDoc);
   }
 
   async signDirect(_msg: ChainMsg, _app: LedgerApp): Promise<TxRaw> {
