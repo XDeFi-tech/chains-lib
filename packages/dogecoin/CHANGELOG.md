@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.1.13
+
+### Patch Changes
+
+- 7df6d0ef: update versions @ledgerhq/hw-app-btc lib
+
 ## 2.1.12
 
 ### Patch Changes

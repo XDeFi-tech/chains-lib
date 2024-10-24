@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.19
+
+### Patch Changes
+
+- 7df6d0ef: fix fee calculation
+
 ## 2.1.18
 
 ### Patch Changes
