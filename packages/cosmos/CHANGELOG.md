@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.68
+
+### Patch Changes
+
+- eee3cb43: fix: ledger sign send tx
+
 ## 2.0.67
 
 ### Patch Changes
