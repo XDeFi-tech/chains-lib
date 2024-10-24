@@ -5,6 +5,15 @@ import { BitcoinProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { BITCOIN_MANIFEST } from './manifests';
 import { AssetInternalType, TokenCategory } from './gql';
+import * as btc from '@scure/btc-signer';
+
+jest.mock('./datasource/indexer/queries/broadcast.query', () => ({
+  broadcast: jest
+    .fn()
+    .mockResolvedValue(
+      'a38069837081a1e40e9472827466825e92606015e7a465b92418cbb0c6fcdd1b'
+    ),
+}));
 
 describe('chain.provider', () => {
   const NETWORKED_QUERIES =
@@ -228,5 +237,33 @@ describe('chain.provider', () => {
     expect(
       BitcoinProvider.verifyMessageSignature(message, signature, address)
     ).toBe(false);
+  });
+
+  it('should throw an error when broadcasting a PSBT not finalized', async () => {
+    const tx = new btc.Transaction();
+    tx.addInput({
+      txid: 'e4b7161d1b26d3eee736adc70c42f7c47c901ac3bede07de2c0e002d3ead6afb',
+      index: 0,
+      witnessUtxo: {
+        script: new Uint8Array(
+          Buffer.from('00144e209aaf99f4b08cb5b583f4e87b546b00ea5a53', 'hex')
+        ),
+        amount: BigInt(2000),
+      },
+    });
+    tx.addOutputAddress(
+      'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+      BigInt(1000)
+    );
+    const encodedPsbt = Buffer.from(tx.toPSBT()).toString('base64');
+    expect(provider.broadcastPsbt(encodedPsbt)).rejects.toThrowError();
+  });
+
+  it.only('should broadcast a PSBT transaction with a memo', async () => {
+    expect(
+      await provider.broadcastPsbt(
+        'cHNidP8BAFICAAAAAftqrT4tAA4s3gfevsMakHzE90IMx6025+7TJhsdFrfkAAAAAAD/////AegDAAAAAAAAFgAUTiCar5n0sIy1tYP06HtUawDqWlMAAAAAAAEBH9AHAAAAAAAAFgAUTiCar5n0sIy1tYP06HtUawDqWlMBCGsCRzBEAiBWawpBrZnfviER6T8jA7Zl1lUQDj9f6Za6c5GzqHm2cwIgbOHmbcrH2ZJSZ+DLOAGF7Znz0XTL8pxWl09AwXnku/cBIQPjiTaMXYvXNZlhaldNm3S/d8ta7hNpLlo4Vaf9K5RfkgAA'
+      )
+    ).toBeTruthy();
   });
 });

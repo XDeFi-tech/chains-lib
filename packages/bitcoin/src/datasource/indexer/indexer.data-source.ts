@@ -53,6 +53,13 @@ export class IndexerDataSource extends DataSource {
     return result;
   }
 
+  async broadcastPsbt(psbt: string): Promise<Transaction> {
+    const txb = Bitcoin.Psbt.fromBase64(psbt);
+    const txHex = txb.extractTransaction().toHex();
+    const txHash = await broadcast(txHex);
+    return Transaction.fromData({ hash: txHash });
+  }
+
   async scanUTXOs(address: string): Promise<UTXO[]> {
     const utxos = await scanUTXOs(address);
     return utxos.map((utxo) => {

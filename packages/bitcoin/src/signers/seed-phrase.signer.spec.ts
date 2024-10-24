@@ -134,16 +134,16 @@ describe('seed-phrase.signer', () => {
       'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
       BigInt(1000)
     );
-    const txbHex = Buffer.from(tx.toPSBT()).toString('hex');
+    const txbBase64 = Buffer.from(tx.toPSBT()).toString('base64');
     const signedTxb = await signer.signPsbt(
-      txbHex,
+      txbBase64,
       {
         bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw: [0],
       },
       btc.SigHash.ALL,
       derivation
     );
-    const txHex = Psbt.fromHex(signedTxb).extractTransaction().toHex();
+    const txHex = Psbt.fromBase64(signedTxb).extractTransaction().toHex();
     expect(txHex).toEqual(
       '02000000000101fb6aad3e2d000e2cde07debec31a907cc4f7420cc7ad36e7eed3261b1d16b7e40000000000ffffffff01e8030000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a53024730440220566b0a41ad99dfbe2111e93f2303b665d655100e3f5fe996ba7391b3a879b67302206ce1e66dcac7d9925267e0cb380185ed99f3d174cbf29c56974f40c179e4bbf7012103e389368c5d8bd73599616a574d9b74bf77cb5aee13692e5a3855a7fd2b945f9200000000'
     );

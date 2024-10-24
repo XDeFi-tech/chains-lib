@@ -44,6 +44,15 @@ export class BitcoinProvider
     return this.dataSource.broadcast(messages);
   }
 
+  /**
+   * Broadcast a PSBT transaction
+   * @param psbt - @param psbt - a string representing the sign psbt, encoded in hex
+   * @returns The transaction hash
+   */
+  async broadcastPsbt(psbt: string): Promise<Transaction> {
+    return this.dataSource.broadcastPsbt(psbt);
+  }
+
   async getTransaction(txHash: string): Promise<TransactionData | null> {
     return this.dataSource.getTransaction(txHash);
   }
