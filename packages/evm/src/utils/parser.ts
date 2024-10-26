@@ -33,3 +33,13 @@ export const decodeHexString = (hexString: string): string => {
   const decoded = ethers.utils.defaultAbiCoder.decode(['string'], hexString);
   return decoded[0];
 };
+
+export const parseUnitsToHexString = (amount: NumberIsh, unit: number) => {
+  const amountBNUnit = new BigNumber(amount.toString()).multipliedBy(
+    new BigNumber(10).pow(unit)
+  );
+  if (amountBNUnit.isInteger()) {
+    return `0x${amountBNUnit.toString(16)}`;
+  }
+  throw new Error('Parsed amount is not integer');
+};
