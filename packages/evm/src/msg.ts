@@ -231,13 +231,17 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       );
 
       if (contractFeeEstimation) {
-        feeOptions.gasLimit = contractFeeEstimation[0].gasLimit;
-        feeOptions.gasPrice = contractFeeEstimation[0].gasPrice;
-        feeOptions.maxFeePerGas = contractFeeEstimation[0].maxFeePerGas;
-        feeOptions.baseFeePerGas = (
-          contractFeeEstimation[0] as any
-        ).baseFeePerGas;
+        feeOptions.gasLimit =
+          feeOptions.gasLimit || contractFeeEstimation[0].gasLimit;
+        feeOptions.gasPrice =
+          feeOptions.gasPrice || contractFeeEstimation[0].gasPrice;
+        feeOptions.maxFeePerGas =
+          feeOptions.maxFeePerGas || contractFeeEstimation[0].maxFeePerGas;
+        feeOptions.baseFeePerGas =
+          feeOptions.baseFeePerGas ||
+          (contractFeeEstimation[0] as any).baseFeePerGas;
         feeOptions.maxPriorityFeePerGas =
+          feeOptions.maxPriorityFeePerGas ||
           contractFeeEstimation[0].maxPriorityFeePerGas;
       }
     }
