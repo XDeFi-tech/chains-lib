@@ -16,16 +16,16 @@ import {
   EIP1559FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import { ethers, providers, utils } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
 import BigNumber from 'bignumber.js';
 import { formatFixed } from '@ethersproject/bignumber';
 
-import { parseGwei } from '../../utils';
+import { parseGwei, parseUnitsToHexString } from '../../utils';
 import { EVMChains } from '../../manifests';
-import { ChainMsg, TokenType } from '../../msg';
+import { ChainMsg } from '../../msg';
 import {
   DEFAULT_CONTRACT_FEE,
   DEFAULT_TRANSACTION_FEE,
@@ -255,9 +255,7 @@ export class IndexerDataSource extends DataSource {
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
-          value: utils
-            .parseUnits(msgData.amount.toString(), this.manifest.decimals)
-            .toHexString(),
+          value: parseUnitsToHexString(msgData.amount, this.manifest.decimals),
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {

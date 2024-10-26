@@ -17,7 +17,7 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
-import { providers, utils } from 'ethers';
+import { providers } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
@@ -31,6 +31,7 @@ import {
   DEFAULT_TRANSACTION_FEE,
   FACTOR_ESTIMATE,
 } from '../../constants';
+import { parseUnitsToHexString } from '../../utils';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -272,10 +273,7 @@ export class ChainDataSource extends DataSource {
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
-          value: utils
-            .parseUnits(msgData.amount.toString(), this.manifest.decimals)
-            .toHexString(),
-          ...(msgData.data && { data: msgData.data }),
+          value: parseUnitsToHexString(msgData.amount, this.manifest.decimals),
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {
