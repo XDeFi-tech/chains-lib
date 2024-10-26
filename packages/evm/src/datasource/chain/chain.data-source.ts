@@ -17,7 +17,7 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
-import { providers } from 'ethers';
+import { providers, utils } from 'ethers';
 import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
 import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
@@ -272,6 +272,10 @@ export class ChainDataSource extends DataSource {
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
+          value: utils
+            .parseUnits(msgData.amount.toString(), this.manifest.decimals)
+            .toHexString(),
+          ...(msgData.data && { data: msgData.data }),
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {

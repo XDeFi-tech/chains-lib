@@ -16,7 +16,7 @@ import {
   EIP1559FeeOptions,
   DefaultFeeOptions,
 } from '@xdefi-tech/chains-core';
-import { ethers, providers } from 'ethers';
+import { ethers, providers, utils } from 'ethers';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import axios, { Axios } from 'axios';
@@ -255,6 +255,9 @@ export class IndexerDataSource extends DataSource {
         const calculatedGasLimit = await this._estimateGasLimit({
           from: msgData.from,
           to: msgData.to,
+          value: utils
+            .parseUnits(msgData.amount.toString(), this.manifest.decimals)
+            .toHexString(),
           ...(msgData.data && { data: msgData.data }),
         });
         if (calculatedGasLimit) {
