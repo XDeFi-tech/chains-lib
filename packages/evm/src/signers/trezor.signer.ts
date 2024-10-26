@@ -83,6 +83,10 @@ export class TrezorSigner extends Signer.TrezorProvider {
       );
 
       msg.sign(signedTransaction);
+    } else {
+      throw new Error(
+        'Error signing transaction: ' + signatureResponse.payload.error
+      );
     }
   }
 
