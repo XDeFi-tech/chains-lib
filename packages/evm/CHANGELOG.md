@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.70
+
+### Patch Changes
+
+- 98617304: fix: add error handling logic for signing failures
+- 4fd271ca: fix: get fee error
+
 ## 2.0.69
 
 ### Patch Changes
