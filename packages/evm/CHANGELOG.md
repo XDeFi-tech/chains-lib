@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.72
+
+### Patch Changes
+
+- 600a3117: fix: invalid hex number error 0x0
+
 ## 2.0.71
 
 ### Patch Changes
