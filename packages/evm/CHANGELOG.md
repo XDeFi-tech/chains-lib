@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.71
+
+### Patch Changes
+
+- 7cebf99f: fix: estimate dapp tx error
+
 ## 2.0.70
 
 ### Patch Changes
