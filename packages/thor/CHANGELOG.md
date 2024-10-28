@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.20
+
+### Patch Changes
+
+- 7579c7cd: fix: extract asset error when creating deposit msg
+
 ## 2.1.19
 
 ### Patch Changes
