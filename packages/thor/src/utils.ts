@@ -23,10 +23,9 @@ export const assetFromString = (s: string): common.IAsset | null => {
 
   if (!symbol) return null;
   if (isSynth) {
-    chain = symbol;
+    chain = chain;
     symbol = data[data.length - 1];
   }
-
   return { chain, symbol, ticker, synth: isSynth };
 };
 
