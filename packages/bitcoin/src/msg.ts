@@ -36,6 +36,14 @@ export interface TxBody {
   fee: string;
   compiledMemo?: string | Uint8Array;
 }
+const filterDetrimentalInput = (utxo: UTXO, feeRate: number) : boolean => {
+  const utxoBytes = utils.inputBytes(utxo)
+  const utxoFee = feeRate * utxoBytes
+  const utxoValue = utils.uintOrNaN(utxo.value)
+
+  // skip detrimental input
+  return  utxo.value > utxoFee
+}
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
@@ -84,16 +92,17 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       compiledMemo,
       feeToSendOrdinals
     );
+    const formattedUTXOs = utxosWithoutOrdinals.map((utxo) => ({
+        ...utxo,
+        ...utxo?.witnessUtxo,
+      }));
 
     const {
       inputs,
       outputs,
       fee: test,
     } = accumulative(
-      utxosWithoutOrdinals.map((utxo) => ({
-        ...utxo,
-        ...utxo?.witnessUtxo,
-      })),
+      formattedUTXOs,
       targetOutputs,
       feeRate
     );
@@ -547,10 +556,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       includeOrigins: true,
     });
     const ordinalsMapping = await this.getOrdinalsMapping();
+    const feeRate = await this.getFeeRate(GasFeeSpeed.medium)
     const utxosWithoutOrdinals = this.filterUtxosWithoutOrdinals(
       utxos,
       ordinalsMapping
-    );
+    ).filter((utxo) => filterDetrimentalInput(utxo, feeRate));
     const maxValue = utxosWithoutOrdinals.reduce(
       (acc, utxo) => acc + utxo.witnessUtxo.value,
       0
