@@ -36,14 +36,14 @@ export interface TxBody {
   fee: string;
   compiledMemo?: string | Uint8Array;
 }
-const filterDetrimentalInput = (utxo: UTXO, feeRate: number) : boolean => {
-  const utxoBytes = utils.inputBytes(utxo)
-  const utxoFee = feeRate * utxoBytes
-  const utxoValue = utils.uintOrNaN(utxo.value)
+const filterDetrimentalInput = (utxo: UTXO, feeRate: number): boolean => {
+  const utxoBytes = utils.inputBytes(utxo);
+  const utxoFee = feeRate * utxoBytes;
+  const utxoValue = utils.uintOrNaN(utxo.value);
 
   // skip detrimental input
-  return  utxo.value > utxoFee
-}
+  return  utxo.value > utxoFee;
+};
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   declare signedTransaction: string | null;
@@ -93,19 +93,15 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       feeToSendOrdinals
     );
     const formattedUTXOs = utxosWithoutOrdinals.map((utxo) => ({
-        ...utxo,
-        ...utxo?.witnessUtxo,
-      }));
+      ...utxo,
+      ...utxo?.witnessUtxo,
+    }));
 
     const {
       inputs,
       outputs,
       fee: test,
-    } = accumulative(
-      formattedUTXOs,
-      targetOutputs,
-      feeRate
-    );
+    } = accumulative(formattedUTXOs, targetOutputs, feeRate);
 
     if (msgData.nftId) {
       return this.buildOrdinalTransaction(
