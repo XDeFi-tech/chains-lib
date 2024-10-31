@@ -514,9 +514,10 @@ describe('msg: getMaxAmountToSend', () => {
   const txBytes = 107; //sizeOfTx
   const mockSecondTx = new bitcoin.Transaction();
   mockSecondTx.addInput(Buffer.alloc(32, 0), 0);
-  mockSecondTx.addOutput(bitcoin.address.toOutputScript(
-    'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
-  ),
+  mockSecondTx.addOutput(
+    bitcoin.address.toOutputScript(
+      'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+    ),
     4000
   );
 

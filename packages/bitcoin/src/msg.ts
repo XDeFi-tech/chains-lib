@@ -42,7 +42,7 @@ const filterDetrimentalInput = (utxo: UTXO, feeRate: number): boolean => {
   const utxoValue = utils.uintOrNaN(utxo.value);
 
   // skip detrimental input
-  return  utxo.value > utxoFee;
+  return utxo.value > utxoFee;
 };
 
 export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
@@ -552,7 +552,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       includeOrigins: true,
     });
     const ordinalsMapping = await this.getOrdinalsMapping();
-    const feeRate = await this.getFeeRate(GasFeeSpeed.medium)
+    const feeRate = await this.getFeeRate(GasFeeSpeed.medium);
     const utxosWithoutOrdinals = this.filterUtxosWithoutOrdinals(
       utxos,
       ordinalsMapping
