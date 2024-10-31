@@ -24,7 +24,7 @@ import BigNumber from 'bignumber.js';
 import { formatFixed } from '@ethersproject/bignumber';
 
 import { parseGwei, parseUnitsToHexString } from '../../utils';
-import { EVMChains } from '../../manifests';
+import { EVM_MANIFESTS, EVMChains } from '../../manifests';
 import { ChainMsg } from '../../msg';
 import {
   DEFAULT_CONTRACT_FEE,
@@ -271,6 +271,8 @@ export class IndexerDataSource extends DataSource {
           );
         }
       }
+      if (msg.provider.manifest.chainId === EVM_MANIFESTS.avalanche.chainId)
+        gasLimit = Math.ceil(gasLimit * 1.2);
       const msgFeeData = isEIP1559
         ? {
             gasLimit,
