@@ -510,8 +510,11 @@ describe('msg: getMaxAmountToSend', () => {
   let chainMsg: ChainMsg;
   const from = 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw';
   const to = 'bc1petmz5t6sue8s0s9xgnnydtgektadm3g85x2w0ahtmwpl5v0p9xtsrzgqry';
-  const balanceInSats = 2000; //inputUTXO
+  let balanceInSats = 2000; //inputUTXO
   const txBytes = 107; //sizeOfTx
+  const mockSecondTx = new bitcoin.Transaction();
+  mockSecondTx.addInput(Buffer.alloc(32, 0), 0);
+  mockSecondTx.addOutput(bitcoin.address.toOutputScript('bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'), 4000);
 
   beforeEach(() => {
     (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
@@ -547,15 +550,6 @@ describe('msg: getMaxAmountToSend', () => {
 
     const amountStr = await chainMsg.getMaxAmountToSend();
     const amount = Number(amountStr);
-    chainMsg = new ChainMsg(
-      {
-        from,
-        to,
-        amount,
-      },
-      provider,
-      MsgEncoding.object
-    );
     const fee = txBytes * feeRate; //321
     const balanceMinusFeeInSats = balanceInSats - fee;
     expect(amount).toEqual(balanceMinusFeeInSats * 1e-8);
@@ -574,5 +568,50 @@ describe('msg: getMaxAmountToSend', () => {
     const errorMesage = `Cost of transactions exceeds balance. balance: ${balanceInSats}sats, fee: ${fee}sats`;
 
     await expect(chainMsg.getMaxAmountToSend()).rejects.toThrow(errorMesage);
+  })
+  it('should not inputs which are cost more than there value to send', async () => {
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 15000,
+      medium: 15000, // 20000 sat/kvB => 20 sat/vB
+      low: 15000,
+    });
+    (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
+      {
+        oTxHash:
+          'e4b7161d1b26d3eee736adc70c42f7c47c901ac3bede07de2c0e002d3ead6afb',
+        oIndex: 0,
+        oTxHex:
+          '0200000000010109e9e018877c28b71477cb885c040920169c66a2b21c3454412dd76d5d6c192a0000000000ffffffff02d0070000000000001600144e209aaf99f4b08cb5b583f4e87b546b00ea5a538e71000000000000160014d52ed37779898f360848ae49bb0ee089b6d36d2c024830450221009ecbf782d2a671cc369af031fd66fb83a291cbb1ec0b8ba3fe30970c437834a502203a91029d6a4a480e35a1eef9a69131cfa0159d02767fb8fe179363d23c6f66f70121022a6b486ca1b607a767fb1bf9432fa0b5031d9d1ece37ae02bc31d749d5ae65d500000000',
+        address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        scriptHex: '00144e209aaf99f4b08cb5b583f4e87b546b00ea5a53',
+        isCoinbase: null,
+        value: {
+          value: '2000',
+        },
+      },
+      {
+        oTxHash: mockSecondTx.getHash().toString('hex'),
+        oIndex: 0,
+        oTxHex: mockSecondTx.toHex(),
+        address: 'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw',
+        scriptHex: '00144e209aaf99f4b08cb5b583f4e87b546b00ea5a53',
+        isCoinbase: null,
+        value: {
+          value: '4000',
+        },
+      },
+    ]);
+    balanceInSats = 6000;
+
+    const feeRate = await chainMsg.getFeeRate();
+    expect(feeRate).toEqual(15);
+
+    const amount = await chainMsg.getMaxAmountToSend();
+    const utxoInputBytes = 63;
+    const fee = (txBytes+utxoInputBytes) * feeRate;
+    const balanceMinusFeeInSats = balanceInSats-fee;
+    const expensiveInput = 2000;
+    const expectedMax = balanceMinusFeeInSats - expensiveInput;
+    expect(Number(amount)).toEqual(expectedMax*1e-8);
   });
 });
