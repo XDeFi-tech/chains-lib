@@ -514,7 +514,11 @@ describe('msg: getMaxAmountToSend', () => {
   const txBytes = 107; //sizeOfTx
   const mockSecondTx = new bitcoin.Transaction();
   mockSecondTx.addInput(Buffer.alloc(32, 0), 0);
-  mockSecondTx.addOutput(bitcoin.address.toOutputScript('bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'), 4000);
+  mockSecondTx.addOutput(bitcoin.address.toOutputScript(
+    'bc1qfcsf4tue7jcgedd4s06ws765dvqw5kjn2zztvw'
+  ),
+    4000
+  );
 
   beforeEach(() => {
     (scanUtxosMoudle.scanUTXOs as any).mockResolvedValue([
@@ -585,7 +589,7 @@ describe('msg: getMaxAmountToSend', () => {
     const errorMesage = `Cost of transactions exceeds balance. balance: ${balanceInSats}sats, fee: ${fee}sats`;
 
     await expect(chainMsg.getMaxAmountToSend()).rejects.toThrow(errorMesage);
-  })
+  });
   it('should not inputs which are cost more than there value to send', async () => {
     (feeModule.getFees as any).mockResolvedValue({
       high: 15000,
@@ -625,10 +629,10 @@ describe('msg: getMaxAmountToSend', () => {
 
     const amount = await chainMsg.getMaxAmountToSend();
     const utxoInputBytes = 63;
-    const fee = (txBytes+utxoInputBytes) * feeRate;
-    const balanceMinusFeeInSats = balanceInSats-fee;
+    const fee = (txBytes + utxoInputBytes) * feeRate;
+    const balanceMinusFeeInSats = balanceInSats - fee;
     const expensiveInput = 2000;
     const expectedMax = balanceMinusFeeInSats - expensiveInput;
-    expect(Number(amount)).toEqual(expectedMax*1e-8);
+    expect(Number(amount)).toEqual(expectedMax * 1e-8);
   });
 });
