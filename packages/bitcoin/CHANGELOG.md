@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.24
+
+### Patch Changes
+
+- 0a14b2d6: update max send to filter DetrimentalInput
+
 ## 2.1.23
 
 ### Patch Changes
