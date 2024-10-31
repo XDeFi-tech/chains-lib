@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.73
+
+### Patch Changes
+
+- 4ecc37ad: increase gasLimit for avax by 20%
+
 ## 2.0.72
 
 ### Patch Changes
