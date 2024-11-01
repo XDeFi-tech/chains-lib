@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.25
+
+### Patch Changes
+
+- 75746e1b: fix: @trezor/connect-web depencency version
+
 ## 2.1.24
 
 ### Patch Changes
