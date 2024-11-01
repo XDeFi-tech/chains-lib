@@ -39,7 +39,6 @@ export interface TxBody {
 const filterDetrimentalInput = (utxo: UTXO, feeRate: number): boolean => {
   const utxoBytes = utils.inputBytes(utxo);
   const utxoFee = feeRate * utxoBytes;
-  const utxoValue = utils.uintOrNaN(utxo.value);
 
   // skip detrimental input
   return utxo.value > utxoFee;
@@ -97,11 +96,11 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
       ...utxo?.witnessUtxo,
     }));
 
-    const {
-      inputs,
-      outputs,
-      fee: test,
-    } = accumulative(formattedUTXOs, targetOutputs, feeRate);
+    const { inputs, outputs } = accumulative(
+      formattedUTXOs,
+      targetOutputs,
+      feeRate
+    );
 
     if (msgData.nftId) {
       return this.buildOrdinalTransaction(

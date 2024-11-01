@@ -3,7 +3,6 @@ import {
   GetAddress,
   Params,
   Success,
-  parseConnectSettings,
   SignMessage,
   PROTO,
 } from '@trezor/connect-web';
@@ -27,7 +26,7 @@ jest.mock('@trezor/connect-web', () => ({
 
     return txResponse;
   }),
-  signMessage: jest.fn().mockImplementation((params: Params<SignMessage>) => {
+  signMessage: jest.fn().mockImplementation((_params: Params<SignMessage>) => {
     const signatureResponse: Success<PROTO.MessageSignature> = {
       success: true,
       payload: {

@@ -2,3 +2,4 @@
 webpack*
 jest-setup-file.ts
 src/gql/**/*.ts
+node_modules
