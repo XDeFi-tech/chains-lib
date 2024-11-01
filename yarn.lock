@@ -6424,14 +6424,6 @@
     "@trezor/env-utils" "1.2.0"
     "@trezor/utils" "9.2.1"
 
-"@trezor/connect-common@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.2.2.tgz#d0862d062c7a6b9636ebfe403e7fcdcee77ce8dc"
-  integrity sha512-evPjhDhV6RNv90OiLIFAXnWKMojwsSMltxyhsCrjzAO5e+xrP/ZykCLoJfO0MR7onFGNi41H91wpvD7LSXLvMQ==
-  dependencies:
-    "@trezor/env-utils" "1.2.0"
-    "@trezor/utils" "9.2.1"
-
 "@trezor/connect-web@9.4.1":
   version "9.4.1"
   resolved "https://registry.yarnpkg.com/@trezor/connect-web/-/connect-web-9.4.1.tgz#8a0df3ce8cb6d41b1040ea258c383441b91507e9"
@@ -6439,15 +6431,6 @@
   dependencies:
     "@trezor/connect" "9.4.1"
     "@trezor/connect-common" "0.2.1"
-    "@trezor/utils" "9.2.1"
-
-"@trezor/connect-web@9.4.2", "@trezor/connect-web@^9.4.0":
-  version "9.4.2"
-  resolved "https://registry.yarnpkg.com/@trezor/connect-web/-/connect-web-9.4.2.tgz#f730c795ea9359cd440dd8de8cd507367c5fa2d4"
-  integrity sha512-nkqfNx7KZyHovteJsxRPqu/63u3Xp4Hi4BtJDkt/ialpIBC78Nheiyz0fY16mxPz+HKrlpswryimlfjDD59aWA==
-  dependencies:
-    "@trezor/connect" "9.4.2"
-    "@trezor/connect-common" "0.2.2"
     "@trezor/utils" "9.2.1"
 
 "@trezor/connect@9.4.1":
@@ -6474,30 +6457,6 @@
     bs58check "^4.0.0"
     cross-fetch "^4.0.0"
 
-"@trezor/connect@9.4.2":
-  version "9.4.2"
-  resolved "https://registry.yarnpkg.com/@trezor/connect/-/connect-9.4.2.tgz#e20b7fb3a1c3e887113e68e45d4f7598c42172ba"
-  integrity sha512-SXp34aAZKicDd/3H3Et546MJtwmgSFUdnkIR7zBbqm9sdyxOzNmapE7bRpYYhSJtVarCY/COwdfXNOo1wO9JZQ==
-  dependencies:
-    "@babel/preset-typescript" "^7.24.7"
-    "@ethereumjs/common" "^4.3.0"
-    "@ethereumjs/tx" "^5.3.0"
-    "@fivebinaries/coin-selection" "2.2.1"
-    "@trezor/blockchain-link" "2.3.1"
-    "@trezor/blockchain-link-types" "1.2.1"
-    "@trezor/connect-analytics" "1.2.1"
-    "@trezor/connect-common" "0.2.2"
-    "@trezor/protobuf" "1.2.2"
-    "@trezor/protocol" "1.2.1"
-    "@trezor/schema-utils" "1.2.1"
-    "@trezor/transport" "1.3.2"
-    "@trezor/utils" "9.2.1"
-    "@trezor/utxo-lib" "2.2.1"
-    blakejs "^1.2.1"
-    bs58 "^6.0.0"
-    bs58check "^4.0.0"
-    cross-fetch "^4.0.0"
-
 "@trezor/env-utils@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@trezor/env-utils/-/env-utils-1.2.0.tgz#8fb771a6f43e31b7dcf8c383c1f06c21f16b9674"
@@ -6509,14 +6468,6 @@
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@trezor/protobuf/-/protobuf-1.2.1.tgz#6411880fd68a17a925045db333fa147811872640"
   integrity sha512-CiVUcyE94J85K4TC2bUF9eOSLoquXZcS+XHVamCfsu7wujHs1B2lIl8X0MMQ+E40EruPCDP0vvJc3E/wWqFurg==
-  dependencies:
-    "@trezor/schema-utils" "1.2.1"
-    protobufjs "7.4.0"
-
-"@trezor/protobuf@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@trezor/protobuf/-/protobuf-1.2.2.tgz#9563bc701087bb3d19bf42792f05f154446618c2"
-  integrity sha512-zEpyQHMXpG6LJC/f1lKyzRIsy+v+waor7MdSQ0Dh4ndBf/NkHdxAkCPmT6aehZ8UFZuSDMlp0plK8V+0p9pHNw==
   dependencies:
     "@trezor/schema-utils" "1.2.1"
     protobufjs "7.4.0"
@@ -6546,19 +6497,6 @@
     long "^4.0.0"
     protobufjs "7.4.0"
     usb "^2.13.0"
-
-"@trezor/transport@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.3.2.tgz#eb12c986e4493d956e82d15b25a2fc94f23d376e"
-  integrity sha512-QeudU2AUfFFqORgb+Hg+T7Fy6Qusk45QESJmPI/sxqjQyqEV3kCbg6bPQppDvljasZLiz0Ofw5JAkDAELGkdew==
-  dependencies:
-    "@trezor/protobuf" "1.2.2"
-    "@trezor/protocol" "1.2.1"
-    "@trezor/utils" "9.2.1"
-    cross-fetch "^4.0.0"
-    long "^4.0.0"
-    protobufjs "7.4.0"
-    usb "^2.14.0"
 
 "@trezor/type-utils@1.1.0":
   version "1.1.0"
@@ -19537,7 +19475,7 @@ usb@^1.7.0:
     node-addon-api "^4.2.0"
     node-gyp-build "^4.3.0"
 
-usb@^2.13.0, usb@^2.14.0:
+usb@^2.13.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/usb/-/usb-2.14.0.tgz#501f18c11b00c248d607ab6b05a8c7b50eb2f21a"
   integrity sha512-I3lzVOH21BsO6qPYvx1C7Ji08lbuM0qmsEtNGAphqlhNME5cz/vExY+jIXZl+HQIRybI/sTxdyLab5tALsL69w==
