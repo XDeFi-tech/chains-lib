@@ -1,7 +1,6 @@
 import {
   Chain,
   ChainDecorator,
-  DataSource,
   MsgEncoding,
   Transaction,
   TransactionData,
@@ -16,6 +15,7 @@ import * as BitcoinMessage from 'bitcoinjs-message';
 
 import { IndexerDataSource } from './datasource';
 import { ChainMsg, MsgBody } from './msg';
+
 @ChainDecorator('BitcoinProvider', {
   deps: [],
   providerType: 'UTXO',

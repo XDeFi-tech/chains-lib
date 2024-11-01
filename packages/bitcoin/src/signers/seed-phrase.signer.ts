@@ -20,8 +20,7 @@ export class SeedPhraseSigner extends Signer.Provider {
     const root = bip32.HDKey.fromMasterSeed(seed);
     const master = root.derive(derivation);
     const bitcoinNetwork = coininfo.bitcoin.main.toBitcoinJS();
-    const wif = btc.WIF(bitcoinNetwork).encode(master.privateKey!);
-    return wif;
+    return btc.WIF(bitcoinNetwork).encode(master.privateKey!);
   }
 
   async getAddress(derivation: string): Promise<string> {

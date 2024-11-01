@@ -1,7 +1,6 @@
 import { gqlClient } from '@xdefi-tech/chains-core';
 import { gql } from 'graphql-tag';
 
-import { BitcoinGetTransactionByHashDocument } from '../../../gql/graphql';
 export const BITCOIN_GET_TRANSACTION_BY_HASH = gql`
   query GetTransactionByHash($txHash: String!) {
     bitcoin {
