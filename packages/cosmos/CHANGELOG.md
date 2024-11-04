@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.70
+
+### Patch Changes
+
+- 4fc116d0: fix: try to find chain in AddressChains of getBalance
+
 ## 2.0.69
 
 ### Patch Changes
