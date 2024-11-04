@@ -34,7 +34,7 @@ import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 
-import { CryptoAssetArgs } from '../../gql/graphql';
+import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
 import * as manifests from '../../manifests';
 import { ChainMsg } from '../../msg';
 import { COSMOS_ADDRESS_CHAIN } from '../../manifests';
@@ -86,14 +86,28 @@ export class ChainDataSource extends DataSource {
         amount: '0',
       });
     }
-    const chain =
+
+    let chain: AddressChain | undefined;
+    chain =
       COSMOS_ADDRESS_CHAIN[
         this.manifest.chain as keyof typeof COSMOS_ADDRESS_CHAIN
       ];
-    const cryptoAssetsInput = balances.map<CryptoAssetArgs>(({ denom }) => ({
-      chain: chain,
-      contract: this.manifest.denom === denom ? null : denom,
-    }));
+
+    if (!chain) {
+      chain = Object.values(AddressChain).find(
+        (addrChain) =>
+          addrChain.toLowerCase() === this.manifest.name.toLowerCase()
+      );
+    }
+
+    let cryptoAssetsInput: CryptoAssetArgs[] = [];
+    if (chain) {
+      cryptoAssetsInput = balances.map<CryptoAssetArgs>(({ denom }) => ({
+        chain: chain,
+        contract: this.manifest.denom === denom ? null : denom,
+      }));
+    }
+
     let assets: any;
     try {
       const {
