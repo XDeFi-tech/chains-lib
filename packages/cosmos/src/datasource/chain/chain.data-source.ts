@@ -96,14 +96,14 @@ export class ChainDataSource extends DataSource {
     if (!chain) {
       chain = Object.values(AddressChain).find(
         (addrChain) =>
-          addrChain.toLowerCase() === this.manifest.name.toLowerCase()
+          addrChain.toLowerCase() === this.manifest.chain.toLowerCase()
       );
     }
 
     let cryptoAssetsInput: CryptoAssetArgs[] = [];
     if (chain) {
       cryptoAssetsInput = balances.map<CryptoAssetArgs>(({ denom }) => ({
-        chain: chain,
+        chain: chain as AddressChain,
         contract: this.manifest.denom === denom ? null : denom,
       }));
     }
