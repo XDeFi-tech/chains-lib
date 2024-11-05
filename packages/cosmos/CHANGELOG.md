@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.71
+
+### Patch Changes
+
+- 9e7bb6bc: fix: build and change key from name to chain for finding custom cosmos asset
+
 ## 2.0.70
 
 ### Patch Changes
