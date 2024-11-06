@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.21
+
+### Patch Changes
+
+- e5c40bef: fix: caching policy for the balance query
+- Updated dependencies [e5c40bef]
+  - @xdefi-tech/chains-core@2.0.38
+
 ## 2.1.20
 
 ### Patch Changes

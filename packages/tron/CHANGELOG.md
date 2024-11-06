@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.54
+
+### Patch Changes
+
+- e5c40bef: fix: caching policy for the balance query
+- Updated dependencies [e5c40bef]
+  - @xdefi-tech/chains-core@2.0.38
+
 ## 2.0.53
 
 ### Patch Changes
