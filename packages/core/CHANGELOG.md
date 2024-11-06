@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.38
+
+### Patch Changes
+
+- e5c40bef: fix: caching policy for the balance query
+
 ## 2.0.37
 
 ### Patch Changes
