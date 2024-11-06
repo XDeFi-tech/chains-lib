@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.26
+
+### Patch Changes
+
+- e5c40bef: fix: caching policy for the balance query
+- Updated dependencies [e5c40bef]
+  - @xdefi-tech/chains-core@2.0.38
+  - @xdefi-tech/chains-utxo@2.0.22
+
 ## 2.1.25
 
 ### Patch Changes
