@@ -38,7 +38,10 @@ const cache = new InMemoryCache({
   dataIdFromObject: (result) => {
     if (result.balances && Array.isArray(result.balances) && result.balances.length > 0) {
       const firstAsset = (result.balances as any[])[0];
-      return firstAsset.address + firstAsset.asset.chain; // to trigger cache update for different chains with the same address
+      return `${firstAsset.asset.chain}:${firstAsset.address}`; // to trigger cache update for different chains with the same address
+    }
+    if (result.__typename === 'CryptoAsset') {
+      return `CryptoAsset:${result.contract}:${result.chain}`;
     }
     return defaultDataIdFromObject(result);
   },
