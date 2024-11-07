@@ -68,7 +68,7 @@ export abstract class Msg<OutData extends object = object, TxData extends object
 
   /**
    * Get maximum amount of token that can be sent
-   * @param contract contract address (optional), if not provided native token will be used
+   * @param feeRatioPercentage fee ratio to be used for calculation in percentage
    */
-  public abstract getMaxAmountToSend(): Promise<string>;
+  public abstract getMaxAmountToSend(feeRatioPercentage?: number): Promise<string>;
 }

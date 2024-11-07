@@ -362,7 +362,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     return baseTx as TxData;
   }
 
-  async getMaxAmountToSend() {
+  async getMaxAmountToSend(feeRatioPercentage = 0.5): Promise<string> {
     const msgData = this.toData();
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
@@ -377,8 +377,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
 
     const feeEstimation = await this.getFee(GasFeeSpeed.high);
-    maxAmount = maxAmount.minus(feeEstimation.fee || 0);
-
+    // calculate ratio 1 + (feeRatioPercentage / 100) = 1.005 by default
+    const feeRatio = new BigNumber(feeRatioPercentage).dividedBy(100).plus(1);
+    const fee = new BigNumber(feeEstimation.fee || 0).multipliedBy(feeRatio);
+    maxAmount = maxAmount.minus(fee);
     if (maxAmount.isLessThan(0)) {
       return '0';
     }
