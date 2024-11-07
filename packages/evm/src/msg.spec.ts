@@ -259,13 +259,11 @@ describe('msg', () => {
     const response = await chainMsg.getMaxAmountToSend();
 
     const feeEstimation = await chainMsg.getFee(GasFeeSpeed.high);
+    const feeWithRatio = ((feeEstimation.fee || 0) as number) * 1.005;
     const gap = chainMsg.provider.manifest?.maxGapAmount || 0;
 
     expect(response).toEqual(
-      new BigNumber('1000')
-        .minus(feeEstimation.fee || 0)
-        .minus(gap)
-        .toString()
+      new BigNumber('1000').minus(feeWithRatio).minus(gap).toString()
     );
   });
 
