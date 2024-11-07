@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.22
+
+### Patch Changes
+
+- 9c86d835: feat: use getFeeForMessage for all datasource
+
 ## 2.1.21
 
 ### Patch Changes
