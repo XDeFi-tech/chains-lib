@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.27
+
+### Patch Changes
+
+- 708bde09: feat: update getMaxAmountToSend method with feeRatioPercentage params
+- Updated dependencies [708bde09]
+  - @xdefi-tech/chains-core@2.0.39
+  - @xdefi-tech/chains-utxo@2.0.23
+
 ## 2.1.26
 
 ### Patch Changes
