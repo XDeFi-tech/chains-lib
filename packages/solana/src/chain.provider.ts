@@ -29,7 +29,7 @@ import {
 } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
 
-import { IndexerDataSource } from './datasource';
+import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
 import { checkMinimumBalanceForRentExemption } from './utils';
 
@@ -208,6 +208,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
   static get dataSourceList() {
     return {
       IndexerDataSource: IndexerDataSource,
+      ChainDataSource: ChainDataSource,
     };
   }
 

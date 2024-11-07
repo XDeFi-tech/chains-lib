@@ -9,6 +9,7 @@ import {
   FeeOptions,
   GasFeeSpeed,
   Injectable,
+  MsgEncoding,
   Transaction,
   TransactionData,
   TransactionStatus,
@@ -17,7 +18,12 @@ import {
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';
-import { Connection, PublicKey, VersionedMessage } from '@solana/web3.js';
+import {
+  Connection,
+  PublicKey,
+  Transaction as SolanaTransaction,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout, getMint } from '@solana/spl-token';
 import { Metadata, PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
@@ -158,10 +164,6 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  private async _estimateGasLimit(_txParams: any): Promise<number | null> {
-    return null;
-  }
-
   async estimateFee(
     msgs: ChainMsg[],
     _speed: GasFeeSpeed = GasFeeSpeed.medium
@@ -169,8 +171,32 @@ export class ChainDataSource extends DataSource {
     const feeData: FeeData[] = [];
 
     for (const msg of msgs) {
+      let dataForEstimate = null;
+      const txData = await msg.buildTx();
+      switch (txData.encoding) {
+        case MsgEncoding.object:
+          const transaction = txData.tx as SolanaTransaction;
+          dataForEstimate = transaction.compileMessage();
+          break;
+        case MsgEncoding.base64:
+        case MsgEncoding.base58:
+          const versionedTransaction = txData.tx as VersionedTransaction;
+          dataForEstimate = versionedTransaction.message;
+          const slot = await this.rpcProvider.getSlot('finalized');
+          // get the latest block (allowing for v0 transactions)
+          const block = await this.rpcProvider.getBlock(slot, {
+            maxSupportedTransactionVersion: 0,
+          });
+          if (block) {
+            dataForEstimate.recentBlockhash = block.blockhash;
+          }
+          break;
+        default:
+          throw new Error('Invalid encoding for solana transaction');
+      }
       const fee = await this.rpcProvider.getFeeForMessage(
-        VersionedMessage.deserialize((await msg.buildTx()).tx.serialize())
+        dataForEstimate,
+        'confirmed'
       );
       if (!fee) {
         throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);

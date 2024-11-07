@@ -15,12 +15,6 @@ import { ChainMsg, MsgBody } from '../msg';
 
 import SeedPhraseSigner from './seed-phrase.signer';
 
-jest.mock('../datasource/indexer/queries/fees.query', () => ({
-  getFees: jest.fn().mockResolvedValue({
-    data: { solana: { fee: '0' } },
-  }),
-}));
-
 jest.mock('../datasource/indexer/queries/balances.query', () => ({
   getBalance: jest.fn().mockResolvedValue({
     data: {

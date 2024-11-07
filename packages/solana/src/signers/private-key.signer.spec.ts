@@ -4,7 +4,7 @@ import {
   Keypair,
   PublicKey,
   SystemProgram,
-  Transaction as SolanaTransaction,
+  Transaction,
 } from '@solana/web3.js';
 import bs58 from 'bs58';
 
@@ -44,12 +44,6 @@ jest.mock('../datasource/indexer/queries/balances.query', () => ({
   }),
 }));
 
-jest.mock('../datasource/indexer/queries/fees.query', () => ({
-  getFees: jest.fn().mockResolvedValue({
-    data: { solana: { fee: '0' } },
-  }),
-}));
-
 describe('private-key.signer', () => {
   let privateKey: string;
   let signer: PrivateKeySigner;
@@ -79,15 +73,18 @@ describe('private-key.signer', () => {
   });
 
   it('should sign a transaction using a private key', async () => {
-    jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
-      blockhash: 'FxSFe5PnHuQZLiVf1h4AnzAmPBoQe5QfuviwvzbtheBe',
-      lastValidBlockHeight: 272094550,
-    });
+    const getLatestBlockhashMock = jest
+      .spyOn(Connection.prototype, 'getLatestBlockhash')
+      .mockResolvedValue({
+        blockhash: 'FxSFe5PnHuQZLiVf1h4AnzAmPBoQe5QfuviwvzbtheBe',
+        lastValidBlockHeight: 272094550,
+      });
     await signer.sign(message);
 
     expect(message.signedTransaction.sig).toBe(
       '3ccMvgzpkDv1Z7EZ3KDgZ7p4JbJyrYo659cKFbLmNxmhS6PFJ7gZn5vwJTYmhxrk6yPWh3go6A6esTAjpCNLR5ms'
     );
+    getLatestBlockhashMock.mockRestore();
   });
 
   it('should sign swap transaction using a private key', async () => {
@@ -141,7 +138,7 @@ describe('private-key.signer', () => {
       await provider.rpcProvider.getLatestBlockhash('finalized');
 
     // Create a transaction need multisign
-    const transaction = new SolanaTransaction({
+    const transaction = new Transaction({
       blockhash,
       lastValidBlockHeight,
       feePayer: alicePublickey, // Alice pays the transaction fee
@@ -167,7 +164,7 @@ describe('private-key.signer', () => {
     });
 
     // Using solana web3 lib
-    const testTransaction = SolanaTransaction.from(serializedTx);
+    const testTransaction = Transaction.from(serializedTx);
     testTransaction.partialSign(aliceKeyPair);
 
     // Using chain-lib
@@ -205,5 +202,35 @@ describe('private-key.signer', () => {
     expect(
       Buffer.from(bs58.decode(msgContainAliceSignature.signedTransaction.sig))
     ).toEqual(testTransaction.signatures[1].signature);
+  });
+
+  it('should estimate fees correctly', async () => {
+    const provider = new SolanaProvider(
+      new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
+    );
+    const msg = provider.createMsg({
+      from: '7mHVPmoTJQZUGDHpWHRr2dV2e9UBaGknopjh3AdJpj89',
+      to: '7mHVPmoTJQZUGDHpWHRr2dV2e9UBaGknopjh3AdJpj89',
+      amount: 0.0001,
+    });
+
+    const fee = await msg.getFee();
+    expect(Number(fee.fee)).toBeGreaterThan(0);
+  });
+
+  it('should estimate fees for swaps correctly', async () => {
+    const provider = new SolanaProvider(
+      new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
+    );
+    // { data: unsigned_transaction }
+    const msg = provider.createMsg(
+      {
+        data: 'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAIEqPFY7BRmik/cyNoDgmmo7S7mkUe0+qvcGfMOFBVY/PGC0gHT3W46jBpye0/BrwyGXgq5M2OXJ03SYJWsZhLnVAYos0BsrC37jVlX/Vn5Q9KxLuWNrDEdNT9KE4XS5/OITCkaOhIxPmykeLLLMqzHdpBqQdLmz6MUN48EVjty7hdMndigMGDbe3oTj+jtnfcgfFxxHqcbDoPBzJEmyLVup9Y72d/tWNeZHNyS3Dha2QFVANOpHocez/NiIU8QV0yVJFbUfHYO+wmpkfQYM16kVO3/w0v2SgCmUZir7W2V/92pxvmolYk6AUyDKEbxiFrbSuk6yS+R6+JYzyxTSFbpQ7ER9pbpA+NuWK/3ozeYI9qW1/DI7wnADqej6VXFIkqwNSSMI12HnhD40eCue8Myb4FjmQGUsMsN7a3k/gMefw5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAAR51VvyMcBu7nTFbs5oFQf9sbLeo/SOUQKxzaJWvBOPBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKk6uJA/tzXKscZ8Wa9IV+32Gwr4MqUKfFnjIZGeDsipvIyXJY9OJInxuz0QKRSODYMLWhOZ2v8QhASOe9jb6fhZnT21vEgNBO61RFhv0mqz1/MY4fI4sUEKqVUcWMKq7sG0P/on9df2SnTAmx8pWHneSwmrNt/J3VFLMhqns4zl6BLggbp1ost7bEXnGVYyD/+e/JA4GIthWUifYiIYo592CAsABQLAXBUACwAJAwQXAQAAAAAADwYABgAmCg0BAQoCAAYMAgAAAEBCDwAAAAAADQEGAREPBgAIABAKDQEBDDsNDgAGBQIIJhAMDBEMJA4jFQUBFhIUDQMTBwQMJRklGhcBCSkqGyUODQ0oJRgcDCcNDiICHQkgHiEfKy3BIJszQdacgQQDAAAAGmQAASZkAQIRAGQCA0BCDwAAAAAAODpBAwAAAAAsAQANAwYAAAEJA3r60BRSgD2xDk9lOwWoO5wdTzQDXCyoyoVBYRNWXBV3BYF5foB/Ant66Bv+RXr1W8wTHxVfNfAEDnY9unRf1hhg4opmS4jTOxoGv+rE6OfDBi0fBjLCwDexatjpZ3Z5p69xntxhOJDwMeTrdfusl3mqDEIy6QGYBoCBeX5/eAF8',
+      },
+      MsgEncoding.base64
+    );
+
+    const fee = await msg.getFee();
+    expect(Number(fee.fee)).toBeGreaterThan(0);
   });
 });

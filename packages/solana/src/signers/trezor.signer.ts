@@ -1,7 +1,4 @@
-import TrezorConnect, {
-  ConnectSettings,
-  SolanaPublicKey,
-} from '@trezor/connect-web';
+import TrezorConnect from '@trezor/connect-web';
 import {
   IsTrezorInitialized,
   MsgEncoding,
