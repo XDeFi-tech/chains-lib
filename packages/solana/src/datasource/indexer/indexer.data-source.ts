@@ -1,30 +1,37 @@
 import {
   Asset,
-  DataSource,
+  Balance,
+  BalanceFilter,
+  Chain,
   Coin,
+  DataSource,
+  FeeData,
   FeeOptions,
   GasFeeSpeed,
-  Transaction,
   Injectable,
-  Chain,
+  MsgEncoding,
+  Transaction,
   TransactionsFilter,
-  BalanceFilter,
-  Balance,
-  FeeData,
-  NumberIsh,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import {
+  Connection,
+  Transaction as SolanaTransaction,
+  VersionedTransaction,
+} from '@solana/web3.js';
 
 import { ChainMsg } from '../../msg';
-import { DEFAULT_FEE } from '../../constants';
 
-import { getBalance, getTransactions, getFees, getNFTBalance } from './queries';
+import { getBalance, getNFTBalance, getTransactions } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
+  declare rpcProvider: Connection;
+
   constructor(manifest: Chain.Manifest) {
     super(manifest);
+    this.rpcProvider = new Connection(this.manifest.rpcURL);
   }
 
   async getNFTBalance(address: string) {
@@ -87,36 +94,52 @@ export class IndexerDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed): Promise<FeeData[]> {
-    const feeOptions = await this.gasFeeOptions();
-    if (!feeOptions) {
-      return [];
+  async estimateFee(
+    msgs: ChainMsg[],
+    _speed: GasFeeSpeed = GasFeeSpeed.medium
+  ): Promise<FeeData[]> {
+    const feeData: FeeData[] = [];
+
+    for (const msg of msgs) {
+      let dataForEstimate = null;
+      const txData = await msg.buildTx();
+      switch (txData.encoding) {
+        case MsgEncoding.object:
+          const transaction = txData.tx as SolanaTransaction;
+          dataForEstimate = transaction.compileMessage();
+          break;
+        case MsgEncoding.base64:
+        case MsgEncoding.base58:
+          const versionedTransaction = txData.tx as VersionedTransaction;
+          dataForEstimate = versionedTransaction.message;
+          const slot = await this.rpcProvider.getSlot('finalized');
+          // get the latest block (allowing for v0 transactions)
+          const block = await this.rpcProvider.getBlock(slot, {
+            maxSupportedTransactionVersion: 0,
+          });
+          if (block) {
+            dataForEstimate.recentBlockhash = block.blockhash;
+          }
+          break;
+        default:
+          throw new Error('Invalid encoding for solana transaction');
+      }
+      const fee = await this.rpcProvider.getFeeForMessage(
+        dataForEstimate,
+        'confirmed'
+      );
+      if (!fee) {
+        throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
+      }
+
+      feeData.push({ gasLimit: fee.value ?? 0 });
     }
 
-    return msgs.map(() => ({
-      gasLimit: 0,
-      gasPrice: feeOptions[speed] as NumberIsh,
-    }));
+    return feeData;
   }
 
-  async gasFeeOptions(): Promise<FeeOptions> {
-    const result: FeeOptions = {
-      [GasFeeSpeed.high]: DEFAULT_FEE,
-      [GasFeeSpeed.medium]: DEFAULT_FEE,
-      [GasFeeSpeed.low]: DEFAULT_FEE,
-    };
-    try {
-      const { data } = await getFees();
-      if (data.solana.fee) {
-        result[GasFeeSpeed.high] = data.solana.fee.high || DEFAULT_FEE;
-        result[GasFeeSpeed.medium] = data.solana.fee.medium || DEFAULT_FEE;
-        result[GasFeeSpeed.low] = data.solana.fee.low || DEFAULT_FEE;
-      }
-    } catch (err) {
-      console.error('Error while getting fees for solana');
-      console.error(err);
-    }
-    return result;
+  async gasFeeOptions(): Promise<FeeOptions | null> {
+    return null;
   }
 
   async getNonce(_address: string): Promise<number> {

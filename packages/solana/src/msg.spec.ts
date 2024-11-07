@@ -69,6 +69,7 @@ describe('msg', () => {
           medium: 5000,
         })
       ),
+      estimateFee: jest.fn(() => Promise.resolve([{ gasLimit: 5000 }])),
       manifest: {
         name: 'Solana',
         description: '',

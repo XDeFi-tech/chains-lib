@@ -76,13 +76,3 @@ query GetSolanaStatus {
     }
   }
 }
-
-query GetSolanaFee {
-  solana {
-    fee {
-      high
-      low
-      medium
-    }
-  }
-}
