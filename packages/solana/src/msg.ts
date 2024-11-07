@@ -1,5 +1,4 @@
 import {
-  Coin,
   FeeEstimation,
   GasFeeSpeed,
   Msg as BasMsg,
@@ -259,7 +258,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     };
   }
 
-  async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
+  async getFee(_speed?: GasFeeSpeed): Promise<FeeEstimation> {
     const result: FeeEstimation = {
       fee: null,
       maxFee: null,
@@ -271,9 +270,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         .dividedBy(LAMPORTS_PER_SOL)
         .toString();
     } else {
-      const options = await this.provider.gasFeeOptions();
+      const [estimatedFee] = await this.provider.estimateFee([this]);
       result.fee = new BigNumber(
-        options ? (options[speed || GasFeeSpeed.medium] as number) : DEFAULT_FEE
+        estimatedFee ? (estimatedFee.gasLimit as number) : DEFAULT_FEE
       )
         .dividedBy(LAMPORTS_PER_SOL)
         .toString();
