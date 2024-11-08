@@ -91,6 +91,10 @@ describe('seed-phrase.signer', () => {
 
   it('should sign swap base64 transaction using a seed phrase', async () => {
     // { data: unsigned_transaction }
+    jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
+      blockhash: '2GgtpdUWPr6ksGz3EBw821ir6cmNG8h7a8j1onZkWxw7',
+      lastValidBlockHeight: 272094550,
+    });
     const message = provider.createMsg(
       {
         data: 'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAIEqPFY7BRmik/cyNoDgmmo7S7mkUe0+qvcGfMOFBVY/PGC0gHT3W46jBpye0/BrwyGXgq5M2OXJ03SYJWsZhLnVAYos0BsrC37jVlX/Vn5Q9KxLuWNrDEdNT9KE4XS5/OITCkaOhIxPmykeLLLMqzHdpBqQdLmz6MUN48EVjty7hdMndigMGDbe3oTj+jtnfcgfFxxHqcbDoPBzJEmyLVup9Y72d/tWNeZHNyS3Dha2QFVANOpHocez/NiIU8QV0yVJFbUfHYO+wmpkfQYM16kVO3/w0v2SgCmUZir7W2V/92pxvmolYk6AUyDKEbxiFrbSuk6yS+R6+JYzyxTSFbpQ7ER9pbpA+NuWK/3ozeYI9qW1/DI7wnADqej6VXFIkqwNSSMI12HnhD40eCue8Myb4FjmQGUsMsN7a3k/gMefw5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAAR51VvyMcBu7nTFbs5oFQf9sbLeo/SOUQKxzaJWvBOPBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKk6uJA/tzXKscZ8Wa9IV+32Gwr4MqUKfFnjIZGeDsipvIyXJY9OJInxuz0QKRSODYMLWhOZ2v8QhASOe9jb6fhZnT21vEgNBO61RFhv0mqz1/MY4fI4sUEKqVUcWMKq7sG0P/on9df2SnTAmx8pWHneSwmrNt/J3VFLMhqns4zl6BLggbp1ost7bEXnGVYyD/+e/JA4GIthWUifYiIYo592CAsABQLAXBUACwAJAwQXAQAAAAAADwYABgAmCg0BAQoCAAYMAgAAAEBCDwAAAAAADQEGAREPBgAIABAKDQEBDDsNDgAGBQIIJhAMDBEMJA4jFQUBFhIUDQMTBwQMJRklGhcBCSkqGyUODQ0oJRgcDCcNDiICHQkgHiEfKy3BIJszQdacgQQDAAAAGmQAASZkAQIRAGQCA0BCDwAAAAAAODpBAwAAAAAsAQANAwYAAAEJA3r60BRSgD2xDk9lOwWoO5wdTzQDXCyoyoVBYRNWXBV3BYF5foB/Ant66Bv+RXr1W8wTHxVfNfAEDnY9unRf1hhg4opmS4jTOxoGv+rE6OfDBi0fBjLCwDexatjpZ3Z5p69xntxhOJDwMeTrdfusl3mqDEIy6QGYBoCBeX5/eAF8',
@@ -148,6 +152,10 @@ describe('seed-phrase.signer', () => {
   });
 
   it('should return a tx with multiple signatures', async () => {
+    jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
+      blockhash: 'DHMZ9b8KE6XrsyiE1YzQUV9GfaxFjqXrpo2ZL3YG4KJE',
+      lastValidBlockHeight: 272094550,
+    });
     const alice = new SeedPhraseSigner(
       'question unusual episode tree fresh lawn enforce vocal attitude quarter solutioni shove early arch topic'
     );

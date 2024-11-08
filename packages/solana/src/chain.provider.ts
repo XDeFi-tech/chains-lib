@@ -22,7 +22,6 @@ import {
   SystemProgram,
 } from '@solana/web3.js';
 import { some } from 'lodash';
-import bs58 from 'bs58';
 import {
   createTransferInstruction,
   getAssociatedTokenAddressSync,
@@ -163,21 +162,12 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
 
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
-      const { tx: _tx } = await msg.buildTx();
-      const pubKey = new PublicKey(msg.signedTransaction.pubKey);
-      const base58Sig = bs58.decode(msg.signedTransaction.sig);
-      const buffer = Buffer.from(base58Sig);
-      const tx = _tx as SolanaTransaction;
-      tx.addSignature(pubKey, buffer);
-      const serializeTx = tx.serialize({ verifySignatures: true });
-      const hash = await this.rpcProvider.sendRawTransaction(
-        Buffer.from(serializeTx),
-        {
-          skipPreflight: msg.data.skipPreflight ?? false,
-          preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
-          maxRetries: 2,
-        }
-      );
+      const serializedTx = (msg.signedTransaction as any).serializedTx;
+      const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
+        skipPreflight: msg.data.skipPreflight ?? false,
+        preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
+        maxRetries: 2,
+      });
       transactions.push(Transaction.fromData({ hash }));
     }
 
