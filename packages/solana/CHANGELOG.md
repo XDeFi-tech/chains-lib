@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.24
+
+### Patch Changes
+
+- debb0b35: update solana broadcast to use serialized tx from signer
+
 ## 2.1.23
 
 ### Patch Changes
