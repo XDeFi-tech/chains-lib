@@ -56,6 +56,7 @@ export class PrivateKeySigner extends Signer.Provider {
     msg.sign({
       pubKey,
       sig: signature,
+      serializedTx,
     });
   }
 
