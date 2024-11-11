@@ -13,6 +13,7 @@ import {
   Transaction,
   TransactionsFilter,
   getCryptoAssets,
+  FeeParams,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -23,15 +24,10 @@ import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
 
 import { AddressChain } from '../../gql/graphql';
-import { RestEstimateGasRequest } from '../../types';
 import { EVM_MANIFESTS, EVMChains } from '../../manifests';
 import { ChainMsg } from '../../msg';
-import {
-  DEFAULT_CONTRACT_FEE,
-  DEFAULT_TRANSACTION_FEE,
-  FACTOR_ESTIMATE,
-} from '../../constants';
-import { parseUnitsToHexString } from '../../utils';
+import { DEFAULT_TRANSACTION_FEE, FACTOR_ESTIMATE } from '../../constants';
+import { getGasLimitFromRPC } from '../../utils';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -205,77 +201,32 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async _estimateGasLimit(
-    txParams: RestEstimateGasRequest
-  ): Promise<number | null> {
-    try {
-      const { data: response } = await this.rest.post('/', {
-        method: 'eth_estimateGas',
-        params: [txParams],
-        id: 'dontcare',
-        jsonrpc: '2.0',
-      });
-      if (!response.result) {
-        return null;
-      }
-      return parseInt(response.result);
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  }
-
   async estimateFee(
     msgs: ChainMsg[],
-    speed: GasFeeSpeed = GasFeeSpeed.medium
+    speed: GasFeeSpeed = GasFeeSpeed.medium,
+    options: FeeParams = { useFeeService: true }
   ): Promise<FeeData[]> {
-    const fee = await this.gasFeeOptions();
-    const feeData: FeeData[] = [];
+    const fee = await this.gasFeeOptions(options);
     if (!fee) {
       throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
     }
+    const isEIP1559 = typeof fee[speed] !== 'number';
+
+    // gasLimit = 21000 + 68 * dataByteLength
+    // https://ethereum.stackexchange.com/questions/39401/how-do-you-calculate-gas-limit-for-transaction-with-data-in-ethereum
+
+    const feeData: FeeData[] = [];
     for (const msg of msgs) {
       const msgData = msg.toData();
       let gasLimit: number;
 
       if (msgData.contractAddress && msgData.nftId) {
-        const { contractData } = await msg.getDataFromContract();
-        if (contractData.data) {
-          throw new Error(
-            'Please select correct tokenType field for NFT from TokenType enum'
-          );
-        }
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: msgData.contractAddress,
-          data: contractData.data,
-        });
-        gasLimit = calculatedGasLimit ?? DEFAULT_CONTRACT_FEE;
+        gasLimit = await getGasLimitFromRPC(msg, this.rest);
       } else if (msgData.contractAddress) {
-        const { contract, contractData } = await msg.getDataFromContract();
-        if (!contract) {
-          throw new Error(
-            `Invalid contract for address ${msgData.contractAddress}`
-          );
-        }
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: contractData.to as string,
-          value: contractData.value as string,
-          data: contractData.data as string,
-        });
-        if (calculatedGasLimit) {
-          gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
-        } else {
-          gasLimit = DEFAULT_CONTRACT_FEE;
-        }
+        gasLimit = await getGasLimitFromRPC(msg, this.rest);
+        gasLimit = Math.ceil(gasLimit * FACTOR_ESTIMATE);
       } else {
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: msgData.to,
-          value: parseUnitsToHexString(msgData.amount, this.manifest.decimals),
-          ...(msgData.data && { data: msgData.data }),
-        });
+        const calculatedGasLimit = await getGasLimitFromRPC(msg, this.rest);
         if (calculatedGasLimit) {
           gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
         } else {
@@ -289,21 +240,30 @@ export class ChainDataSource extends DataSource {
           );
         }
       }
-
-      const msgFeeData = {
-        gasLimit,
-        gasPrice: undefined,
-        maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
-        maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
-        baseFeePerGas: (fee[speed] as EIP1559Fee).baseFeePerGas,
-      };
-      feeData.push(msgFeeData);
+      if (msg.provider.manifest.chainId === EVM_MANIFESTS.avalanche.chainId)
+        gasLimit = Math.ceil(gasLimit * 1.2);
+      const msgFeeData = isEIP1559
+        ? {
+            gasLimit,
+            gasPrice: undefined,
+            maxFeePerGas: (fee[speed] as EIP1559Fee).maxFeePerGas,
+            maxPriorityFeePerGas: (fee[speed] as EIP1559Fee).priorityFeePerGas,
+            baseFeePerGas: (fee[speed] as EIP1559Fee).baseFeePerGas,
+          }
+        : {
+            gasLimit,
+            gasPrice: fee[speed],
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+            baseFeePerGas: undefined,
+          };
+      feeData.push(msgFeeData as FeeData);
     }
 
     return feeData;
   }
 
-  async gasFeeOptions(): Promise<FeeOptions> {
+  async gasFeeOptions(_options?: FeeParams): Promise<FeeOptions> {
     const fee = await this.rpcProvider.getFeeData();
     if (!fee.gasPrice || !fee.maxFeePerGas || !fee.maxPriorityFeePerGas) {
       const gasPrice = await this.rpcProvider.getGasPrice();
