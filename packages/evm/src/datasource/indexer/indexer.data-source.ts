@@ -23,17 +23,10 @@ import axios, { Axios } from 'axios';
 import BigNumber from 'bignumber.js';
 import { formatFixed } from '@ethersproject/bignumber';
 
-import { parseGwei, parseUnitsToHexString } from '../../utils';
+import { getGasLimitFromRPC, parseGwei } from '../../utils';
 import { EVM_MANIFESTS, EVMChains } from '../../manifests';
 import { ChainMsg } from '../../msg';
-import {
-  DEFAULT_CONTRACT_FEE,
-  DEFAULT_TRANSACTION_FEE,
-  ERC1155_SAFE_TRANSFER_METHOD,
-  ERC721_SAFE_TRANSFER_METHOD,
-  FACTOR_ESTIMATE,
-} from '../../constants';
-import { RestEstimateGasRequest } from '../../types';
+import { DEFAULT_TRANSACTION_FEE, FACTOR_ESTIMATE } from '../../constants';
 import { getEvmBalance } from '../multicall/evm.multicall';
 import { getBalanceByBatch } from '../batch-rpc/evm.batch-call';
 
@@ -179,26 +172,6 @@ export class IndexerDataSource extends DataSource {
     );
   }
 
-  async _estimateGasLimit(
-    txParams: RestEstimateGasRequest
-  ): Promise<number | null> {
-    try {
-      const { data: response } = await this.rest.post('/', {
-        method: 'eth_estimateGas',
-        params: [txParams],
-        id: 'dontcare',
-        jsonrpc: '2.0',
-      });
-      if (!response.result) {
-        return null;
-      }
-      return parseInt(response.result);
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  }
-
   async estimateFee(
     msgs: ChainMsg[],
     speed: GasFeeSpeed = GasFeeSpeed.medium,
@@ -219,45 +192,12 @@ export class IndexerDataSource extends DataSource {
       let gasLimit: number;
 
       if (msgData.contractAddress && msgData.nftId) {
-        const { contractData } = await msg.getDataFromContract();
-        if (!contractData.data) {
-          throw new Error(
-            'Please select correct tokenType field for NFT from TokenType enum'
-          );
-        }
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: msgData.contractAddress,
-          data: contractData.data,
-        });
-        gasLimit = calculatedGasLimit ?? DEFAULT_CONTRACT_FEE;
+        gasLimit = await getGasLimitFromRPC(msg, this.rest);
       } else if (msgData.contractAddress) {
-        // ERC transaction
-        const { contract, contractData } = await msg.getDataFromContract();
-        if (!contract) {
-          throw new Error(
-            `Invalid contract for address ${msgData.contractAddress}`
-          );
-        }
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: contractData.to as string,
-          value: contractData.value as string,
-          data: contractData.data as string,
-        });
-        if (calculatedGasLimit) {
-          gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
-        } else {
-          gasLimit = DEFAULT_CONTRACT_FEE;
-        }
+        gasLimit = await getGasLimitFromRPC(msg, this.rest);
+        gasLimit = Math.ceil(gasLimit * FACTOR_ESTIMATE);
       } else {
-        // common transaction
-        const calculatedGasLimit = await this._estimateGasLimit({
-          from: msgData.from,
-          to: msgData.to,
-          value: parseUnitsToHexString(msgData.amount, this.manifest.decimals),
-          ...(msgData.data && { data: msgData.data }),
-        });
+        const calculatedGasLimit = await getGasLimitFromRPC(msg, this.rest);
         if (calculatedGasLimit) {
           gasLimit = Math.ceil(calculatedGasLimit * FACTOR_ESTIMATE);
         } else {
@@ -366,10 +306,11 @@ export class IndexerDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.high)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.high)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.high)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
       [GasFeeSpeed.medium]: {
         baseFeePerGas: new BigNumber(
@@ -382,10 +323,11 @@ export class IndexerDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.medium)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.medium)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.medium)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
       [GasFeeSpeed.low]: {
         baseFeePerGas: new BigNumber(
@@ -398,10 +340,11 @@ export class IndexerDataSource extends DataSource {
           .multipliedBy(this.manifest.feeGasStep.low)
           .integerValue(BigNumber.ROUND_CEIL)
           .toNumber(),
-        priorityFeePerGas: new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
-          .multipliedBy(this.manifest.feeGasStep.low)
-          .integerValue(BigNumber.ROUND_CEIL)
-          .toNumber(),
+        priorityFeePerGas:
+          new BigNumber(formatFixed(fee.maxPriorityFeePerGas))
+            .multipliedBy(this.manifest.feeGasStep.low)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .toNumber() || 1,
       },
     };
   }
