@@ -6,6 +6,7 @@ import {
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import axios from 'axios';
 import {
   ComputeBudgetProgram,
   LAMPORTS_PER_SOL,
@@ -91,11 +92,67 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     return this.blockhash;
   }
 
+  async getPriorityFeeEstimate(isToken: boolean): Promise<number> {
+    // Use Promise.allSettled for parallel requests and handling potential fetch failure
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const [solConstantsResult, prioritizationFeesResult] =
+      await Promise.allSettled([
+        axios
+          .get(
+            `https://raw.githubusercontent.com/XDeFi-tech/utils/main/solana_constants.json`,
+            { signal: controller.signal }
+          )
+          .then((res) => res.data),
+        this.provider.rpcProvider.getRecentPrioritizationFees(),
+      ]);
+    clearTimeout(timeoutId);
+
+    let json;
+    // Handle the solConstantsResult
+    if (solConstantsResult.status === 'fulfilled') {
+      json = solConstantsResult.value;
+    } else {
+      console.error(
+        `Failed to fetch solana_constants.json ${solConstantsResult.reason}`
+      );
+      // Fallback values if the fetch fails
+      json = {
+        sendSplPrioritizationMultiplier: 5,
+        sendSolPrioritizationMultiplier: 5,
+        defaultPrioritizationFee: 5000,
+      };
+    }
+
+    const multiplier = isToken
+      ? json.sendSplPrioritizationMultiplier
+      : json.sendSolPrioritizationMultiplier;
+    const defaultFeeRate = json.defaultPrioritizationFee;
+
+    let feeRate = defaultFeeRate;
+    // Handle the prioritizationFeesResult
+    if (prioritizationFeesResult.status === 'fulfilled') {
+      const data = prioritizationFeesResult.value;
+      const maxFeeRate = Math.max(...data.map((d) => d.prioritizationFee));
+      // Use maxFeeRate if it's greater than 0, else stick with defaultFeeRate
+      feeRate =
+        maxFeeRate > 0 && maxFeeRate > json.defaultFeeRate
+          ? maxFeeRate
+          : defaultFeeRate;
+    }
+
+    return feeRate * multiplier;
+  }
+
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
     let decimals = msgData.decimals || 9; // 9 - lamports in SOL
     let gasPrice = msgData.gasPrice;
     let programId;
+
+    const blockHeight = await this.provider.rpcProvider.getBlockHeight(
+      'confirmed'
+    );
 
     if (
       this.encoding === MsgEncoding.base64 ||
@@ -140,9 +197,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const contractInfo: any = {};
     const blockhash = await this.getLatestBlockhash();
 
+    // 120 blocks is about 1 min, setting this means this tx can be broadcasted within 1min of being signed
+    const lastValidBlockHeight = blockHeight + 120;
     const transaction = new SolanaTransaction({
       feePayer: senderPublicKey,
-      recentBlockhash: blockhash,
+      blockhash,
+      lastValidBlockHeight,
     });
 
     let instruction;
@@ -208,6 +268,24 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         }).data,
       });
       programId = SystemProgram.programId;
+    }
+
+    const PRIORITY_RATE = await this.getPriorityFeeEstimate(
+      !!msgData.contractAddress
+    );
+
+    // Add Priority Fee for Secondary Tokens as it is congested
+    // as suggested by Solana Foundation
+    if (PRIORITY_RATE > 0) {
+      const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: PRIORITY_RATE,
+      });
+      transaction.add(PRIORITY_FEE_IX);
+      transaction.add(
+        ComputeBudgetProgram.setComputeUnitLimit({
+          units: 200000,
+        })
+      );
     }
 
     if (msgData.priorityFeeAmount) {
