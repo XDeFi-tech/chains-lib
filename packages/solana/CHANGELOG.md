@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.26
+
+### Patch Changes
+
+- 0d699996: add getPriorityFeeEstimate
+
 ## 2.1.25
 
 ### Patch Changes
