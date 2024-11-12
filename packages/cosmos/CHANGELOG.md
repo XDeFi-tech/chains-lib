@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.74
+
+### Patch Changes
+
+- 79c2d8a8: feat: add chains-lib core options support
+- Updated dependencies [79c2d8a8]
+  - @xdefi-tech/chains-core@2.0.40
+
 ## 2.0.73
 
 ### Patch Changes
