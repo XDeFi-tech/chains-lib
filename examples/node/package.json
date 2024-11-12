@@ -1,0 +1,28 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@xdefi-tech/chains-binance": "*",
+    "@xdefi-tech/chains-bitcoin": "*",
+    "@xdefi-tech/chains-bitcoincash": "*",
+    "@xdefi-tech/chains-controller": "*",
+    "@xdefi-tech/chains-core": "*",
+    "@xdefi-tech/chains-cosmos": "*",
+    "@xdefi-tech/chains-dogecoin": "*",
+    "@xdefi-tech/chains-evm": "*",
+    "@xdefi-tech/chains-litecoin": "*",
+    "@xdefi-tech/chains-solana": "*",
+    "@xdefi-tech/chains-thor": "*",
+    "@xdefi-tech/chains-tron": "*",
+    "dotenv": "^16.4.5",
+    "xhr2": "^0.2.1"
+  }
+}
