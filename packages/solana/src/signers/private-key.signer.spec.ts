@@ -82,7 +82,7 @@ describe('private-key.signer', () => {
     await signer.sign(message);
 
     expect(message.signedTransaction.sig).toBe(
-      '3ccMvgzpkDv1Z7EZ3KDgZ7p4JbJyrYo659cKFbLmNxmhS6PFJ7gZn5vwJTYmhxrk6yPWh3go6A6esTAjpCNLR5ms'
+      '3wnKuU3K3S25gK2Xsbb8jRxBSBSCvGLfTvwVEEpWe8Nn189bohmexhvH3hnRHC39F43iL2M2aZprFVEDu3jhLM9o'
     );
     getLatestBlockhashMock.mockRestore();
   });

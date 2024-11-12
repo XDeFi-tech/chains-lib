@@ -112,13 +112,17 @@ export class IndexerDataSource extends DataSource {
         case MsgEncoding.base58:
           const versionedTransaction = txData.tx as VersionedTransaction;
           dataForEstimate = versionedTransaction.message;
-          const slot = await this.rpcProvider.getSlot('finalized');
-          // get the latest block (allowing for v0 transactions)
-          const block = await this.rpcProvider.getBlock(slot, {
-            maxSupportedTransactionVersion: 0,
-          });
-          if (block) {
-            dataForEstimate.recentBlockhash = block.blockhash;
+          try {
+            const slot = await this.rpcProvider.getSlot('finalized');
+            // get the latest block (allowing for v0 transactions)
+            const block = await this.rpcProvider.getBlock(slot, {
+              maxSupportedTransactionVersion: 0,
+            });
+            if (block) {
+              dataForEstimate.recentBlockhash = block.blockhash;
+            }
+          } catch (error) {
+            console.warn('Block data for slot ${slot} is unavailable.')
           }
           break;
         default:
