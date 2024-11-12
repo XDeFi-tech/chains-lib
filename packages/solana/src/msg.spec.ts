@@ -58,6 +58,14 @@ describe('msg', () => {
             blockhash: 'mockBlockhash',
           })
         ),
+        getBlockHeight: jest.fn(() =>
+          Promise.resolve({
+            blockhash: 'mockBlockhash',
+          })
+        ),
+        getRecentPrioritizationFees: jest.fn(() =>
+          Promise.resolve([])
+        ),
         getMinimumBalanceForRentExemption: jest.fn(() =>
           Promise.resolve(890880)
         ),
@@ -179,9 +187,9 @@ describe('msg', () => {
     });
     const builtMsg = await msg.buildTx();
     const tx = builtMsg.tx as SolanaTransaction;
-    expect(tx.instructions.length).toBe(2);
+    expect(tx.instructions.length).toBe(4);
     expect(tx.instructions[0].programId).toBe(ASSOCIATED_TOKEN_PROGRAM_ID);
-    expect(tx.instructions[1].programId).toBe(TOKEN_PROGRAM_ID);
+    expect(tx.instructions[3].programId).toBe(TOKEN_PROGRAM_ID);
   });
 
   it('Should not create associated token account instruction when sending secondary token to account containing token', async () => {
@@ -194,7 +202,7 @@ describe('msg', () => {
     });
     const builtMsg = await msg.buildTx();
     const tx = builtMsg.tx as SolanaTransaction;
-    expect(tx.instructions.length).toBe(1);
-    expect(tx.instructions[0].programId).toBe(TOKEN_PROGRAM_ID);
+    expect(tx.instructions.length).toBe(3);
+    expect(tx.instructions[2].programId).toBe(TOKEN_PROGRAM_ID);
   });
 });
