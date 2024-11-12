@@ -1,4 +1,4 @@
-import { ApolloClient, split, from, defaultDataIdFromObject } from '@apollo/client/core';
+import { ApolloClient, ApolloLink, split, from, defaultDataIdFromObject } from '@apollo/client/core';
 import { InMemoryCache } from '@apollo/client/cache';
 import { HttpLink } from '@apollo/client/link/http';
 import { onError } from '@apollo/client/link/error';
@@ -7,17 +7,70 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 import fetch from 'cross-fetch';
 
-const wsLink =
-  typeof window !== 'undefined'
-    ? new GraphQLWsLink(
-        createClient({
-          url: 'wss://gateway-ws.xdefi.services/',
-        })
-      )
-    : null;
+declare global {
+  interface Window {
+    CHAINS_CORE_OPTIONS: {
+      httpUri: string;
+      wsUri: string;
+      clientName: string;
+      clientVersion: string;
+    };
+  }
+}
+
+const getChainCoreOptions = () => {
+  // Chain core options on FE
+  if (typeof window !== 'undefined') {
+    const { httpUri, wsUri, clientName, clientVersion } = window.CHAINS_CORE_OPTIONS || {};
+    return { httpUri, wsUri, clientName, clientVersion };
+  }
+  // Chain core options on BE
+  return {
+    httpUri: process.env.CHAIN_CORE_HTTP_URI,
+    wsUri: process.env.CHAIN_CORE_WS_URI,
+    clientName: process.env.CHAIN_CORE_CLIENT_NAME,
+    clientVersion: process.env.CHAIN_CORE_CLIENT_VERSION,
+  };
+};
+
+const chainOptions = getChainCoreOptions();
+
+const clientInfoLink = new ApolloLink((operation, forward) => {
+  let clientName = 'ctrl-node-app';
+  const clientVersion = chainOptions.clientVersion || 'v1.0';
+  if (chainOptions.clientName) {
+    clientName = chainOptions.clientName;
+  } else if (typeof window !== 'undefined') {
+    if (window.navigator.userAgent.includes('Mobile')) {
+      clientName = 'ctrl-mobile-app';
+    } else {
+      clientName = 'ctrl-extension';
+    }
+  }
+
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      'apollographql-client-name': clientName,
+      'apollographql-client-version': clientVersion,
+    },
+  }));
+
+  return forward(operation);
+});
+
+const wsLink = chainOptions.wsUri
+  ? new GraphQLWsLink(createClient({ url: chainOptions.wsUri }))
+  : typeof window !== 'undefined'
+  ? new GraphQLWsLink(
+      createClient({
+        url: 'wss://gateway-ws.xdefi.services/',
+      })
+    )
+  : null;
 
 const httpLink = new HttpLink({
-  uri: 'https://gql-router.xdefi.services/graphql',
+  uri: chainOptions.httpUri || 'https://gql-router.xdefi.services/graphql',
   fetch,
 });
 
@@ -65,7 +118,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
 });
 
 export const gqlClient = new ApolloClient({
-  link: from([errorLink, splitLink]),
+  link: from([clientInfoLink, errorLink, splitLink]),
   cache,
   assumeImmutableResults: true,
 });

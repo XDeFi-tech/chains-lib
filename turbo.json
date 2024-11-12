@@ -59,5 +59,11 @@
     }
   },
   "globalDependencies": [".env", "tsconfig.json"],
-  "globalEnv": ["NETWORKED_QUERIES"]
+  "globalEnv": [
+    "NETWORKED_QUERIES",
+    "CHAIN_CORE_HTTP_URI",
+    "CHAIN_CORE_WS_URI",
+    "CHAIN_CORE_CLIENT_NAME",
+    "CHAIN_CORE_CLIENT_VERSION"
+  ]
 }
