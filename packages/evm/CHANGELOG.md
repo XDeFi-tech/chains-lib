@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.76
+
+### Patch Changes
+
+- 3d0bbf06: fix: fee estimation calculation
+
 ## 2.0.75
 
 ### Patch Changes
