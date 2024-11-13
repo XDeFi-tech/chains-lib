@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.29
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+  - @xdefi-tech/chains-utxo@2.0.24
+
 ## 2.1.28
 
 ### Patch Changes

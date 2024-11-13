@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.24
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+
 ## 2.0.23
 
 ### Patch Changes
