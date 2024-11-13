@@ -22,7 +22,6 @@
     "@xdefi-tech/chains-solana": "*",
     "@xdefi-tech/chains-thor": "*",
     "@xdefi-tech/chains-tron": "*",
-    "dotenv": "^16.4.5",
     "xhr2": "^0.2.1"
   }
 }
