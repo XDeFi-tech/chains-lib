@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.27
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+
 ## 2.1.26
 
 ### Patch Changes

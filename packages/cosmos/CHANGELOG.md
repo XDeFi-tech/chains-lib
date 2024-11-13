@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.75
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+
 ## 2.0.74
 
 ### Patch Changes

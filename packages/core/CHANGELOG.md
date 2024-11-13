@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.41
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+
 ## 2.0.40
 
 ### Patch Changes

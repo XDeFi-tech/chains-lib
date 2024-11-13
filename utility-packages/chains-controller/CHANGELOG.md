@@ -1,5 +1,22 @@
 # @xdefi-tech/chains-controller
 
+## 2.0.10
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+  - @xdefi-tech/chains-binance@2.0.35
+  - @xdefi-tech/chains-bitcoin@2.1.29
+  - @xdefi-tech/chains-bitcoincash@2.1.18
+  - @xdefi-tech/chains-cosmos@2.0.75
+  - @xdefi-tech/chains-dogecoin@2.1.18
+  - @xdefi-tech/chains-evm@2.0.79
+  - @xdefi-tech/chains-litecoin@2.1.19
+  - @xdefi-tech/chains-solana@2.1.27
+  - @xdefi-tech/chains-thor@2.1.24
+
 ## 2.0.9
 
 ### Patch Changes

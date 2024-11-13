@@ -1,6 +1,6 @@
 {
   "name": "@xdefi-tech/chains-bitcoin",
-  "version": "2.1.28",
+  "version": "2.1.29",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/XDeFi-tech/chains/",
