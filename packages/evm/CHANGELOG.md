@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.79
+
+### Patch Changes
+
+- 82f2ecf9: Fix: update CHAINS_CORE_OPTIONS for core lib
+- Updated dependencies [82f2ecf9]
+  - @xdefi-tech/chains-core@2.0.41
+
 ## 2.0.78
 
 ### Patch Changes
