@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.78
+
+### Patch Changes
+
+- 9a2b943f: fix: XDEFI-11818 Secondary assets swap on Trezor failing"
+
 ## 2.0.77
 
 ### Patch Changes
