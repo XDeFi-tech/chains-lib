@@ -20,10 +20,7 @@ import {
   MsgType,
 } from '@xdefi-tech/chains-thor';
 
-import {
-  CosmosProvider,
-  COSMOS_MANIFESTS
-} from '@xdefi-tech/chains-cosmos';
+import { CosmosProvider, COSMOS_MANIFESTS } from '@xdefi-tech/chains-cosmos';
 import { LedgerSigner as ThorLedgerSigner } from '@xdefi-tech/chains-thor/dist/signers/web';
 import { LedgerSigner as SolanaLedgerSigner } from '@xdefi-tech/chains-solana/dist/signers/web';
 import { LedgerSigner as CosmosLedgerSigner } from '@xdefi-tech/chains-cosmos/dist/signers/web';
@@ -118,7 +115,9 @@ const LedgerConnect = () => {
       );
     } else if (chain === 'cosmos') {
       provider = new CosmosProvider(
-        new CosmosProvider.dataSourceList.IndexerDataSource(COSMOS_MANIFESTS.osmosis)
+        new CosmosProvider.dataSourceList.IndexerDataSource(
+          COSMOS_MANIFESTS.osmosis
+        )
       );
     }
     let msg;

@@ -122,7 +122,7 @@ export class IndexerDataSource extends DataSource {
               dataForEstimate.recentBlockhash = block.blockhash;
             }
           } catch (error) {
-            console.warn('Block data for slot ${slot} is unavailable.')
+            console.warn('Block data for slot ${slot} is unavailable.');
           }
           break;
         default:

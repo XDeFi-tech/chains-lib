@@ -63,9 +63,7 @@ describe('msg', () => {
             blockhash: 'mockBlockhash',
           })
         ),
-        getRecentPrioritizationFees: jest.fn(() =>
-          Promise.resolve([])
-        ),
+        getRecentPrioritizationFees: jest.fn(() => Promise.resolve([])),
         getMinimumBalanceForRentExemption: jest.fn(() =>
           Promise.resolve(890880)
         ),
