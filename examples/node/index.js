@@ -1,4 +1,10 @@
-require('dotenv').config();
+// should be before import any other chain lib modules
+global.CHAINS_CORE_OPTIONS = {
+    httpUri: 'https://gql-router.xdefi.services/graphql',
+    wsUri: 'wss://gateway-ws.xdefi.services/',
+    clientName: 'chain-lib-node-example',
+    clientVersion: '0.0.1',
+}
 const { EVM_MANIFESTS, EvmProvider } = require('@xdefi-tech/chains-evm');
 const XMLHttpRequest = require('xhr2');
 
