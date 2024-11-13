@@ -14,17 +14,24 @@ Chain Core is a library designed to facilitate interaction with various blockcha
 
 #### Example Configuration
 
-To configure `CHAINS_CORE_OPTIONS`, ensure that it is added to the `window` object. This setup should be done on the client-side to avoid issues during server-side rendering.
+To configure `CHAINS_CORE_OPTIONS`, ensure that it is added to the `global` / `window` objects. This setup should be done on the client-side to avoid issues during server-side rendering.
 
 ```javascript
-if (typeof window !== 'undefined') {
-  window.CHAINS_CORE_OPTIONS = {
-    httpUri: 'https://gql-router.xdefi.services/graphql',
-    wsUri: 'wss://gateway-ws.xdefi.services/',
-    clientName: 'chain-lib-react-example',
-    clientVersion: 'v1.0',
-  };
-}
+// for browser
+window.CHAINS_CORE_OPTIONS = {
+  httpUri: 'https://gql-router.xdefi.services/graphql',
+  wsUri: 'wss://gateway-ws.xdefi.services/',
+  clientName: 'chain-lib-react-example',
+  clientVersion: '0.0.0',
+};
+
+// for Node.js
+global.CHAINS_CORE_OPTIONS = {
+  httpUri: 'https://gql-router.xdefi.services/graphql',
+  wsUri: 'wss://gateway-ws.xdefi.services/',
+  clientName: 'chain-lib-node-example',
+  clientVersion: '0.0.0',
+};
 ```
 
 #### Usage
@@ -33,13 +40,4 @@ if (typeof window !== 'undefined') {
 - **wsUri**: The WebSocket URI for real-time data.
 - **clientName**: The name of the client application.
 - **clientVersion**: The version of the client application.
-
-### Backend Configuration
-
-For backend environments, use environment variables to configure the endpoints and client information:
-
-```bash
-CHAIN_CORE_HTTP_URI=https://gql-router.xdefi.services/graphql
-CHAIN_CORE_CLIENT_NAME=chain-lib-backend
-CHAIN_CORE_CLIENT_VERSION=v1.0
-```
+- **disableApolloCache** (optional): set `no-cache` policy to all queries.
