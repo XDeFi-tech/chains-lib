@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.30
+
+### Patch Changes
+
+- 02d650c5: fix: txs failed while sending with memo using Trezor
+
 ## 2.1.29
 
 ### Patch Changes
