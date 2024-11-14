@@ -167,13 +167,22 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
       const serializedTx = (msg.signedTransaction as any).serializedTx;
-      const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
-        skipPreflight: msg.data.skipPreflight ?? false,
-        preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
-        maxRetries: 2,
-      });
-      await utils.waitFor(() => getSignatureStatus(this.rpcProvider, hash));
-      transactions.push(Transaction.fromData({ hash }));
+      const helper = async (): Promise<string | undefined> => {
+        const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
+          skipPreflight: msg.data.skipPreflight ?? false,
+          preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
+          maxRetries: 0,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const status = await this.rpcProvider.getSignatureStatus(hash);
+        if (!!status.value?.confirmationStatus) return hash;
+        if (status.value?.err) throw status.value.err;
+        return undefined;
+      };
+      const hash = await utils.waitFor(helper, { interval: 1, tries: 150 });
+      if (hash) {
+        transactions.push(Transaction.fromData({ hash }));
+      }
     }
 
     return transactions;

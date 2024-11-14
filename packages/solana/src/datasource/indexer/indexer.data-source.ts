@@ -128,15 +128,22 @@ export class IndexerDataSource extends DataSource {
         default:
           throw new Error('Invalid encoding for solana transaction');
       }
-      const fee = await this.rpcProvider.getFeeForMessage(
-        dataForEstimate,
-        'confirmed'
-      );
-      if (!fee) {
-        throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
-      }
+      try {
+        const fee = await this.rpcProvider.getFeeForMessage(
+          dataForEstimate,
+          'confirmed'
+        );
+        if (!fee) {
+          throw new Error(
+            `Cannot estimate fee for chain ${this.manifest.chain}`
+          );
+        }
 
-      feeData.push({ gasLimit: fee.value ?? 0 });
+        feeData.push({ gasLimit: fee.value ?? 0 });
+      } catch (e) {
+        console.warn(`Cannot estimate fee for chain ${this.manifest.chain}`, e);
+        feeData.push({ gasLimit: 0 });
+      }
     }
 
     return feeData;
