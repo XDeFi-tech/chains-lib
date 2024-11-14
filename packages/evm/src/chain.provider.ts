@@ -15,8 +15,9 @@ import {
   Transaction,
   TransactionData,
   TransactionStatus,
+  utils,
 } from '@xdefi-tech/chains-core';
-import { providers, utils } from 'ethers';
+import { ethers } from 'ethers';
 import { some } from 'lodash';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
@@ -39,11 +40,11 @@ import { CtrlDataSource } from './datasource/ctrl/ctrl.data-source';
   ],
 })
 export class EvmProvider extends Chain.Provider<ChainMsg> {
-  public readonly rpcProvider: providers.StaticJsonRpcProvider;
+  public readonly rpcProvider: ethers.providers.StaticJsonRpcProvider;
 
   constructor(dataSource: DataSource, options?: Chain.IOptions) {
     super(dataSource, options);
-    this.rpcProvider = new providers.StaticJsonRpcProvider(
+    this.rpcProvider = new ethers.providers.StaticJsonRpcProvider(
       this.dataSource.manifest.rpcURL
     );
   }
@@ -67,6 +68,7 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
       const tx = await this.rpcProvider.sendTransaction(
         msg.signedTransaction as string
       );
+      await utils.waitFor(() => this.rpcProvider.getTransaction(tx.hash));
       transactions.push(Transaction.fromData(tx));
     }
 
@@ -180,7 +182,7 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
 
   static verifyAddress(address: string): boolean {
     try {
-      return utils.isAddress(address);
+      return ethers.utils.isAddress(address);
     } catch (e) {
       return false;
     }
