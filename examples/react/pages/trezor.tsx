@@ -34,6 +34,7 @@ const TrezorPage = () => {
   const [contract, setContract] = useState('');
   const [type, setType] = useState('');
   const [decimals, setDecimals] = useState(18);
+  const [memo, setMemo] = useState('');
   const [derivationPath, setDerivationPath] = useState("m/44'/60'/0'/0/0");
 
   const chains = [
@@ -169,6 +170,7 @@ const TrezorPage = () => {
         contractAddress: contract !== '' ? contract : undefined,
         tokenType: type !== '' ? type : undefined,
         decimals,
+        memo,
       });
       console.log('🚀 ~ handleConfirm ~ msg:', msg);
 
@@ -233,6 +235,12 @@ const TrezorPage = () => {
             placeholder="Type"
             value={type}
             onChange={(e) => setType(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Memo"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
           />
           <button onClick={handleConfirm}>Confirm</button>
         </div>
