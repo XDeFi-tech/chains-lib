@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-dogecoin
 
+## 2.1.19
+
+### Patch Changes
+
+- 02d650c5: fix: txs failed while sending with memo using Trezor
+
 ## 2.1.18
 
 ### Patch Changes
