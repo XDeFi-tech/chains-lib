@@ -11,18 +11,18 @@ export const checkMinimumBalanceForRentExemption = async (
 export const getSignatureStatus = async (
   connection: Connection,
   hash: string
-): Promise<TransactionStatus | null> => {
+): Promise<TransactionStatus | undefined> => {
   const sig = await connection.getSignatureStatus(hash);
   if (!sig.value) {
-    return null;
+    return undefined;
   }
 
   if (sig.value.err) {
-    return TransactionStatus.failure;
+    throw sig.value.err;
   }
   if (sig.value.confirmationStatus) {
     return TransactionStatus.success;
   }
 
-  return TransactionStatus.pending;
+  return undefined;
 };

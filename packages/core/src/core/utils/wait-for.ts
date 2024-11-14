@@ -6,7 +6,10 @@ export interface WaitForOptions {
 
 export const sleep = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const waitFor = async (callback: () => unknown, options: WaitForOptions = { interval: 2000, tries: 15 }) => {
+export const waitFor = async <T>(
+  callback: () => T,
+  options: WaitForOptions = { interval: 2000, tries: 15 }
+): Promise<T> => {
   let tries = 0;
   let result = await callback();
   do {
