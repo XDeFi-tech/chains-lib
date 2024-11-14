@@ -166,11 +166,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       }
 
       const versionedTransaction = VersionedTransaction.deserialize(buffer);
-      // get the latest block (allowing for v0 transactions)
-      const recentBlockhash = await this.getLatestBlockhash();
-      if (recentBlockhash) {
-        versionedTransaction.message.recentBlockhash = recentBlockhash;
-      }
 
       return {
         tx: versionedTransaction,
