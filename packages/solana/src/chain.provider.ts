@@ -174,9 +174,10 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
           maxRetries: 0,
         });
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const status = await this.rpcProvider.getSignatureStatus(hash);
-        if (!!status.value?.confirmationStatus) return hash;
-        if (status.value?.err) throw status.value.err;
+        const statusRes = await this.rpcProvider.getSignatureStatuses([hash]);
+        const status = statusRes.value?.[0];
+        if (!!status?.confirmationStatus) return hash;
+        if (status?.err) throw status.err;
         return undefined;
       };
       const hash = await utils.waitFor(helper, { interval: 1, tries: 150 });
