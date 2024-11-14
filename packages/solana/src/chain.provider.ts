@@ -14,6 +14,7 @@ import {
   Transaction,
   TransactionData,
   TransactionStatus,
+  utils,
 } from '@xdefi-tech/chains-core';
 import {
   Connection,
@@ -30,7 +31,10 @@ import BigNumber from 'bignumber.js';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
-import { checkMinimumBalanceForRentExemption } from './utils';
+import {
+  checkMinimumBalanceForRentExemption,
+  getSignatureStatus,
+} from './utils';
 
 export interface MultisigMsgData {
   from: string;
@@ -168,6 +172,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
         preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
         maxRetries: 2,
       });
+      await utils.waitFor(() => getSignatureStatus(this.rpcProvider, hash));
       transactions.push(Transaction.fromData({ hash }));
     }
 
