@@ -77,6 +77,14 @@ export class TrezorSigner extends Signer.TrezorProvider {
 
     const outputs = txData.outputs.map((output: any) => {
       const to = output.address ? output.address : txData.from;
+      const msgData = msg.toData();
+      if (output.script && msgData.memo) {
+        return {
+          amount: 0,
+          script_type: 'PAYTOOPRETURN',
+          op_return_data: Buffer.from(msgData.memo).toString('hex'),
+        };
+      }
       return {
         address: to,
         amount: output.value,
