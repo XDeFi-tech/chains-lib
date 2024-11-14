@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.42
+
+### Patch Changes
+
+- c69ffb1b: Feat: add waitFor method to await for transaction
+
 ## 2.0.41
 
 ### Patch Changes

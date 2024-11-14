@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.82
+
+### Patch Changes
+
+- c69ffb1b: Feat: add waitFor method to await for transaction
+- Updated dependencies [c69ffb1b]
+  - @xdefi-tech/chains-core@2.0.42
+
 ## 2.0.81
 
 ### Patch Changes
