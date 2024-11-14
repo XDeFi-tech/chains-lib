@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.1.20
+
+### Patch Changes
+
+- c69ffb1b: Feat: add waitFor method to await for transaction
+- Updated dependencies [c69ffb1b]
+  - @xdefi-tech/chains-core@2.0.42
+
 ## 2.1.19
 
 ### Patch Changes
