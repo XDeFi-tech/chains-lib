@@ -2,6 +2,7 @@ import TrezorConnect, {
   EthereumTransaction,
   EthereumTransactionEIP1559,
 } from '@trezor/connect-web';
+import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import {
   IsTrezorInitialized,
   Signer,
@@ -98,6 +99,15 @@ export class TrezorSigner extends Signer.TrezorProvider {
     primaryType: EIP712Data['primaryType'],
     message: EIP712Data['message']
   ): Promise<Signature | any> {
+    const { message_hash, domain_separator_hash } = transformTypedDataPlugin(
+      {
+        domain,
+        types,
+        primaryType,
+        message,
+      },
+      true
+    );
     const result = await TrezorConnect.ethereumSignTypedData({
       path: derivation,
       data: {
@@ -107,6 +117,8 @@ export class TrezorSigner extends Signer.TrezorProvider {
         message,
       },
       metamask_v4_compat: true,
+      message_hash: message_hash ?? undefined,
+      domain_separator_hash: domain_separator_hash ?? undefined,
     });
 
     if (result.success) {
