@@ -6,7 +6,6 @@ import {
   MsgEncoding,
   NumberIsh,
   utils,
-  Coin,
 } from '@xdefi-tech/chains-core';
 import { BigNumberish, BytesLike, ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
@@ -367,20 +366,22 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const balances = await this.provider.getBalance(msgData.from);
     const gap = new BigNumber(this.provider.manifest?.maxGapAmount || 0);
 
-    const balance = (await balances.getData()).find(
+    const coin = (await balances.getData()).find(
       (b) =>
         b.asset.chainId === this.provider.manifest.chainId && b.asset.native
     );
 
-    if (!balance) throw new Error('No balance found');
+    if (!coin) throw new Error('No balance found');
 
-    let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
+    let maxAmount: BigNumber = new BigNumber(coin.amount).minus(gap);
 
-    const feeEstimation = await this.getFee(GasFeeSpeed.high);
-    // calculate ratio 1 + (feeRatioPercentage / 100) = 1.005 by default
-    const feeRatio = new BigNumber(feeRatioPercentage).dividedBy(100).plus(1);
-    const fee = new BigNumber(feeEstimation.fee || 0).multipliedBy(feeRatio);
-    maxAmount = maxAmount.minus(fee);
+    if (coin.asset.native) {
+      const feeEstimation = await this.getFee(GasFeeSpeed.high);
+      // calculate ratio 1 + (feeRatioPercentage / 100) = 1.005 by default
+      const feeRatio = new BigNumber(feeRatioPercentage).dividedBy(100).plus(1);
+      const fee = new BigNumber(feeEstimation.fee || 0).multipliedBy(feeRatio);
+      maxAmount = maxAmount.minus(fee);
+    }
     if (maxAmount.isLessThan(0)) {
       return '0';
     }
