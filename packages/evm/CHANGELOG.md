@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.80
+
+### Patch Changes
+
+- 1ecb3980: fix: xdefi-11783 Trezor Invalid parameter domain_separator_hash"
+
 ## 2.0.79
 
 ### Patch Changes
