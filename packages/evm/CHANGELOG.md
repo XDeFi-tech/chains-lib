@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.81
+
+### Patch Changes
+
+- 1c4dcbf5: Fix: update getMaxAmountToSend for non-native tokens
+
 ## 2.0.80
 
 ### Patch Changes
