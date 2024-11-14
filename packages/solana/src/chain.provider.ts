@@ -167,6 +167,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
       const serializedTx = (msg.signedTransaction as any).serializedTx;
+      // helper fn to broadcast, wait 1/2 second, then check the status of the tx
       const helper = async (): Promise<string | undefined> => {
         const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
           skipPreflight: msg.data.skipPreflight ?? false,
@@ -180,6 +181,8 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
         if (status?.err) throw status.err;
         return undefined;
       };
+      // repeat max of 150 times to get successful broadcast
+      // 150 as this is the number of valid blocks this Tx could be valid for
       const hash = await utils.waitFor(helper, { interval: 1, tries: 150 });
       if (hash) {
         transactions.push(Transaction.fromData({ hash }));
