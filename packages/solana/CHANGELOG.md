@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.29
+
+### Patch Changes
+
+- 91dbe300: add serializedTx to sign for sol hw signer
+
 ## 2.1.28
 
 ### Patch Changes
