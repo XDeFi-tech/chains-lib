@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.83
+
+### Patch Changes
+
+- 3b688898: fix: add validate for custom fee info
+
 ## 2.0.82
 
 ### Patch Changes
