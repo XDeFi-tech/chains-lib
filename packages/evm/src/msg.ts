@@ -6,6 +6,7 @@ import {
   MsgEncoding,
   NumberIsh,
   utils,
+  EIP1559Fee,
 } from '@xdefi-tech/chains-core';
 import { BigNumberish, BytesLike, ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
@@ -316,6 +317,23 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     if (!msgData.maxPriorityFeePerGas || !msgData.maxFeePerGas) {
       msgData.maxFeePerGas = feeData.maxFeePerGas;
       msgData.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
+    } else {
+      // Check custom fee info
+      const feeOptions = await this.provider.gasFeeOptions({
+        useFeeService: true,
+      });
+      const isEIP1559 = typeof feeOptions?.[GasFeeSpeed.low] !== 'number';
+      if (isEIP1559) {
+        const lowestFeeData = feeOptions?.[GasFeeSpeed.low] as EIP1559Fee;
+        if (
+          lowestFeeData.priorityFeePerGas > Number(msgData.maxPriorityFeePerGas)
+        ) {
+          throw new Error('Tip is too low');
+        }
+        if (lowestFeeData.maxFeePerGas > Number(msgData.maxFeePerGas)) {
+          throw new Error('MaxFeePerGas is too low');
+        }
+      }
     }
 
     if (!msgData.nonce) {
