@@ -100,6 +100,7 @@
       "./jest-setup-file.ts",
       "dotenv/config"
     ],
+    "clearMocks": true,
     "preset": "ts-jest",
     "transform": {
       ".+\\.(t|j)s$": "ts-jest"

@@ -43,6 +43,7 @@ export class TrezorSigner extends Signer.TrezorProvider {
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const { tx, encoding } = await msg.buildTx();
     let txBuffer;
+    let serializedTx = null;
     switch (encoding) {
       case MsgEncoding.base58:
       case MsgEncoding.base64:
@@ -62,10 +63,15 @@ export class TrezorSigner extends Signer.TrezorProvider {
       const signature = bs58.encode(
         Buffer.from(result.payload.signature, 'hex')
       );
+      const bufferSig = Buffer.from(result.payload.signature, 'hex');
       const pubKey = await this._getPublicKey(derivation);
+      tx.addSignature(pubKey, bufferSig);
+      if (encoding === MsgEncoding.object) serializedTx = tx.serialize();
+      else serializedTx = Buffer.from(tx.serialize());
       msg.sign({
         pubKey: pubKey,
         sig: signature,
+        serializedTx,
       });
     } else {
       throw new Error(result.payload.error);
