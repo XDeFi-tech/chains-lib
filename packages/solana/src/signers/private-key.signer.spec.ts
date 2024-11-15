@@ -227,13 +227,22 @@ describe('private-key.signer', () => {
       to: '7mHVPmoTJQZUGDHpWHRr2dV2e9UBaGknopjh3AdJpj89',
       amount: 0.0001,
     });
+    jest
+      .spyOn(provider.dataSource.rpcProvider, 'getFeeForMessage')
+      .mockResolvedValue({
+        context: { slot: 301563792 },
+        value: 45000,
+      });
+    jest.spyOn(provider.dataSource.rpcProvider, 'getSlot').mockResolvedValue(0);
+    jest
+      .spyOn(provider.dataSource.rpcProvider, 'getBlock')
+      .mockResolvedValue(0);
 
     const fee = await msg.getFee();
     expect(Number(fee.fee)).toBeGreaterThan(0);
   });
 
   it('should estimate fees for swaps correctly', async () => {
-    jest.resetAllMocks();
     const provider = new SolanaProvider(
       new SolanaProvider.dataSourceList.IndexerDataSource(SOLANA_MANIFEST)
     );
@@ -244,7 +253,16 @@ describe('private-key.signer', () => {
       },
       MsgEncoding.base64
     );
-
+    jest
+      .spyOn(provider.dataSource.rpcProvider, 'getFeeForMessage')
+      .mockResolvedValue({
+        context: { slot: 301563792 },
+        value: 45000,
+      });
+    jest.spyOn(provider.dataSource.rpcProvider, 'getSlot').mockResolvedValue(0);
+    jest
+      .spyOn(provider.dataSource.rpcProvider, 'getBlock')
+      .mockResolvedValue(0);
     const fee = await msg.getFee();
     expect(Number(fee.fee)).toBeGreaterThan(0);
   });

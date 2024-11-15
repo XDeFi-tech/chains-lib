@@ -1,5 +1,9 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { Connection } from '@solana/web3.js';
+import {
+  Connection,
+  VersionedTransaction,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
 
 import { SolanaProvider } from '../chain.provider';
 import { IndexerDataSource } from '../datasource';
@@ -66,6 +70,12 @@ describe('ledger.signer', () => {
   });
 
   it('should sign a transaction using a ledger device', async () => {
+    const versionedTransactionMock = jest
+      .spyOn(VersionedTransaction.prototype, 'serialize')
+      .mockResolvedValue(new Uint8Array(0) as never);
+    const solanaTransactionMock = jest
+      .spyOn(SolanaTransaction.prototype, 'serialize')
+      .mockResolvedValue(Buffer.from('mockTransaction') as never);
     jest.spyOn(Connection.prototype, 'getLatestBlockhash').mockResolvedValue({
       blockhash: 'FxSFe5PnHuQZLiVf1h4AnzAmPBoQe5QfuviwvzbtheBe',
       lastValidBlockHeight: 272094550,
@@ -73,6 +83,8 @@ describe('ledger.signer', () => {
 
     await signer.sign(message, "44'/501'/0'");
 
+    versionedTransactionMock.mockRestore();
+    solanaTransactionMock.mockRestore();
     expect(message.signedTransaction.sig).toBe(
       '2wiGcgsNdq2qHMHrLpsjf7PJz9PqndHSE6kCyZjMTo45ZzhmT95GLXYLWmsCT6mF8vGubdBdUnsL9yfHNuH8HNfB'
     );
