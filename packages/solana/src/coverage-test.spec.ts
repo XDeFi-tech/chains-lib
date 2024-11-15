@@ -46,6 +46,18 @@ describe('Test coverage Solana package', () => {
       },
       MsgEncoding.base58
     );
+    jest
+      .spyOn(chainProvider.dataSource.rpcProvider, 'getFeeForMessage')
+      .mockResolvedValue({
+        context: { slot: 301563792 },
+        value: 45000,
+      });
+    jest
+      .spyOn(chainProvider.dataSource.rpcProvider, 'getSlot')
+      .mockResolvedValue(0);
+    jest
+      .spyOn(chainProvider.dataSource.rpcProvider, 'getBlock')
+      .mockResolvedValue(0);
     const fee = await msg.getFee();
     expect(Number(fee.fee)).toBeGreaterThan(0);
   });

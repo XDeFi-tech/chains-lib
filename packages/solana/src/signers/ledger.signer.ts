@@ -31,9 +31,12 @@ export class LedgerSigner extends Signer.Provider {
 
   async sign(msg: ChainMsg, derivation: string): Promise<void> {
     const app = new Solana(this.transport as Transport);
+    const addressBuffer = await app.getAddress(derivation);
     const { tx, encoding } = await msg.buildTx();
 
     let signedTx;
+    let serializedTx = null;
+    const pubKey = new PublicKey(addressBuffer.address);
     switch (encoding) {
       case MsgEncoding.object:
         const transaction = tx as SolanaTransaction;
@@ -41,6 +44,8 @@ export class LedgerSigner extends Signer.Provider {
           derivation,
           transaction.serializeMessage()
         );
+        transaction.addSignature(pubKey, signedTx.signature);
+        serializedTx = transaction.serialize();
         break;
       case MsgEncoding.base64:
       case MsgEncoding.base58:
@@ -49,18 +54,19 @@ export class LedgerSigner extends Signer.Provider {
           derivation,
           Buffer.from(versionedTransaction.message.serialize())
         );
+        versionedTransaction.addSignature(pubKey, signedTx.signature);
+        serializedTx = Buffer.from(versionedTransaction.serialize());
         break;
       default:
         throw new Error('Invalid encoding for solana transaction');
     }
 
-    const addressBuffer = await app.getAddress(derivation);
-    const pubKey = new PublicKey(addressBuffer.address);
     const signature = bs58.encode(signedTx.signature);
 
     msg.sign({
       pubKey,
       sig: signature,
+      serializedTx,
     });
   }
 

@@ -1,4 +1,8 @@
 import base58 from 'bs58';
+import {
+  VersionedTransaction,
+  Transaction as SolanaTransaction,
+} from '@solana/web3.js';
 
 import { ChainMsg, MsgBody } from '../msg';
 import { SolanaProvider } from '../chain.provider';
@@ -101,8 +105,16 @@ describe('trezor.signer', () => {
   jest.setTimeout(15000);
 
   it('should sign a transaction using a trezor device', async () => {
+    const versionedTransactionMock = jest
+      .spyOn(VersionedTransaction.prototype, 'serialize')
+      .mockResolvedValue(new Uint8Array(0) as never);
+    const solanaTransactionMock = jest
+      .spyOn(SolanaTransaction.prototype, 'serialize')
+      .mockResolvedValue(Buffer.from('mockTransaction') as never);
     await signer.sign(message, derivationPath);
 
+    versionedTransactionMock.mockRestore();
+    solanaTransactionMock.mockRestore();
     expect(message.signedTransaction.sig).toBe(
       base58.encode(
         Buffer.from(
