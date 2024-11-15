@@ -46,10 +46,23 @@ describe('msg', () => {
           ),
         })
       ),
-      getFee: jest.fn(() =>
+      gasFeeOptions: jest.fn(() =>
         Promise.resolve({
-          fee: '0.000167265',
-          maxFee: '0.000169785',
+          high: {
+            priorityFeePerGas: 1110000000,
+            maxFeePerGas: 54180000000,
+            baseFeePerGas: 37960000000,
+          },
+          medium: {
+            priorityFeePerGas: 33000000,
+            maxFeePerGas: 53100000000,
+            baseFeePerGas: 36880000000,
+          },
+          low: {
+            priorityFeePerGas: 18000000,
+            maxFeePerGas: 53090000000,
+            baseFeePerGas: 36860000000,
+          },
         })
       ),
       estimateFee: jest.fn(() =>
@@ -373,5 +386,30 @@ describe('msg', () => {
     expect(response).toHaveProperty('chainId');
     expect(response).toHaveProperty('maxFeePerGas');
     expect(response.data).toEqual(erc1155ApproveData);
+  });
+
+  it('should throw error if custom fee is less than the lowest fee', async () => {
+    const msgData = {
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      maxPriorityFeePerGas: '1',
+      maxFeePerGas: '2',
+    };
+    const chainMsg = new ChainMsg(msgData, mockProvider, MsgEncoding.object);
+    expect(chainMsg.buildTx()).rejects.toThrow('Tip is too low');
+    const lowMaxFeeMsg = new ChainMsg(
+      {
+        ...msgData,
+        maxPriorityFeePerGas: '18000000',
+        maxFeePerGas: '18000001',
+      },
+      mockProvider,
+      MsgEncoding.object
+    );
+    expect(lowMaxFeeMsg.buildTx()).rejects.toThrow('MaxFeePerGas is too low');
   });
 });
