@@ -1,39 +1,367 @@
-import { providers } from 'ethers';
-import { GasFeeSpeed, MsgEncoding } from '@xdefi-tech/chains-core';
+import {
+  Response,
+  GasFeeSpeed,
+  TransactionStatus,
+  Coin,
+} from '@xdefi-tech/chains-core';
+import { BigNumber, providers } from 'ethers';
 
-import { EvmProvider } from './chain.provider';
-import { IndexerDataSource } from './datasource';
-import { EVM_MANIFESTS } from './manifests';
+import { AssetInternalType, Eip1559Fee, TokenCategory } from './gql/graphql';
 import { ChainMsg } from './msg';
+import { EvmProvider } from './chain.provider';
+import { ChainDataSource, IndexerDataSource } from './datasource';
+import { EVM_MANIFESTS } from './manifests';
 
-describe('chain.provider gas fee', () => {
-  let provider: EvmProvider;
-  let originalGetFeeData: () => Promise<providers.FeeData>;
+describe('chain.provider', () => {
+  const NETWORKED_QUERIES =
+    process.env.NETWORKED_QUERIES === '1' ? true : false;
+
+  let evmProvider: EvmProvider;
 
   beforeEach(() => {
-    originalGetFeeData = providers.Provider.prototype.getFeeData;
-    provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
-  });
-
-  afterEach(() => {
-    providers.Provider.prototype.getFeeData = originalGetFeeData;
-  });
-
-  it('Should call to RPC to get fee', async () => {
-    const msg = new ChainMsg(
-      {
-        amount: '0',
-        chainId: '0x1',
-        nonce: undefined as unknown as number,
-        decimals: 18,
-        from: '0x8d8dC7e30407778532052330dBAC3D3186411e0D',
-        to: '0xd2667072a2a30e8C21fa276B474FD047ab5FF0F7',
-        data: '0x415565b0000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000006810e776880c02933d47db1b9fc05908e5386b9600000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000002bf4bfe909ecde00000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000046000000000000000000000000000000000000000000000000000000000000005600000000000000000000000000000000000000000000000000000000000000660000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000040000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000038d7ea4c680000000000000000000000000000000000000000000000000000000000000000021000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000006810e776880c02933d47db1b9fc05908e5386b96000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000280000000000000000000000000000000000000000000000000000000000000024000000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000003556e697377617000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000000002c49c874265f8000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c0a47dfe034b400b47bdad5fecda2621de6c4d95000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000006810e776880c02933d47db1b9fc05908e5386b9600000000000000000000000000000000000000000000000000004406d5b05bb5000000000000000000000000d2667072a2a30e8c21fa276b474fd047ab5ff0f7000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000006810e776880c02933d47db1b9fc05908e5386b9600000000000000000000000000000000000000000000000000001101b56c16ed000000000000000000000000ad01c20d5886137e056775af56915de824c8fce5000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000869584cd000000000000000000000000f1da0931c044964ca4cc6fd669ed7019b63e66ce0000000000000000000000000000000000000000b2376064f78f1002283871a6',
-      },
-      provider,
-      MsgEncoding.object
+    evmProvider = new EvmProvider(
+      new IndexerDataSource(EVM_MANIFESTS.ethereum)
     );
-    const fees = await provider.estimateFee([msg], GasFeeSpeed.medium);
-    console.log('fees', fees);
+  });
+
+  it('createMsg() should create a ChainMsg instance for native token (ETH)', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      // data: empty for a simple transfer
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+  });
+
+  it('createMsg() should create a ChainMsg instance for ERC20 (USDT) token', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+      data: '0xa9059cbb000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // ERC20 transfer
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+  });
+
+  it('should get a token balance', async () => {
+    const balance = await evmProvider.getBalance(
+      '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACC',
+      [
+        '0x0000000000000000000000000000000000000000',
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+      ]
+    );
+    const balanceData = await balance.getData();
+    expect(balanceData.length).toEqual(2);
+    expect(balanceData[0].amount.toString()).toEqual('0');
+    expect(balanceData[0].asset.name).toEqual('Ethereum');
+    expect(balanceData[1].amount.toString()).toEqual('0');
+    expect(balanceData[1].asset.symbol).toEqual('stETH');
+    expect(balanceData[1].asset.name).toEqual('Liquid staked Ether 2.0');
+  });
+
+  it('createMsg() should create a ChainMsg instance for ERC721-NFTs (CryptoKitties) token', () => {
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 1,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+      contractAddress: '0x06012c8cf97bead5deae237070f9587f8e7a266d', // CryptoKitties
+      data: '0x42842e0e000000000000000000000000aa09df2673e1ae3fc8ed875c131b52449cf958100', // ERC721 transfer
+    });
+
+    expect(msg).toBeInstanceOf(ChainMsg);
+  });
+
+  it('getBalance() should return balance data', async () => {
+    if (!NETWORKED_QUERIES) {
+      jest.spyOn(EvmProvider.prototype, 'getBalance').mockResolvedValue(
+        new Response(
+          // getData
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: '1',
+                name: 'Ethereum',
+                symbol: 'ETH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '345.55',
+                decimals: 18,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
+              },
+              amount: '1000',
+            },
+            {
+              asset: {
+                chainId: '1',
+                name: 'Liquid staked Ether 2.0',
+                symbol: 'stETH',
+                icon: null,
+                native: false,
+                address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
+                decimals: 18,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
+              },
+              amount: '1000',
+            },
+          ]),
+          // getObserver
+          jest.fn().mockImplementation(async () => [
+            {
+              asset: {
+                chainId: '1',
+                name: 'Ethereum',
+                symbol: 'ETH',
+                icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+                native: true,
+                id: 'f164fe78-afb4-4eeb-b5c7-bca104857cda',
+                price: '345.55',
+                decimals: 18,
+                priceChange: {
+                  dayPriceChange: '-1',
+                },
+                type: AssetInternalType.CRYPTOCURRENCY,
+                categories: [TokenCategory.TRENDING_TOKEN],
+              },
+              amount: '1000',
+            },
+            {
+              asset: {
+                chainId: '1',
+                name: 'Liquid staked Ether 2.0',
+                symbol: 'stETH',
+                icon: null,
+                native: false,
+                address: '0x493c8d6a973246a7B26Aa8Ef4b1494867A825DE5',
+                decimals: 18,
+                type: AssetInternalType.TOKEN,
+                categories: [TokenCategory.TRENDING_TOKEN],
+              },
+              amount: '1000',
+            },
+          ])
+        )
+      );
+
+      const balance = await evmProvider.getBalance(
+        '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toEqual(2);
+      expect(balanceData[0].amount.toString()).toEqual('1000');
+      expect(balanceData[0].asset.symbol).toEqual('ETH');
+      expect(balanceData[0].asset.price).toEqual('345.55');
+      expect(balanceData[0].asset.priceChange.dayPriceChange).toEqual('-1');
+      expect(balanceData[0].asset.type).toEqual(
+        AssetInternalType.CRYPTOCURRENCY
+      );
+      expect(JSON.stringify(balanceData[0].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
+      expect(balanceData[1].amount.toString()).toEqual('1000');
+      expect(balanceData[1].asset.symbol).toEqual('stETH');
+      expect(balanceData[1].asset.type).toEqual(AssetInternalType.TOKEN);
+      expect(JSON.stringify(balanceData[1].asset.categories)).toEqual(
+        JSON.stringify([TokenCategory.TRENDING_TOKEN])
+      );
+    } else {
+      const balance = await evmProvider.getBalance(
+        '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8'
+      );
+
+      const balanceData = await balance.getData();
+      expect(balanceData.length).toBeGreaterThanOrEqual(0);
+      if (balanceData.length > 0) {
+        expect(balanceData[0]).toBeInstanceOf(Coin);
+        expect(balanceData[0].amount).toBeTruthy();
+        expect(balanceData[0].asset.price).toBeTruthy();
+        expect(balanceData[0].asset.priceChange.dayPriceChange).toBeTruthy();
+      }
+    }
+  });
+
+  it('estimateFee() should return fee estimation', async () => {
+    jest.spyOn(EvmProvider.prototype, 'estimateFee').mockResolvedValue([
+      {
+        gasLimit: 1,
+        gasPrice: 1,
+        maxFeePerGas: 1,
+        baseFeePerGas: 1,
+        maxPriorityFeePerGas: 1,
+      },
+    ]);
+
+    const msg = evmProvider.createMsg({
+      from: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      to: '0xAa09Df2673e1ae3fcC8ed875C131b52449CF9581',
+      amount: 0.000001,
+      nonce: 0,
+      decimals: 18,
+      chainId: 1,
+    });
+
+    const estimateFee = await evmProvider.estimateFee(
+      [msg],
+      GasFeeSpeed.medium
+    );
+
+    expect(estimateFee.length).toEqual(1);
+    expect(estimateFee[0].gasLimit).toBeTruthy();
+  });
+
+  it('gasFeeOptions() should get fee options', async () => {
+    const feeOptions = await evmProvider.gasFeeOptions();
+
+    expect(feeOptions?.low).toBeTruthy();
+    expect(feeOptions?.medium).toBeTruthy();
+    expect(feeOptions?.high).toBeTruthy();
+  });
+
+  it('getTransaction() should return data transaction on the blockchain', async () => {
+    jest.spyOn(EvmProvider.prototype, 'getTransaction').mockResolvedValue({
+      hash: '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw',
+      to: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      from: '0x0AFfB0a96FBefAa97dCe488DfD97512346cf3Ab8',
+      status: TransactionStatus.pending,
+      amount: '1000',
+    });
+
+    const txData = await evmProvider.getTransaction(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
+
+    expect(txData?.hash).toEqual(
+      '6SkceyvCgfYV6bbPnvxYcgUjTqnbY5fZ3gQhFyXxYRhw'
+    );
+  });
+
+  it('should get an address nonce', async () => {
+    const nonce = await evmProvider.getNonce(
+      '0x0000000000000000000000000000000000000000'
+    );
+    expect(nonce).toEqual(0);
+  });
+
+  it('should return false when verifying an invalid address', () => {
+    expect(EvmProvider.verifyAddress('0xDEADBEEF')).toBe(false);
+  });
+
+  it('should return true when verifying a valid address', () => {
+    expect(
+      EvmProvider.verifyAddress('0x74EeF25048bA28542600804F68fBF71cCf520C59')
+    ).toBe(true);
+  });
+});
+
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers');
+  return {
+    __esModule: true,
+    ...originalModule,
+  };
+});
+
+describe('chain.provider gas fee', () => {
+  describe('ChainDataSource get fee options', () => {
+    let provider: EvmProvider;
+    let originalGetFeeData: () => Promise<providers.FeeData>;
+
+    beforeEach(() => {
+      originalGetFeeData = providers.Provider.prototype.getFeeData;
+      provider = new EvmProvider(new ChainDataSource(EVM_MANIFESTS.ethereum));
+    });
+
+    afterEach(() => {
+      providers.Provider.prototype.getFeeData = originalGetFeeData;
+    });
+
+    it('Should return EIP-1559 transaction fee options', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(gasFeeOptions).not.toBeNull();
+      expect(gasFeeOptions?.high).toBeInstanceOf(Object);
+      expect((gasFeeOptions?.high as Eip1559Fee).baseFeePerGas).toBeTruthy();
+      expect((gasFeeOptions?.high as Eip1559Fee).maxFeePerGas).toBeTruthy();
+      expect(
+        (gasFeeOptions?.high as Eip1559Fee).priorityFeePerGas
+      ).toBeTruthy();
+    });
+
+    it('Should return legacy transaction fee options', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: null,
+        maxFeePerGas: null,
+        maxPriorityFeePerGas: null,
+        gasPrice: null,
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(gasFeeOptions).not.toBeNull();
+      expect(typeof gasFeeOptions?.high).toBe('number');
+    });
+  });
+
+  describe('IndexedDataSource get fee options', () => {
+    let provider: EvmProvider;
+    let originalGetFeeData: () => Promise<providers.FeeData>;
+
+    beforeEach(() => {
+      originalGetFeeData = providers.Provider.prototype.getFeeData;
+      provider = new EvmProvider(new IndexerDataSource(EVM_MANIFESTS.ethereum));
+    });
+
+    afterEach(() => {
+      providers.Provider.prototype.getFeeData = originalGetFeeData;
+    });
+
+    it('Should call to RPC to get fee', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      const gasFeeOptions = await provider.gasFeeOptions();
+      expect(providers.Provider.prototype.getFeeData).toHaveBeenCalled();
+      expect(gasFeeOptions).not.toBeNull();
+    });
+
+    it('Should call to fee service to get fee', async () => {
+      providers.Provider.prototype.getFeeData = jest.fn().mockResolvedValue({
+        lastBaseFeePerGas: BigNumber.from('0x019653bedb'),
+        maxFeePerGas: BigNumber.from('0x03860facb6'),
+        maxPriorityFeePerGas: BigNumber.from('0x59682f00'),
+        gasPrice: BigNumber.from('0x01a1d320c9'),
+      });
+      await provider.gasFeeOptions({
+        useFeeService: true,
+      });
+      expect(providers.Provider.prototype.getFeeData).not.toHaveBeenCalled();
+    });
   });
 });
