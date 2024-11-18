@@ -72,6 +72,8 @@ const cache = new InMemoryCache({
   resultCaching: true,
   dataIdFromObject: (result) => {
     if (result.balances && Array.isArray(result.balances) && result.balances.length > 0) {
+      isCacheSet = true;
+      startCacheInterval();
       const firstAsset = (result.balances as any[])[0];
       return `${firstAsset.asset.chain}:${firstAsset.address}`; // to trigger cache update for different chains with the same address
     }
@@ -81,6 +83,35 @@ const cache = new InMemoryCache({
     return defaultDataIdFromObject(result);
   },
 });
+
+let isCacheSet = false;
+let cacheInterval: NodeJS.Timeout | null = null;
+
+const startCacheInterval = () => {
+  if (cacheInterval) {
+    clearInterval(cacheInterval);
+  }
+
+  cacheInterval = setInterval(() => {
+    cache.modify({
+      fields: {
+        balances(_, { DELETE }) {
+          return DELETE;
+        },
+      },
+    });
+
+    const cacheData = cache.extract();
+    Object.keys(cacheData).forEach((key) => {
+      if (key.includes('Balance:')) {
+        cache.evict({ id: key });
+      }
+    });
+
+    cache.gc();
+    gqlClient.resetStore();
+  }, 60000);
+};
 
 const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   if (graphQLErrors) {
@@ -118,3 +149,11 @@ export const gqlClient = new ApolloClient({
     ? defaultOptions
     : Object.create(null),
 });
+
+export const cleanupCacheInterval = () => {
+  if (cacheInterval) {
+    clearInterval(cacheInterval);
+    cacheInterval = null;
+  }
+  isCacheSet = false;
+};
