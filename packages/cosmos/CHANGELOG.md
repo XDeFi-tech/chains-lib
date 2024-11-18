@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.77
+
+### Patch Changes
+
+- bc809247: Feat: reduce GQL cache to 1 min for balances queries
+- Updated dependencies [bc809247]
+  - @xdefi-tech/chains-core@2.0.43
+
 ## 2.0.76
 
 ### Patch Changes
