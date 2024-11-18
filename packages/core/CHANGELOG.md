@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.43
+
+### Patch Changes
+
+- bc809247: Feat: reduce GQL cache to 1 min for balances queries
+
 ## 2.0.42
 
 ### Patch Changes
