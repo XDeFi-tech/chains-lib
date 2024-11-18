@@ -1,6 +1,7 @@
 import axios, { Axios } from 'axios';
 import { FeeData, GasFeeSpeed } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
+import { ethers } from 'ethers';
 
 import { EVMChains } from '../manifests';
 import { DEFAULT_CONTRACT_FEE, gwei } from '../constants';
@@ -41,9 +42,16 @@ export const getGasLimitFromRPC = async (
         data: contractData.data as string,
       };
     } else {
+      const value = ethers.utils.hexValue(
+        ethers.utils.parseUnits(
+          msgData.amount.toString() ?? '0',
+          msgData.decimals || msg.provider.manifest.decimals
+        )
+      );
       requestParams = {
         from: msgData.from,
         to: msgData.to,
+        value,
         ...(msgData.data && { data: msgData.data }),
       };
     }
