@@ -1,5 +1,12 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.85
+
+### Patch Changes
+
+- 0b1758a7: added value to estimate gasLimit for value for native txs with data
+- d0ae4b3b: fix tests in chains provider
+
 ## 2.0.84
 
 ### Patch Changes
