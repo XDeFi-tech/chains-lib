@@ -91,7 +91,7 @@ export const getGasLimitFromRPC = async (
 export const getFeesFromRPC = async (
   msg: ChainMsg,
   speed: GasFeeSpeed,
-  multipliers: FeeMultipliers = { low: 1, medium: 1.25, high: 1.5 },
+  multipliers: FeeMultipliers = { low: 0.8, medium: 1, high: 1.5 },
   isEIP1559: boolean = isEIP1559Supported(msg.provider.manifest.chain)
 ): Promise<FeeData> => {
   try {
@@ -111,9 +111,15 @@ export const getFeesFromRPC = async (
       }
 
       const defaultFees = {
-        low: (data.result * multipliers.low) / gwei,
-        medium: (data.result * multipliers.medium) / gwei,
-        high: (data.result * multipliers.high) / gwei,
+        low: new BigNumber(data.result * multipliers.low)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        medium: new BigNumber(data.result * multipliers.medium)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
+        high: new BigNumber(data.result * multipliers.high)
+          .integerValue(BigNumber.ROUND_CEIL)
+          .toNumber(),
       };
 
       return {
@@ -144,22 +150,31 @@ export const getFeesFromRPC = async (
       throw new Error('Failed to fetch eip1559 fees');
     }
 
-    const baseFee = baseFeeData.data.result;
     const priorityFee = priorityFeeData.data.result;
-    const maxPriorityFeePerGas = new BigNumber(priorityFee)
+    const baseFee = new BigNumber(baseFeeData.data.result)
+      .integerValue(BigNumber.ROUND_CEIL)
+      .integerValue(BigNumber.ROUND_CEIL);
+    // 20% buffer
+    const feeBuffer = baseFee
+      .multipliedBy(0.2)
+      .integerValue(BigNumber.ROUND_CEIL)
+      .integerValue(BigNumber.ROUND_CEIL);
+    // 50% buffer
+    const maxFeeBuffer = baseFee
+      .multipliedBy(0.5)
       .integerValue(BigNumber.ROUND_CEIL)
       .integerValue(BigNumber.ROUND_CEIL);
 
-    const baseFees = {
-      low: new BigNumber(baseFee)
+    const maxPriorityFeesPerGas = {
+      low: new BigNumber(priorityFee)
         .multipliedBy(multipliers.low)
         .integerValue(BigNumber.ROUND_CEIL)
         .integerValue(BigNumber.ROUND_CEIL),
-      medium: new BigNumber(baseFee)
+      medium: new BigNumber(priorityFee)
         .multipliedBy(multipliers.medium)
         .integerValue(BigNumber.ROUND_CEIL)
         .integerValue(BigNumber.ROUND_CEIL),
-      high: new BigNumber(baseFee)
+      high: new BigNumber(priorityFee)
         .multipliedBy(multipliers.high)
         .integerValue(BigNumber.ROUND_CEIL)
         .integerValue(BigNumber.ROUND_CEIL),
@@ -167,24 +182,26 @@ export const getFeesFromRPC = async (
 
     const eip1559Fees = {
       low: {
-        baseFeePerGas: baseFees.low.toNumber(),
-        maxPriorityFeePerGas: maxPriorityFeePerGas.toNumber(),
-        maxFeePerGas: new BigNumber(baseFees.low)
-          .plus(maxPriorityFeePerGas)
+        baseFeePerGas: baseFee.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeesPerGas.low.toNumber(),
+        maxFeePerGas: new BigNumber(baseFee)
+          .plus(maxPriorityFeesPerGas.low)
           .toNumber(),
       },
       medium: {
-        baseFeePerGas: baseFees.medium.toNumber(),
-        maxPriorityFeePerGas: maxPriorityFeePerGas.toNumber(),
-        maxFeePerGas: new BigNumber(baseFees.medium)
-          .plus(maxPriorityFeePerGas)
+        baseFeePerGas: baseFee.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeesPerGas.medium.toNumber(),
+        maxFeePerGas: new BigNumber(baseFee)
+          .plus(feeBuffer)
+          .plus(maxPriorityFeesPerGas.medium)
           .toNumber(),
       },
       high: {
-        baseFeePerGas: baseFees.high.toNumber(),
-        maxPriorityFeePerGas: maxPriorityFeePerGas.toNumber(),
-        maxFeePerGas: new BigNumber(baseFees.high)
-          .plus(maxPriorityFeePerGas)
+        baseFeePerGas: baseFee.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeesPerGas.high.toNumber(),
+        maxFeePerGas: new BigNumber(baseFee)
+          .plus(maxFeeBuffer)
+          .plus(maxPriorityFeesPerGas.high)
           .toNumber(),
       },
     };

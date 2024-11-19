@@ -318,22 +318,23 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       msgData.maxFeePerGas = feeData.maxFeePerGas;
       msgData.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
     } else {
+      // commeted out as it is not checking the same fee source as the users by default so it can be very off
       // Check custom fee info
-      const feeOptions = await this.provider.gasFeeOptions({
-        useFeeService: true,
-      });
-      const isEIP1559 = typeof feeOptions?.[GasFeeSpeed.low] !== 'number';
-      if (isEIP1559) {
-        const lowestFeeData = feeOptions?.[GasFeeSpeed.low] as EIP1559Fee;
-        if (
-          lowestFeeData.priorityFeePerGas > Number(msgData.maxPriorityFeePerGas)
-        ) {
-          throw new Error('Tip is too low');
-        }
-        if (lowestFeeData.maxFeePerGas > Number(msgData.maxFeePerGas)) {
-          throw new Error('MaxFeePerGas is too low');
-        }
-      }
+      // const feeOptions = await this.provider.gasFeeOptions({
+      //   useFeeService: true,
+      // });
+      // const isEIP1559 = typeof feeOptions?.[GasFeeSpeed.low] !== 'number';
+      // if (isEIP1559) {
+      //   const lowestFeeData = feeOptions?.[GasFeeSpeed.low] as EIP1559Fee;
+      //   if (
+      //     lowestFeeData.priorityFeePerGas > Number(msgData.maxPriorityFeePerGas)
+      //   ) {
+      //     throw new Error('Tip is too low');
+      //   }
+      //   if (lowestFeeData.maxFeePerGas > Number(msgData.maxFeePerGas)) {
+      //     throw new Error('MaxFeePerGas is too low');
+      //   }
+      // }
     }
 
     if (!msgData.nonce) {
