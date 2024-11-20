@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.87
+
+### Patch Changes
+
+- 3c4651c8: Feat: disable waitFor method for awaiting transaction
+
 ## 2.0.86
 
 ### Patch Changes
