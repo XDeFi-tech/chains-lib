@@ -167,14 +167,14 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
       const serializedTx = (msg.signedTransaction as any).serializedTx;
-      // helper fn to broadcast, wait 1/2 second, then check the status of the tx
+      // helper fn to broadcast, wait 1.5 second, then check the status of the tx
       const helper = async (): Promise<string | undefined> => {
         const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
           skipPreflight: msg.data.skipPreflight ?? false,
           preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
           maxRetries: 0,
         });
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         const statusRes = await this.rpcProvider.getSignatureStatuses([hash]);
         const status = statusRes.value?.[0];
         if (!!status?.confirmationStatus) return hash;
@@ -183,7 +183,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
       };
       // repeat max of 150 times to get successful broadcast
       // 150 as this is the number of valid blocks this Tx could be valid for
-      const hash = await utils.waitFor(helper, { interval: 1, tries: 150 });
+      const hash = await utils.waitFor(helper, { interval: 1, tries: 50 });
       if (hash) {
         transactions.push(Transaction.fromData({ hash }));
       }

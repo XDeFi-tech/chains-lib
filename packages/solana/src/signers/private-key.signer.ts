@@ -34,6 +34,8 @@ export class PrivateKeySigner extends Signer.Provider {
       case MsgEncoding.base64:
       case MsgEncoding.base58:
         const versionedTransaction = tx as VersionedTransaction;
+        const blockhash = await msg.getLatestBlockhash();
+        versionedTransaction.message.recentBlockhash = blockhash;
         versionedTransaction.sign([account]);
         serializedTx = Buffer.from(versionedTransaction.serialize());
         break;
