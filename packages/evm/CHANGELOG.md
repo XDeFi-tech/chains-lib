@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.88
+
+### Patch Changes
+
+- 198d7dcf: Fix: calculate data field for gas limit estimation
+
 ## 2.0.87
 
 ### Patch Changes
