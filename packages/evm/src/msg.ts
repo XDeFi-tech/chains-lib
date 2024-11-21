@@ -250,12 +250,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
       !isNaN(Number(feeOptions.maxFeePerGas)) &&
       !isNaN(Number(feeOptions.maxPriorityFeePerGas))
     ) {
-      const baseFeePerGas = new BigNumber(feeOptions.baseFeePerGas);
+      const maxFeePerGas = new BigNumber(feeOptions.maxFeePerGas);
       const priorityFee = new BigNumber(feeOptions.maxPriorityFeePerGas);
-      const maxFeeWithPriority = baseFeePerGas.plus(priorityFee);
+      const maxFeeWithPriority = maxFeePerGas.plus(priorityFee);
       estimation.fee = ethers.utils
         .formatUnits(
-          baseFeePerGas.multipliedBy(feeOptions.gasLimit).toString(),
+          maxFeePerGas.multipliedBy(feeOptions.gasLimit).toString(),
           'ether'
         )
         .toString();
