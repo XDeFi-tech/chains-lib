@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.31
+
+### Patch Changes
+
+- a790afa0: updated signer to add blockhash
+
 ## 2.1.30
 
 ### Patch Changes
