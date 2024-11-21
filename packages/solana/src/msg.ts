@@ -84,12 +84,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   }
 
   async getLatestBlockhash(): Promise<string> {
-    if (this.blockhash) return this.blockhash;
     const { blockhash } = await this.provider.rpcProvider.getLatestBlockhash(
       'confirmed'
     );
-    this.blockhash = blockhash;
-    return this.blockhash;
+    return blockhash;
   }
 
   async getPriorityFeeEstimate(isToken: boolean): Promise<number> {
