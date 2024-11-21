@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.89
+
+### Patch Changes
+
+- b467e126: Fix: fee calculation, use maxFeePerGas instead of baseFeePerGas
+
 ## 2.0.88
 
 ### Patch Changes
