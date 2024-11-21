@@ -47,6 +47,8 @@ export class TrezorSigner extends Signer.TrezorProvider {
     switch (encoding) {
       case MsgEncoding.base58:
       case MsgEncoding.base64:
+        const blockhash = await msg.getLatestBlockhash();
+        (tx as VersionedTransaction).message.recentBlockhash = blockhash;
         txBuffer = (tx as VersionedTransaction).message.serialize() as Buffer;
         break;
       case MsgEncoding.object:
