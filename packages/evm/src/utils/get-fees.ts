@@ -52,7 +52,6 @@ export const getGasLimitFromRPC = async (
         from: msgData.from,
         to: msgData.to,
         value,
-        ...(msgData.data && { data: msgData.data }),
       };
     }
     const { data: response } = await rest.post('/', {
@@ -69,7 +68,12 @@ export const getGasLimitFromRPC = async (
       );
       return DEFAULT_CONTRACT_FEE;
     }
-    return parseInt(response.result);
+    let gasLimit = new BigNumber(response.result);
+    if (!msgData.contractAddress && (msgData.data || msgData.data === '0x')) {
+      const feeForData = 68 * new TextEncoder().encode(msgData.data).length;
+      gasLimit = gasLimit.plus(feeForData);
+    }
+    return gasLimit.integerValue().toNumber();
   } catch (err) {
     console.warn(
       'Failed to fetch gas limit, using default',
