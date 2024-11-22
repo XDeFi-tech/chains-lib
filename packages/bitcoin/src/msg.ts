@@ -65,8 +65,8 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     if (!feeRate)
       throw new Error('Fee estimation is required for building transaction');
 
-    // Calculate dust threshold filter for utxo outputs
-    const dustThreshold = utils.inputBytes({}) * feeRate;
+    // Dust Threshold = 3 × (bytes of an output + input bytes) × satoshis per byte(fee rate)
+    const dustThreshold = 3 * (34 + utils.inputBytes({})) * feeRate;
 
     // Scan UTXOs for the sender's address
     const utxos = await this.provider.scanUTXOs(this.data.from, {
@@ -541,9 +541,7 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     const decimals = this.toData().decimals || this.provider.manifest.decimals;
 
     const rate = new BigNumber(feeOption).dividedBy(10 ** decimals).toString();
-    const feeRate = Math.ceil(Number(rate) * 1e5);
-
-    return feeRate;
+    return Math.ceil(Number(rate) * 1e5);
   }
 
   async getMaxAmountToSend(): Promise<string> {
