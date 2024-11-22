@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.33
+
+### Patch Changes
+
+- 0bc8e70f: Feat: update dustThreshold calculation formula
+
 ## 2.1.32
 
 ### Patch Changes
