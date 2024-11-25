@@ -167,23 +167,53 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
       const serializedTx = (msg.signedTransaction as any).serializedTx;
-      // helper fn to broadcast, wait 1.5 second, then check the status of the tx
-      const helper = async (): Promise<string | undefined> => {
-        const hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
-          skipPreflight: msg.data.skipPreflight ?? false,
-          preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
-          maxRetries: 0,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const checkIsTransactionProcessed = async (
+        hash: string
+      ): Promise<string | undefined> => {
         const statusRes = await this.rpcProvider.getSignatureStatuses([hash]);
         const status = statusRes.value?.[0];
         if (!!status?.confirmationStatus) return hash;
         if (status?.err) throw status.err;
         return undefined;
       };
-      // repeat max of 150 times to get successful broadcast
-      // 150 as this is the number of valid blocks this Tx could be valid for
-      const hash = await utils.waitFor(helper, { interval: 1, tries: 50 });
+      let hash: string | undefined = undefined;
+      // helper fn to broadcast, wait 1.5 second, then check the status of the tx
+      const broadcastAndCheckStatus = async (): Promise<string | undefined> => {
+        try {
+          hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
+            skipPreflight: msg.data.skipPreflight ?? false,
+            preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
+            maxRetries: 0,
+          });
+        } catch (e: any) {
+          if (
+            e?.message?.includes?.(
+              'This transaction has already been processed'
+            )
+          ) {
+            if (hash) return hash;
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        for (let count = 0; count < 20; count++) {
+          try {
+            if (hash) {
+              const res = await checkIsTransactionProcessed(hash);
+              if (res) return;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          } catch (e) {
+            return undefined;
+          }
+        }
+        return undefined;
+      };
+      // repeat max of 4 times to get successful broadcast
+      await utils.waitFor(broadcastAndCheckStatus, {
+        interval: 1,
+        tries: 4,
+      });
       if (hash) {
         transactions.push(Transaction.fromData({ hash }));
       }
