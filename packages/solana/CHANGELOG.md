@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.32
+
+### Patch Changes
+
+- f47ff973: wait 10s-20s before broadcasting again
+
 ## 2.1.31
 
 ### Patch Changes
