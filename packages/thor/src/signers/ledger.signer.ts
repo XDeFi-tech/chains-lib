@@ -54,7 +54,8 @@ export class LedgerSigner extends Signer.Provider {
               value.toString(),
               msgData.denom ||
                 `${msg.provider.manifest.chain.toUpperCase()}.${msg.provider.manifest.denom.toUpperCase()}`, // THOR.RUNE OR MAYA.CACAO
-              msgData.memo || ''
+              msgData.memo || '',
+              msg.provider.manifest.chain
             ),
           ])
         : this.recursivelyOrderKeys([
@@ -62,7 +63,8 @@ export class LedgerSigner extends Signer.Provider {
               from,
               to,
               value.toString(),
-              msgData.denom || msg.provider.manifest.denom
+              msgData.denom || msg.provider.manifest.denom,
+              msg.provider.manifest.chain
             ),
           ]);
     if (txBody) {
@@ -118,10 +120,11 @@ export class LedgerSigner extends Signer.Provider {
     from: string,
     amount: string,
     denom: string,
-    memo: string
+    memo: string,
+    chain: string
   ) {
     return {
-      type: 'thorchain/MsgDeposit',
+      type: `${chain}/MsgDeposit`,
       value: {
         coins: [
           {
@@ -139,10 +142,11 @@ export class LedgerSigner extends Signer.Provider {
     from: string,
     to: string,
     amount: string,
-    denom: string
+    denom: string,
+    chain: string
   ) {
     return {
-      type: 'thorchain/MsgSend',
+      type: `${chain}/MsgSend`,
       value: {
         amount: [
           {
