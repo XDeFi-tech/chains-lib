@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.27
+
+### Patch Changes
+
+- 91b268c5: fix the msg type for maya/thor ledger
+
 ## 2.1.26
 
 ### Patch Changes
