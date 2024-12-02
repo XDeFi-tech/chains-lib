@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.33
+
+### Patch Changes
+
+- 2fd999a5: Feat: add all broadcast options to options
+
 ## 2.1.32
 
 ### Patch Changes
