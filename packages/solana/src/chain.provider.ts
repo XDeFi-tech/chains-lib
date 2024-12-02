@@ -35,6 +35,7 @@ import {
   checkMinimumBalanceForRentExemption,
   getSignatureStatus,
 } from './utils';
+import { BroadcastOptions, DEFAULT_BROADCAST_OPTIONS } from './constants';
 
 export interface MultisigMsgData {
   from: string;
@@ -159,10 +160,18 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     throw new Error('Method not implemented.');
   }
 
-  async broadcast(msgs: ChainMsg[]): Promise<Transaction[]> {
+  async broadcast(
+    msgs: ChainMsg[],
+    options: BroadcastOptions = {}
+  ): Promise<Transaction[]> {
     if (some(msgs, (msg) => !msg.hasSignature)) {
       throw new Error('Some message do not have signature, sign it first');
     }
+
+    const broadcastOptions: BroadcastOptions = {
+      ...DEFAULT_BROADCAST_OPTIONS,
+      ...options,
+    };
 
     const transactions: Transaction[] = [];
     for (const msg of msgs) {
@@ -181,11 +190,10 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
       // helper fn to broadcast, wait 1.5 second, then check the status of the tx
       const broadcastAndCheckStatus = async (): Promise<string | undefined> => {
         try {
-          hash = await this.rpcProvider.sendRawTransaction(serializedTx, {
-            skipPreflight: msg.data.skipPreflight ?? false,
-            preflightCommitment: msg.data.preflightCommitment ?? 'confirmed',
-            maxRetries: 0,
-          });
+          hash = await this.rpcProvider.sendRawTransaction(
+            serializedTx,
+            broadcastOptions
+          );
         } catch (e: any) {
           if (
             e?.message?.includes?.(
