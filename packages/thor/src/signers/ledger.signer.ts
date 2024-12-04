@@ -128,12 +128,12 @@ export class LedgerSigner extends Signer.Provider {
       value: {
         coins: [
           {
+            asset: denom,
             amount,
-            asset: denom.toLowerCase(),
           },
         ],
-        signer: from,
         memo,
+        signer: from,
       },
     };
   }
