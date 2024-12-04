@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.28
+
+### Patch Changes
+
+- 9a07fb40: fix: ledger desposit for thor
+
 ## 2.1.27
 
 ### Patch Changes
