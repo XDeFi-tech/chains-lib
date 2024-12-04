@@ -8,9 +8,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-          fetch-depth: 0
+        # with:
+        #   token: ${{ secrets.GIT_TOKEN }}
+        #   fetch-depth: 0
 
       - name: Enable node
         uses: actions/setup-node@v3
