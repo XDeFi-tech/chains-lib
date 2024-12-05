@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.91
+
+### Patch Changes
+
+- ea93eb40: chore: revert evm fee estimation
+
 ## 2.0.90
 
 ### Patch Changes
