@@ -1,0 +1,10 @@
+name: 'PR Pinning Check'
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+jobs:
+  deploy:
+    uses: XDeFi-tech/devops-workflows-templates/.github/workflows/version_pinning.yml@master
