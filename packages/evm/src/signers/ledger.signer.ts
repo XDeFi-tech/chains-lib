@@ -3,7 +3,9 @@ import Transport from '@ledgerhq/hw-transport';
 import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { ethers, UnsignedTransaction } from 'ethers';
 import EthCrypto from 'eth-crypto';
+import { SignTypedDataVersion } from '@metamask/eth-sig-util';
 
+import { hashEIP712Message } from '../utils';
 import { ChainMsg, EncryptedObject, EIP712Data, Signature } from '../msg';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
@@ -114,7 +116,10 @@ export class LedgerSigner extends Signer.Provider {
     domain: EIP712Data['domain'],
     types: EIP712Data['types'],
     primaryType: EIP712Data['primaryType'],
-    message: EIP712Data['message']
+    message: EIP712Data['message'],
+    version:
+      | SignTypedDataVersion.V3
+      | SignTypedDataVersion.V4 = SignTypedDataVersion.V4
   ): Promise<Signature> {
     const app = new App(this.transport as Transport);
     const typedData = {
@@ -123,8 +128,29 @@ export class LedgerSigner extends Signer.Provider {
       primaryType,
       message,
     };
-    const signature = await app.signEIP712Message(derivation, typedData);
-    return signature;
+    try {
+      const signature = await app.signEIP712Message(derivation, typedData);
+      return signature;
+    } catch (error) {
+      // signEIP712Message is not compatible with Ledger Nano S, use fallback on the signEIP712HashedMessage method
+      // Check more info here: https://www.npmjs.com/package/@ledgerhq/hw-app-eth#signeip712message
+      const { message: messageHashed, domain: domainHashed } =
+        hashEIP712Message(
+          {
+            domain,
+            types,
+            primaryType,
+            message,
+          },
+          version
+        );
+      const signature = await app.signEIP712HashedMessage(
+        derivation,
+        domainHashed.toString('hex'),
+        messageHashed.toString('hex')
+      );
+      return signature;
+    }
   }
 }
 
