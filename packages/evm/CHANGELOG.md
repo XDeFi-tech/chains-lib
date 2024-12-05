@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.90
+
+### Patch Changes
+
+- a8a40f64: fix: sign typed data with ledger nano s
+
 ## 2.0.89
 
 ### Patch Changes
