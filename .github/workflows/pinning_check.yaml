@@ -1,0 +1,16 @@
+name: 'PR Pinning Check'
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+jobs:
+  
+  pinning-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        npm install -g pin-dependencies-checker@2.1.0
+        pin-checker
