@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.92
+
+### Patch Changes
+
+- ad8bf668: fix: using hex string input to be signed
+
 ## 2.0.91
 
 ### Patch Changes
