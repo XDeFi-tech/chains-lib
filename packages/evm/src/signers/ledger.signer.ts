@@ -98,15 +98,18 @@ export class LedgerSigner extends Signer.Provider {
     return encrypted;
   }
 
+  /**
+   * Sign a personal message
+   * @param message - The hex string to be signed
+   * @param derivation - The derivation path
+   * @returns The signature (r, s, v)
+   */
   async signPersonalMessage(
     message: string,
     derivation: string
   ): Promise<Signature> {
     const app = new App(this.transport as Transport);
-    const signature = await app.signPersonalMessage(
-      derivation,
-      Buffer.from(message).toString('hex')
-    );
+    const signature = await app.signPersonalMessage(derivation, message);
     return signature;
   }
 
