@@ -166,7 +166,7 @@ describe('ledger.signer', () => {
   });
 
   it('should return ledger signature', async () => {
-    const message = 'test';
+    const message = '0x74657374'; // test in hex
     const signature = await signer.signPersonalMessage(message, derivationPath);
     const { v, r, s } = signature as Signature;
 

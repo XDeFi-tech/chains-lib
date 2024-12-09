@@ -128,13 +128,22 @@ export class TrezorSigner extends Signer.TrezorProvider {
     }
   }
 
+  /**
+   * Sign a personal message
+   * @param message - The message to be signed
+   * @param derivation - The derivation path
+   * @param hex - Whether the message is in hex format
+   * @returns The signature (r, s, v)
+   */
   async signPersonalMessage(
     message: string,
-    derivation: string
+    derivation: string,
+    hex = false
   ): Promise<Signature | any> {
     const result = await TrezorConnect.ethereumSignMessage({
       path: derivation,
-      message: message,
+      message,
+      hex,
     } as any);
 
     if (result.success) {
