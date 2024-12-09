@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.93
+
+### Patch Changes
+
+- b96f52c0: feat: add hex parameter to specify message format for Trezor
+
 ## 2.0.92
 
 ### Patch Changes
