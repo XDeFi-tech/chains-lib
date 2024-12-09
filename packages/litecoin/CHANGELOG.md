@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.23
+
+### Patch Changes
+
+- 397f14c6: fix: input does not match scriptPubKey error
+
 ## 2.1.22
 
 ### Patch Changes
