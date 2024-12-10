@@ -189,7 +189,7 @@ describe('private-key.signer', () => {
 
     // Check tx fee info before signing
     const expectedFee = {
-      amount: [{ denom: 'uatom', amount: '2500' }],
+      amount: [{ denom: 'uatom', amount: '500' }], // 0.025 * 200000
       gas: '200000',
     };
     expect(txData.fee).toEqual(expectedFee);
@@ -198,7 +198,7 @@ describe('private-key.signer', () => {
     const signer = new PrivateKeySigner(privateKeys.cosmos);
     await signer.sign(chainMsg, '');
     expect(chainMsg.signedTransaction).toEqual(
-      'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmcKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIARgBEhMKDQoFdWF0b20SBDI1MDAQwJoMGkDMqz7SD1+2tvYlImP5HGOLF0/wjqpDAyMODMKnmh8bmkjdarqIGVnN+FgLzEaKHUpIc1c6n8iwCkh/a8SW1yfr'
+      'Co0BCooBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEmoKLWNvc21vczFnNnF1NmhtNHYzczN2cTc0MzhqZWhuOWZ6eGc5cDcyMHllc3EycRItY29zbW9zMWc2cXU2aG00djNzM3ZxNzQzOGplaG45Znp4ZzlwNzIweWVzcTJxGgoKBXVhdG9tEgExEmYKUApGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQPdo5siwfjiwtEdo7xFF/gLRhqmnxDnYeNFdvTwnM+h7hIECgIIARgBEhIKDAoFdWF0b20SAzUwMBDAmgwaQE3CMBRkgCP5iRNYTOkyDs62Vg0VSXrb8M42adb13PwnFd24FvGpgrI48XTskX4n6GjZdJFi/hzSgFvFWSlXz3c='
     );
   });
 

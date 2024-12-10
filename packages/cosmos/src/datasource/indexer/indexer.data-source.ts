@@ -142,23 +142,6 @@ export class IndexerDataSource extends DataSource {
     let fromAddress = '';
     const feeData: FeeData[] = [];
     const gasFeeOptions = await this.gasFeeOptions();
-    const _feeAmount = msgs.map((m) => {
-      const messageData = m.toData();
-      if (messageData.feeOptions) {
-        return {
-          denom: messageData.feeOptions.gasFee.denom,
-          amount: new BigNumber(this.manifest.feeGasStep[speed])
-            .multipliedBy(10 ** this.manifest.decimals)
-            .toString(),
-        };
-      }
-      return {
-        denom: this.manifest.denom,
-        amount: new BigNumber(this.manifest.feeGasStep[speed])
-          .multipliedBy(10 ** this.manifest.decimals)
-          .toString(),
-      };
-    });
     for (let index = 0; index < msgs.length; index++) {
       const m = msgs[index];
       let messageData =
@@ -295,9 +278,7 @@ export class IndexerDataSource extends DataSource {
                 sequence: BigInt(account.sequence),
               }),
             ],
-            fee: Fee.fromPartial({
-              amount: _feeAmount as any,
-            }),
+            fee: Fee.fromPartial({}),
           }).finish(),
           signatures: [new Uint8Array(64)],
         }).finish();

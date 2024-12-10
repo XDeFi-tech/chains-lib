@@ -433,14 +433,10 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     const fee = {
       amount: [
         {
-          amount: feeOptions
-            ? new BigNumber(msgData.gasLimit)
-                .multipliedBy(feeOptions.gasAdjustment || 1)
-                .multipliedBy(msgData.gasPrice)
-                .toFixed(0)
-            : new BigNumber(msgData.gasPrice)
-                .multipliedBy(10 ** this.provider.manifest.decimals)
-                .toString(),
+          amount: new BigNumber(msgData.gasLimit)
+            .multipliedBy(feeOptions?.gasAdjustment ?? 1)
+            .multipliedBy(msgData.gasPrice)
+            .toFixed(0, BigNumber.ROUND_CEIL),
           denom: feeOptions?.gasFee.denom ?? this.provider.manifest.denom,
         },
       ],
@@ -501,6 +497,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
         } else {
           estimation.fee = new BigNumber(feeEstimation.gasLimit.toString())
             .multipliedBy(feeEstimation.gasPrice.toString())
+            .integerValue(BigNumber.ROUND_CEIL)
             .dividedBy(10 ** this.provider.manifest.decimals)
             .toString();
         }
