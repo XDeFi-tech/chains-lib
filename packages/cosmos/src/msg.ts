@@ -26,9 +26,19 @@ import { MsgSwapExactAmountIn } from './proto_export/osmosis/gamm/v1beta1/tx';
 import { MessageComposer as MessageComposerGamm } from './proto_export/osmosis/gamm/v1beta1/tx.registry';
 import { MessageComposer as MessageComposerPoolManager } from './proto_export/osmosis/poolmanager/v1beta1/tx.registry';
 import { AminoConverter as AminoConverterGamm } from './proto_export/osmosis/gamm/v1beta1/tx.amino';
+import {
+  MessageComposer as MessageComposerSmartAccount,
+  registry as registrySmartAccount,
+} from './proto_export/osmosis/smartaccount/v1beta1/tx.registry';
+import { AminoConverter as AminoConverterSmartAccount } from './proto_export/osmosis/smartaccount/v1beta1/tx.amino';
 import { AminoConverter } from './proto_export/osmosis/poolmanager/v1beta1/tx.amino';
 import { MsgSwapExactAmountIn as PoolManagerMsgSwapExactAmountIn } from './proto_export/osmosis/poolmanager/v1beta1/tx';
 import { isIBCPayload } from './utils';
+import {
+  MsgAddAuthenticator,
+  MsgRemoveAuthenticator,
+  MsgSetActiveState,
+} from './proto_export/osmosis/smartaccount/v1beta1/tx';
 
 export type MsgBody = {
   from: string;
@@ -230,6 +240,45 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
     }
   }
 
+  private getSmartAccountMsg(rawMsg: any, signMode: CosmosSignMode) {
+    let parser: (
+      input: any
+    ) => MsgAddAuthenticator | MsgRemoveAuthenticator | MsgSetActiveState;
+    let messageComposer: any;
+
+    // Determine the message type based on the structure of rawMsg
+    if ('data' in rawMsg) {
+      // MsgAddAuthenticator
+      rawMsg.type = rawMsg.type ?? rawMsg.authenticator_type;
+      parser =
+        signMode === CosmosSignMode.SIGN_AMINO
+          ? MsgAddAuthenticator.fromAmino
+          : MsgAddAuthenticator.fromPartial;
+      messageComposer =
+        MessageComposerSmartAccount.withTypeUrl.addAuthenticator;
+    } else if ('id' in rawMsg) {
+      // MsgRemoveAuthenticator
+      parser =
+        signMode === CosmosSignMode.SIGN_AMINO
+          ? MsgRemoveAuthenticator.fromAmino
+          : MsgRemoveAuthenticator.fromPartial;
+      messageComposer =
+        MessageComposerSmartAccount.withTypeUrl.removeAuthenticator;
+    } else if ('active' in rawMsg) {
+      // MsgSetActiveState
+      parser =
+        signMode === CosmosSignMode.SIGN_AMINO
+          ? MsgSetActiveState.fromAmino
+          : MsgSetActiveState.fromPartial;
+      messageComposer = MessageComposerSmartAccount.withTypeUrl.setActiveState;
+    } else {
+      throw new Error('Unsupported message structure');
+    }
+
+    const msg = parser(rawMsg);
+    return messageComposer(msg);
+  }
+
   private getMsgSend(rawMsg: any) {
     rawMsg.amount = rawMsg.amount.map((coin: AminoCoin) => {
       const ibcCheck = coin.denom.split('/');
@@ -386,6 +435,16 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
           return this.getMsgSend(rawMsg);
         }
 
+        const isMsgSmartAccount =
+          AminoConverterSmartAccount[
+            key as keyof typeof AminoConverterSmartAccount
+          ];
+        const isMsgSmartAccountAmino = isAmino(AminoConverterSmartAccount, key);
+        if (isMsgSmartAccount || isMsgSmartAccountAmino) {
+          if (isMsgSmartAccountAmino) signMode = CosmosSignMode.SIGN_AMINO;
+          return this.getSmartAccountMsg(rawMsg, signMode);
+        }
+
         if (key === '/cosmwasm.wasm.v1.MsgExecuteContract') {
           return this.getExecuteContract(rawMsg);
         }
@@ -474,7 +533,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxData> {
 
     const feeOptions = data.feeOptions;
 
-    if (!data.gasLimit && !data.gasPrice && this.provider) {
+    if ((!data.gasLimit || !data.gasPrice) && this.provider) {
       const [feeEstimation] = await this.provider.estimateFee(
         [this],
         speed || GasFeeSpeed.medium
