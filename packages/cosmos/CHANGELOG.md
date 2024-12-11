@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.79
+
+### Patch Changes
+
+- 27c63836: feat: add smart account msg types
+
 ## 2.0.78
 
 ### Patch Changes
