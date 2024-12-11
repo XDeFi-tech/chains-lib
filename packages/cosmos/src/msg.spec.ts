@@ -5,6 +5,7 @@ import { ChainDataSource } from './datasource';
 import { COSMOS_MANIFESTS } from './manifests';
 import { CosmosProvider } from './chain.provider';
 import { ChainMsg } from './msg';
+import { MsgAddAuthenticator } from './proto_export/osmosis/smartaccount/v1beta1/tx';
 
 jest.mock('./chain.provider', () => {
   const originModule = jest.requireActual('./chain.provider');
@@ -295,5 +296,26 @@ describe('msg', () => {
         .minus(gap)
         .toString()
     );
+  });
+
+  it('should estimate fee with dapp sign doc', async () => {
+    const chainMsg = provider.createMsg(
+      {
+        from: 'osmo185zc74a7w2pfxkv6d06t3kdja65tngjgkn6pqg',
+        to: 'osmo185zc74a7w2pfxkv6d06t3kdja65tngjgkn6pqg',
+        amount: 0,
+        data: '{"signDoc":{"chain_id":"osmosis-1","account_number":"741628","sequence":"689","fee":{"gas":"342048","amount":[]},"msgs":[{"type":"osmosis/smartaccount/add-authenticator","value":{"sender":"osmo185zc74a7w2pfxkv6d06t3kdja65tngjgkn6pqg","authenticator_type":"AllOf","data":"W3sidHlwZSI6IlNpZ25hdHVyZVZlcmlmaWNhdGlvbiIsImNvbmZpZyI6IkF4ekFxUjdKU2dPamhTTlVvams4d2d6YkpOTUpoNUFGeXpTbzczK1VqT1dBIn0seyJ0eXBlIjoiQ29zbXdhc21BdXRoZW50aWNhdG9yVjEiLCJjb25maWciOiJleUpqYjI1MGNtRmpkQ0k2SUNKdmMyMXZNVEI0Y1hZNGNteHdhMlpzZVhkdE9USnJOWGRrYlhCc2VuazNhMmgwWVhOc09XTXlZekE0Y0hOdGRteDFOVFF6YXpjeU5ITjVPVFJyTnpRaUxDQWljR0Z5WVcxeklqb2dJbVY1U25OaFZ6RndaRU5KTmtscVZYZE5SRUYzVFVSQmQwMUVRV2xNUTBwNVdsaE9iR1JHT1hkYVdFcHdZakpSYVU5cFNtdFpXR3RwVEVOS01HRlhNV3hZTW5od1lsZHNNRWxxY0RkSmJWWjFXa05KTmtscVJUTk5lbEV3VDFSTk0wOVVaM2ROUkVGM1RVUkJkMDFFUVdsbVdEQTlJbjA9In0seyJ0eXBlIjoiQW55T2YiLCJjb25maWciOiJXM3NpZEhsd1pTSTZJazFsYzNOaFoyVkdhV3gwWlhJaUxDSmpiMjVtYVdjaU9pSmxlVXBCWkVoc2QxcFRTVFpKYVRsMll6SXhkbU15YkhwTWJrSjJZako0ZEZsWE5XaGFNbFo1VEc1WmVGbHRWakJaVkVWMVZGaE9ibFV6WkdoalJWWTBXVmRPTUZGWE1YWmtWelV3VTFjMGFXWlJQVDBpZlN4N0luUjVjR1VpT2lKTlpYTnpZV2RsUm1sc2RHVnlJaXdpWTI5dVptbG5Jam9pWlhsS1FXUkliSGRhVTBrMlNXazVkbU15TVhaak1teDZURzVDZG1JeWVIUlpWelZvV2pKV2VVeHVXWGhaYlZZd1dWUkZkVlJZVG01Vk0wSnpZVmhTVTJJelZqQmFWazR6V1ZoQ1JtVkhSbXBrUlVaMFlqTldkV1JGYkhWSmJqQTlJbjBzZXlKMGVYQmxJam9pVFdWemMyRm5aVVpwYkhSbGNpSXNJbU52Ym1acFp5STZJbVY1U2tGa1NHeDNXbE5KTmtscE9YWmpNakYyWXpKc2VreHVRblppTW5oMFdWYzFhRm95Vm5sTWJsbDRXVzFXTUZsVVJYVlVXRTV1VlROa2FHTkZWalJaVjA0d1VWY3hkbVJYTlRCVU0xWXdTVzR3UFNKOUxIc2lkSGx3WlNJNklrMWxjM05oWjJWR2FXeDBaWElpTENKamIyNW1hV2NpT2lKbGVVcEJaRWhzZDFwVFNUWkphVGwyWXpJeGRtTXliSHBNYmtKMllqSjRkRmxYTldoYU1sWjVURzVaZUZsdFZqQlpWRVYxVkZoT2JsVXpRbk5oV0ZKVFlqTldNRnBXVGpOWldFSkdaVWRHYW1SRlJuUmlNMVoxWkVVNU1XUkRTamtpZlN4N0luUjVjR1VpT2lKTlpYTnpZV2RsUm1sc2RHVnlJaXdpWTI5dVptbG5Jam9pWlhsS1FXUkliSGRhVTBrMlNXazVkbU15TVhaak1teDZURzFPZG1KdFRteGlibEo1V1ZoU2JGcEhlSEJqV0Zad1drZHNNR1ZUTlRKTlYwcHNaRWRGZUV4ck1YcGFNV1J3WkVkb2EyTnRSak5WUnpsNllWaFNjR0l5TkdsbVVUMDlJbjBzZXlKMGVYQmxJam9pVFdWemMyRm5aVVpwYkhSbGNpSXNJbU52Ym1acFp5STZJbVY1U2tGa1NHeDNXbE5KTmtscE9YWmpNakYyWXpKc2VreHVXbWhpU0U1c1pFaENlVnBYV1hWa2FrWnBXbGhTYUUxVE5VNWpNbVJVV2xoU1YxbFhlSEJhUjBZd1lqTktWRnBZVWxGamJWWnRXbGhLYkdKdFRteEpiakE5SW4xZCJ9XQ=="}}],"memo":"OsmosisFE","timeout_height":"25467355"}}',
+        tokenType: 'None',
+        decimals: 6,
+        gasLimit: 342048,
+      },
+      MsgEncoding.string
+    );
+    const buildTx = await chainMsg.buildTx();
+    expect(buildTx.msgs.length).toEqual(1);
+    expect(buildTx.msgs[0].typeUrl).toEqual(MsgAddAuthenticator.typeUrl);
+
+    const fee = await chainMsg.getFee(GasFeeSpeed.high);
+    expect(fee.fee).toBeTruthy();
   });
 });

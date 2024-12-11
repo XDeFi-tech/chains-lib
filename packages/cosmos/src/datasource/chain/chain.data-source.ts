@@ -43,6 +43,11 @@ import { MsgSwapExactAmountIn as MsgSwapExactAmountInPoolManager } from '../../p
 import { MsgTransfer } from '../../proto_export/ibc/applications/transfer/v1/tx';
 import { isIBCPayload } from '../../utils';
 import { getFallbackAsset } from '../fallback-asset/cosmos.fallback-asset';
+import {
+  MsgAddAuthenticator,
+  MsgRemoveAuthenticator,
+  MsgSetActiveState,
+} from '../../proto_export/osmosis/smartaccount/v1beta1/tx';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -241,6 +246,27 @@ export class ChainDataSource extends DataSource {
               typeUrl: MsgSwapExactAmountInPoolManager.typeUrl,
               value: MsgSwapExactAmountInPoolManager.encode(
                 MsgSwapExactAmountInPoolManager.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgAddAuthenticator.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgAddAuthenticator.typeUrl,
+              value: MsgAddAuthenticator.encode(
+                MsgAddAuthenticator.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgRemoveAuthenticator.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgRemoveAuthenticator.typeUrl,
+              value: MsgRemoveAuthenticator.encode(
+                MsgRemoveAuthenticator.fromPartial(msgTransfer.value)
+              ).finish(),
+            });
+          } else if (msgTransfer.typeUrl === MsgSetActiveState.typeUrl) {
+            _msgs.push({
+              typeUrl: MsgSetActiveState.typeUrl,
+              value: MsgSetActiveState.encode(
+                MsgSetActiveState.fromPartial(msgTransfer.value)
               ).finish(),
             });
           } else if (msgTransfer.typeUrl === MsgSwapExactAmountIn.typeUrl) {
