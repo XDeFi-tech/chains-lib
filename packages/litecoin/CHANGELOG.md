@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.24
+
+### Patch Changes
+
+- 395acd1e: feat: enable to compile hex memo
+
 ## 2.1.23
 
 ### Patch Changes
