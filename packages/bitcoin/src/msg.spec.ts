@@ -280,6 +280,11 @@ describe('msg', () => {
   });
 
   it('Should can spend utxos without losing ordinals', async () => {
+    (feeModule.getFees as any).mockResolvedValue({
+      high: 1000,
+      medium: 1000,
+      low: 1000,
+    });
     const chainMsg = new ChainMsg(
       {
         from: address,

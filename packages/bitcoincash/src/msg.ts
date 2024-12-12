@@ -9,8 +9,9 @@ import {
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
-import { UTXO } from '@xdefi-tech/chains-utxo';
+import { stringToHex, UTXO } from '@xdefi-tech/chains-utxo';
 import * as utils from 'coinselect/utils';
+import { hexToBytes } from '@noble/hashes/utils';
 
 import type { BitcoinCashProvider } from './chain.provider';
 
@@ -105,15 +106,31 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
    * @param {string | Uint8Array} memo
    * @returns {Buffer} OP_RETURN compiled script
    */
-  public compileMemo(memo: string | Uint8Array) {
-    let formattedMemo: Buffer;
+  public compileMemo(memo: string | Uint8Array): Buffer {
+    let formattedMemo: Uint8Array;
     if (typeof memo === 'string') {
-      formattedMemo = Buffer.from(memo, 'utf8');
+      if (memo.startsWith('hex::')) {
+        const bytesMemo = hexToBytes(memo.split('hex::')[1]);
+        formattedMemo = Uint8Array.from([
+          UTXOLib.opcodes.OP_RETURN,
+          bytesMemo.length,
+          ...bytesMemo,
+        ]);
+      } else {
+        const bytesMemo = hexToBytes(stringToHex(memo));
+        formattedMemo = Uint8Array.from([
+          UTXOLib.opcodes.OP_RETURN,
+          bytesMemo.length,
+          ...bytesMemo,
+        ]);
+      }
     } else {
-      formattedMemo = Buffer.from(memo);
+      formattedMemo = memo;
     }
 
-    return UTXOLib.script.compile([UTXOLib.opcodes.OP_RETURN, formattedMemo]);
+    if (formattedMemo.length > 220) throw new Error('Memo is too long');
+
+    return Buffer.from(formattedMemo);
   }
 
   async getFee(speed?: GasFeeSpeed): Promise<FeeEstimation> {
