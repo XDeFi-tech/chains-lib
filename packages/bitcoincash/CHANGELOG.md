@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-bitcoincash
 
+## 2.1.22
+
+### Patch Changes
+
+- 395acd1e: feat: enable to compile hex memo
+
 ## 2.1.21
 
 ### Patch Changes
