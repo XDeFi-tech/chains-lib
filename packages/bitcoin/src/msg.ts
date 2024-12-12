@@ -473,12 +473,21 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   public compileMemo(memo: string | Uint8Array): Uint8Array {
     let formattedMemo: Uint8Array;
     if (typeof memo === 'string') {
-      const bytesMemo = hexToBytes(stringToHex(memo));
-      formattedMemo = Uint8Array.from([
-        UTXOLib.opcodes.OP_RETURN,
-        bytesMemo.length,
-        ...bytesMemo,
-      ]);
+      if (memo.startsWith('hex::')) {
+        const bytesMemo = hexToBytes(memo.split('hex::')[1]);
+        formattedMemo = Uint8Array.from([
+          UTXOLib.opcodes.OP_RETURN,
+          bytesMemo.length,
+          ...bytesMemo,
+        ]);
+      } else {
+        const bytesMemo = hexToBytes(stringToHex(memo));
+        formattedMemo = Uint8Array.from([
+          UTXOLib.opcodes.OP_RETURN,
+          bytesMemo.length,
+          ...bytesMemo,
+        ]);
+      }
     } else {
       formattedMemo = memo;
     }
