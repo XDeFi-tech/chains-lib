@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.59
+
+### Patch Changes
+
+- 21ae891b: fix: reading trc20 of undifined issue for chain datasource
+
 ## 2.0.58
 
 ### Patch Changes
