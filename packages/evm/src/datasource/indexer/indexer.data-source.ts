@@ -213,6 +213,8 @@ export class IndexerDataSource extends DataSource {
       }
       if (msg.provider.manifest.chainId === EVM_MANIFESTS.avalanche.chainId)
         gasLimit = Math.ceil(gasLimit * 1.2);
+      if (msg.provider.manifest.chainId === EVM_MANIFESTS.smartchain.chainId)
+        gasLimit = Math.ceil(gasLimit * 1.3);
       const msgFeeData = isEIP1559
         ? {
             gasLimit,
