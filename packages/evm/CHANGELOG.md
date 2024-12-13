@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.94
+
+### Patch Changes
+
+- c8ae8667: Fix: improve estimate factor for smartchain
+
 ## 2.0.93
 
 ### Patch Changes
