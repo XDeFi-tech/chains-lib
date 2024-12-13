@@ -59,8 +59,8 @@ export class ChainDataSource extends DataSource {
 
     const response = await this.httpProvider.get(`/v1/accounts/${address}`);
 
-    const tokenBalances: Record<string, string>[] = response.data.data[0].trc20
-      ? response.data.data[0].trc20
+    const tokenBalances: Record<string, string>[] = response.data.data[0]?.trc20
+      ? response.data.data[0]?.trc20
       : [];
 
     const abi = [
