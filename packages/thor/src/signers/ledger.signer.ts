@@ -4,9 +4,11 @@ import { Signer, SignerDecorator } from '@xdefi-tech/chains-core';
 import { encodePubkey, makeAuthInfoBytes } from '@cosmjs/proto-signing';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { TxRaw, TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import * as bech32Buffer from 'bech32-buffer';
 
 import { getSignature } from '../utils';
 import { ChainMsg, MsgType } from '../msg';
+import { DEPOSIT_MSG_ADDRESS } from '../constants';
 
 @SignerDecorator(Signer.SignerType.LEDGER)
 export class LedgerSigner extends Signer.Provider {
@@ -46,27 +48,15 @@ export class LedgerSigner extends Signer.Provider {
     const { txBody, from, to, sequence, value, accountNumber, gasLimit } =
       await msg.buildTx();
     const msgData = msg.toData();
-    const orderedMsg =
-      msgData.type === MsgType.MsgDeposit
-        ? this.recursivelyOrderKeys([
-            this.depositMsgAmino(
-              from,
-              value.toString(),
-              msgData.denom ||
-                `${msg.provider.manifest.chain.toUpperCase()}.${msg.provider.manifest.denom.toUpperCase()}`, // THOR.RUNE OR MAYA.CACAO
-              msgData.memo || '',
-              msg.provider.manifest.chain
-            ),
-          ])
-        : this.recursivelyOrderKeys([
-            this.transferMsgAmino(
-              from,
-              to,
-              value.toString(),
-              msgData.denom || msg.provider.manifest.denom,
-              msg.provider.manifest.chain
-            ),
-          ]);
+    const orderedMsg = this.recursivelyOrderKeys([
+      this.transferMsgAmino(
+        from,
+        msgData.type === MsgType.MsgDeposit ? DEPOSIT_MSG_ADDRESS : to,
+        value.toString(),
+        msgData.denom || msg.provider.manifest.denom,
+        msg.provider.manifest.chain
+      ),
+    ]);
     if (txBody) {
       const tx = this.stringifyKeysInOrder({
         account_number: accountNumber.toString(),
@@ -116,28 +106,6 @@ export class LedgerSigner extends Signer.Provider {
     }
   }
 
-  private depositMsgAmino(
-    from: string,
-    amount: string,
-    denom: string,
-    memo: string,
-    chain: string
-  ) {
-    return {
-      type: `${chain}/MsgDeposit`,
-      value: {
-        coins: [
-          {
-            asset: denom,
-            amount,
-          },
-        ],
-        memo,
-        signer: from,
-      },
-    };
-  }
-
   private transferMsgAmino(
     from: string,
     to: string,
@@ -145,6 +113,12 @@ export class LedgerSigner extends Signer.Provider {
     denom: string,
     chain: string
   ) {
+    const from_address = Buffer.from(bech32Buffer.decode(from).data).toString(
+      'base64'
+    );
+    const to_address = Buffer.from(bech32Buffer.decode(to).data).toString(
+      'base64'
+    );
     return {
       type: `${chain}/MsgSend`,
       value: {
@@ -154,8 +128,8 @@ export class LedgerSigner extends Signer.Provider {
             denom: denom.toLowerCase(),
           },
         ],
-        from_address: from,
-        to_address: to,
+        from_address,
+        to_address,
       },
     };
   }

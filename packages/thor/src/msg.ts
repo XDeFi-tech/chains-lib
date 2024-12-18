@@ -14,7 +14,11 @@ import { types } from './proto';
 import type { ThorProvider } from './chain.provider';
 import { AccountInfo } from './types';
 import { assetFromString } from './utils';
-import { NATIVE_MAYA_FEE, NATIVE_TRON_FEE } from './constants';
+import {
+  DEPOSIT_MSG_ADDRESS,
+  NATIVE_MAYA_FEE,
+  NATIVE_TRON_FEE,
+} from './constants';
 
 const MsgSend = types.MsgSend;
 const MsgDeposit = types.MsgDeposit;
@@ -70,6 +74,19 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
     const messageData = this.toData();
+    return this.buildMsgBody(messageData.to);
+  }
+
+  public buildDepositBody():
+    | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
+    | undefined {
+    return this.buildMsgBody(DEPOSIT_MSG_ADDRESS);
+  }
+
+  public buildMsgBody(
+    toAddress: string
+  ): cosmosclient.proto.cosmos.tx.v1beta1.TxBody | undefined {
+    const messageData = this.toData();
     const denom = messageData.denom || this.provider.manifest.denom;
     const decimals = messageData.decimals || this.provider.manifest.decimals;
     const amount = new BigNumber(messageData.amount)
@@ -78,7 +95,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       .toString();
     const transferMsg: types.IMsgSend = {
       fromAddress: bech32Buffer.decode(messageData.from).data,
-      toAddress: bech32Buffer.decode(messageData.to).data,
+      toAddress: bech32Buffer.decode(toAddress).data,
       amount: [
         {
           denom: denom.toLowerCase(),
@@ -95,44 +112,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     return new cosmosclient.proto.cosmos.tx.v1beta1.TxBody({
       messages: [msgBytes],
       memo: messageData.memo,
-    });
-  }
-
-  public buildDepositBody():
-    | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
-    | undefined {
-    const messageData = this.toData();
-    const denom =
-      messageData.denom ||
-      `${this.provider.manifest.chain.toUpperCase()}.${this.provider.manifest.denom.toUpperCase()}`; // THOR.RUNE OR MAYA.CACAO
-    const decimals = messageData.decimals || this.provider.manifest.decimals;
-    const signer = bech32Buffer.decode(messageData.from).data;
-    const memo = messageData.memo || '';
-    const amount = new BigNumber(messageData.amount)
-      .multipliedBy(10 ** decimals)
-      .integerValue()
-      .toString();
-    const asset = assetFromString(denom);
-    const body: types.IMsgDeposit = {
-      coins: [
-        {
-          asset,
-          amount,
-          decimals: 0,
-        },
-      ],
-      memo,
-      signer,
-    };
-    const msgWriter = MsgDeposit.encode(body);
-
-    const msgBytes = new cosmosclient.proto.google.protobuf.Any({
-      type_url: '/types.MsgDeposit',
-      value: msgWriter.finish(),
-    });
-    return new cosmosclient.proto.cosmos.tx.v1beta1.TxBody({
-      messages: [msgBytes],
-      memo,
     });
   }
 
