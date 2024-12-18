@@ -19,6 +19,7 @@ import {
   NATIVE_MAYA_FEE,
   NATIVE_TRON_FEE,
 } from './constants';
+import { THORCHAIN_MANIFESTS, ThorChains } from './manifests';
 
 const MsgSend = types.MsgSend;
 const MsgDeposit = types.MsgDeposit;
@@ -80,6 +81,12 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   public buildDepositBody():
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
+    if (
+      this.provider.manifest.chain ===
+      THORCHAIN_MANIFESTS[ThorChains.mayachain].chain
+    ) {
+      return this.buildMayaDepositBody();
+    }
     return this.buildMsgBody(DEPOSIT_MSG_ADDRESS);
   }
 
@@ -112,6 +119,44 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     return new cosmosclient.proto.cosmos.tx.v1beta1.TxBody({
       messages: [msgBytes],
       memo: messageData.memo,
+    });
+  }
+
+  public buildMayaDepositBody():
+    | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
+    | undefined {
+    const messageData = this.toData();
+    const denom =
+      messageData.denom ||
+      `${this.provider.manifest.chain.toUpperCase()}.${this.provider.manifest.denom.toUpperCase()}`; // THOR.RUNE OR MAYA.CACAO
+    const decimals = messageData.decimals || this.provider.manifest.decimals;
+    const signer = bech32Buffer.decode(messageData.from).data;
+    const memo = messageData.memo || '';
+    const amount = new BigNumber(messageData.amount)
+      .multipliedBy(10 ** decimals)
+      .integerValue()
+      .toString();
+    const asset = assetFromString(denom);
+    const body: types.IMsgDeposit = {
+      coins: [
+        {
+          asset,
+          amount,
+          decimals: 0,
+        },
+      ],
+      memo,
+      signer,
+    };
+    const msgWriter = MsgDeposit.encode(body);
+
+    const msgBytes = new cosmosclient.proto.google.protobuf.Any({
+      type_url: '/types.MsgDeposit',
+      value: msgWriter.finish(),
+    });
+    return new cosmosclient.proto.cosmos.tx.v1beta1.TxBody({
+      messages: [msgBytes],
+      memo,
     });
   }
 
