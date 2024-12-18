@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.29
+
+### Patch Changes
+
+- 4873f9a2: migrate deposit to via send for thorchain txs
+
 ## 2.1.28
 
 ### Patch Changes
