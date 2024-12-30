@@ -105,7 +105,7 @@ export class ChainDataSource extends DataSource {
           decimals: tokenDecimals,
           native: accountInfo.isNativeOption === 1,
           icon: null,
-          id: '',
+          id: `${this.manifest.chain}+`,
           price: undefined,
         }),
         new BigNumber(tokenBalance.toString()).dividedBy(10 ** tokenDecimals)
