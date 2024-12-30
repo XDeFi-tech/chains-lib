@@ -62,7 +62,6 @@ describe('private-key.signer', () => {
       from: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       to: 'C2J2ZbD3E41B6ZwufDcsbTHFrLhAoN6bHTBZjWd5DiU5',
       amount: 0.001,
-      priorityFeeAmount: 10000,
     };
 
     message = provider.createMsg(txInput);
@@ -82,7 +81,7 @@ describe('private-key.signer', () => {
     await signer.sign(message);
 
     expect(message.signedTransaction.sig).toBe(
-      '3wnKuU3K3S25gK2Xsbb8jRxBSBSCvGLfTvwVEEpWe8Nn189bohmexhvH3hnRHC39F43iL2M2aZprFVEDu3jhLM9o'
+      '3Zj5zjNYyWKwFH1N3FxWjGixbzbm5e4jdzhmxZhX4b3jNyjuejdNUmXGYYrxkSdsfjg4VMwqweokrMmsE9RpYS6Y'
     );
     getLatestBlockhashMock.mockRestore();
   });

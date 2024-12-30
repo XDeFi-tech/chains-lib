@@ -26,3 +26,28 @@ export const getSignatureStatus = async (
 
   return undefined;
 };
+
+export const decodePriorityFeeInstruction = (data: Buffer[]) => {
+  const priorityFee: {
+    computeUnitLimit: number | null;
+    computeUnitPrice: number | null;
+  } = {
+    computeUnitLimit: null,
+    computeUnitPrice: null,
+  };
+  for (const instruction of data) {
+    const instructionType = instruction[0];
+    switch (instructionType) {
+      case 2:
+        // ComputeBudgetProgram.setComputeUnitLimit
+        priorityFee.computeUnitLimit = instruction.readUInt32LE(1);
+        break;
+      case 3:
+        // ComputeBudgetProgram.setComputeUnitPrice
+        priorityFee.computeUnitPrice = instruction.readUInt32LE(1);
+        break;
+    }
+  }
+
+  return priorityFee;
+};
