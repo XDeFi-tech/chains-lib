@@ -9,7 +9,7 @@ import {
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
-import { stringToHex, UTXO } from '@xdefi-tech/chains-utxo';
+import { checkFeeBounds, stringToHex, UTXO } from '@xdefi-tech/chains-utxo';
 import * as utils from 'coinselect/utils';
 import { hexToBytes } from '@noble/hashes/utils';
 
@@ -166,6 +166,10 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
     // Convert fee rate to sat/b
     // returns the smallest integer greater than or equal to the fee rate for building the transaction and dust filtering
     const feeRate = Math.ceil(Number(fee) * 1e5);
+
+    // check fee rate is within the bounds of the manifest
+    checkFeeBounds(this.provider.manifest.feeBounds, feeRate);
+
     // Remove utxts that value is less than their fee
     const utxosCanSpend = utxos.filter(
       (utxo) =>

@@ -4,4 +4,8 @@ export interface UTXOManifest extends Chain.Manifest {
   dataProviderType?: 'haskoin' | 'blockchair' | 'custom';
   dataProviderURL?: string;
   maxGapAmount: 0;
+  feeBounds: {
+    lower: number;
+    upper: number;
+  };
 }
