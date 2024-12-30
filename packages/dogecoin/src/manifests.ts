@@ -14,5 +14,9 @@ export const DOGECOIN_MANIFEST: UTXOManifest = {
     medium: 1,
     low: 1,
   },
+  feeBounds: {
+    lower: 100,
+    upper: 20_000_000,
+  },
   maxGapAmount: 0,
 };

@@ -5,7 +5,7 @@ import {
   MsgEncoding,
   NumberIsh,
 } from '@xdefi-tech/chains-core';
-import { UTXO, stringToHex } from '@xdefi-tech/chains-utxo';
+import { UTXO, stringToHex, checkFeeBounds } from '@xdefi-tech/chains-utxo';
 import BigNumber from 'bignumber.js';
 import accumulative from 'coinselect/accumulative';
 import * as UTXOLib from 'bitcoinjs-lib';
@@ -62,6 +62,8 @@ export class ChainMsg extends BaseMsg<MsgBody, TxBody> {
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
     const feeRate = await this.getFeeRate();
+    // check fee rate is within the bounds of the manifest
+    checkFeeBounds(this.provider.manifest.feeBounds, feeRate);
     if (!feeRate)
       throw new Error('Fee estimation is required for building transaction');
 

@@ -86,6 +86,10 @@ describe('msg', () => {
           medium: 1,
           low: 1,
         },
+        feeBounds: {
+          lower: 1,
+          upper: 500,
+        },
         maxGapAmount: 0.0001,
       },
     };

@@ -14,5 +14,9 @@ export const BITCOIN_MANIFEST: UTXOManifest = {
     medium: 1,
     low: 1,
   },
+  feeBounds: {
+    lower: 1,
+    upper: 1000,
+  },
   maxGapAmount: 0,
 };
