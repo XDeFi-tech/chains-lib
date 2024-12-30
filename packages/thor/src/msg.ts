@@ -4,7 +4,6 @@ import {
   Msg as BasMsg,
   MsgEncoding,
   NumberIsh,
-  Coin,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
 import cosmosclient from '@cosmos-client/core';
@@ -14,12 +13,7 @@ import { types } from './proto';
 import type { ThorProvider } from './chain.provider';
 import { AccountInfo } from './types';
 import { assetFromString } from './utils';
-import {
-  DEPOSIT_MSG_ADDRESS,
-  NATIVE_MAYA_FEE,
-  NATIVE_TRON_FEE,
-} from './constants';
-import { THORCHAIN_MANIFESTS, ThorChains } from './manifests';
+import { NATIVE_MAYA_FEE, NATIVE_TRON_FEE } from './constants';
 
 const MsgSend = types.MsgSend;
 const MsgDeposit = types.MsgDeposit;
@@ -75,25 +69,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
     const messageData = this.toData();
-    return this.buildMsgBody(messageData.to);
-  }
-
-  public buildDepositBody():
-    | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
-    | undefined {
-    if (
-      this.provider.manifest.chain ===
-      THORCHAIN_MANIFESTS[ThorChains.mayachain].chain
-    ) {
-      return this.buildMayaDepositBody();
-    }
-    return this.buildMsgBody(DEPOSIT_MSG_ADDRESS);
-  }
-
-  public buildMsgBody(
-    toAddress: string
-  ): cosmosclient.proto.cosmos.tx.v1beta1.TxBody | undefined {
-    const messageData = this.toData();
     const denom = messageData.denom || this.provider.manifest.denom;
     const decimals = messageData.decimals || this.provider.manifest.decimals;
     const amount = new BigNumber(messageData.amount)
@@ -102,7 +77,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       .toString();
     const transferMsg: types.IMsgSend = {
       fromAddress: bech32Buffer.decode(messageData.from).data,
-      toAddress: bech32Buffer.decode(toAddress).data,
+      toAddress: bech32Buffer.decode(messageData.to).data,
       amount: [
         {
           denom: denom.toLowerCase(),
@@ -122,7 +97,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     });
   }
 
-  public buildMayaDepositBody():
+  public buildDepositBody():
     | cosmosclient.proto.cosmos.tx.v1beta1.TxBody
     | undefined {
     const messageData = this.toData();
