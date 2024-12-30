@@ -32,10 +32,6 @@
   },
   "size-limit": [
     {
-      "path": "packages/binance/dist",
-      "webpack": false
-    },
-    {
       "path": "packages/bitcoin/dist",
       "webpack": false
     },

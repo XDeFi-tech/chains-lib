@@ -14,7 +14,6 @@
     "@mui/icons-material": "^5.16.0",
     "@mui/material": "5.16.0",
     "@trezor/connect-web": "9.4.1",
-    "@xdefi-tech/chains-binance": "*",
     "@xdefi-tech/chains-bitcoin": "*",
     "@xdefi-tech/chains-bitcoincash": "*",
     "@xdefi-tech/chains-controller": "*",

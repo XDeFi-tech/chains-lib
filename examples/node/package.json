@@ -10,7 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@xdefi-tech/chains-binance": "*",
     "@xdefi-tech/chains-bitcoin": "*",
     "@xdefi-tech/chains-bitcoincash": "*",
     "@xdefi-tech/chains-controller": "*",
