@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.34
+
+### Patch Changes
+
+- e9468834: Feat: add id: manifest.chain+address for chain datasource
+
 ## 2.1.33
 
 ### Patch Changes

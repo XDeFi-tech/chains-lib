@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.95
+
+### Patch Changes
+
+- e9468834: Feat: add id: manifest.chain+address for chain datasource
+
 ## 2.0.94
 
 ### Patch Changes

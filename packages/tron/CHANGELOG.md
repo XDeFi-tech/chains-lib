@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-tron
 
+## 2.0.60
+
+### Patch Changes
+
+- e9468834: Feat: add id: manifest.chain+address for chain datasource
+
 ## 2.0.59
 
 ### Patch Changes
