@@ -16,7 +16,6 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { ChainsContext, initDefaultProviders } from '../context/chains.context';
 import EvmProviderContainer from '../components/chains/evm/provider.container';
 import SolanaProviderContainer from '../components/chains/solana/provider.container';
-import BinanceProviderContainer from '../components/chains/binance/provider.container';
 import BitcoinProviderContainer from '../components/chains/bitcoin/provider.container';
 import LitecoinProviderContainer from '../components/chains/litecoin/provider.container';
 import DogecoinProviderContainer from '../components/chains/dogecoin/provider.container';
@@ -140,13 +139,6 @@ const Home: NextPage = () => {
       case 'Solana':
         return (
           <SolanaProviderContainer
-            seedPhrase={seedPhrase}
-            providerId={selectedProvider.id}
-          />
-        );
-      case 'Binance':
-        return (
-          <BinanceProviderContainer
             seedPhrase={seedPhrase}
             providerId={selectedProvider.id}
           />

@@ -32,7 +32,6 @@ This library currently supports the following blockchain networks:
 | Optimism        | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Klaytn          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Cronos          | [EVM](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-evm)                 | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
-| Binance         | [Binance](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-binance)         | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
 | BitcoinCash     | [BitcoinCash](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-bitcoincash) | Indexer        | SeedPhrase, PrivateKey, Ledger, Trezor | No           |
 | Cosmos Hub      | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |
 | Osmosis         | [Cosmos](https://github.com/XDeFi-tech/chains/pkgs/npm/chains-cosmos)           | Indexer, Chain | SeedPhrase, PrivateKey, Ledger, Trezor | Yes          |

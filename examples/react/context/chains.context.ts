@@ -10,11 +10,6 @@ import {
   SeedPhraseSigner as CosmosSeedPhraseSigner,
   PrivateKeySigner as CosmosPrivateKeySigner,
 } from '@xdefi-tech/chains-cosmos/dist/signers/web';
-import { BINANCE_MANIFEST, BinanceProvider } from '@xdefi-tech/chains-binance';
-import {
-  SeedPhraseSigner as BinanceSeedPhraseSigner,
-  PrivateKeySigner as BinancePrivateKeySigner,
-} from '@xdefi-tech/chains-binance/dist/signers/web';
 import { SOLANA_MANIFEST, SolanaProvider } from '@xdefi-tech/chains-solana';
 import {
   SeedPhraseSigner as SolanaSeedPhraseSigner,
@@ -79,15 +74,6 @@ export const initDefaultProviders = () => {
       {
         providerId: 'solana',
         signers: [SolanaSeedPhraseSigner, SolanaPrivateKeySigner],
-      }
-    )
-  );
-  ChainsContextDefaultValue.addProvider(
-    new BinanceProvider(
-      new BinanceProvider.dataSourceList.IndexerDataSource(BINANCE_MANIFEST),
-      {
-        providerId: 'binance',
-        signers: [BinanceSeedPhraseSigner, BinancePrivateKeySigner],
       }
     )
   );
