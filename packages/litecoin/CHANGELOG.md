@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.25
+
+### Patch Changes
+
+- 02cfa870: feat: add feebounds check for utxo chains
+- Updated dependencies [02cfa870]
+  - @xdefi-tech/chains-utxo@2.0.26
+
 ## 2.1.24
 
 ### Patch Changes

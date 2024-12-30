@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-utxo
 
+## 2.0.26
+
+### Patch Changes
+
+- 02cfa870: feat: add feebounds check for utxo chains
+
 ## 2.0.25
 
 ### Patch Changes
