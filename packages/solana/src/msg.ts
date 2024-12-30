@@ -6,7 +6,6 @@ import {
   NumberIsh,
 } from '@xdefi-tech/chains-core';
 import BigNumber from 'bignumber.js';
-import axios from 'axios';
 import {
   ComputeBudgetProgram,
   LAMPORTS_PER_SOL,
@@ -16,6 +15,8 @@ import {
   TransactionInstruction,
   VersionedTransaction,
   Commitment,
+  AddressLookupTableAccount,
+  TransactionMessage,
 } from '@solana/web3.js';
 import {
   createAssociatedTokenAccountInstruction,
@@ -38,12 +39,12 @@ export interface MsgBody {
   amount: NumberIsh;
   to: string;
   from: string;
-  gasPrice?: NumberIsh;
+  gasLimit?: NumberIsh; // Compute Unit Budget
+  gasPrice?: NumberIsh; // Compute Unit Price (micro lamport)
   decimals?: number;
   contractAddress?: string;
   memo?: string;
   data?: string; // for swaps when encoded is base64a
-  priorityFeeAmount?: number;
   skipPreflight?: boolean;
   preflightCommitment?: Commitment;
 }
@@ -90,58 +91,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     return blockhash;
   }
 
-  async getPriorityFeeEstimate(isToken: boolean): Promise<number> {
-    // Use Promise.allSettled for parallel requests and handling potential fetch failure
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const [solConstantsResult, prioritizationFeesResult] =
-      await Promise.allSettled([
-        axios
-          .get(
-            `https://raw.githubusercontent.com/XDeFi-tech/utils/main/solana_constants.json`,
-            { signal: controller.signal }
-          )
-          .then((res) => res.data),
-        this.provider.rpcProvider.getRecentPrioritizationFees(),
-      ]);
-    clearTimeout(timeoutId);
-
-    let json;
-    // Handle the solConstantsResult
-    if (solConstantsResult.status === 'fulfilled') {
-      json = solConstantsResult.value;
-    } else {
-      console.error(
-        `Failed to fetch solana_constants.json ${solConstantsResult.reason}`
-      );
-      // Fallback values if the fetch fails
-      json = {
-        sendSplPrioritizationMultiplier: 5,
-        sendSolPrioritizationMultiplier: 5,
-        defaultPrioritizationFee: 5000,
-      };
-    }
-
-    const multiplier = isToken
-      ? json.sendSplPrioritizationMultiplier
-      : json.sendSolPrioritizationMultiplier;
-    const defaultFeeRate = json.defaultPrioritizationFee;
-
-    let feeRate = defaultFeeRate;
-    // Handle the prioritizationFeesResult
-    if (prioritizationFeesResult.status === 'fulfilled') {
-      const data = prioritizationFeesResult.value;
-      const maxFeeRate = Math.max(...data.map((d) => d.prioritizationFee));
-      // Use maxFeeRate if it's greater than 0, else stick with defaultFeeRate
-      feeRate =
-        maxFeeRate > 0 && maxFeeRate > json.defaultFeeRate
-          ? maxFeeRate
-          : defaultFeeRate;
-    }
-
-    return feeRate * multiplier;
-  }
-
   async buildTx(): Promise<TxBody> {
     const msgData = this.toData();
     let decimals = msgData.decimals || 9; // 9 - lamports in SOL
@@ -163,7 +112,49 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         buffer = bs58.decode(msgData.data);
       }
 
-      const versionedTransaction = VersionedTransaction.deserialize(buffer);
+      let versionedTransaction = VersionedTransaction.deserialize(buffer);
+      const luts = await Promise.all(
+        versionedTransaction.message.addressTableLookups.map((acc) =>
+          this.provider.rpcProvider.getAddressLookupTable(acc.accountKey)
+        )
+      );
+      const addressLookupTableAccounts = luts
+        .map((lut) => lut.value)
+        .filter((val) => val !== null) as AddressLookupTableAccount[];
+      const messageV0 = TransactionMessage.decompile(
+        versionedTransaction.message,
+        {
+          addressLookupTableAccounts,
+        }
+      );
+      const alreadyAddPriorityFee = messageV0.instructions.some(
+        (instruction) =>
+          instruction.programId.toBase58() ===
+          ComputeBudgetProgram.programId.toBase58()
+      );
+      // if not already add priority fee for dapp tx, add it
+      if (
+        !alreadyAddPriorityFee &&
+        msgData.gasPrice &&
+        msgData.gasLimit &&
+        Number(msgData.gasPrice) > 0
+      ) {
+        versionedTransaction = new VersionedTransaction(
+          new TransactionMessage({
+            payerKey: messageV0.payerKey,
+            recentBlockhash: messageV0.recentBlockhash,
+            instructions: [
+              ...messageV0.instructions,
+              ComputeBudgetProgram.setComputeUnitPrice({
+                microLamports: msgData.gasPrice,
+              }),
+              ComputeBudgetProgram.setComputeUnitLimit({
+                units: msgData.gasLimit,
+              }),
+            ],
+          }).compileToV0Message()
+        );
+      }
 
       return {
         tx: versionedTransaction,
@@ -197,6 +188,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       blockhash,
       lastValidBlockHeight,
     });
+    // Set priority fee and gas limit if provided and gasPrice is greater than 0
+    // If have AdvanceNonce instruction, it should be added before this
+    if (msgData.gasPrice && msgData.gasLimit && Number(msgData.gasPrice) > 0) {
+      const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: msgData.gasPrice,
+      });
+      transaction.add(addPriorityFee);
+      const addComputeUnitLimit = ComputeBudgetProgram.setComputeUnitLimit({
+        units: msgData.gasLimit,
+      });
+      transaction.add(addComputeUnitLimit);
+    }
 
     let instruction;
     if (msgData.contractAddress) {
@@ -263,30 +266,6 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       programId = SystemProgram.programId;
     }
 
-    const PRIORITY_RATE = await this.getPriorityFeeEstimate(
-      !!msgData.contractAddress
-    );
-
-    // Add Priority Fee for Secondary Tokens as it is congested
-    // as suggested by Solana Foundation
-    if (PRIORITY_RATE > 0) {
-      const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: PRIORITY_RATE,
-      });
-      transaction.add(PRIORITY_FEE_IX);
-      transaction.add(
-        ComputeBudgetProgram.setComputeUnitLimit({
-          units: 200000,
-        })
-      );
-    }
-
-    if (msgData.priorityFeeAmount) {
-      const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: msgData.priorityFeeAmount,
-      });
-      transaction.add(addPriorityFee);
-    }
     transaction.add(instruction);
 
     if (msgData.memo) {
@@ -335,26 +314,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
   }
 
   async getFee(_speed?: GasFeeSpeed): Promise<FeeEstimation> {
-    const result: FeeEstimation = {
-      fee: null,
-      maxFee: null,
-    };
-    const msgData = this.toData();
-
-    if (msgData.gasPrice) {
-      result.fee = new BigNumber(msgData.gasPrice)
-        .dividedBy(LAMPORTS_PER_SOL)
-        .toString();
-    } else {
-      const [estimatedFee] = await this.provider.estimateFee([this]);
-      result.fee = new BigNumber(
-        estimatedFee ? (estimatedFee.gasLimit as number) : DEFAULT_FEE
-      )
-        .dividedBy(LAMPORTS_PER_SOL)
-        .toString();
-    }
-
-    return result;
+    return this.provider.getFeeForMsg(this);
   }
 
   async getMaxAmountToSend() {
@@ -374,8 +334,15 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
     let maxAmount: BigNumber = new BigNumber(balance.amount).minus(gap);
 
-    const feeEstimation = await this.getFee();
-    maxAmount = maxAmount.minus(feeEstimation.fee || 0);
+    let fee = 5000; // lamports per signature
+    // add priority fee
+    if (msgData.gasPrice && msgData.gasLimit) {
+      fee += new BigNumber(msgData.gasPrice)
+        .multipliedBy(msgData.gasLimit / 1_000_000)
+        .integerValue(BigNumber.ROUND_CEIL)
+        .toNumber();
+    }
+    maxAmount = maxAmount.minus(new BigNumber(fee).dividedBy(LAMPORTS_PER_SOL));
     maxAmount = maxAmount.minus(
       new BigNumber(rentBalance).dividedBy(LAMPORTS_PER_SOL)
     );

@@ -19,15 +19,26 @@ import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import axios, { Axios } from 'axios';
 import {
+  AddressLookupTableAccount,
+  ComputeBudgetProgram,
   Connection,
   PublicKey,
   Transaction as SolanaTransaction,
+  TransactionInstruction,
+  TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout, getMint } from '@solana/spl-token';
 import { Metadata, PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+import { getSimulationComputeUnits } from '@solana-developers/helpers';
 
+import { decodePriorityFeeInstruction } from '../../utils';
 import { ChainMsg } from '../../msg';
+import {
+  PriorityFeeEstimateParams,
+  PriorityFeeEstimateResponse,
+  PriorityFeeLevelParamsMapping,
+} from '../../types';
 
 @Injectable()
 export class ChainDataSource extends DataSource {
@@ -164,48 +175,104 @@ export class ChainDataSource extends DataSource {
     throw new Error('Method not implemented.');
   }
 
-  async estimateFee(
-    msgs: ChainMsg[],
-    _speed: GasFeeSpeed = GasFeeSpeed.medium
-  ): Promise<FeeData[]> {
-    const feeData: FeeData[] = [];
-
+  /**
+   * Estimate the priority fee for a transaction
+   * @param transactions - The transactions to estimate the priority fee in base64
+   * @param priorityLevel - (optional) The priority level to estimate the fee for
+   */
+  async estimateFee(msgs: ChainMsg[], speed: GasFeeSpeed = GasFeeSpeed.medium) {
+    const results: FeeData[] = [];
     for (const msg of msgs) {
-      let dataForEstimate = null;
-      const txData = await msg.buildTx();
-      switch (txData.encoding) {
-        case MsgEncoding.object:
-          const transaction = txData.tx as SolanaTransaction;
-          dataForEstimate = transaction.compileMessage();
-          break;
+      const result: FeeData = {
+        gasLimit: 200_000,
+      };
+      const { tx, encoding } = await msg.buildTx();
+      let transaction: VersionedTransaction | SolanaTransaction;
+
+      const processTransaction = async (
+        transaction: VersionedTransaction | SolanaTransaction,
+        instructions: TransactionInstruction[],
+        payerKey: PublicKey
+      ) => {
+        const [units, priorityFee] = await Promise.allSettled([
+          this.estimateComputeUnits(instructions, payerKey),
+          this.getPriorityFeeEstimate({
+            transaction: Buffer.from(
+              transaction.serialize({ requireAllSignatures: false })
+            ).toString('base64'),
+            options: {
+              transactionEncoding: 'base64',
+              priorityLevel: PriorityFeeLevelParamsMapping[speed],
+            },
+          }),
+        ]);
+        if (units.status === 'fulfilled') {
+          // add 300 units for priority fee instructions
+          result.gasLimit = units.value ? units.value + 300 : 200_000; // default to 200_000 units
+        }
+        if (priorityFee.status === 'fulfilled' && priorityFee.value.result) {
+          if (
+            typeof priorityFee.value.result.priorityFeeEstimate === 'number'
+          ) {
+            result.gasPrice = priorityFee.value.result.priorityFeeEstimate;
+          } else {
+            result.gasPrice =
+              priorityFee.value.result.priorityFeeEstimate[speed];
+          }
+        }
+      };
+
+      switch (encoding) {
         case MsgEncoding.base64:
         case MsgEncoding.base58:
-          const versionedTransaction = txData.tx as VersionedTransaction;
-          dataForEstimate = versionedTransaction.message;
-          const slot = await this.rpcProvider.getSlot('finalized');
-          // get the latest block (allowing for v0 transactions)
-          const block = await this.rpcProvider.getBlock(slot, {
-            maxSupportedTransactionVersion: 0,
+          transaction = tx as VersionedTransaction;
+          const luts = await Promise.all(
+            transaction.message.addressTableLookups.map((acc) =>
+              this.rpcProvider.getAddressLookupTable(acc.accountKey)
+            )
+          );
+          const addressLookupTableAccounts = luts
+            .map((lut) => lut.value)
+            .filter((val) => val !== null) as AddressLookupTableAccount[];
+          const messageV0 = TransactionMessage.decompile(transaction.message, {
+            addressLookupTableAccounts,
           });
-          if (block) {
-            dataForEstimate.recentBlockhash = block.blockhash;
+          const computeBudgetInstructions = [];
+          for (const instruction of messageV0.instructions) {
+            if (
+              instruction.programId.toBase58() ===
+              ComputeBudgetProgram.programId.toBase58()
+            ) {
+              computeBudgetInstructions.push(instruction.data);
+            }
           }
+          if (computeBudgetInstructions.length > 0) {
+            const { computeUnitLimit, computeUnitPrice } =
+              decodePriorityFeeInstruction(computeBudgetInstructions);
+            result.gasLimit = computeUnitLimit ?? 200_000;
+            result.gasPrice = computeUnitPrice ?? undefined;
+          } else {
+            await processTransaction(
+              transaction,
+              messageV0.instructions,
+              new PublicKey(messageV0.payerKey)
+            );
+          }
+          break;
+        case MsgEncoding.object:
+          transaction = tx as SolanaTransaction;
+          await processTransaction(
+            transaction,
+            transaction.instructions,
+            transaction.feePayer!
+          );
           break;
         default:
           throw new Error('Invalid encoding for solana transaction');
       }
-      const fee = await this.rpcProvider.getFeeForMessage(
-        dataForEstimate,
-        'confirmed'
-      );
-      if (!fee) {
-        throw new Error(`Cannot estimate fee for chain ${this.manifest.chain}`);
-      }
-
-      feeData.push({ gasLimit: fee.value ?? 0 });
+      results.push(result);
     }
-
-    return feeData;
+    return results;
   }
 
   async gasFeeOptions(): Promise<FeeOptions | null> {
@@ -216,5 +283,48 @@ export class ChainDataSource extends DataSource {
     return (
       await this.rpcProvider.getSignaturesForAddress(new PublicKey(address))
     ).length;
+  }
+
+  async getPriorityFeeEstimate(
+    params: PriorityFeeEstimateParams
+  ): Promise<PriorityFeeEstimateResponse> {
+    if (!params.transaction && !params.accountKeys) {
+      throw new Error('One of transaction or accountKeys must be provided');
+    }
+
+    if (params.transaction && params.accountKeys) {
+      throw new Error('Transaction and accountKeys cannot both be provided');
+    }
+
+    const { data } = await axios.post(this.rpcProvider.rpcEndpoint, {
+      jsonrpc: '2.0',
+      id: 'dontcare',
+      method: 'getPriorityFeeEstimate',
+      params: [params],
+    });
+    return data;
+  }
+
+  /**
+   * Estimate the compute units for a transaction
+   * @param transactions - The transactions to estimate the compute units in base64
+   */
+  async estimateComputeUnits(
+    instructions: TransactionInstruction[],
+    payerPublickey: PublicKey,
+    lookupTable: AddressLookupTableAccount[] = []
+  ): Promise<number | null> {
+    // Remove ComputeBudgetProgram instructions
+    const filteredInstructions = instructions.filter(
+      (instruction) =>
+        instruction.programId.toBase58() !==
+        ComputeBudgetProgram.programId.toBase58()
+    );
+    return getSimulationComputeUnits(
+      this.rpcProvider,
+      filteredInstructions,
+      payerPublickey,
+      lookupTable
+    );
   }
 }

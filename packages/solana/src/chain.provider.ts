@@ -5,6 +5,7 @@ import {
   Coin,
   DataSource,
   FeeData,
+  FeeEstimation,
   FeeOptions,
   GasFeeSpeed,
   Msg,
@@ -18,9 +19,11 @@ import {
 } from '@xdefi-tech/chains-core';
 import {
   Connection,
+  LAMPORTS_PER_SOL,
   PublicKey,
   Transaction as SolanaTransaction,
   SystemProgram,
+  VersionedTransaction,
 } from '@solana/web3.js';
 import { some } from 'lodash';
 import {
@@ -31,10 +34,7 @@ import BigNumber from 'bignumber.js';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
-import {
-  checkMinimumBalanceForRentExemption,
-  getSignatureStatus,
-} from './utils';
+import { checkMinimumBalanceForRentExemption } from './utils';
 import { BroadcastOptions, DEFAULT_BROADCAST_OPTIONS } from './constants';
 
 export interface MultisigMsgData {
@@ -249,6 +249,44 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     }
 
     return result;
+  }
+
+  async getFeeForMsg(msg: ChainMsg): Promise<FeeEstimation> {
+    const txData = await msg.buildTx();
+    let dataForEstimate = null;
+    switch (txData.encoding) {
+      case MsgEncoding.object:
+        const transaction = txData.tx as SolanaTransaction;
+        dataForEstimate = transaction.compileMessage();
+        break;
+      case MsgEncoding.base64:
+      case MsgEncoding.base58:
+        const versionedTransaction = txData.tx as VersionedTransaction;
+        dataForEstimate = versionedTransaction.message;
+        const slot = await this.rpcProvider.getSlot('finalized');
+        // get the latest block (allowing for v0 transactions)
+        const block = await this.rpcProvider.getBlock(slot, {
+          maxSupportedTransactionVersion: 0,
+        });
+        if (block) {
+          dataForEstimate.recentBlockhash = block.blockhash;
+        }
+        break;
+      default:
+        throw new Error('Invalid encoding for solana transaction');
+    }
+    const fee = await this.rpcProvider.getFeeForMessage(
+      dataForEstimate,
+      'confirmed'
+    );
+    return {
+      fee: fee.value
+        ? new BigNumber(fee.value.toString())
+            .dividedBy(LAMPORTS_PER_SOL)
+            .toString()
+        : null,
+      maxFee: null,
+    };
   }
 
   static get dataSourceList() {
