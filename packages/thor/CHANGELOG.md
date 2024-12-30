@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.30
+
+### Patch Changes
+
+- 21f20252: Feat: revert previos version
+
 ## 2.1.29
 
 ### Patch Changes
