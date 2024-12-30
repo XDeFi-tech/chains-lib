@@ -116,7 +116,7 @@ export class ChainDataSource extends DataSource {
 
     const nativeToken = new Coin(
       new Asset({
-        id: nativeAsset ? (nativeAsset.id as string) : this.manifest.name,
+        id: nativeAsset ? (nativeAsset.id as string) : this.manifest.chain,
         chainId: this.manifest.chainId,
         name: nativeAsset ? (nativeAsset.name as string) : this.manifest.name,
         symbol: nativeAsset
@@ -168,7 +168,9 @@ export class ChainDataSource extends DataSource {
           decimals: tokenDecimals,
           native: false,
           icon: (asset && asset.image) || null,
-          id: asset ? (asset?.id as string) : '',
+          id: asset
+            ? (asset.id as string)
+            : `${this.manifest.chain}+${tokenAddress}`,
           price:
             asset && asset.price ? (asset.price.amount as string) : undefined,
         }),

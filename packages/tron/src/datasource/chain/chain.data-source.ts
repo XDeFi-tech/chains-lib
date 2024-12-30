@@ -47,7 +47,7 @@ export class ChainDataSource extends DataSource {
     coins.push(
       new Coin(
         new Asset({
-          id: this.manifest.name,
+          id: this.manifest.chain,
           name: this.manifest.name,
           chainId: this.manifest.chainId,
           symbol: this.manifest.chainSymbol,
@@ -116,7 +116,7 @@ export class ChainDataSource extends DataSource {
       coins.push(
         new Coin(
           new Asset({
-            id: contractAddress,
+            id: `${this.manifest.chain}+${contractAddress}`,
             name: contractAddress,
             chainId: this.manifest.chainId,
             symbol: symbol,
