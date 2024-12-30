@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.35
+
+### Patch Changes
+
+- 6add074c: feat: add priority fees by default to dapps and common send
+
 ## 2.1.34
 
 ### Patch Changes
