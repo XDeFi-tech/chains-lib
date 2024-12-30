@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.35
+
+### Patch Changes
+
+- 02cfa870: feat: add feebounds check for utxo chains
+- Updated dependencies [02cfa870]
+  - @xdefi-tech/chains-utxo@2.0.26
+
 ## 2.1.34
 
 ### Patch Changes
