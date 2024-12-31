@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.44
+
+### Patch Changes
+
+- 7c930938: Feat: separate getBalance method from chain provider
+
 ## 2.0.43
 
 ### Patch Changes
