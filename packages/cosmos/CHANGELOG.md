@@ -1,5 +1,13 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.80
+
+### Patch Changes
+
+- 7c930938: Feat: separate getBalance method from chain provider
+- Updated dependencies [7c930938]
+  - @xdefi-tech/chains-core@2.0.44
+
 ## 2.0.79
 
 ### Patch Changes
