@@ -162,7 +162,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
 
   async broadcast(
     msgs: ChainMsg[],
-    options: BroadcastOptions = {}
+    options?: Chain.BroadcastOptions
   ): Promise<Transaction[]> {
     if (some(msgs, (msg) => !msg.hasSignature)) {
       throw new Error('Some message do not have signature, sign it first');
