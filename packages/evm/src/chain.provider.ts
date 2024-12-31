@@ -57,7 +57,10 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
     return new ChainMsg(data, this, encoding);
   }
 
-  async broadcast(msgs: Msg[]): Promise<Transaction[]> {
+  async broadcast(
+    msgs: Msg[],
+    options?: Chain.BroadcastOptions
+  ): Promise<Transaction[]> {
     if (some(msgs, (msg) => !msg.hasSignature)) {
       throw new Error('Some message do not have signature, sign it first');
     }
@@ -68,7 +71,9 @@ export class EvmProvider extends Chain.Provider<ChainMsg> {
       const tx = await this.rpcProvider.sendTransaction(
         msg.signedTransaction as string
       );
-      // await utils.waitFor(() => this.rpcProvider.getTransaction(tx.hash));
+      if (options?.enableWaitForBroadcast) {
+        await utils.waitFor(() => this.rpcProvider.getTransaction(tx.hash));
+      }
       transactions.push(Transaction.fromData(tx));
     }
 

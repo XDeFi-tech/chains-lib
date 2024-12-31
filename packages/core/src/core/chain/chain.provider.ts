@@ -23,6 +23,10 @@ export interface DataSourceList<T extends DataSource> {
   [key: string]: T;
 }
 
+export interface BroadcastOptions {
+  enableWaitForBroadcast: boolean;
+}
+
 /**
  * Represents abstract class for chain Provider, which provides
  * primitives for interacting with particular chain.
@@ -116,10 +120,11 @@ export abstract class Provider<ChainMsg extends Msg = Msg> {
    *
    * @async
    * @param {Msg[]} msgs - An array of signed messages to broadcast.
+   * @param {BroadcastOptions} options - An object containing options for the broadcast operation.
    * @returns {Promise<Transaction[]>} - A promise that resolves with an array of Transaction objects that correspond to the broadcasted messages.
    * @throws {Error} - Throws an error if any of the messages in the input array do not have a signature.
    */
-  abstract broadcast(msgs: ChainMsg[]): Promise<Transaction[]>;
+  abstract broadcast(msgs: ChainMsg[], options?: BroadcastOptions): Promise<Transaction[]>;
 
   /**
    * Creates a new instance of a message.
