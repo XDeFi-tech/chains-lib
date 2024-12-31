@@ -8,6 +8,7 @@ export const getBalance = async (address: string): Promise<Array<Balance>> => {
     variables: {
       address,
     },
+    fetchPolicy: 'no-cache',
   });
 
   return response.data.litecoin.balances as Array<Balance>;

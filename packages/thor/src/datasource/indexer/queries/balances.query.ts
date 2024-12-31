@@ -44,6 +44,7 @@ export const getBalance = async (chain: string, address: string) => {
     variables: {
       address,
     },
+    fetchPolicy: 'no-cache',
   });
 
   return response.data[params.queryName].balances;

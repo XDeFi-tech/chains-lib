@@ -63,7 +63,8 @@
     "entry": [
       "src/signers/web.ts",
       "src/signers/react-native.ts",
-      "src/index.ts"
+      "src/index.ts",
+      "src/getBalance.ts"
     ],
     "format": "cjs",
     "splitting": false,
@@ -72,7 +73,8 @@
     "types": [
       "./dist/signers/web.d.ts",
       "./dist/signers/react-native.d.ts",
-      "./dist/index.d.ts"
+      "./dist/index.d.ts",
+      "./dist/getBalance.d.ts"
     ],
     "clean": true,
     "treeshake": true,

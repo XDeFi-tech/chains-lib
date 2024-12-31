@@ -9,5 +9,6 @@ export const getCryptoAssets = (
     variables: {
       input: input,
     },
+    fetchPolicy: 'no-cache',
   });
 };

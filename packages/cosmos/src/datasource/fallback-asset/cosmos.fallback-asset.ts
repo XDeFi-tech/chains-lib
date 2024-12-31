@@ -1,5 +1,10 @@
+import axios from 'axios';
+
 import { CryptoAssetArgs } from '../../gql/graphql';
-import { skipAxiosClient } from '../../utils';
+
+export const skipAxiosClient = axios.create({
+  baseURL: 'https://api.skip.money',
+});
 
 export const getFallbackAsset = async (
   chainId: string,

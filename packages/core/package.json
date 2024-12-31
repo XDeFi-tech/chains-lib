@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
+    "@ethersproject/units": "5.7.0",
     "@next/bundle-analyzer": "12.3.0",
     "@trezor/connect-web": "9.4.1",
     "bignumber.js": "9.1.2",

@@ -1,9 +1,22 @@
-import { Contract, ethers } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Interface } from '@ethersproject/abi';
+import { BigNumber } from '@ethersproject/bignumber';
 
-import { decodeHexString } from '../../utils';
+if (
+  Contract == null ||
+  JsonRpcProvider == null ||
+  Interface == null ||
+  BigNumber == null
+) {
+  throw new Error('Error loading ethers dependencies');
+}
+
+import { decodeHexString } from '../../utils/parser';
 import multicallAbi from '../../consts/multicall.json';
 import erc20Abi from '../../consts/erc20.json';
 import { MULTICALL3_CONTRACT_ADDRESS } from '../../constants';
+
 export const getEvmBalance = async (
   rpc: string,
   chainSymbol: string,
@@ -11,13 +24,13 @@ export const getEvmBalance = async (
   tokenAddresses: string[]
 ) => {
   try {
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const provider = new JsonRpcProvider(rpc);
     const multicall = new Contract(
       MULTICALL3_CONTRACT_ADDRESS,
       multicallAbi,
       provider
     );
-    const interfaces = new ethers.utils.Interface(erc20Abi);
+    const interfaces = new Interface(erc20Abi);
     const balanceOfCallData = interfaces.encodeFunctionData('balanceOf', [
       walletAddress,
     ]);
@@ -58,17 +71,11 @@ export const getEvmBalance = async (
       (tokenAddress, index) => ({
         address: walletAddress,
         amount: {
-          value: ethers.BigNumber.from(
-            balanceOfResults[index].returnData
-          ).toString(),
-          scalingFactor: ethers.BigNumber.from(
-            decimals[index].returnData
-          ).toString(),
+          value: BigNumber.from(balanceOfResults[index].returnData).toString(),
+          scalingFactor: BigNumber.from(decimals[index].returnData).toString(),
         },
         asset: {
-          decimals: ethers.BigNumber.from(
-            decimals[index].returnData
-          ).toString(),
+          decimals: BigNumber.from(decimals[index].returnData).toString(),
           contract: tokenAddress,
           name: decodeHexString(names[index].returnData),
           symbol: decodeHexString(symbols[index].returnData),
