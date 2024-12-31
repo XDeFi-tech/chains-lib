@@ -1,5 +1,7 @@
 import { Chain } from '@xdefi-tech/chains-core';
 
+import { AddressChain } from './gql';
+
 export enum EVMChains {
   ethereum = 'ethereum',
   smartchain = 'smartchain',
@@ -422,6 +424,34 @@ export const EVM_MANIFESTS: {
     multicallContractAddress: '0xcA11bde05977b3631167028862bE2a173976CA11',
     maxGapAmount: 0,
   },
+};
+
+export const EVM_ADDRESS_CHAINS: {
+  [key in EVMChains]: AddressChain | undefined;
+} = {
+  [EVMChains.ethereum]: AddressChain.Ethereum,
+  [EVMChains.smartchain]: AddressChain.BinanceSmartChain,
+  [EVMChains.polygon]: AddressChain.Polygon,
+  [EVMChains.avalanche]: AddressChain.Avalanche,
+  [EVMChains.fantom]: AddressChain.Fantom,
+  [EVMChains.arbitrum]: AddressChain.Arbitrum,
+  [EVMChains.aurora]: AddressChain.Aurora,
+  [EVMChains.cantoevm]: AddressChain.CantoEVM,
+  [EVMChains.optimism]: AddressChain.Optimism,
+  [EVMChains.klaytn]: AddressChain.Klaytn,
+  [EVMChains.cronos]: AddressChain.CronosEVM,
+  [EVMChains.gnosis]: AddressChain.Gnosis,
+  [EVMChains.base]: AddressChain.Base,
+  [EVMChains.blast]: AddressChain.Blast,
+  [EVMChains.zkSync]: AddressChain.zkSync,
+  [EVMChains.zetaChain]: AddressChain.zetachain,
+  [EVMChains.mantle]: AddressChain.Mantle,
+  [EVMChains.celo]: AddressChain.Celo,
+  [EVMChains.opBNB]: AddressChain.opBNB,
+  [EVMChains.linea]: AddressChain.Linea,
+  [EVMChains.scroll]: undefined,
+  [EVMChains.manta]: undefined,
+  [EVMChains.beam]: undefined,
 };
 
 export const EVM_INDEXER_CHAIN: {

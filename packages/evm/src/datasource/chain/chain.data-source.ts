@@ -19,12 +19,17 @@ import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import * as ethers from 'ethers';
 import { providers } from 'ethers';
-import { capitalize, filter as lodashFilter, uniqBy } from 'lodash';
+import { filter as lodashFilter, uniqBy } from 'lodash';
 import { formatFixed } from '@ethersproject/bignumber';
 import axios, { Axios } from 'axios';
 
-import { AddressChain } from '../../gql/graphql';
-import { EVM_MANIFESTS, EVMChains } from '../../manifests';
+import { AddressChain, CryptoAssetArgs } from '../../gql/graphql';
+import {
+  EVM_ADDRESS_CHAINS,
+  EVM_INDEXER_CHAIN,
+  EVM_MANIFESTS,
+  EVMChains,
+} from '../../manifests';
 import { ChainMsg } from '../../msg';
 import { DEFAULT_TRANSACTION_FEE, FACTOR_ESTIMATE } from '../../constants';
 import { getGasLimitFromRPC } from '../../utils';
@@ -63,18 +68,21 @@ export class ChainDataSource extends DataSource {
         ethers.utils.hexZeroPad(address, 32),
       ],
     });
-    let chain = capitalize(this.manifest.chain) as AddressChain;
-    if (this.manifest.chain === EVMChains.cantoevm) {
-      chain = 'CantoEVM' as AddressChain;
-    }
+    const chain =
+      EVM_ADDRESS_CHAINS[
+        this.manifest.chain as keyof typeof EVM_ADDRESS_CHAINS
+      ];
     const uniqAddresses = uniqBy(
       lodashFilter(logs, (log) => log.topics.length === 3),
       'address'
     ).map((log) => log.address);
-    const cryptoAssetsInput = [null, ...uniqAddresses].map((address) => ({
-      chain: chain,
-      contract: address,
-    }));
+    let cryptoAssetsInput: CryptoAssetArgs[] = [];
+    if (chain) {
+      cryptoAssetsInput = [null, ...uniqAddresses].map((address) => ({
+        chain: chain,
+        contract: address,
+      }));
+    }
 
     let assets = null;
     if (
