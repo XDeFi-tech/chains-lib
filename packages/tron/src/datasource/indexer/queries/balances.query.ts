@@ -9,7 +9,7 @@ export const getBalance = async (address: string) => {
       address,
       first: 100,
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
   });
 
   return response.data.tron.balances;

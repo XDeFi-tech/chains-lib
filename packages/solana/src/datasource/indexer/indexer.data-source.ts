@@ -1,5 +1,4 @@
 import {
-  Asset,
   Balance,
   BalanceFilter,
   Chain,
@@ -14,7 +13,6 @@ import {
   TransactionsFilter,
 } from '@xdefi-tech/chains-core';
 import { Observable } from 'rxjs';
-import BigNumber from 'bignumber.js';
 import {
   Connection,
   PublicKey,
@@ -29,6 +27,7 @@ import axios from 'axios';
 import { getSimulationComputeUnits } from '@solana-developers/helpers';
 
 import { ChainMsg } from '../../msg';
+import { getBalance } from '../../getBalance';
 import {
   PriorityFeeEstimateResponse,
   PriorityFeeLevelParamsMapping,
@@ -36,7 +35,7 @@ import {
 } from '../../types';
 import { decodePriorityFeeInstruction } from '../../utils';
 
-import { getBalance, getNFTBalance, getTransactions } from './queries';
+import { getNFTBalance, getTransactions } from './queries';
 
 @Injectable()
 export class IndexerDataSource extends DataSource {
@@ -51,39 +50,8 @@ export class IndexerDataSource extends DataSource {
     return getNFTBalance(address);
   }
 
-  async getBalance(_filter: BalanceFilter): Promise<Coin[]> {
-    const { address } = _filter;
-    const { data } = await getBalance(address);
-    // cut off balances without asset
-    const balances = data.solana.balances.filter(
-      (b: any) => b.asset.symbol && b.asset.id
-    );
-
-    return balances.map((balance: any): Coin => {
-      const { asset, amount } = balance;
-
-      return new Coin(
-        new Asset({
-          id: asset.id,
-          chainId: this.manifest.chainId,
-          name: asset.name,
-          symbol: asset.symbol,
-          icon: asset.image,
-          native: !Boolean(asset.contract),
-          address: asset.contract,
-          price: asset.price?.amount,
-          decimals: asset.decimals,
-          priceChange: {
-            dayPriceChange: asset.price?.dayPriceChange,
-          },
-          type: asset.type,
-          categories: asset.categories,
-        }),
-        new BigNumber(amount.value)
-          .integerValue()
-          .dividedBy(Math.pow(10, asset.decimals))
-      );
-    });
+  async getBalance(filter: BalanceFilter): Promise<Coin[]> {
+    return getBalance(filter);
   }
 
   async subscribeBalance(

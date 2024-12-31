@@ -126,6 +126,7 @@ export const getBalance = async (
     variables: {
       address,
     },
+    fetchPolicy: 'no-cache',
   });
 
   return response.data[params.queryName].balances;

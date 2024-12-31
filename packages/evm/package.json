@@ -29,6 +29,11 @@
   },
   "dependencies": {
     "@ethersproject/bignumber": "5.7.0",
+    "@ethersproject/constants": "5.7.0",
+    "@ethersproject/units": "5.7.0",
+    "@ethersproject/abi": "5.7.0",
+    "@ethersproject/providers": "5.7.0",
+    "@ethersproject/contracts": "5.7.0",
     "@ledgerhq/cryptoassets": "13.0.0",
     "@ledgerhq/hw-app-eth": "6.36.1",
     "@ledgerhq/hw-transport": "6.30.6",
@@ -69,7 +74,9 @@
     "entry": [
       "src/signers/web.ts",
       "src/signers/react-native.ts",
-      "src/index.ts"
+      "src/index.ts",
+      "src/getBalance.ts",
+      "src/manifests.ts"
     ],
     "outDir": "dist",
     "format": "cjs",
@@ -79,7 +86,9 @@
     "types": [
       "./dist/signers/web.d.ts",
       "./dist/signers/react-native.d.ts",
-      "./dist/index.d.ts"
+      "./dist/index.d.ts",
+      "./dist/getBalance.d.ts",
+      "./dist/manifests.d.ts"
     ],
     "keepNames": true,
     "platform": "browser",

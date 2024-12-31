@@ -1,4 +1,16 @@
-import { ethers } from 'ethers';
+import { JsonRpcBatchProvider } from '@ethersproject/providers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
+import { Contract } from '@ethersproject/contracts';
+
+if (
+  JsonRpcBatchProvider == null ||
+  BigNumber == null ||
+  AddressZero == null ||
+  Contract == null
+) {
+  throw new Error('Error loading ethers dependencies 2');
+}
 
 import erc20Abi from '../../consts/erc20.json';
 export const getBalanceByBatch = async (
@@ -13,22 +25,20 @@ export const getBalanceByBatch = async (
   }
 ) => {
   try {
-    const provider = new ethers.providers.JsonRpcBatchProvider(rpc);
+    const provider = new JsonRpcBatchProvider(rpc);
     const callPromise = tokenAddresses.map(async (tokenAddress) => {
-      if (tokenAddress === ethers.constants.AddressZero) {
+      if (tokenAddress === AddressZero) {
         const balance = await provider.getBalance(walletAddress);
         return {
           address: walletAddress,
           amount: {
-            value: ethers.BigNumber.from(balance).toString(),
-            scalingFactor: ethers.BigNumber.from(
-              nativeTokenInfo.decimals
-            ).toString(),
+            value: BigNumber.from(balance).toString(),
+            scalingFactor: BigNumber.from(nativeTokenInfo.decimals).toString(),
           },
           asset: nativeTokenInfo,
         };
       }
-      const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
+      const contract = new Contract(tokenAddress, erc20Abi, provider);
       const [balanceOf, symbol, name, decimal] = await Promise.all([
         contract.balanceOf(walletAddress),
         contract.callStatic.symbol(),
@@ -38,11 +48,11 @@ export const getBalanceByBatch = async (
       return {
         address: walletAddress,
         amount: {
-          value: ethers.BigNumber.from(balanceOf._hex).toString(),
-          scalingFactor: ethers.BigNumber.from(decimal._hex).toString(),
+          value: BigNumber.from(balanceOf._hex).toString(),
+          scalingFactor: BigNumber.from(decimal._hex).toString(),
         },
         asset: {
-          decimals: ethers.BigNumber.from(decimal._hex).toString(),
+          decimals: BigNumber.from(decimal._hex).toString(),
           contract: tokenAddress,
           name,
           symbol,

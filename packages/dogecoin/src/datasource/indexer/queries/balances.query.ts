@@ -8,6 +8,7 @@ export const getBalance = async (address: string): Promise<Array<Balance>> => {
     variables: {
       address,
     },
+    fetchPolicy: 'no-cache',
   });
 
   return response.data.dogecoin.balances as Array<Balance>;

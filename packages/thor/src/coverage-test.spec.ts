@@ -19,10 +19,10 @@ describe('Test coverage Thor package', () => {
 
   it('should get a transaction from thorchain', async () => {
     const txData = await providers[ThorChains.thorchain].getTransaction(
-      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
+      '5EC8C9F154F4BCFBA30BB5E7D67818F891ADEEDE4129D18104D40326D6BAB968'
     );
     expect(txData?.hash).toEqual(
-      'E98E0A382DF95889AD80CAA585596F06F92F700E52F390E71FD0625D31696F20'
+      '5EC8C9F154F4BCFBA30BB5E7D67818F891ADEEDE4129D18104D40326D6BAB968'
     );
   });
 
@@ -84,15 +84,5 @@ describe('Test coverage Thor package', () => {
     expect(feeOptions?.low).toEqual(0);
     expect(feeOptions?.medium).toEqual(0);
     expect(feeOptions?.high).toEqual(0);
-  });
-
-  it('getTransaction() should return data transaction on the blockchain', async () => {
-    const txData = await providers[ThorChains.thorchain].getTransaction(
-      'DEE1556534FCAB9920FBB3955AB9F93FF5A2D2CCD47D627343AA97252B22BE01'
-    );
-
-    expect(txData?.hash).toEqual(
-      'DEE1556534FCAB9920FBB3955AB9F93FF5A2D2CCD47D627343AA97252B22BE01'
-    );
   });
 });

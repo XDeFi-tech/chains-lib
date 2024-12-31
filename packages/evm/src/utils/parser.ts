@@ -1,5 +1,6 @@
 import { NumberIsh } from '@xdefi-tech/chains-core';
-import { ethers } from 'ethers';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { parseUnits } from '@ethersproject/units';
 import BigNumber from 'bignumber.js';
 
 import { gwei } from '../constants';
@@ -24,13 +25,11 @@ export const parseGwei = (n: NumberIsh): BigNumber => {
       throw new Error('Invalid NumberIsh value');
   }
 
-  return new BigNumber(
-    ethers.utils.parseUnits(num.toString(), 'gwei').toString()
-  );
+  return new BigNumber(parseUnits(num.toString(), 'gwei').toString());
 };
 
 export const decodeHexString = (hexString: string): string => {
-  const decoded = ethers.utils.defaultAbiCoder.decode(['string'], hexString);
+  const decoded = defaultAbiCoder.decode(['string'], hexString);
   return decoded[0];
 };
 
