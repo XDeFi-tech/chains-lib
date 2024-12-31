@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.96
+
+### Patch Changes
+
+- 7adc477f: fix: cronos address chain
+
 ## 2.0.95
 
 ### Patch Changes
