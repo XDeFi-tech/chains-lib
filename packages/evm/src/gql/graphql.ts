@@ -459,6 +459,7 @@ export type ArbitrumActivityHistoryV0Args = {
 export type ArbitrumBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -729,6 +730,51 @@ export type AssetCryptoCurrencyTypeEdge = {
 
 export type AssetCryptoCurrencyTypePageInfo = {
   __typename?: 'AssetCryptoCurrencyTypePageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type AssetCryptoCurrencyTypeV2 = AssetBaseTypeV2 & {
+  __typename?: 'AssetCryptoCurrencyTypeV2';
+  /** Identify asset as a shitcoin, stablecoin, lp token, lst token or trending token. */
+  categories: Array<TokenCategory>;
+  chain: Scalars['String'];
+  /** Additional info about asset: description, social and tech links, etc. */
+  externalData: Scalars['JSON'];
+  /** @deprecated Don't use fee from assets-service, use fees-service instead */
+  fee?: Maybe<AssetFeeType>;
+  /** Icon URL */
+  icon?: Maybe<Scalars['String']>;
+  /** Unique identifier in the database */
+  id: Scalars['ID'];
+  /** Market capitalization is total value of a publicly traded company's outstanding common shares owned by stockholders */
+  marketCap?: Maybe<Scalars['Float']>;
+  /** Known name that identifies token */
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<AssetAmountType>;
+  priceHistory: PriceHistoryType2;
+  scalingFactor?: Maybe<Scalars['Float']>;
+  /** The symbol that identifies token */
+  symbol: Scalars['String'];
+  type: AssetInternalTypeV2;
+};
+
+export type AssetCryptoCurrencyTypeV2Connection = {
+  __typename?: 'AssetCryptoCurrencyTypeV2Connection';
+  edges?: Maybe<Array<AssetCryptoCurrencyTypeV2Edge>>;
+  pageInfo?: Maybe<AssetCryptoCurrencyTypeV2PageInfo>;
+};
+
+export type AssetCryptoCurrencyTypeV2Edge = {
+  __typename?: 'AssetCryptoCurrencyTypeV2Edge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<AssetCryptoCurrencyTypeV2>;
+};
+
+export type AssetCryptoCurrencyTypeV2PageInfo = {
+  __typename?: 'AssetCryptoCurrencyTypeV2PageInfo';
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
@@ -1221,6 +1267,7 @@ export type AuroraActivityHistoryV0Args = {
 export type AuroraBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1269,6 +1316,7 @@ export type AvalancheActivityHistoryV0Args = {
 export type AvalancheBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1335,6 +1383,7 @@ export type BaseActivityHistoryV0Args = {
 export type BaseBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1414,6 +1463,7 @@ export type BinanceSmartChainActivityHistoryV0Args = {
 export type BinanceSmartChainBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1711,6 +1761,7 @@ export type BlastActivityHistoryV0Args = {
 export type BlastBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1774,6 +1825,17 @@ export enum CacheControlScope {
   PUBLIC = 'PUBLIC',
 }
 
+/** Options for the cache balance refresh behavior */
+export type CacheOptTknBalanceV0Input = {
+  /**
+   * List of extra tokens that wasn't returned by last balance response but are expected to be in the next response
+   * Useful for example when user executed swap operation and expect to see new token in the balance. Default is empty
+   */
+  extraTokens?: InputMaybe<Array<Scalars['String']>>;
+  /** When set to true new tokens should be discovered (useful if user refresh manually his balance). Default is false */
+  forceTokenDiscovery?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type CantoEvm = {
   __typename?: 'CantoEVM';
   /** activity history for address in descending order */
@@ -1800,6 +1862,7 @@ export type CantoEvmActivityHistoryV0Args = {
 export type CantoEvmBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1848,6 +1911,7 @@ export type CeloActivityHistoryV0Args = {
 export type CeloBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -2133,6 +2197,7 @@ export type CronosEvmActivityHistoryV0Args = {
 export type CronosEvmBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -2270,7 +2335,7 @@ export type CryptoCurrencyType = {
 
 export type CryptoCurrencyV2Response = {
   __typename?: 'CryptoCurrencyV2Response';
-  page: AssetCryptoCurrencyTypeConnection;
+  page: AssetCryptoCurrencyTypeV2Connection;
   pageData?: Maybe<PageDataType>;
 };
 
@@ -2506,6 +2571,8 @@ export type EvmTransactionPayloadV2 = {
   chain?: InputMaybe<TxClassifierChains>;
   data: Scalars['String'];
   fromAddress: Scalars['String'];
+  gas?: InputMaybe<Scalars['String']>;
+  gasPrice?: InputMaybe<Scalars['String']>;
   to: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
 };
@@ -2578,6 +2645,7 @@ export type EthereumActivityHistoryV0Args = {
 export type EthereumBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -2693,6 +2761,7 @@ export type FantomActivityHistoryV0Args = {
 export type FantomBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -2862,6 +2931,7 @@ export type GnosisActivityHistoryV0Args = {
 export type GnosisBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3030,6 +3100,7 @@ export type LineaActivityHistoryV0Args = {
 export type LineaBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3166,6 +3237,7 @@ export type MantleActivityHistoryV0Args = {
 export type MantleBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3286,6 +3358,7 @@ export type ModeActivityHistoryV0Args = {
 export type ModeBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3621,6 +3694,7 @@ export type OpBnbActivityHistoryV0Args = {
 export type OpBnbBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3695,6 +3769,7 @@ export type OptimismActivityHistoryV0Args = {
 export type OptimismBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3787,6 +3862,7 @@ export type PolygonActivityHistoryV0Args = {
 export type PolygonBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3853,6 +3929,7 @@ export enum PortfolioChainVariant {
   Avalanche = 'Avalanche',
   Axelar = 'Axelar',
   Band = 'Band',
+  Base = 'Base',
   BinanceChain = 'BinanceChain',
   BinanceSmartChain = 'BinanceSmartChain',
   Bitcanna = 'Bitcanna',
@@ -3889,6 +3966,7 @@ export enum PortfolioChainVariant {
   Litecoin = 'Litecoin',
   Lum = 'Lum',
   MarsProtocol = 'MarsProtocol',
+  MayaChain = 'MayaChain',
   Near = 'Near',
   Neutron = 'Neutron',
   OKExChain = 'OKExChain',
@@ -3901,6 +3979,7 @@ export enum PortfolioChainVariant {
   Regen = 'Regen',
   Rizon = 'Rizon',
   Secret = 'Secret',
+  Sei = 'Sei',
   Sentinel = 'Sentinel',
   Shentu = 'Shentu',
   Sifchain = 'Sifchain',
@@ -3915,6 +3994,7 @@ export enum PortfolioChainVariant {
   TomoChain = 'TomoChain',
   Tron = 'Tron',
   Umee = 'Umee',
+  zkSync = 'zkSync',
 }
 
 export type PostRouteTypeV2 = {
@@ -4436,6 +4516,12 @@ export type RouteInputTypeV2 = {
   tradesRoute: Array<TradeRouteInputTypeV2>;
 };
 
+export type RouteNotAvailableV2 = {
+  __typename?: 'RouteNotAvailableV2';
+  label: Scalars['String'];
+  reason: Scalars['String'];
+};
+
 export type RouteTradeInputType = {
   amountIn: Scalars['Float'];
   amountOut: Scalars['Float'];
@@ -4617,6 +4703,33 @@ export type RouteTypeV3 = {
   tradesRoute: Array<RouteTradeTypeV2>;
 };
 
+export type RouteTypeV3RouteNotAvailableV2 = RouteNotAvailableV2 | RouteTypeV3;
+
+export type RouteTypeV4 = {
+  __typename?: 'RouteTypeV4';
+  addresses: Array<AddressRouteTypeV2>;
+  amountIn: Scalars['Decimal'];
+  approvalInfiniteFlag?: Maybe<Scalars['Boolean']>;
+  autoSlippageEnabled: Scalars['Boolean'];
+  destAddress: Scalars['String'];
+  errorBuildingRoute?: Maybe<Scalars['String']>;
+  /** Fee tier that the wallet requesting the quote has. Fee tier are defined by the number XDEFI & vXDEFI tokens held by the wallet. The more tokens the wallet has, the lower the fee tier */
+  feeTier: Scalars['Int'];
+  gasPrices?: Maybe<Scalars['JSON']>;
+  /**
+   * On chain wallet address of the referrer. Must be unique
+   * @deprecated Not necessary anymore, now this data is stored in the Campaigns service
+   */
+  isOptIn?: Maybe<Scalars['Boolean']>;
+  priceImpact: Scalars['String'];
+  priceRate: Scalars['Decimal'];
+  priceRateText: Scalars['String'];
+  slippage: Scalars['Decimal'];
+  tradesRoute: Array<RouteTradeTypeV2>;
+};
+
+export type RouteTypeV4RouteNotAvailableV2 = RouteNotAvailableV2 | RouteTypeV4;
+
 export type RoutingChainType = {
   __typename?: 'RoutingChainType';
   name: Scalars['String'];
@@ -4796,9 +4909,14 @@ export type RoutingTypeV2 = {
   referrerSummary: ReferralFeeSummary;
   refuel: RouteTypeV2;
   refuelInfo: RefuelInfoType;
+  /** @deprecated Moving to new field routeV3 with a better response. */
   routeV2: RouteTypeV2;
   routeV2TokensFilter: SwapFilteredTokenRes;
+  /** @deprecated Moving to new field routeV4 with a better response. */
   routeV3: RouteTypeV3;
+  /** @deprecated Moving to new field routeV5, if you set the slippage to null then it would use autoSlippage if available. */
+  routeV4: RouteTypeV3RouteNotAvailableV2;
+  routeV5: RouteTypeV4RouteNotAvailableV2;
   tokenV2: RoutingTokenTypeV2;
   tokensV2: Array<RoutingTokenTypeV2>;
   tradeV2: RouteTransactionTradeTypeV2;
@@ -4883,6 +5001,30 @@ export type RoutingTypeV2RouteV3Args = {
   srcToken: Scalars['String'];
 };
 
+export type RoutingTypeV2RouteV4Args = {
+  addresses: Array<AddressRouteInputTypeV2>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destToken: Scalars['String'];
+  infiniteApproval?: InputMaybe<Scalars['Boolean']>;
+  isOptedIn?: InputMaybe<Scalars['Boolean']>;
+  referral?: InputMaybe<ReferralInputType>;
+  slippage: Scalars['String'];
+  srcToken: Scalars['String'];
+};
+
+export type RoutingTypeV2RouteV5Args = {
+  addresses: Array<AddressRouteInputTypeV2>;
+  amountSource?: InputMaybe<Scalars['String']>;
+  destAddress: Scalars['String'];
+  destToken: Scalars['String'];
+  infiniteApproval?: InputMaybe<Scalars['Boolean']>;
+  isOptedIn?: InputMaybe<Scalars['Boolean']>;
+  referral?: InputMaybe<ReferralInputType>;
+  slippage?: InputMaybe<Scalars['String']>;
+  srcToken: Scalars['String'];
+};
+
 export type RoutingTypeV2TokenV2Args = {
   id: Scalars['String'];
 };
@@ -4923,6 +5065,7 @@ export type ScrollActivityHistoryV0Args = {
 export type ScrollBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -5768,6 +5911,7 @@ export type TronActivityHistoryV0Args = {
 export type TronBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -5930,6 +6074,8 @@ export enum TxClassifierChains {
 
 export enum TxClassifierEvmmsgType {
   eth_sign = 'eth_sign',
+  eth_signTypedData_v1 = 'eth_signTypedData_v1',
+  eth_signTypedData_v3 = 'eth_signTypedData_v3',
   eth_signTypedData_v4 = 'eth_signTypedData_v4',
   personal_sign = 'personal_sign',
 }
@@ -6257,6 +6403,7 @@ export type ZetaChainActivityHistoryV0Args = {
 export type ZetaChainBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -6300,6 +6447,7 @@ export type ZkSyncActivityHistoryV0Args = {
 export type ZkSyncBalancesArgs = {
   address: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
   first?: InputMaybe<Scalars['Int']>;
   tokenAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -6324,6 +6472,10 @@ export type ZkSyncTransactionsArgs = {
 
 export type GetArbitrumBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetArbitrumBalanceQuery = {
@@ -6440,6 +6592,10 @@ export type GetArbitrumStatusQuery = {
 
 export type GetAuroraBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetAuroraBalanceQuery = {
@@ -6556,6 +6712,10 @@ export type GetAuroraStatusQuery = {
 
 export type GetAvalancheBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetAvalancheBalanceQuery = {
@@ -6687,6 +6847,10 @@ export type GetAvalancheStatusQuery = {
 
 export type GetBaseBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetBaseBalanceQuery = {
@@ -6846,6 +7010,10 @@ export type BeamEip1559GasFeesQuery = {
 
 export type GetBlastBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetBlastBalanceQuery = {
@@ -6975,6 +7143,10 @@ export type GetBlastStatusQuery = {
 
 export type GetCantoEvmBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetCantoEvmBalanceQuery = {
@@ -7106,6 +7278,10 @@ export type GetCantoEvmStatusQuery = {
 
 export type GetCeloBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetCeloBalanceQuery = {
@@ -7220,6 +7396,10 @@ export type GetCeloStatusQuery = {
 
 export type GetCronosEvmBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetCronosEvmBalanceQuery = {
@@ -7351,6 +7531,10 @@ export type GetCronosEvmStatusQuery = {
 
 export type GetEthereumBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetEthereumBalanceQuery = {
@@ -7482,6 +7666,10 @@ export type GetEthereumStatusQuery = {
 
 export type GetFantomBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetFantomBalanceQuery = {
@@ -7613,6 +7801,10 @@ export type GetFantomStatusQuery = {
 
 export type GetGnosisBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetGnosisBalanceQuery = {
@@ -7744,6 +7936,10 @@ export type GetGnosisStatusQuery = {
 
 export type GetLineaBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetLineaBalanceQuery = {
@@ -7903,6 +8099,10 @@ export type MantaEip1559GasFeesQuery = {
 
 export type GetMantleBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetMantleBalanceQuery = {
@@ -8034,6 +8234,10 @@ export type GetMantleStatusQuery = {
 
 export type GetOpBnbBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetOpBnbBalanceQuery = {
@@ -8163,6 +8367,10 @@ export type GetOpBnbStatusQuery = {
 
 export type GetOptimismBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetOptimismBalanceQuery = {
@@ -8294,6 +8502,10 @@ export type GetOptimismStatusQuery = {
 
 export type GetPolygonBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetPolygonBalanceQuery = {
@@ -8425,6 +8637,10 @@ export type GetPolygonStatusQuery = {
 
 export type GetScrollBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetScrollBalanceQuery = {
@@ -8524,6 +8740,10 @@ export type GetScrollStatusQuery = {
 
 export type GetSmartChainBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetSmartChainBalanceQuery = {
@@ -8640,6 +8860,10 @@ export type GetSmartChainStatusQuery = {
 
 export type GetZetaChainBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetZetaChainBalanceQuery = {
@@ -8771,6 +8995,10 @@ export type GetZetaChainStatusQuery = {
 
 export type GetZkSyncBalanceQueryVariables = Exact<{
   address: Scalars['String'];
+  tokenAddresses?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  cacheOpt?: InputMaybe<CacheOptTknBalanceV0Input>;
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetZkSyncBalanceQuery = {
@@ -8907,6 +9135,50 @@ export const GetArbitrumBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -8927,6 +9199,38 @@ export const GetArbitrumBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -9425,6 +9729,50 @@ export const GetAuroraBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -9445,6 +9793,38 @@ export const GetAuroraBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -9943,6 +10323,50 @@ export const GetAvalancheBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -9963,6 +10387,38 @@ export const GetAvalancheBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -10527,6 +10983,50 @@ export const GetBaseBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -10547,6 +11047,38 @@ export const GetBaseBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -11213,6 +11745,50 @@ export const GetBlastBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -11233,6 +11809,38 @@ export const GetBlastBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -11794,6 +12402,50 @@ export const GetCantoEvmBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -11814,6 +12466,38 @@ export const GetCantoEvmBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -12378,6 +13062,50 @@ export const GetCeloBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -12398,6 +13126,38 @@ export const GetCeloBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -12890,6 +13650,50 @@ export const GetCronosEvmBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -12910,6 +13714,38 @@ export const GetCronosEvmBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -13474,6 +14310,50 @@ export const GetEthereumBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -13494,6 +14374,38 @@ export const GetEthereumBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -14058,6 +14970,50 @@ export const GetFantomBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -14078,6 +15034,38 @@ export const GetFantomBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -14642,6 +15630,50 @@ export const GetGnosisBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -14662,6 +15694,38 @@ export const GetGnosisBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -15226,6 +16290,50 @@ export const GetLineaBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -15246,6 +16354,38 @@ export const GetLineaBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -15915,6 +17055,50 @@ export const GetMantleBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -15935,6 +17119,38 @@ export const GetMantleBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -16499,6 +17715,50 @@ export const GetOpBnbBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -16519,6 +17779,38 @@ export const GetOpBnbBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -17080,6 +18372,50 @@ export const GetOptimismBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -17100,6 +18436,38 @@ export const GetOptimismBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -17664,6 +19032,50 @@ export const GetPolygonBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -17684,6 +19096,38 @@ export const GetPolygonBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -18248,6 +19692,50 @@ export const GetScrollBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -18268,6 +19756,38 @@ export const GetScrollBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -18724,6 +20244,50 @@ export const GetSmartChainBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -18744,6 +20308,38 @@ export const GetSmartChainBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -19242,6 +20838,50 @@ export const GetZetaChainBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -19262,6 +20902,38 @@ export const GetZetaChainBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],
@@ -19826,6 +21498,50 @@ export const GetZkSyncBalanceDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tokenAddresses' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'cacheOpt' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'CacheOptTknBalanceV0Input' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'after' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -19846,6 +21562,38 @@ export const GetZkSyncBalanceDocument = {
                       value: {
                         kind: 'Variable',
                         name: { kind: 'Name', value: 'address' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'tokenAddresses' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'tokenAddresses' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'cacheOpt' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'cacheOpt' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'after' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'after' },
                       },
                     },
                   ],

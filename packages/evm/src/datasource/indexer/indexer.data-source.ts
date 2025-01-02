@@ -54,10 +54,17 @@ export class IndexerDataSource extends DataSource {
     filter: BalanceFilter,
     tokenAddresses?: string[]
   ): Promise<Coin[]> {
-    const { address } = filter;
+    const { address, first, after, cacheOpt } = filter;
     let balances;
     if (!tokenAddresses) {
-      balances = await getBalance(this.manifest.chain as EVMChains, address);
+      balances = await getBalance(
+        this.manifest.chain as EVMChains,
+        address,
+        tokenAddresses ? tokenAddresses : null,
+        first ? first : 100,
+        after ? after : '',
+        cacheOpt ? cacheOpt : null
+      );
     } else {
       // Remove duplicate addresses
       const uniqueAddresses = Array.from(new Set(tokenAddresses));
