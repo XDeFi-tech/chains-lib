@@ -7,6 +7,14 @@ import { FeeData } from '../interfaces';
 export interface BalanceFilter {
   address: string;
   afterBlock?: number | string;
+  first?: number;
+  after?: string;
+  cacheOpt?: ICacheOpt;
+}
+
+export interface ICacheOpt {
+  forceTokenDiscovery?: boolean | null;
+  extraTokens?: string[] | null;
 }
 
 export interface TransactionsFilter {

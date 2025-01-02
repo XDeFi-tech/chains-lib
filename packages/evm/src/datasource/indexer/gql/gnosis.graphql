@@ -1,6 +1,18 @@
-query GetGnosisBalance($address: String!) {
+query GetGnosisBalance(
+  $address: String!
+  $tokenAddresses: [String!]
+  $cacheOpt: CacheOptTknBalanceV0Input
+  $first: Int
+  $after: String
+) {
   gnosis {
-    balances(address: $address) {
+    balances(
+      address: $address
+      tokenAddresses: $tokenAddresses
+      cacheOpt: $cacheOpt
+      first: $first
+      after: $after
+    ) {
       address
       asset {
         symbol

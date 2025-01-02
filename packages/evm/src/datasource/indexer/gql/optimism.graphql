@@ -1,6 +1,18 @@
-query GetOptimismBalance($address: String!) {
+query GetOptimismBalance(
+  $address: String!
+  $tokenAddresses: [String!]
+  $cacheOpt: CacheOptTknBalanceV0Input
+  $first: Int
+  $after: String
+) {
   optimism {
-    balances(address: $address) {
+    balances(
+      address: $address
+      tokenAddresses: $tokenAddresses
+      cacheOpt: $cacheOpt
+      first: $first
+      after: $after
+    ) {
       address
       asset {
         symbol

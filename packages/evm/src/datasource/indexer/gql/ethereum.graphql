@@ -1,6 +1,18 @@
-query GetEthereumBalance($address: String!) {
+query GetEthereumBalance(
+  $address: String!
+  $tokenAddresses: [String!]
+  $cacheOpt: CacheOptTknBalanceV0Input
+  $first: Int
+  $after: String
+) {
   ethereum {
-    balances(address: $address) {
+    balances(
+      address: $address
+      tokenAddresses: $tokenAddresses
+      cacheOpt: $cacheOpt
+      first: $first
+      after: $after
+    ) {
       address
       asset {
         symbol

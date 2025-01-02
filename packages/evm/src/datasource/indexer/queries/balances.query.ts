@@ -27,7 +27,19 @@ import {
 } from '../../../gql/graphql';
 import { EVM_INDEXER_CHAIN, EVMChains } from '../../../manifests';
 
-export const getBalance = async (chain: EVMChains, address: string) => {
+export interface ICacheOpt {
+  forceTokenDiscovery?: boolean | null;
+  extraTokens?: string[] | null;
+}
+
+export const getBalance = async (
+  chain: EVMChains,
+  address: string,
+  tokenAddresses: string[] | null,
+  first = 100,
+  after = '',
+  cacheOpt: ICacheOpt | null
+) => {
   const indexerChain: string = EVM_INDEXER_CHAIN[chain];
   let query;
   switch (chain) {
@@ -94,9 +106,11 @@ export const getBalance = async (chain: EVMChains, address: string) => {
     default:
       if (indexerChain) {
         query = gql`
-          query Get${capitalize(chain)}Balance ($address: String!) {
+          query Get${capitalize(
+            chain
+          )}Balance ($address: String!, $tokenAddresses: [String!], $cacheOpt: CacheOptTknBalanceV0Input, $first: Int, $after: String) {
             ${indexerChain} {
-              balances(address: $address) {
+              balances( address: $address, tokenAddresses: $tokenAddresses, cacheOpt: $cacheOpt, first: $first, after: $after) {
                 address
                 asset {
                   categories
@@ -130,7 +144,10 @@ export const getBalance = async (chain: EVMChains, address: string) => {
     query: query,
     variables: {
       address,
-      first: 100,
+      first,
+      after,
+      tokenAddresses,
+      cacheOpt,
     },
   });
 

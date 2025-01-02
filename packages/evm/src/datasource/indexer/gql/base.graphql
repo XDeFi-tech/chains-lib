@@ -1,6 +1,18 @@
-query GetBaseBalance($address: String!) {
+query GetBaseBalance(
+  $address: String!
+  $tokenAddresses: [String!]
+  $cacheOpt: CacheOptTknBalanceV0Input
+  $first: Int
+  $after: String
+) {
   base {
-    balances(address: $address) {
+    balances(
+      address: $address
+      tokenAddresses: $tokenAddresses
+      cacheOpt: $cacheOpt
+      first: $first
+      after: $after
+    ) {
       address
       asset {
         categories

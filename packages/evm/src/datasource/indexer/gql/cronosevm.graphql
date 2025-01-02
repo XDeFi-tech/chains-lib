@@ -1,6 +1,18 @@
-query GetCronosEVMBalance($address: String!) {
+query GetCronosEVMBalance(
+  $address: String!
+  $tokenAddresses: [String!]
+  $cacheOpt: CacheOptTknBalanceV0Input
+  $first: Int
+  $after: String
+) {
   cronosEVM {
-    balances(address: $address) {
+    balances(
+      address: $address
+      tokenAddresses: $tokenAddresses
+      cacheOpt: $cacheOpt
+      first: $first
+      after: $after
+    ) {
       address
       asset {
         symbol
