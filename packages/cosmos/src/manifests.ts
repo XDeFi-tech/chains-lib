@@ -298,7 +298,7 @@ export const COSMOS_MANIFESTS: {
     name: 'Terra',
     description: '',
     rpcURL: 'https://terra-rpc.polkachu.com/',
-    lcdURL: 'https://phoenix-lcd.terra.dev/',
+    lcdURL: 'https://rpc-proxy.xdefi.services/terra/mainnet/lcd',
     chainSymbol: 'LUNA',
     blockExplorerURL: 'https://www.mintscan.io/terra/account',
     chainId: 'phoenix-1',
