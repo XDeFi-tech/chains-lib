@@ -35,10 +35,10 @@ export interface ICacheOpt {
 export const getBalance = async (
   chain: EVMChains,
   address: string,
-  tokenAddresses: string[] | null,
+  tokenAddresses: string[] | null = null,
   first = 100,
   after = '',
-  cacheOpt: ICacheOpt | null
+  cacheOpt: ICacheOpt | null = null
 ) => {
   const indexerChain: string = EVM_INDEXER_CHAIN[chain];
   let query;
