@@ -1,5 +1,9 @@
 import { TransactionStatus } from '@xdefi-tech/chains-core';
-import { Connection } from '@solana/web3.js';
+import {
+  ComputeBudgetProgram,
+  Connection,
+  VersionedTransaction,
+} from '@solana/web3.js';
 
 export const checkMinimumBalanceForRentExemption = async (
   connection: Connection
@@ -50,4 +54,12 @@ export const decodePriorityFeeInstruction = (data: Buffer[]) => {
   }
 
   return priorityFee;
+};
+
+export const checkTxAlreadyHasPriorityFee = (txBytes: Buffer) => {
+  const tx = VersionedTransaction.deserialize(txBytes);
+  const priorityFee = tx.message.staticAccountKeys.find(
+    (key) => key.toBase58() === ComputeBudgetProgram.programId.toBase58()
+  );
+  return !!priorityFee;
 };

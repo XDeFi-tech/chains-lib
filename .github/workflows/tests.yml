@@ -46,7 +46,7 @@ jobs:
           else
             for package in $(echo ${{ env.changed_packages }} | tr ',' '\n'); do
               echo "Running tests for package: @xdefi-tech/$package"
-              yarn workspace @xdefi-tech/$package test
+              yarn workspace @xdefi-tech/$package test --forceExit
             done
           fi
 

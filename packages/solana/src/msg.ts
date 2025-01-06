@@ -33,7 +33,10 @@ import bs58 from 'bs58';
 import type { SolanaProvider } from './chain.provider';
 import { DEFAULT_FEE } from './constants';
 import { SolanaSignature } from './types';
-import { checkMinimumBalanceForRentExemption } from './utils';
+import {
+  checkMinimumBalanceForRentExemption,
+  checkTxAlreadyHasPriorityFee,
+} from './utils';
 
 export interface MsgBody {
   amount: NumberIsh;
@@ -113,6 +116,18 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
       }
 
       let versionedTransaction = VersionedTransaction.deserialize(buffer);
+      // Check if the transaction has priority fee
+      if (checkTxAlreadyHasPriorityFee(Buffer.from(buffer))) {
+        return {
+          tx: versionedTransaction,
+          value: 0,
+          to: msgData.to,
+          from: msgData.from,
+          gasPrice: 0,
+          decimals: msgData.decimals || this.provider.manifest.decimals,
+          encoding: this.encoding,
+        };
+      }
       const luts = await Promise.all(
         versionedTransaction.message.addressTableLookups.map((acc) =>
           this.provider.rpcProvider.getAddressLookupTable(acc.accountKey)

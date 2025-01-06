@@ -33,7 +33,7 @@ import {
   PriorityFeeLevelParamsMapping,
   PriorityFeeEstimateParams,
 } from '../../types';
-import { decodePriorityFeeInstruction } from '../../utils';
+import { checkTxAlreadyHasPriorityFee } from '../../utils';
 
 import { getNFTBalance, getTransactions } from './queries';
 
@@ -126,32 +126,28 @@ export class IndexerDataSource extends DataSource {
         case MsgEncoding.base64:
         case MsgEncoding.base58:
           transaction = tx as VersionedTransaction;
-          const luts = await Promise.all(
-            transaction.message.addressTableLookups.map((acc) =>
-              this.rpcProvider.getAddressLookupTable(acc.accountKey)
-            )
-          );
-          const addressLookupTableAccounts = luts
-            .map((lut) => lut.value)
-            .filter((val) => val !== null) as AddressLookupTableAccount[];
-          const messageV0 = TransactionMessage.decompile(transaction.message, {
-            addressLookupTableAccounts,
-          });
-          const computeBudgetInstructions = [];
-          for (const instruction of messageV0.instructions) {
-            if (
-              instruction.programId.toBase58() ===
-              ComputeBudgetProgram.programId.toBase58()
-            ) {
-              computeBudgetInstructions.push(instruction.data);
-            }
-          }
-          if (computeBudgetInstructions.length > 0) {
-            const { computeUnitLimit, computeUnitPrice } =
-              decodePriorityFeeInstruction(computeBudgetInstructions);
-            result.gasLimit = computeUnitLimit ?? 200_000;
-            result.gasPrice = computeUnitPrice ?? undefined;
+          if (
+            checkTxAlreadyHasPriorityFee(Buffer.from(transaction.serialize()))
+          ) {
+            results.push({
+              gasLimit: 0,
+              gasPrice: 0,
+            });
           } else {
+            const luts = await Promise.all(
+              transaction.message.addressTableLookups.map((acc) =>
+                this.rpcProvider.getAddressLookupTable(acc.accountKey)
+              )
+            );
+            const addressLookupTableAccounts = luts
+              .map((lut) => lut.value)
+              .filter((val) => val !== null) as AddressLookupTableAccount[];
+            const messageV0 = TransactionMessage.decompile(
+              transaction.message,
+              {
+                addressLookupTableAccounts,
+              }
+            );
             await processTransaction(
               transaction,
               messageV0.instructions,

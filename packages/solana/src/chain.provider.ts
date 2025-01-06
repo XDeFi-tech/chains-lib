@@ -18,6 +18,7 @@ import {
   utils,
 } from '@xdefi-tech/chains-core';
 import {
+  ComputeBudgetProgram,
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -31,10 +32,14 @@ import {
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
+import base58 from 'bs58';
 
 import { ChainDataSource, IndexerDataSource } from './datasource';
 import { ChainMsg } from './msg';
-import { checkMinimumBalanceForRentExemption } from './utils';
+import {
+  checkMinimumBalanceForRentExemption,
+  checkTxAlreadyHasPriorityFee,
+} from './utils';
 import { BroadcastOptions, DEFAULT_BROADCAST_OPTIONS } from './constants';
 
 export interface MultisigMsgData {
@@ -251,42 +256,56 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
     return result;
   }
 
+  // fee = (number of signatures * 5000 + gas limit * gas price / 1e6) / 1e9
   async getFeeForMsg(msg: ChainMsg): Promise<FeeEstimation> {
-    const txData = await msg.buildTx();
-    let dataForEstimate = null;
-    switch (txData.encoding) {
+    const txData = msg.toData();
+    let fee = null;
+    switch (msg.encoding) {
       case MsgEncoding.object:
-        const transaction = txData.tx as SolanaTransaction;
-        dataForEstimate = transaction.compileMessage();
-        break;
-      case MsgEncoding.base64:
-      case MsgEncoding.base58:
-        const versionedTransaction = txData.tx as VersionedTransaction;
-        dataForEstimate = versionedTransaction.message;
-        const slot = await this.rpcProvider.getSlot('finalized');
-        // get the latest block (allowing for v0 transactions)
-        const block = await this.rpcProvider.getBlock(slot, {
-          maxSupportedTransactionVersion: 0,
-        });
-        if (block) {
-          dataForEstimate.recentBlockhash = block.blockhash;
+        if (txData.gasLimit && txData.gasPrice) {
+          fee = new BigNumber(txData.gasLimit)
+            .multipliedBy(txData.gasPrice)
+            .dividedBy(10 ** 6)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .dividedBy(LAMPORTS_PER_SOL);
         }
-        break;
-      default:
-        throw new Error('Invalid encoding for solana transaction');
+        // the sending SOL and SPL token tx  has a signature
+        fee = new BigNumber(5000).dividedBy(LAMPORTS_PER_SOL).plus(fee ?? 0);
+        return { fee: fee.toString(), maxFee: null };
+      case MsgEncoding.base58:
+        return this.getFeeForDappTx(
+          msg,
+          Buffer.from(base58.decode(txData.data))
+        );
+      case MsgEncoding.base64:
+        return this.getFeeForDappTx(msg, Buffer.from(txData.data, 'base64'));
     }
-    const fee = await this.rpcProvider.getFeeForMessage(
-      dataForEstimate,
-      'confirmed'
+    return { fee: null, maxFee: null };
+  }
+
+  private getFeeForDappTx(msg: ChainMsg, txBytes: Buffer) {
+    const tx = VersionedTransaction.deserialize(txBytes);
+    const computedBudgetIndex = tx.message.staticAccountKeys.findIndex(
+      (key) => key.toBase58() === ComputeBudgetProgram.programId.toBase58()
     );
-    return {
-      fee: fee.value
-        ? new BigNumber(fee.value.toString())
-            .dividedBy(LAMPORTS_PER_SOL)
-            .toString()
-        : null,
-      maxFee: null,
-    };
+    let priorityFee = 0;
+    if (computedBudgetIndex === -1 && msg.data.gasLimit && msg.data.gasPrice) {
+      priorityFee = (msg.data.gasLimit * msg.data.gasPrice) / 1e6;
+    } else {
+      priorityFee = 1e-6;
+      for (const instruction of tx.message.compiledInstructions) {
+        if (instruction.programIdIndex === computedBudgetIndex) {
+          priorityFee *= Buffer.from(instruction.data!).readUInt32LE(1);
+        }
+      }
+    }
+    const fee = new BigNumber(tx.signatures.length)
+      .multipliedBy(5000)
+      .plus(priorityFee)
+      .integerValue(BigNumber.ROUND_CEIL)
+      .dividedBy(LAMPORTS_PER_SOL)
+      .toString();
+    return { fee, maxFee: null };
   }
 
   static get dataSourceList() {
@@ -308,6 +327,7 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
   static get staticUtils() {
     return {
       checkMinimumBalanceForRentExemption,
+      checkTxAlreadyHasPriorityFee,
     };
   }
 }
