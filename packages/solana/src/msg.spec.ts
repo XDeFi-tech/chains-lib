@@ -266,7 +266,7 @@ describe('msg', () => {
     expect(tx.instructions[0].programId).toBe(ComputeBudgetProgram.programId);
     expect(tx.instructions[1].programId).toBe(ComputeBudgetProgram.programId);
     expect(tx.instructions[2].programId).toBe(ASSOCIATED_TOKEN_PROGRAM_ID);
-    expect(tx.instructions[3].programId).toBe(TOKEN_PROGRAM_ID);
+    expect(tx.instructions[3].programId).toStrictEqual(TOKEN_PROGRAM_ID);
   });
 
   it('Should not create associated token account instruction when sending secondary token to account containing token', async () => {
@@ -284,7 +284,7 @@ describe('msg', () => {
     expect(tx.instructions.length).toBe(3);
     expect(tx.instructions[0].programId).toBe(ComputeBudgetProgram.programId);
     expect(tx.instructions[1].programId).toBe(ComputeBudgetProgram.programId);
-    expect(tx.instructions[2].programId).toBe(TOKEN_PROGRAM_ID);
+    expect(tx.instructions[2].programId).toStrictEqual(TOKEN_PROGRAM_ID);
   });
 
   jest.useFakeTimers();

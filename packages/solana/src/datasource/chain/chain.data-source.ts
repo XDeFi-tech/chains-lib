@@ -30,9 +30,11 @@ import {
 } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout, getMint } from '@solana/spl-token';
 import { Metadata, PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
-import { getSimulationComputeUnits } from '@solana-developers/helpers';
 
-import { checkTxAlreadyHasPriorityFee } from '../../utils';
+import {
+  checkTxAlreadyHasPriorityFee,
+  getSimulationComputeUnits,
+} from '../../utils';
 import { ChainMsg } from '../../msg';
 import {
   PriorityFeeEstimateParams,

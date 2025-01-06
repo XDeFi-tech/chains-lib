@@ -33,7 +33,6 @@
     "@metaplex-foundation/mpl-token-metadata": "2.13.0",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.3.0",
-    "@solana-developers/helpers": "2.4.0",
     "@solana/spl-token": "0.4.6",
     "@solana/web3.js": "1.91.8",
     "@trezor/connect-web": "9.4.1",
@@ -120,9 +119,6 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ],
-    "testTimeout": 15000,
-    "transformIgnorePatterns": [
-      "/node_modules/(?!@solana-developers/helpers)"
-    ]
+    "testTimeout": 15000
   }
 }

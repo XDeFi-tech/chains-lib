@@ -24,7 +24,6 @@ import {
   ComputeBudgetProgram,
 } from '@solana/web3.js';
 import axios from 'axios';
-import { getSimulationComputeUnits } from '@solana-developers/helpers';
 
 import { ChainMsg } from '../../msg';
 import { getBalance } from '../../getBalance';
@@ -33,7 +32,10 @@ import {
   PriorityFeeLevelParamsMapping,
   PriorityFeeEstimateParams,
 } from '../../types';
-import { checkTxAlreadyHasPriorityFee } from '../../utils';
+import {
+  checkTxAlreadyHasPriorityFee,
+  getSimulationComputeUnits,
+} from '../../utils';
 
 import { getNFTBalance, getTransactions } from './queries';
 
