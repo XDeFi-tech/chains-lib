@@ -11,6 +11,7 @@ import {
   Transaction as SolanaTransaction,
 } from '@solana/web3.js';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import base58 from 'bs58';
 
 import { ChainMsg } from './msg';
 import { SolanaProvider, MultisigMsgData } from './chain.provider';
@@ -280,5 +281,42 @@ describe('chain.provider', () => {
         'BujFXMX9ZmniuJCM2VRKQqe1enmcoFxfUBmRqCMqKGic'
       )
     ).toBe(true);
+  });
+
+  it('checkTxAlreadyHasPriorityFee() should return true if the transaction has priority fee', () => {
+    const encodedTx =
+      '2T4u3PdCLjcnTuzdSq6ffXQuwQ7nw2WcqiFoEJVQ2zrVxDEP4AKTmwWo8BMqPCJg6s4hrf9qKp9Bs5Zg8tAeuRoTT5g3pezKY5Pa9JBMyYLiEG5caXHY483bkfRfiBDpjdkNShRuqy1roZmkfiAqvDkEEwmUtEhCAEEHe4cx5XjEhkysVenWkLqKuHambdWr7kLw3x5zpfZZVDaV6dAypAGPjMRsizv5aQLK24DxajYzGGTzhkkzwcGYA9nKtHAf3FkCRfjGCwjY3UxbcprTerKKpvZhrpYL6Z4EkMzAd5dsqWgUCYsAkgpXr3iMoidHXuqU1TebQn3PpEDeVCnCBHjezNxmePkXVZ7V7ysSidZmKESLq33MKiGp15rrQumXnbniNbKY6eEq7WDkDMzNFbMjaDXf8nFHy9VSFCE9X9XLGDkhxfPg681etjw9rodX79dzMU6peXy856EDhGo3d6aZWpZf3MuHyFpKGp6tmTXYqLRZw7Er28BJAgvrLP1fMXnMCMDQ7eQmit8N3tEATJUBXwpBmZuosLiWJYhdaNBhcem5CmoAE7zMKuebRgX3drZXGXYNzWSqF7bSjwBXntUqQHrRNxkwojiB66PZz5uMB49eFVC65KWoChVKcbWLg2ANZYd6JvLouZcmFFg3CggE9hKtq53WZewtfJezbnYcUYdDGWSNDp4fMWizM5ycCUwsbQVET6qbjQdsUjuEuFkibdS5aEhF9LZoLxP9wdBKhDqNDvN43HfTHed5N5MpVGf6KYk6o8WdSTraGinT7EAZSPC9oAirmWn7oz4C3ubSKjkbwXScnDb2bVjR6uPxg42BwK9tiLAmTQwDYFvF9rhS6Wf5oNnxFQzCfKFNXJSmvfjE6suzvoAffR1M8rvTUQR6fqFDvAVFtGazuk75i4EnG1v2w6m3oq74RgDuztJGyZ2t5uJjuCuUc5eD3TLE4zfYzw686aUdNDHmGR6ZN9H4dqie98aF9zWnnnaPzwvGvoju6p48nzqKWcdG53Tggh8aumthvQTtXBFpGYVMRBZ3bhGhWZ9j7K6kU4uFjnQi8QqMBPXPPwg5biRXzSJR97BJQCSUjUPvL31K3EkjcfsBdELeMdm64MHYyPcBonV6f8oaVG1M5EvJRa4Cu4CzSkGrq9bZMuZgoTE3JKKA2rh2gddarikKTqaddUeJY3XyWqrLgLA8xyZ2PXQLa7GBHuH7ACSPa14JEgX3uvVrq';
+    expect(
+      SolanaProvider.staticUtils.checkTxAlreadyHasPriorityFee(
+        Buffer.from(base58.decode(encodedTx))
+      )
+    ).toBe(true);
+  });
+
+  it('checkTxAlreadyHasPriorityFee() should return false if the transaction does not have priority fee', async () => {
+    const feePayer = new PublicKey(
+      '9H2zCw7ey8qJgTgyK46pbCNw4ifGKqfzWi8Sc5MeH8fh'
+    );
+    const { blockhash, lastValidBlockHeight } =
+      await chainProvider.rpcProvider.getLatestBlockhash();
+    const tx = new SolanaTransaction({
+      feePayer: feePayer,
+      blockhash: blockhash,
+      lastValidBlockHeight: lastValidBlockHeight,
+    });
+    tx.add(
+      SystemProgram.transfer({
+        fromPubkey: feePayer,
+        toPubkey: feePayer,
+        lamports: 1000,
+      })
+    );
+    expect(
+      SolanaProvider.staticUtils.checkTxAlreadyHasPriorityFee(
+        tx.serialize({
+          requireAllSignatures: false,
+        })
+      )
+    ).toBe(false);
   });
 });

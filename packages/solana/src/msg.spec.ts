@@ -352,8 +352,8 @@ describe('msg', () => {
       MsgEncoding.base64
     );
     const [feeEstimate] = await provider.estimateFee([msg]);
-    expect(feeEstimate.gasLimit).toBe(computeUnitLimit);
-    expect(feeEstimate.gasPrice).toBe(computeUnitPrice);
+    expect(feeEstimate.gasLimit).toBe(0);
+    expect(feeEstimate.gasPrice).toBe(0);
     const fee = await msg.getFee();
     const expectedFee = new BigNumber(computeUnitLimit)
       .multipliedBy(new BigNumber(computeUnitPrice).dividedBy(1e6)) // convert micro lamports to lamports
