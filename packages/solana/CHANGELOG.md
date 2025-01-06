@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.39
+
+### Patch Changes
+
+- 0a57adc3: Feat: remove @solana-developers dependency
+
 ## 2.1.38
 
 ### Patch Changes
