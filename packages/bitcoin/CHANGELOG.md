@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-bitcoin
 
+## 2.1.37
+
+### Patch Changes
+
+- c5e8afb3: Feat: add options for broadcast method
+- Updated dependencies [c5e8afb3]
+  - @xdefi-tech/chains-core@2.0.45
+  - @xdefi-tech/chains-utxo@2.0.28
+
 ## 2.1.36
 
 ### Patch Changes

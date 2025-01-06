@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-core
 
+## 2.0.45
+
+### Patch Changes
+
+- c5e8afb3: Feat: add options for broadcast method
+
 ## 2.0.44
 
 ### Patch Changes

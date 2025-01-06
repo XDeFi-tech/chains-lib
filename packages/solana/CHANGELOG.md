@@ -1,5 +1,15 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.37
+
+### Patch Changes
+
+- c5e8afb3: Feat: enable waitFor broadcast with new core options
+- c5e8afb3: Feat: add options for broadcast method
+- 3380d88b: fix: timeout when depositing liquidity / swapping in solana dapps
+- Updated dependencies [c5e8afb3]
+  - @xdefi-tech/chains-core@2.0.45
+
 ## 2.1.36
 
 ### Patch Changes
