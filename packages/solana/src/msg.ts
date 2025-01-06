@@ -219,22 +219,41 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     let instruction;
     if (msgData.contractAddress) {
       const mintPublicKey = new PublicKey(msgData.contractAddress);
+      const info = await this.provider.rpcProvider.getAccountInfo(
+        mintPublicKey,
+        'confirmed'
+      );
+      programId = info?.owner ?? TOKEN_PROGRAM_ID;
       const mint = await getMint(
         this.provider.rpcProvider,
         mintPublicKey,
         'confirmed',
-        TOKEN_PROGRAM_ID
+        programId
       );
-      programId = TOKEN_PROGRAM_ID;
       value = new BigNumber(msgData.amount)
         .multipliedBy(10 ** mint.decimals)
         .toNumber();
       const [fromTokenAcc, toTokenAcc] = await Promise.all([
-        getAssociatedTokenAddress(mint.address, senderPublicKey),
-        getAssociatedTokenAddress(mint.address, recipientPublicKey),
+        getAssociatedTokenAddress(
+          mint.address,
+          senderPublicKey,
+          undefined,
+          programId
+        ),
+        getAssociatedTokenAddress(
+          mint.address,
+          recipientPublicKey,
+          undefined,
+          programId
+        ),
       ]);
       try {
-        await getAccount(this.provider.rpcProvider, toTokenAcc);
+        await getAccount(
+          this.provider.rpcProvider,
+          toTokenAcc,
+          'confirmed',
+          programId
+        );
       } catch (error) {
         if (
           error instanceof TokenAccountNotFoundError ||
@@ -245,7 +264,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
               senderPublicKey,
               toTokenAcc,
               recipientPublicKey,
-              mint.address
+              mint.address,
+              programId
             )
           );
         }
@@ -258,7 +278,9 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         fromTokenAcc,
         toTokenAcc,
         senderPublicKey,
-        value
+        value,
+        undefined,
+        programId
       );
       decimals = mint.decimals;
     } else {
