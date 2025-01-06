@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.38
+
+### Patch Changes
+
+- 659a472c: enable other token programs for solana
+
 ## 2.1.37
 
 ### Patch Changes
