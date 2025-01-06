@@ -1,5 +1,16 @@
 # @xdefi-tech/chains-evm
 
+## 2.0.98
+
+### Patch Changes
+
+- 247f5320: fix: build package failed
+- c5e8afb3: Feat: enable waitFor broadcast with new core options
+- c5e8afb3: Feat: add options for broadcast method
+- fa2d8b99: Apply refresh to graphql schema on evm chains lib service
+- Updated dependencies [c5e8afb3]
+  - @xdefi-tech/chains-core@2.0.45
+
 ## 2.0.97
 
 ### Patch Changes

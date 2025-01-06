@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-cosmos
 
+## 2.0.81
+
+### Patch Changes
+
+- c5e8afb3: Feat: add options for broadcast method
+- b72d71f6: chore: update terra lcd endpoint
+- Updated dependencies [c5e8afb3]
+  - @xdefi-tech/chains-core@2.0.45
+
 ## 2.0.80
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @xdefi-tech/chains-litecoin
 
+## 2.1.27
+
+### Patch Changes
+
+- c5e8afb3: Feat: add options for broadcast method
+- Updated dependencies [c5e8afb3]
+  - @xdefi-tech/chains-core@2.0.45
+  - @xdefi-tech/chains-utxo@2.0.28
+
 ## 2.1.26
 
 ### Patch Changes
