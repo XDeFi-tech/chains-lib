@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.40
+
+### Patch Changes
+
+- ffca1aab: Fix: update SOL decimal
+
 ## 2.1.39
 
 ### Patch Changes
