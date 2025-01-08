@@ -8,7 +8,7 @@ export const SOLANA_MANIFEST: Chain.Manifest = {
   blockExplorerURL: 'https://explorer.solana.com/',
   chainId: 'mainnet-beta',
   chain: 'solana',
-  decimals: 6,
+  decimals: 9,
   feeGasStep: {
     high: 1,
     medium: 1,
