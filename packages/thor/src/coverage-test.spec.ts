@@ -66,7 +66,7 @@ describe('Test coverage Thor package', () => {
       to: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       from: 'thor1hccrcavupf7wnl2klud40lan00zp0q3u807g94',
       amount: 0.000001,
-      decimals: 18,
+      decimals: 8,
     });
 
     const estimateFee = await providers[ThorChains.thorchain].estimateFee(
