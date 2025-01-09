@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-thor
 
+## 2.1.33
+
+### Patch Changes
+
+- 922dd890: chore: pump package version
+
 ## 2.1.32
 
 ### Patch Changes
