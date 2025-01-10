@@ -1,5 +1,11 @@
 # @xdefi-tech/chains-solana
 
+## 2.1.41
+
+### Patch Changes
+
+- f67660b3: feat: allow transfer compressed nft
+
 ## 2.1.40
 
 ### Patch Changes
