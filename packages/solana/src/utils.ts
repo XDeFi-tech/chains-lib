@@ -11,6 +11,9 @@ import {
   SimulatedTransactionResponse,
   TransactionError,
 } from '@solana/web3.js';
+import axios from 'axios';
+
+import { NftAssetProof, NftAsset } from './types';
 
 export const checkMinimumBalanceForRentExemption = async (
   connection: Connection
@@ -124,4 +127,44 @@ export const getSimulationComputeUnits = async (
   });
   getErrorFromRPCResponse(rpcResponse);
   return rpcResponse.value.unitsConsumed || null;
+};
+
+export const getNftAsset = async (
+  dasUrl: string,
+  nftAddress: PublicKey
+): Promise<NftAsset> => {
+  try {
+    const asset = await axios.post(dasUrl, {
+      jsonrpc: '2.0',
+      id: 'dontcare',
+      method: 'getAsset',
+      params: {
+        id: nftAddress.toBase58(),
+      },
+    });
+    return asset.data.result;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Could not fetch nft');
+  }
+};
+
+export const getNftAssetProof = async (
+  dasUrl: string,
+  nftAddress: PublicKey
+): Promise<NftAssetProof> => {
+  try {
+    const asset = await axios.post(dasUrl, {
+      jsonrpc: '2.0',
+      id: 'dontcare',
+      method: 'getAssetProof',
+      params: {
+        id: nftAddress.toBase58(),
+      },
+    });
+    return asset.data.result;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Could not fetch nft proof');
+  }
 };

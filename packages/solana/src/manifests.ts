@@ -1,9 +1,14 @@
 import { Chain } from '@xdefi-tech/chains-core';
 
-export const SOLANA_MANIFEST: Chain.Manifest = {
+export interface SolanaManifest extends Chain.Manifest {
+  dasUrl: string;
+}
+
+export const SOLANA_MANIFEST: SolanaManifest = {
   name: 'Solana',
   description: '',
   rpcURL: 'https://solanalb-rpc.xdefi.services',
+  dasUrl: 'https://rpc-proxy.xdefi.services/helius',
   chainSymbol: 'SOL',
   blockExplorerURL: 'https://explorer.solana.com/',
   chainId: 'mainnet-beta',
