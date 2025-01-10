@@ -13,11 +13,13 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
+import { PROGRAM_ID as BUBBLEGUM_PROGRAM_ID } from '@metaplex-foundation/mpl-bubblegum';
 
-import { ChainMsg } from './msg';
+import { ChainMsg, TokenType } from './msg';
 import { SolanaProvider } from './chain.provider';
 import { IndexerDataSource } from './datasource';
 import { SOLANA_MANIFEST } from './manifests';
+import * as utils from './utils';
 
 const mockEstimateComputeUnits = 200_000;
 const mockPriorityFeeEstimate = 1000;
@@ -51,6 +53,82 @@ jest.spyOn(SolanaProvider.prototype, 'getBalance').mockResolvedValue({
     ])
   ) as any,
   getObserver: jest.fn(),
+});
+
+jest.spyOn(utils, 'getNftAsset').mockResolvedValue({
+  interface: 'V1_NFT',
+  id: 'EVCmM832LgN78xs3B92SroMVmGCuPURNrd1wE26941dL',
+  authorities: [
+    {
+      address: '3GJwiCmbFMiHww4NParrsi7ageYEgLJweWK1wj5ynb1x',
+      scopes: ['full'],
+    },
+  ],
+  compression: {
+    eligible: false,
+    compressed: true,
+    data_hash: '3S4DwLDrd3VNveBaARiKzxuqqHoSwd7pGzfdsbBh6MYA',
+    creator_hash: 'HDwA4eof5eBZqZzKYE2RYNt95AwrQcYjPfn9w2emvcKo',
+    asset_hash: '3Fb9j9k8re8aT6ASqh1sSVS7s8P4apZ1pDcmMZz6UZDW',
+    tree: '4TkNdR1wGrrYqfyiKBW3EgWZeuUUrnW5HCms7YZUAupW',
+    seq: 122205,
+    leaf_id: 23465,
+  },
+  royalty: {
+    royalty_model: 'creators',
+    target: null,
+    percent: 0.05,
+    basis_points: 500,
+    primary_sale_happened: true,
+    locked: false,
+  },
+  creators: [
+    {
+      address: '9pGYoB49gFnpseYbNHDq5tTbAMpf4yHbiaa8m7yMSNES',
+      share: 100,
+      verified: false,
+    },
+  ],
+  ownership: {
+    frozen: false,
+    delegated: false,
+    delegate: null,
+    ownership_model: 'single',
+    owner: 'BZkAJnd9QaNWgAXkTjNmKvYiAGXVAzhWZHJpJgo6RsAt',
+  },
+  supply: {
+    print_max_supply: 0,
+    print_current_supply: 0,
+    edition_nonce: null,
+  },
+  mutable: true,
+  burnt: false,
+});
+
+jest.spyOn(utils, 'getNftAssetProof').mockResolvedValue({
+  root: 'BU1QbL7Q8DVk3qWsD3DGDykECR33GbSfuM4g6nDWWraP',
+  proof: [
+    'Gv4wmzzR3f2udqe2eU7tFnzJ2GxynmcKsn6d3NGLTg3r',
+    '3yZTfG2ZCbmLPaPkAWphExPRqy5AJ65pENLXBaVhhG3i',
+    'CpFpuWBRouUBQAmEGfofHWddSAhT8Bk14hgDkAWkdGTr',
+    '7c3pLwgckXdteq4RmZL4g94EUa2Q98kyG91frG37q9gw',
+    '5FtnEueEpdKj54JcpBj3j2QVuSmjFCkS751S6xUyYRBX',
+    '76GV332qWaWPE15Dvd6jgqkQ9mSH1eaZTwBoeePboBYx',
+    '38sQPk7f8T6pmEfLVNgjrm4mAAFVpbwdbpHr5KuLkLxk',
+    '4vf7UGxVaHwHPivANnw5ZSy1A7TeoJbPAhCZ1ee9Tigh',
+    '6uLUQTsFwJWGHm94inMAzGjFXKvcQu3NYuijXKK3C1p2',
+    '9NDSDiWxxLHLZ4QdkTjtzs2aGheH83f7ag3A4SWB7v9p',
+    'CjuoKP1KJvuXXPNcrDLYPNBoHwo7bghDEK3eoj9WPABP',
+    'EF4r5xsf2a6fH3bnz8UsdueGg4moLERnUJbAaJ1VUkJC',
+    'DrjM8q7PELp74F1CeM7Fo8pkut86EmnH5py2wh17yQLL',
+    '3XzKZjECf9nqzfJCTz9CaX9ipyJ3wp3oiUJeM5U2yCTG',
+    'Gv2BdPDYnhCGScosYm47YZHdLJKSTiB18QY8cm7HzLQw',
+    '49mHkKN8VDWg8GFKRc5xJFwowPPepo9Cn87rku6oc96E',
+    'HRGsAQG33SNtDTBmPLvo7oW8MDJxWhEjXiwSVZCTUtwZ',
+  ],
+  node_index: 154537,
+  leaf: '3Fb9j9k8re8aT6ASqh1sSVS7s8P4apZ1pDcmMZz6UZDW',
+  tree_id: '4TkNdR1wGrrYqfyiKBW3EgWZeuUUrnW5HCms7YZUAupW',
 });
 
 describe('msg', () => {
@@ -285,6 +363,21 @@ describe('msg', () => {
     expect(tx.instructions[0].programId).toBe(ComputeBudgetProgram.programId);
     expect(tx.instructions[1].programId).toBe(ComputeBudgetProgram.programId);
     expect(tx.instructions[2].programId).toStrictEqual(TOKEN_PROGRAM_ID);
+  });
+
+  it('buildTx with compressed nft', async () => {
+    const provider = new SolanaProvider(new IndexerDataSource(SOLANA_MANIFEST));
+    const msg = provider.createMsg({
+      from: '5UghpDRDYPger6vqVCrvvvRQsg3NZ5CNzJWfPyKTZpf2',
+      to: 'EwSJ1V4zGUbJBbURwBViezwEo8Ei8UkSDigg9dvBmQXk',
+      contractAddress: 'EVCmM832LgN78xs3B92SroMVmGCuPURNrd1wE26941dL',
+      amount: '1',
+      tokenType: TokenType.NON_FUNGIBLE,
+    });
+    const builtMsg = await msg.buildTx();
+    expect((builtMsg.tx as SolanaTransaction).instructions[0].programId).toBe(
+      BUBBLEGUM_PROGRAM_ID
+    );
   });
 
   jest.useFakeTimers();

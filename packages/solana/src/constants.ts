@@ -12,3 +12,6 @@ export const DEFAULT_BROADCAST_OPTIONS: BroadcastOptions = {
   preflightCommitment: 'confirmed',
   maxRetries: 0,
 };
+
+export const NOOP_PROGRAM_ADDRESS =
+  'noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV';

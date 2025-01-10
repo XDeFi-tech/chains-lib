@@ -17,6 +17,7 @@ import {
   Commitment,
   AddressLookupTableAccount,
   TransactionMessage,
+  AccountMeta,
 } from '@solana/web3.js';
 import {
   createAssociatedTokenAccountInstruction,
@@ -29,15 +30,30 @@ import {
   TokenInvalidAccountOwnerError,
 } from '@solana/spl-token';
 import bs58 from 'bs58';
+import {
+  ConcurrentMerkleTreeAccount,
+  PROGRAM_ID as COMPRESSION_PROGRAM_ID,
+} from '@solana/spl-account-compression';
+import {
+  createTransferInstruction as createCompressedTokenTransferInstruction,
+  PROGRAM_ID as BUBBLEGUM_PROGRAM_ID,
+} from '@metaplex-foundation/mpl-bubblegum';
 
 import type { SolanaProvider } from './chain.provider';
-import { DEFAULT_FEE } from './constants';
+import { DEFAULT_FEE, NOOP_PROGRAM_ADDRESS } from './constants';
 import { SolanaSignature } from './types';
 import {
   checkMinimumBalanceForRentExemption,
   checkTxAlreadyHasPriorityFee,
+  getNftAsset,
+  getNftAssetProof,
 } from './utils';
 
+export enum TokenType {
+  None = 'None',
+  NON_FUNGIBLE = 'NonFungible',
+  FUNGIBLE = 'Fungible',
+}
 export interface MsgBody {
   amount: NumberIsh;
   to: string;
@@ -46,6 +62,7 @@ export interface MsgBody {
   gasPrice?: NumberIsh; // Compute Unit Price (micro lamport)
   decimals?: number;
   contractAddress?: string;
+  tokenType?: TokenType;
   memo?: string;
   data?: string; // for swaps when encoded is base64a
   skipPreflight?: boolean;
@@ -193,7 +210,7 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     const senderPublicKey = new PublicKey(msgData.from);
     const recipientPublicKey = new PublicKey(msgData.to);
     let value;
-    const contractInfo: any = {};
+    let contractInfo: any = {};
     const blockhash = await this.getLatestBlockhash();
 
     // 120 blocks is about 1 min, setting this means this tx can be broadcasted within 1min of being signed
@@ -218,71 +235,25 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
 
     let instruction;
     if (msgData.contractAddress) {
-      const mintPublicKey = new PublicKey(msgData.contractAddress);
-      const info = await this.provider.rpcProvider.getAccountInfo(
-        mintPublicKey,
-        'confirmed'
-      );
-      programId = info?.owner ?? TOKEN_PROGRAM_ID;
-      const mint = await getMint(
-        this.provider.rpcProvider,
-        mintPublicKey,
-        'confirmed',
-        programId
-      );
-      value = new BigNumber(msgData.amount)
-        .multipliedBy(10 ** mint.decimals)
-        .toNumber();
-      const [fromTokenAcc, toTokenAcc] = await Promise.all([
-        getAssociatedTokenAddress(
-          mint.address,
+      if (msgData.tokenType === TokenType.NON_FUNGIBLE) {
+        const buildResult = await this.buildNftTransferInstruction(
           senderPublicKey,
-          undefined,
-          programId
-        ),
-        getAssociatedTokenAddress(
-          mint.address,
-          recipientPublicKey,
-          undefined,
-          programId
-        ),
-      ]);
-      try {
-        await getAccount(
-          this.provider.rpcProvider,
-          toTokenAcc,
-          'confirmed',
-          programId
+          recipientPublicKey
         );
-      } catch (error) {
-        if (
-          error instanceof TokenAccountNotFoundError ||
-          error instanceof TokenInvalidAccountOwnerError
-        ) {
-          transaction.add(
-            createAssociatedTokenAccountInstruction(
-              senderPublicKey,
-              toTokenAcc,
-              recipientPublicKey,
-              mint.address,
-              programId
-            )
-          );
-        }
+        transaction.add(...buildResult.instructions);
+        instruction = buildResult.instructions;
+        decimals = buildResult.decimals;
+        contractInfo = buildResult.contractInfo;
+      } else {
+        const buildResult = await this.buildTokenTransferInstruction(
+          senderPublicKey,
+          recipientPublicKey
+        );
+        transaction.add(...buildResult.instructions);
+        instruction = buildResult.instructions;
+        decimals = buildResult.decimals;
+        contractInfo = buildResult.contractInfo;
       }
-      contractInfo.contractAddress = msgData.contractAddress;
-      contractInfo.toTokenAddress = toTokenAcc.toBase58();
-      contractInfo.fromTokenAddress = fromTokenAcc.toBase58();
-
-      instruction = createTransferInstruction(
-        fromTokenAcc,
-        toTokenAcc,
-        senderPublicKey,
-        value,
-        undefined,
-        programId
-      );
-      decimals = mint.decimals;
     } else {
       value = new BigNumber(msgData.amount)
         .multipliedBy(LAMPORTS_PER_SOL)
@@ -301,9 +272,8 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
         }).data,
       });
       programId = SystemProgram.programId;
+      transaction.add(instruction);
     }
-
-    transaction.add(instruction);
 
     if (msgData.memo) {
       transaction.add(
@@ -389,5 +359,160 @@ export class ChainMsg extends BasMsg<MsgBody, TxBody> {
     }
 
     return maxAmount.toString();
+  }
+
+  async buildTokenTransferInstruction(
+    senderPublicKey: PublicKey,
+    recipientPublicKey: PublicKey
+  ) {
+    const instructions: TransactionInstruction[] = [];
+    const msgData = this.toData();
+    const mintPublicKey = new PublicKey(msgData.contractAddress);
+    const info = await this.provider.rpcProvider.getAccountInfo(
+      mintPublicKey,
+      'confirmed'
+    );
+    const programId = info?.owner ?? TOKEN_PROGRAM_ID;
+    const mint = await getMint(
+      this.provider.rpcProvider,
+      mintPublicKey,
+      'confirmed',
+      programId
+    );
+    const value = new BigNumber(msgData.amount)
+      .multipliedBy(10 ** mint.decimals)
+      .toNumber();
+    const [fromTokenAcc, toTokenAcc] = await Promise.all([
+      getAssociatedTokenAddress(
+        mint.address,
+        senderPublicKey,
+        undefined,
+        programId
+      ),
+      getAssociatedTokenAddress(
+        mint.address,
+        recipientPublicKey,
+        undefined,
+        programId
+      ),
+    ]);
+    try {
+      await getAccount(
+        this.provider.rpcProvider,
+        toTokenAcc,
+        'confirmed',
+        programId
+      );
+    } catch (error) {
+      if (
+        error instanceof TokenAccountNotFoundError ||
+        error instanceof TokenInvalidAccountOwnerError
+      ) {
+        instructions.push(
+          createAssociatedTokenAccountInstruction(
+            senderPublicKey,
+            toTokenAcc,
+            recipientPublicKey,
+            mint.address,
+            programId
+          )
+        );
+      }
+    }
+
+    instructions.push(
+      createTransferInstruction(
+        fromTokenAcc,
+        toTokenAcc,
+        senderPublicKey,
+        value,
+        undefined,
+        programId
+      )
+    );
+    return {
+      instructions: instructions,
+      decimals: mint.decimals,
+      contractInfo: {
+        contractAddress: msgData.contractAddress,
+        toTokenAddress: toTokenAcc.toBase58(),
+        fromTokenAddress: fromTokenAcc.toBase58(),
+      },
+    };
+  }
+
+  async buildNftTransferInstruction(
+    senderPublicKey: PublicKey,
+    recipientPublicKey: PublicKey
+  ) {
+    const msgData = this.toData();
+    const mintPublicKey = new PublicKey(msgData.contractAddress);
+    const asset = await getNftAsset(
+      this.provider.manifest.dasUrl,
+      mintPublicKey
+    );
+    if (!asset.compression.compressed) {
+      return this.buildTokenTransferInstruction(
+        senderPublicKey,
+        recipientPublicKey
+      );
+    }
+    const assetProof = await getNftAssetProof(
+      this.provider.manifest.dasUrl,
+      mintPublicKey
+    );
+    const treeAccount = await ConcurrentMerkleTreeAccount.fromAccountAddress(
+      this.provider.rpcProvider,
+      new PublicKey(assetProof.tree_id)
+    );
+
+    // extract the needed values for our transfer instruction
+    const treeAuthority = treeAccount.getAuthority();
+    const canopyDepth = treeAccount.getCanopyDepth();
+
+    // parse the list of proof addresses into a valid AccountMeta[]
+    const proof: AccountMeta[] = assetProof.proof
+      .slice(0, assetProof.proof.length - (!!canopyDepth ? canopyDepth : 0))
+      .map((node: string) => ({
+        pubkey: new PublicKey(node),
+        isSigner: false,
+        isWritable: false,
+      }));
+
+    const transferIx = createCompressedTokenTransferInstruction(
+      {
+        treeAuthority,
+        leafOwner: new PublicKey(asset.ownership.owner),
+        leafDelegate: new PublicKey(
+          asset.ownership.delegate
+            ? asset.ownership.delegate
+            : asset.ownership.owner
+        ),
+        newLeafOwner: recipientPublicKey,
+        merkleTree: new PublicKey(assetProof.tree_id),
+        logWrapper: new PublicKey(NOOP_PROGRAM_ADDRESS),
+        anchorRemainingAccounts: proof,
+        compressionProgram: COMPRESSION_PROGRAM_ID,
+      },
+      {
+        root: [...new PublicKey(assetProof.root.trim()).toBytes()],
+        dataHash: [
+          ...new PublicKey(asset.compression.data_hash.trim()).toBytes(),
+        ],
+        creatorHash: [
+          ...new PublicKey(asset.compression.creator_hash.trim()).toBytes(),
+        ],
+        nonce: asset.compression.leaf_id,
+        index: asset.compression.leaf_id,
+      },
+      BUBBLEGUM_PROGRAM_ID
+    );
+    return {
+      instructions: [transferIx],
+      decimals: 0,
+      contractInfo: {
+        contractAddress: msgData.contractAddress,
+      },
+    };
   }
 }

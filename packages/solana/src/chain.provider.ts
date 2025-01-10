@@ -41,6 +41,7 @@ import {
   checkTxAlreadyHasPriorityFee,
 } from './utils';
 import { BroadcastOptions, DEFAULT_BROADCAST_OPTIONS } from './constants';
+import { SolanaManifest } from './manifests';
 
 export interface MultisigMsgData {
   from: string;
@@ -306,6 +307,10 @@ export class SolanaProvider extends Chain.Provider<ChainMsg> {
       .dividedBy(LAMPORTS_PER_SOL)
       .toString();
     return { fee, maxFee: null };
+  }
+
+  public get manifest(): SolanaManifest {
+    return this.dataSource.manifest as SolanaManifest;
   }
 
   static get dataSourceList() {
